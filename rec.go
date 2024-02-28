@@ -2,14 +2,14 @@ package utils
 
 import (
 	"database/sql"
-	"fmt"
+	"log"
 )
 
 func CreateTable(db *sql.DB) {
 
 	// creation de la table user
 	_, err := db.Exec(`
-	CREATE TABLE IF NOT EXISTS users ( 
+	CREATE TABLE IF NOT EXISTS users (
 		id INTEGER UNIQUE PRIMARY KEY AUTOINCREMENT,
 			first_name TEXT NOT NULL,
 			last_name TEXT NOT NULL,
@@ -18,22 +18,22 @@ func CreateTable(db *sql.DB) {
 			email TEXT NOT NULL UNIQUE,
 			password TEXT NOT NULL,
 			user_type VARCHAR(25) NOT NULL,
-			birth_date VARCHAR(12), 
-			avatar VARCHAR(256), 
+			birth_date VARCHAR(12),
+			avatar VARCHAR(256),
 			about_me TEXT
-			) 
+			)
 			 `)
 	if err != nil {
 		log.Fatal("User table", err.Error())
 	}
 
-	_, err := db.Exec(`
-	CREATE TABLE IF NOT EXISTS users_followers ( 
+	_, err = db.Exec(`
+	CREATE TABLE IF NOT EXISTS users_followers (
 		user_id_followed INTEGER NOT NULL,
 		user_id_follower INTEGER NOT NULL,
         FOREIGN KEY(user_id_followed) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
         FOREIGN KEY(user_id_follower) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE
-			) 
+			)
 			 `)
 	if err != nil {
 		log.Fatal("Users_followers table", err.Error())
@@ -42,7 +42,7 @@ func CreateTable(db *sql.DB) {
 	// Creation de la table catégorie
 	_, err = db.Exec(`
 		CREATE TABLE IF NOT EXISTS categories (
-			id INTEGER UNIQUE PRIMARY KEY AUTOINCREMENT NOT NULL, 
+			id INTEGER UNIQUE PRIMARY KEY AUTOINCREMENT NOT NULL,
 			category_name TEXT NOT NULL
 		)
 		`)
@@ -60,7 +60,7 @@ func CreateTable(db *sql.DB) {
 			INSERT INTO categories (categoryName) VALUES ('other');
 			INSERT INTO categories (categoryName) VALUES ('musique');
 			INSERT INTO categories (categoryName) VALUES ('sante');
-			INSERT INTO categories (categoryName) VALUES ('news');			
+			INSERT INTO categories (categoryName) VALUES ('news');
 			`)
 	}
 
@@ -73,15 +73,15 @@ func CreateTable(db *sql.DB) {
 	// Creation de la table users
 	_, err = db.Exec(`
 		CREATE TABLE IF NOT EXISTS posts (
-			id INTEGER UNIQUE PRIMARY KEY AUTOINCREMENT NOT NULL, 
+			id INTEGER UNIQUE PRIMARY KEY AUTOINCREMENT NOT NULL,
 			post_title TEXT NOT NULL,
 			post_content TEXT NOT NULL,
 			post_media TEXT NOT NULL,
-			post_date TEXT NOT NULL, 
+			post_date TEXT NOT NULL,
 			user_id INTEGER NOT NULL,
 			group_id INTEGER NOT NULL,
-			type TEXT NOT NULL NOT NULL, 
-			FOREIGN KEY("user_id") 
+			type TEXT NOT NULL NOT NULL,
+			FOREIGN KEY("user_id")
 			REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE
 		 )
 		`)
@@ -91,11 +91,11 @@ func CreateTable(db *sql.DB) {
 
 	// Création tavle belong
 	_, err = db.Exec(`
-		CREATE TABLE IF NOT EXISTS postCategory ( 
-			post_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, 
-			category_id INTEGER NOT NULL, 
-			FOREIGN KEY(post_id) REFERENCES posts(id) ON DELETE CASCADE ON UPDATE CASCADE, 
-			FOREIGN KEY(category_id) REFERENCES categories(id) ON DELETE CASCADE ON UPDATE CASCADE 
+		CREATE TABLE IF NOT EXISTS postCategory (
+			post_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
+			category_id INTEGER NOT NULL,
+			FOREIGN KEY(post_id) REFERENCES posts(id) ON DELETE CASCADE ON UPDATE CASCADE,
+			FOREIGN KEY(category_id) REFERENCES categories(id) ON DELETE CASCADE ON UPDATE CASCADE
 		)
 		`)
 	if err != nil {
@@ -105,13 +105,13 @@ func CreateTable(db *sql.DB) {
 	// Création de la table likes-post
 
 	_, err = db.Exec(`
-		CREATE TABLE IF NOT EXISTS likePost ( 
-			id INTEGER UNIQUE PRIMARY KEY AUTOINCREMENT NOT NULL, 
-			post_id INTEGER NOT NULL, 
-			user_id INTEGER NOT NULL,  
-			is_like INTEGER NOT NULL,  
-			FOREIGN KEY(post_id) REFERENCES "posts"("id") ON DELETE CASCADE, 
-			FOREIGN KEY("user_i") REFERENCES "users"("id") ON DELETE CASCADE 
+		CREATE TABLE IF NOT EXISTS likePost (
+			id INTEGER UNIQUE PRIMARY KEY AUTOINCREMENT NOT NULL,
+			post_id INTEGER NOT NULL,
+			user_id INTEGER NOT NULL,
+			is_like INTEGER NOT NULL,
+			FOREIGN KEY(post_id) REFERENCES "posts"("id") ON DELETE CASCADE,
+			FOREIGN KEY("user_i") REFERENCES "users"("id") ON DELETE CASCADE
 		)
 		`)
 	if err != nil {
@@ -120,13 +120,13 @@ func CreateTable(db *sql.DB) {
 
 	// Créate de la table commente
 	_, err = db.Exec(`
-		CREATE TABLE IF NOT EXISTS comment ( 
-			id INTEGER UNIQUE PRIMARY KEY AUTOINCREMENT NOT NULL, 
-			content_comment TEXT NOT NULL, 
-			post_id INTEGER NOT NULL, 
-			user_id INTEGER NOT NULL,  
-			FOREIGN KEY(post_id) REFERENCES posts(id) ON DELETE CASCADE ON UPDATE CASCADE, 
-			FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE 
+		CREATE TABLE IF NOT EXISTS comment (
+			id INTEGER UNIQUE PRIMARY KEY AUTOINCREMENT NOT NULL,
+			content_comment TEXT NOT NULL,
+			post_id INTEGER NOT NULL,
+			user_id INTEGER NOT NULL,
+			FOREIGN KEY(post_id) REFERENCES posts(id) ON DELETE CASCADE ON UPDATE CASCADE,
+			FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE
 		)
 		`)
 	if err != nil {
@@ -140,8 +140,8 @@ func CreateTable(db *sql.DB) {
 			id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
 			comment_id INTEGER NOT NULL,
 			user_id INTEGER NOT NULL,
-			is_like INTEGER NOT NULL, 
-			FOREIGN KEY("comment_id") REFERENCES "comment"("id") ON DELETE CASCADE ON UPDATE CASCADE, 
+			is_like INTEGER NOT NULL,
+			FOREIGN KEY("comment_id") REFERENCES "comment"("id") ON DELETE CASCADE ON UPDATE CASCADE,
 			FOREIGN KEY("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE
 		)
 	`)
@@ -216,7 +216,7 @@ func CreateTable(db *sql.DB) {
 
 	_, err = db.Exec(
 		`CREATE TABLE IF NOT EXISTS confirm (
-			user_id_asker INTEGER NOT NULL, 
+			user_id_asker INTEGER NOT NULL,
 			user_id_asked INTEGER DEFAULT "NULL",
 			group_id INTEGER DEFAULT "NULL"
             FOREIGN KEY(user_id_asker) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -229,4 +229,3 @@ func CreateTable(db *sql.DB) {
 	}
 
 }
-
