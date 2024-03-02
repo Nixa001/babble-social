@@ -59,7 +59,7 @@ export default function Login() {
           </form>
         </div>
       </div>
-      <div className="bg-[url('/assets/login/bg.jpg')] bg-cover bg-center w-6/12 h-screen hidden sm:block sm:w-0"></div>{" "}
+      <div className="bg-[url('/assets/login/bg.jpg')] bg-cover bg-center w-6/12 h-screen hidden sm:block"></div>{" "}
     </div>
   );
 }
