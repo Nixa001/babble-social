@@ -11,7 +11,7 @@ function Register() {
   return (
     <div className="w-screen h-screen flex">
       <div className="flex flex-col items-center w-full sm:w-6/12">
-        <div className="header_login flex items-center justify-between w-full">
+        <div className="header_login flex items-center justify-around w-full">
           <Image
             src="/assets/icons/comment.png"
             alt="logo"
@@ -24,11 +24,11 @@ function Register() {
               href="/login"
               className="text-primary hover:text-second cursor-pointer"
             >
-              Sign In .{" "}
+              Sign In.
             </Link>
           </div>
         </div>
-        <div className="mt-24 flex flex-col gap-3 w-8/12 max-w-96">
+        <div className="mt-2 sm:mt-24 flex flex-col gap-3 w-8/12 max-w-96">
           <h1 className="text-center font-bold text-4xl">Sign Up</h1>
           <div className="flex items-center justify-center gap-4">
             <img src="/assets/login/google.svg" alt="google" />
@@ -71,18 +71,11 @@ function Register() {
               className="h-10 rounded pl-2 text-bg"
             />
             <input
-              type="date"
-              id="dateofbirth"
-              name="dateofbirth"
-              placeholder="Date of birth"
-              className="h-10 rounded pl-2 text-bg"
-            />
-            <input
               type="password"
               id="password"
               name="password"
               placeholder="Password"
-              className="h-10 rounded pl-2 text-bg"
+              className="h-10 w-full rounded pl-2 text-bg"
             />
             <input
               type="password"
@@ -98,23 +91,29 @@ function Register() {
               placeholder="About me"
               className="h-20 pt-6 rounded pl-2 text-bg resize-none"
             />
+
+            <input
+              type="date"
+              id="dateofbirth"
+              name="dateofbirth"
+              placeholder="Date of birth"
+              className="h-10 rounded pl-2 text-bg"
+            />
             <input
               type="file"
               id="avatar"
               name="avatar"
               placeholder="Avatar"
-              className="h-10 rounded pl-2 text-bg"
+              className="rounded text-bg"
             />
-            <Link href="/home">
+            {/* <Link href="/home"> */}
             <button
               className="hover:bg-second bg-primary cursor-pointer border-none w-full h-10 rounded font-bold text-center"
-              // onClick={() => {
-              //   handleRegister();
-              // }}
+              onClick={() => handleRegister()}
             >
-              Log In
+              Create account
             </button>
-            </Link>
+            {/* </Link> */}
           </form>
         </div>
       </div>

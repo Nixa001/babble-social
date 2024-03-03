@@ -1,12 +1,12 @@
 import React from "react";
 import Login from "../ui/components/login/login";
 
-const page = () => {
+const Page = () => {
   return (
     <>
-      <Login />;
+      <Login />{" "}
     </>
   );
 };
 
-export default page;
+export default Page;
