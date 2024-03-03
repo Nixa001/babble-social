@@ -1,16 +1,10 @@
 import Image from "next/image";
-import Login from "./ui/components/login/page";
+import Login from "./ui/components/login/login";
 
 export default function Home() {
-  
-  
   return (
     <div>
-      <Login handleOnclick={handleLogin} />{" "}
+      {/* <Login />{" "} */}
     </div>
   );
 }
-
-  const handleLogin = ()=>{
-    alert("Login")
-  }

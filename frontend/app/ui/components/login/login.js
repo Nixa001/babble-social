@@ -1,6 +1,12 @@
+"use client";
 import Link from "next/link";
 import Image from "next/image";
+
 export default function Login() {
+  const handleLogin = () => {
+    alert("Click");
+  };
+
   return (
     <div className="w-screen h-screen flex">
       <div className="flex flex-col items-center w-full sm:w-6/12">
@@ -11,14 +17,17 @@ export default function Login() {
             width={40}
             height={40}
           />{" "}
-          <text_header_login>
+          <div>
             Don't have an account ?{" "}
-            <span className="text-primary hover:text-second cursor-pointer">
-              Sign Up !
-            </span>
-          </text_header_login>
+            <Link
+              href="/register"
+              className="text-primary hover:text-second cursor-pointer"
+            >
+              Sign Up .{" "}
+            </Link>
+          </div>
         </div>
-        <div className="mt-56 flex flex-col gap-3">
+        <div className="mt-56 flex flex-col gap-3 w-8/12 max-w-96">
           <h1 className="text-center font-bold text-4xl">Welcome Back</h1>
           <div className="text-center login_other">
             <h4 className="font-bold text-xl mb-2">Login in to account</h4>
@@ -50,11 +59,14 @@ export default function Login() {
               className="h-10 rounded pl-2 text-bg"
             />
             <Link href="/home">
-              <input
+              <button
                 className="hover:bg-second bg-primary cursor-pointer border-none w-full h-10 rounded font-bold text-center"
-                type="btn"
-                defaultValue="LOG IN"
-              />
+                // onClick={() => {
+                //   handleLogin();
+                // }}
+              >
+                Log In
+              </button>
             </Link>
           </form>
         </div>
