@@ -11,7 +11,7 @@ function Register() {
   return (
     <div className="w-screen h-screen flex">
       <div className="flex flex-col items-center w-full sm:w-6/12">
-        <div className="header_login flex items-center justify-around w-full">
+        <div className="header_login flex items-center  justify-around w-full">
           <Image
             src="/assets/icons/comment.png"
             alt="logo"
@@ -46,14 +46,14 @@ function Register() {
               id="firstname"
               name="firstname"
               placeholder="Firstname"
-              className="h-10 rounded pl-2 text-bg"
+              className="h-10 rounded pl-2 border border-border_color text-bg"
             />
             <input
               type="text"
               id="lastname"
               name="lastname"
               placeholder="Lastname"
-              className="h-10 rounded pl-2 text-bg"
+              className="h-10 rounded pl-2 border border-border_color text-bg"
             />
 
             <input
@@ -61,35 +61,35 @@ function Register() {
               id="email"
               name="email"
               placeholder="E-mail"
-              className="h-10 rounded pl-2 text-bg"
+              className="h-10 rounded pl-2 border border-border_color text-bg"
             />
             <input
               type="text"
               id="username"
               name="username"
               placeholder="Username"
-              className="h-10 rounded pl-2 text-bg"
+              className="h-10 rounded pl-2 border border-border_color text-bg"
             />
             <input
               type="password"
               id="password"
               name="password"
               placeholder="Password"
-              className="h-10 w-full rounded pl-2 text-bg"
+              className="h-10 w-full rounded pl-2 border border-border_color text-bg"
             />
             <input
               type="password"
               id="password"
               name="password"
               placeholder="Confirm your password"
-              className="h-10 rounded pl-2 text-bg"
+              className="h-10 rounded pl-2 border border-border_color text-bg"
             />
             <textarea
               type="text"
               id="aboutme"
               name="aboutme"
               placeholder="About me"
-              className="h-20 pt-6 rounded pl-2 text-bg resize-none"
+              className="h-20 pt-6 rounded pl-2 border border-border_color text-bg resize-none"
             />
 
             <input
@@ -97,18 +97,18 @@ function Register() {
               id="dateofbirth"
               name="dateofbirth"
               placeholder="Date of birth"
-              className="h-10 rounded pl-2 text-bg"
+              className="h-10 rounded pl-2 border border-border_color text-bg"
             />
             <input
               type="file"
               id="avatar"
               name="avatar"
               placeholder="Avatar"
-              className="rounded text-bg"
+              className="rounded border border-border_color text-bg"
             />
             {/* <Link href="/home"> */}
             <button
-              className="hover:bg-second bg-primary cursor-pointer border-none w-full h-10 rounded font-bold text-center"
+              className="hover:bg-second bg-primary cursor-pointer border-none w-full h-10 rounded font-bold text-text text-center"
               onClick={() => handleRegister()}
             >
               Create account

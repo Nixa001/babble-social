@@ -1,11 +1,8 @@
-import { Inter } from "next/font/google";
 import "./globals.css";
-
-const inter = Inter({ subsets: ["latin"] });
 
 export const metadata = {
   title: "Social-Network",
-  description: "Welcome to PrismaChat, where every word is a work of art",
+  description: "Welcome to SNK, where every word is a work of art",
 };
 
 export default function RootLayout({ children }) {
@@ -15,7 +12,7 @@ export default function RootLayout({ children }) {
         rel="stylesheet"
         href="https://fonts.googleapis.com/icon?family=Material+Icons"
       /> */}
-      <body className={inter.className}>{children}</body>
+      <body className="">{children}</body>
     </html>
   );
 }
