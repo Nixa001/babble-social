@@ -22,6 +22,7 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 		content, err := io.ReadAll(body)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
+			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid request"})
 			return
 		}
 		w.WriteHeader(http.StatusCreated)
@@ -29,12 +30,14 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 		err = json.Unmarshal(content, &user)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
+			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid request"})
 			return
 		}
 
-		json.NewEncoder(w).Encode(user)
+		json.NewEncoder(w).Encode(map[string]any{"message": "success", "token": "", "user": user})
 	default:
 		w.WriteHeader(http.StatusMethodNotAllowed)
+		json.NewEncoder(w).Encode(map[string]string{"error": "Method not allowed"})
 	}
 	// ...
 }
@@ -68,9 +71,10 @@ func SignInHandler(w http.ResponseWriter, r *http.Request) {
 			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid credentials"})
 			return
 		}
-		json.NewEncoder(w).Encode(credentials)
+		json.NewEncoder(w).Encode(map[string]any{"message": "success", "token": "", "user": ""})
 	default:
 		w.WriteHeader(http.StatusMethodNotAllowed)
+		json.NewEncoder(w).Encode(map[string]string{"error": "Method not allowed"})
 	}
 }
 
@@ -83,9 +87,28 @@ func SignOutHandler(w http.ResponseWriter, r *http.Request) {
 
 	switch r.Method {
 	case http.MethodDelete:
+		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(map[string]any{"message": "success"})
 	default:
 		w.WriteHeader(http.StatusMethodNotAllowed)
+		json.NewEncoder(w).Encode(map[string]string{"error": "Method not allowed"})
 	}
 
+}
+
+func VerifySessionHandler(w http.ResponseWriter, r *http.Request) {
+	cors.SetCors(&w)
+	if r.Method == http.MethodOptions {
+		w.WriteHeader(http.StatusOK)
+		return
+	}
+
+	switch r.Method {
+	case http.MethodGet:
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(map[string]any{"message": "success"})
+	default:
+		w.WriteHeader(http.StatusMethodNotAllowed)
+		json.NewEncoder(w).Encode(map[string]string{"error": "Method not allowed"})
+	}
 }
