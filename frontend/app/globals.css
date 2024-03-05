@@ -1,0 +1,42 @@
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&family=Nunito+Sans:ital,opsz,wght@0,6..12,200..1000;1,6..12,200..1000&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --primary_color: #00bd97;
+  --second_color: #1bc4f2;
+  --bg_color: #fff;
+  --text_color: #000;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --primary_color: #00bd97;
+    --second_color: #1bc4f2;
+    --bg_color: #24232d;
+    --border: #24232d7a;
+    --text_color: #fff;
+  }
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  /* color: var(--text_color); */
+  /* <-- Correct variable name */
+  font-family: "Nunito Sans", sans-serif;
+}
+
+
+body {
+  color: var(--text_color);
+  background: var(--bg_color);
+}
+
+/* @layer utilities {
+  .text-balance {
+    text-wrap: balance;
+  }
+} */
