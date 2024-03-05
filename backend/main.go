@@ -1,5 +1,8 @@
 package main
 
+import "backend/server"
+
 func main() {
-	// Start the server
+	server := server.NewServer()
+	server.Run()
 }
