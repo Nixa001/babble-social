@@ -2,8 +2,8 @@ import React from 'react'
 
 const Page = () => {
   return (
-    <div>
-      
+    <div className='m-96'>
+      qsjdqjfjsdfgsdjh
     </div>
   )
 }

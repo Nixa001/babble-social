@@ -12,7 +12,6 @@ module.exports = {
         second: "#1bc4f2",
         bg: "#24232d",
         text: "#fff",
-        border_color:"#24232d7a",
       },
       backgroundImage: {
         "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",

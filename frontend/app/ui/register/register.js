@@ -2,6 +2,7 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
+import Button from "../components/button/button";
 
 function Register() {
   const handleRegister = () => {
@@ -107,12 +108,8 @@ function Register() {
               className="rounded border border-border_color text-bg"
             />
             {/* <Link href="/home"> */}
-            <button
-              className="hover:bg-second bg-primary cursor-pointer border-none w-full h-10 rounded font-bold text-text text-center"
-              onClick={() => handleRegister()}
-            >
-              Create account
-            </button>
+            < Button text="Create an account" onClick={handleRegister} />
+
             {/* </Link> */}
           </form>
         </div>

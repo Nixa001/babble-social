@@ -1,6 +1,7 @@
 "use client";
 import Link from "next/link";
 import Image from "next/image";
+import Button from "../components/button/button";
 
 export default function Login() {
   const handleLogin = () => {
@@ -58,14 +59,7 @@ export default function Login() {
               placeholder="Password"
               className="h-10 rounded pl-2 border border-border_color text-bg"
             />
-            <Link href="/home">
-            <button
-              className="hover:bg-second bg-primary cursor-pointer text-text border-none w-full h-10 rounded font-bold text-center"
-              // onClick={() => handleLogin()}
-            >
-              Log In
-            </button>
-            </Link>
+            < Button text="Se connecter" onClick={handleLogin} />
           </form>
         </div>
       </div>
