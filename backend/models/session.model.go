@@ -1,9 +1,7 @@
 package models
 
-import "github.com/gofrs/uuid/v5"
-
 type Session struct {
-	Id             uuid.UUID `json:"id"`
-	ExpirationDate string    `json:"expirationDate"`
-	Data           string    `json:"data"`
+	Token          string `json:"id"`
+	UserId         int    `json:"user_id"`
+	ExpirationDate string `json:"expiration"`
 }

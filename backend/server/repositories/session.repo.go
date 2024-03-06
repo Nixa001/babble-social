@@ -12,16 +12,16 @@ func (s *SessionRepository) init() {
 }
 
 func (s *SessionRepository) CreateSession(session *models.Session) error {
-	_, err := s.Db.Exec("INSERT INTO sessions (id, expiration_date, data) VALUES ($1, $2, $3)", session.Id, session.ExpirationDate, session.Data)
+	_, err := s.Db.Exec("INSERT INTO sessions (token, user_id, expiration) VALUES ($1, $2, $3)", session.Token, session.UserId, session.ExpirationDate)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (s *SessionRepository) GetSession(id string) (*models.Session, error) {
+func (s *SessionRepository) GetSession(token string) (*models.Session, error) {
 	var session models.Session
-	err := s.Db.QueryRow("SELECT id, expiration_date, data FROM sessions WHERE id = $1", id).Scan(&session.Id, &session.ExpirationDate, &session.Data)
+	err := s.Db.QueryRow("SELECT token, user_id, expiration FROM sessions WHERE token = $1", token).Scan(&session.Token, &session.UserId, &session.ExpirationDate)
 	if err != nil {
 		return nil, err
 	}
@@ -30,7 +30,7 @@ func (s *SessionRepository) GetSession(id string) (*models.Session, error) {
 
 func (s *SessionRepository) GetSessionByUserId(userId string) (*models.Session, error) {
 	var session models.Session
-	err := s.Db.QueryRow("SELECT id, expiration_date, data FROM sessions WHERE user_id = $1", userId).Scan(&session.Id, &session.ExpirationDate, &session.Data)
+	err := s.Db.QueryRow("SELECT token, user_id, expiration FROM sessions WHERE user_id = $1", userId).Scan(&session.Token, &session.UserId, &session.ExpirationDate)
 	if err != nil {
 		return nil, err
 	}
@@ -46,7 +46,7 @@ func (s *SessionRepository) DeleteSession(id string) error {
 }
 
 func (s *SessionRepository) UpdateSession(session *models.Session) error {
-	_, err := s.Db.Exec("UPDATE sessions SET expiration_date = $1, data = $2 WHERE id = $3", session.ExpirationDate, session.Data, session.Id)
+	_, err := s.Db.Exec("UPDATE sessions SET expiration= $1, user_id = $2 WHERE token = $3", session.ExpirationDate, session.UserId, session.Token)
 	if err != nil {
 		return err
 	}
