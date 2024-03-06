@@ -158,9 +158,10 @@ func CreateTable(db *sql.DB) {
 	// Creation de la table session
 	_, err = db.Exec(`
 	CREATE TABLE IF NOT EXISTS sessions (
-    	id TEXT PRIMARY KEY NOT NULL,
+    	token TEXT PRIMARY KEY NOT NULL,
+    	user_id INT NOT NULL,
     	expiration DATETIME NOT NULL,
-    	data VARCHAR(255) NOT NULL
+		FOREIGN KEY("user_id") REFERENCES  users(id) ON DELETE CASCADE ON UPDATE CASCADE
 		)
 		`)
 	if err != nil {
@@ -215,7 +216,6 @@ func CreateTable(db *sql.DB) {
 			user_id_sender INTEGER NOT NULL,
 			user_id_receiver INTEGER DEFAULT NULL,
 			id_group INTEGER DEFAULT NULL,
-
             FOREIGN KEY(id_group) REFERENCES groups(id) ON DELETE CASCADE ON UPDATE CASCADE,
 			FOREIGN KEY(user_id_sender) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
             FOREIGN KEY(user_id_receiver) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE

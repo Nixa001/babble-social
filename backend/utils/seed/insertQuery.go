@@ -135,9 +135,12 @@ func InsertData(db *sql.DB) {
 	// insert into session
 
 	_, err = db.Exec(`
-        INSERT INTO sessions (id, expiration, data)
-        VALUES (null, null, null)
+        INSERT INTO sessions (token, user_id, expiration)
+        VALUES ('NULL', 'NULL', 'NULL')  
 		`)
+	if err != nil {
+		log.Fatal("Insert into sessions", err.Error())
+	}
 
 	// insert into message
 
