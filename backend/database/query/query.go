@@ -102,19 +102,19 @@ func SelectAllWhere(table string, where WhereOption, orderby string, limit []int
 	return query
 }
 
-func InsertQuery(table string, object any) (string, error) {
-	toJson, err := json.Marshal(object)
-	if err != nil {
-		fmt.Println(err)
-		return "", err
-	}
-	toMap := make(map[string]interface{})
-	json.Unmarshal(toJson, &toMap)
-	columns, values := getColumnsValues(toMap)
+// func InsertQuery(table string, object any) (string, error) {
+// 	toJson, err := json.Marshal(object)
+// 	if err != nil {
+// 		fmt.Println(err)
+// 		return "", err
+// 	}
+// 	toMap := make(map[string]interface{})
+// 	json.Unmarshal(toJson, &toMap)
+// 	columns, values := getColumnsValues(toMap)
 
-	query := fmt.Sprintf(`INSERT INTO %v (%v) VALUES (%v);`, table, columns, values)
-	return query, nil
-}
+// 	query := fmt.Sprintf(`INSERT INTO %v (%v) VALUES (%v);`, table, columns, values)
+// 	return query, nil
+// }
 
 func SelectWithJoinQuery(primaryTable string, joinConditions []JoinCondition, where WhereOption, orderby string, limit []int) string {
 
@@ -165,27 +165,27 @@ func getWhereOptionsString(w WhereOption) string {
 	return res
 }
 
-func getColumnsValues(toMap map[string]interface{}) (string, string) {
-	var columns, values string
-	for k, v := range toMap {
-		if v == 0 || v == "" || v == nil {
-			continue
-		}
-		if values != "" {
-			values += ", "
-		}
-		if columns != "" {
-			columns += ", "
-		}
-		columns += k
-		if v1, ok := v.(string); ok {
-			values += fmt.Sprintf("\"%v\"", v1)
-		} else {
-			values += fmt.Sprintf("%v", v)
-		}
-	}
-	return columns, values
-}
+// func getColumnsValues(toMap map[string]interface{}) (string, string) {
+// 	var columns, values string
+// 	for k, v := range toMap {
+// 		if v == 0 || v == "" || v == nil {
+// 			continue
+// 		}
+// 		if values != "" {
+// 			values += ", "
+// 		}
+// 		if columns != "" {
+// 			columns += ", "
+// 		}
+// 		columns += k
+// 		if v1, ok := v.(string); ok {
+// 			values += fmt.Sprintf("\"%v\"", v1)
+// 		} else {
+// 			values += fmt.Sprintf("%v", v)
+// 		}
+// 	}
+// 	return columns, values
+// }
 
 func AllTablesQuery() string {
 	query := "SELECT name FROM sqlite_schema WHERE type='table' AND name NOT LIKE 'sqlite_%';"
@@ -222,4 +222,42 @@ func SearchPostSuggestionQuery(keywords []string) string {
 	`, cases, wh)
 
 	return query
+}
+
+func getColumnsValues(data map[string]interface{}) (string, []interface{}) {
+	var columns []string
+	var values []interface{}
+
+	for column, value := range data {
+		columns = append(columns, column)
+		values = append(values, value)
+	}
+
+	// Construit une chaîne de colonnes séparées par des virgules
+	columnsStr := strings.Join(columns, ", ")
+	return columnsStr, values
+}
+
+// placeholders génère une chaîne contenant des marqueurs de position pour les paramètres d'une requête préparée.
+func placeholders(count int) string {
+	if count < 1 {
+		return ""
+	}
+	// Crée une chaîne de caractères contenant count marqueurs de position (?)
+	return strings.Repeat("?, ", count-1) + "?"
+}
+
+// InsertQuery prépare une requête d'insertion avec des marqueurs de position.
+func InsertQuery(table string, object interface{}) (string, []interface{}, error) {
+	toJson, err := json.Marshal(object)
+	if err != nil {
+		fmt.Println(err)
+		return "", nil, err
+	}
+	toMap := make(map[string]interface{})
+	json.Unmarshal(toJson, &toMap)
+	columns, values := getColumnsValues(toMap)
+
+	query := fmt.Sprintf(`INSERT INTO %v (%v) VALUES (%v);`, table, columns, placeholders(len(values)))
+	return query, values, nil
 }
