@@ -10,7 +10,7 @@ func CreateTable(db *sql.DB) {
 	// creation de la table user
 	_, err := db.Exec(`
 	CREATE TABLE IF NOT EXISTS users (
-		id INTEGER UNIQUE PRIMARY KEY AUTOINCREMENT,
+		    id INTEGER UNIQUE PRIMARY KEY AUTOINCREMENT,
 			first_name TEXT NOT NULL,
 			last_name TEXT NOT NULL,
 			user_name TEXT NOT NULL,
