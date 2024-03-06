@@ -5,12 +5,21 @@
 @tailwind utilities;
 
 :root {
-  --primary_color: #00bd97;
+  /* --primary_color: #00bd97;
   --second_color: #1bc4f2;
   --bg_color: #fff;
   --text_color: #24232d;
   --shadow_color: rgb(201, 201, 201);
-  --navbar_color: var(--primary_color);
+  --navbar_color: var(--primary_color); */
+
+
+  --primary_color: #00bd97;
+  --second_color: #1bc4f2;
+  --bg_color: #24232d;
+  --border: #24232d7a;
+  --text_color: #fff;
+  --shadow_color: rgba(0, 0, 0, 0.69);
+  --navbar_color: #fff;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -66,4 +75,9 @@ body {
   z-index: 0;
   background: var(--primary_color);
   border-radius: 0px 10px 0px 0px;
+}
+
+.isActive {
+  background: var(--primary_color);
+  color: var(--text_color);
 }

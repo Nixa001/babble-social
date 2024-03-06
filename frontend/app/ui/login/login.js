@@ -59,7 +59,7 @@ export default function Login() {
               placeholder="Password"
               className="h-10 rounded pl-2 border border-border_color text-bg"
             />
-            < Button text="Se connecter" onClick={handleLogin} />
+            < Button text="Log In" onClick={handleLogin} />
           </form>
         </div>
       </div>

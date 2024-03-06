@@ -9,6 +9,8 @@ import { FaUserGroup } from "react-icons/fa6";
 import { IoPersonCircleSharp } from "react-icons/io5";
 import { IoLogOut } from "react-icons/io5";
 import Image from 'next/image';
+
+// import { GoHomeFill, AiFillMessage, FaUserGroup, IoNotifications, IoPersonCircleSharp, IoLogOut } from 'react-icons/all';
 // import clsx from 'clsx';
 
 const links = [
@@ -21,10 +23,12 @@ const links = [
 ];
 
 function Navbar() {
+    // const location = useLocation();
     const pathname = usePathname();
     return (
-        <div className='shadowL navbar xl:before:w-72 before:w-48 z-0 xl:w-72 w-48 h-[700px] flex-col bg-text '>
-            <div className='flex  relative z-0 flex-col w-full h-52 items-center justify-center'>
+        <div className='shadowL md:navbar xl:before:w-72 before:w-48 z-0 xl:w-72 md:block md:h-[700px] flex-col bg-text
+         '>
+            <div className='md:flex hidden relative z-0 flex-col w-full h-52 items-center justify-center'>
                 <Image
                     src="/assets/profil.jpg" alt="logo"
                     width={80} height={80}
@@ -33,27 +37,27 @@ function Navbar() {
                 <h2 className='font-bold text-2xl text-center'>Nicolas Cor Faye</h2>
                 <span className='text-xl italic text-primary'>@nixa</span>
             </div>
-            <div className="navbar::before absolute content w-18 h-80 z-0 bg-other border-l-0 border-t-0 border-b-10 border-r-0 rounded-bl-0 rounded-tr-10 rounded-br-0 rounded-tl-0"></div>
-            {/* <div className='flex-col h-full items-center justify-center'> */}
 
-            {links.map((link) => {
-                const LinkIcon = link.icon;
-                return (
-                    <Link key={link.name} href={link.href}
-                        className=' shadowL flex h-[60px] grow items-center xl:w-72 w-48  gap-5 rounded-md mt-1 
-                         font-bold hover:bg-primary hover:text-white md:p-2 md:px-3'
-                    //     {
-                    //         'bg-sky-100 text-blue-600': pathname === link.href,
-                    //     ,
-                    // }
-                    >
-                        <LinkIcon className="xl:text-5xl text-3xl" />
-                        <p className="xl:text-xl hidden md:block">{link.name}</p>
-                    </Link >
-                );
-            })}
-            {/* </div> */}
+            <div className=" absolute content w-18 h-80 z-0 bg-other border-l-0 border-t-0 border-b-10 border-r-0 rounded-bl-0 rounded-tr-10 rounded-br-0 rounded-tl-0"></div>
+            <div className='md:block flex gap-1 justify-center'>
+
+                {links.map((link) => {
+                    const LinkIcon = link.icon;
+                    const isActive = (pathname === link.href);
+
+                    return (
+                        <Link key={link.name} href={link.href}
+                            className={`shadowL flex  h-[60px] items-center md:justify-start justify-center xl:w-72 md:w-48 gap-2 rounded-md mt-1
+                         font-bold hover:bg-primary hover:text-text md:p-2 w-16 md:px-3 ${isActive ? 'isActive' : ''}`}
+                        >
+                            <LinkIcon className="xl:text-5xl text-3xl" />
+                            <p className="xl:text-xl hidden md:block">{link.name}</p>
+                        </Link >
+                    );
+                })}
+            </div>
         </div>
+
     );
 }
 

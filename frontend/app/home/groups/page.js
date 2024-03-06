@@ -2,7 +2,7 @@ import React from 'react'
 
 const Groups = () => {
   return (
-    <div>groups</div>
+    <div className=''>groups</div>
   )
 }
 
