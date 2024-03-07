@@ -6,10 +6,12 @@ import AddPost from "./displayPost";
 const HomePage = () => {
   return (
     <div className=" md:w-[400px] lg:w-[650px] xl:w-[800px] 2xl:w-[1000px] w-screen">
-      <div className="">
+      <div className="flex justify-center mb-4">
         {postForm()}
       </div>
-      <div className="post_div_top">
+      <div className="post_div_top flex flex-col items-center">
+        {AddPost()}
+        {AddPost()}
         {AddPost()}
       </div>
     </div>

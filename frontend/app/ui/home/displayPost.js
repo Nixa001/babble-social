@@ -26,71 +26,75 @@ const AddPost = () => {
   };
 
   return (
-    <div className="post_div">
-      <div className="post_div_top">
-        <div className="header_post">
-          <div className="info_post">
+    <div className="post_div mb-5">
+      <div className="post_div_top flex flex-col gap-1 w-fit justify-center ">
+        <div className="header_pos w-fit">
+          <div className="info_post flex items-center gap-2">
             <Image
               src="/assets/profilibg.jpg"
               alt="Profile picture"
               onClick={handleProfileClick}
-              className="profile_pic"
+              className="profile_pic rounded-full"
 
               width={50}
               height={50}
             />
-            <h3 className="user_name_post">
-              Nicolas Cor Faye
-            </h3>
-            <span className="username_post">
-              nixa
-            </span>
+            <div className='flex flex-col'>
+
+              <div className='flex gap-2'>
+                <h3 className="user_name_post break-words max-w-[600px] w-[80%] font-bold">
+                  Nicolas Cor Faye
+                </h3>
+                <span className="username_post italic text-primary">
+                  @nixa
+                </span>
+              </div>
+              <p className="title_post  break-words w-[100%] md:max-w-[300px] max-w-[300px] lg:max-w-[600px]">
+                Ceci est mon titre </p>
+            </div>
           </div>
-          <h4 className="title_post">Ceci est mon titre</h4>
-          <h4 className="title_post">Ceci est ma description</h4>
         </div>
         <Image
           src={`/assets/imagepost.jpg`}
           alt="Post image"
-          className="img_post"
-          width={300}
+          className="img_post w-fit"
+          width={700}
           height={200}
         />
 
       </div>
-        {/* <IoIosHeartDislike /> */}
-      <div className="footer_post">
-        <button className="like_post" onClick={handleLikeClick}>
+      {/* <IoIosHeartDislike /> */}
+      <div className="footer_post w-fit flex gap-4">
+        <button className="like_post flex gap-1 items-center" onClick={handleLikeClick}>
           <Image
             src='/assets/icons/likew.png'
-
             alt="Like icon"
-            width={20}
-            height={20}
+            width={40}
+            height={40}
           />
           <span>190</span>
         </button>
-        <button className="dislike_post" onClick={handleDislikeClick}>
+        <button className="dislike_post flex gap-1 items-center" onClick={handleDislikeClick}>
           <Image
             src='/assets/icons/dislikew.png'
 
             alt="Dislike icon"
-            width={20}
-            height={20}
+            width={40}
+            height={40}
           />
           <span>20</span>
         </button>
-        <button className="comment_post" onClick={handleCommentClick}>
+        <button className="comment_post flex gap-1 items-center" onClick={handleCommentClick}>
           <Image
             src="/assets/icons/comment.png"
             alt="Comment icon"
-            width={20}
-            height={20}
+            width={40}
+            height={40}
           />
           <span>3</span>
         </button>
       </div>
-    </div>
+    </div >
   );
 };
 

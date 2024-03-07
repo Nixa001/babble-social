@@ -66,7 +66,7 @@ const followerHearder = (text, state, activeTab, handleTabClick) => {
 const displayFollowers = (data) => {
     return data.map((follower) => {
         return (
-            <div key={follower.name} className="shadow flex items-center cursor-pointer justify-start gap-2 mt-1 mb-3 p-2 ">
+            <div key={follower.name} className=" hover:opacity-60 flex items-center cursor-pointer justify-start gap-2 mt-1 mb-3 p-2 ">
                 {/* <FaUserGroup className='border rounded-full p-2 w-10 h-10' /> */}
 
                 <Image

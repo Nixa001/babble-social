@@ -6,95 +6,39 @@ import { FaImage } from "react-icons/fa6";
 export const postForm = () => {
     return (
         <form
-            className="flex flex-col gap-1  ml-2 mr-2"
+            className="flex flex-col w-[75%] gap-1  "
             action=""
             method="POST"
             data-form="post"
             encType="multipart/form-data"
         >
-            <input
-                className="border focus:outline-none focus:border  text-bg  rounded-md p-1
-        focus:ring-1 focus:border-primary focus:ring-primary"
+            <TextArea
+                label="Post Title"
                 name="title_post"
-                placeholder="Let's post something  ..."
+                placeholder="Let's post something"
                 required
-                defaultValue={""}
-            />
-            <textarea
-                className="resize-none border focus:outline-none focus:border bg-transparent text-text rounded-md p-1
-        focus:ring-1 focus:border-primary focus:ring-primary"
-                name="title_post"
-                placeholder="Description"
-                required
-                defaultValue={""}
+                defaultValue=""
+                onChange={(event) => console.log(event.target.value)} // Handle changes
             />
             <div className="flex items-start justify-end">
-                <div className="flex gap-1 mr-2 mt-1 text-sm">
-                    <div>
-                        <input
-                            type="checkbox"
-                            id="check"
-                            defaultValue="technologie"
-                            name="techno"
-                        />
-                        <label htmlFor="check">Tech</label>
-                    </div>
-                    <div>
-                        <input
-                            type="checkbox"
-                            id="checks"
-                            defaultValue="sport"
-                            name="sport"
-                        />
-                        <label htmlFor="checks">Sport</label>
-                    </div>
-                    <div>
-                        <input
-                            type="checkbox"
-                            id="checkS"
-                            defaultValue="sante"
-                            name="sante"
-                        />
-                        <label htmlFor="checkS">Sante</label>
-                    </div>
-                    <div>
-                        <input
-                            type="checkbox"
-                            id="checkM"
-                            defaultValue="musique"
-                            name="music"
-                        />
-                        <label htmlFor="checkM">Musique</label>
-                    </div>
-                    <div>
-                        <input
-                            type="checkbox"
-                            id="checkN"
-                            defaultValue="news"
-                            name="news"
-                        />
-                        <label htmlFor="checkN">News</label>
-                    </div>
-                    <div>
-                        <input
-                            type="checkbox"
-                            id="checko"
-                            defaultValue="other"
-                            name="other"
-                            defaultChecked=""
-                        />
-                        <label htmlFor="checko">Other</label>
-                    </div>
+                <div className="flex gap-1 flex-wrap mr-2 mt-1 text-sm">
+                    <Checkbox label="Tech" value="technologie" name="techno" />
+                    <Checkbox label="Sport" value="sport" name="sport" />
+                    <Checkbox label="Santé" value="sante" name="sante" />
+                    <Checkbox label="Musique" value="musique" name="music" />
+                    <Checkbox label="News" value="news" name="news" />
+                    <Checkbox label="Other" value="other" name="other" defaultChecked />
+
                 </div>
 
                 {PrivacySelect()}
 
                 <label htmlFor="image_post" className=" cursor-pointer mr-2">
-                    <FaImage className="w-8 h-8 " />
+                    <FaImage className="w-7 h-7 " />
                 </label>
                 <input type="file" name="image_post" id="image_post" hidden />
                 <input
-                    className="bg-second text-lg font-bold pl-3 pr-3 rounded-sm cursor-pointer hover:bg-primary"
+                    className="bg-second text-lg font-bold pl-3 pr-3 rounded-lg cursor-pointer hover:bg-primary"
                     type="submit"
                     value="Post"
                 />
@@ -155,4 +99,39 @@ function PrivacySelect() {
     );
 }
 
+
+const followers = [
+    { name: 'Vindour', src: "/assets/profilibg.jpg", alt: "profil" },
+    { name: 'ibg', src: "/assets/profilibg.jpg", alt: "profil", },
+    { name: 'dicks', src: "/assets/profilibg.jpg", alt: "profil", },
+    { name: 'Vindcour', src: "/assets/profilibg.jpg", alt: "profil" },
+    { name: 'ibgs', src: "/assets/profilibg.jpg", alt: "profil", },
+    { name: 'dickss', src: "/assets/profilibg.jpg", alt: "profil", },
+];
+
+export function TextArea({ label, name, placeholder, required, defaultValue, onChange }) {
+    return (
+        <div className="mb-2">
+            {/* {<label className="block text-sm font-medium text-gray-700 mb-1" htmlFor={name}>{label}</label>} */}
+            <textarea
+                className="resize-none w-[100%] h-10 border border-gray-500 focus:outline-none focus:border bg-transparent text-text rounded-md p-1 focus:ring-1 focus:border-primary focus:ring-primary"
+                name={name}
+                placeholder={placeholder}
+                required={required}
+                defaultValue={defaultValue}
+                onChange={onChange}
+            />
+        </div>
+    );
+};
+
+
+export function Checkbox({ label, value, name, defaultChecked = false }) {
+    return (
+        <div className="checkbox-container">
+            <input type="checkbox" id={label} value={value} name={name} defaultChecked={defaultChecked} />
+            <label htmlFor={label}>{label}</label>
+        </div>
+    );
+}
 

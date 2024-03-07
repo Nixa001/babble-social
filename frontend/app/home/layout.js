@@ -5,17 +5,18 @@ import { displayFollowers } from "./utils";
 
 export default function Layout({ children }) {
   return (
-    <div className="h-full">
+    <div className="h-screen">
       <div className="fixed">
         <Header />
       </div>
-      <div className="md:flex md:flex-row flex flex-col-reverse justify-between h-screen md:justify-between md:h-full">
+      <div className="md:flex md:flex-row flex flex-col-reverse 
+      justify-between h-[99%] md:justify-between md:h-full  overflow-hidden">
 
         <div className="md:mt-20">
           <Navbar />
         </div>
 
-        <div className="mt-20">
+        <div className="mt-20 overflow-x-hidden overflow-y-scroll pl-3 mr-3">
           {children}
         </div>
 

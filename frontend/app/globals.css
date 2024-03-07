@@ -13,8 +13,8 @@
   --navbar_color: var(--primary_color); */
 
 
-  --primary_color: #00bd97;
-  --second_color: #1bc4f2;
+  --primary_color: #1bc4f2;
+  --second_color: #00bd97;
   --bg_color: #24232d;
   --border: #24232d7a;
   --text_color: #fff;
@@ -77,7 +77,36 @@ body {
   border-radius: 0px 10px 0px 0px;
 }
 
+.navbarh::before {
+  display: none;
+}
+
 .isActive {
   background: var(--primary_color);
   color: var(--text_color);
+}
+
+
+/* POSTDIV */
+.img_post {
+  width: 100%;
+}
+
+.checkbox-container {
+  @apply flex items-center gap-1 cursor-pointer;
+  /* Combine Tailwind classes */
+}
+
+.checkbox-container input[type="checkbox"] {
+  @apply appearance-none rounded-full w-2 h-2 border border-gray-300 bg-white;
+}
+
+.checkbox-container input[type="checkbox"]:checked {
+  @apply bg-primary border-transparent;
+  /* Checked state styles */
+}
+
+.checkbox-container label {
+  @apply mr-2 text-sm cursor-pointer;
+  /* Style for label text */
 }

@@ -26,8 +26,7 @@ function Navbar() {
     // const location = useLocation();
     const pathname = usePathname();
     return (
-        <div className='shadowL md:navbar xl:before:w-72 before:w-48 z-0 xl:w-72 md:block md:h-[700px] flex-col bg-text
-         '>
+        <div className='shadowL  md:navbar xl:before:w-72 before:w-48 z-0 xl:w-72 md:block md:h-[700px] flex-col'>
             <div className='md:flex hidden relative z-0 flex-col w-full h-52 items-center justify-center'>
                 <Image
                     src="/assets/profil.jpg" alt="logo"
@@ -47,11 +46,11 @@ function Navbar() {
 
                     return (
                         <Link key={link.name} href={link.href}
-                            className={`shadowL flex  h-[60px] items-center md:justify-start justify-center xl:w-72 md:w-48 gap-2 rounded-md mt-1
+                            className={` flex  h-[60px] items-center md:justify-start justify-center xl:w-72 md:w-48 gap-2 rounded-md mt-1
                          font-bold hover:bg-primary hover:text-text md:p-2 w-16 md:px-3 ${isActive ? 'isActive' : ''}`}
                         >
-                            <LinkIcon className="xl:text-5xl text-3xl" />
-                            <p className="xl:text-xl hidden md:block">{link.name}</p>
+                            <LinkIcon className="xl:text-5xl text-2xl" />
+                            <p className="xl:text-lg hidden md:block">{link.name}</p>
                         </Link >
                     );
                 })}
