@@ -39,7 +39,7 @@ function Sidebar() {
                 {followerHearder("Followers", "followers", activeTab, handleTabClick)}
                 {followerHearder("Community", "group", activeTab, handleTabClick)}
             </div>
-            <div className="overflow-scroll h-1/2">
+            <div className="overflow-y-scroll chrome overflow-x-hidden h-1/2">
                 {displayTable()}
             </div>
             <hr />
