@@ -6,7 +6,7 @@ import { FaImage } from "react-icons/fa6";
 export const postForm = () => {
     return (
         <form
-            className="flex flex-col w-[75%] gap-1  "
+            className="flex flex-col lg:w-[100%] 2xl-[80%] xl:w-[75%] w-[80%]  gap-1  "
             action=""
             method="POST"
             data-form="post"
@@ -114,7 +114,7 @@ export function TextArea({ label, name, placeholder, required, defaultValue, onC
         <div className="mb-2">
             {/* {<label className="block text-sm font-medium text-gray-700 mb-1" htmlFor={name}>{label}</label>} */}
             <textarea
-                className="resize-none w-[100%] h-10 border border-gray-500 focus:outline-none focus:border bg-transparent text-text rounded-md p-1 focus:ring-1 focus:border-primary focus:ring-primary"
+                className="resize-none w-[100%] h-10 border border-gray-700 focus:outline-none focus:border bg-transparent text-text rounded-md p-1 focus:ring-1 focus:border-primary focus:ring-primary"
                 name={name}
                 placeholder={placeholder}
                 required={required}

@@ -16,7 +16,7 @@ export default function Layout({ children }) {
           <Navbar />
         </div>
 
-        <div className="mt-20 overflow-x-hidden overflow-y-scroll pl-3 mr-3">
+        <div className="mt-20 overflow-x-hidden overflow-y-scroll chrome pl-3 mr-3">
           {children}
         </div>
 
