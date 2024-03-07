@@ -12,6 +12,16 @@ type Database struct {
 	*sql.DB
 }
 
+func NewDatabase() (*Database, error) {
+	db, err := sql.Open("sqlite3", "./social_network.db")
+	if err != nil {
+		return nil, err
+	}
+	return &Database{db}, nil
+}
+
+var DB *Database
+
 // Insert insère des données dans la table spécifiée en utilisant une requête préparée.
 // function avec value receveur de type Database
 func (d *Database) Insert(table string, data interface{}) error {
