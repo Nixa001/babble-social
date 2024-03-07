@@ -31,8 +31,8 @@ func UpdateQuery(table string, object interface{}, where WhereOption) (string, [
 	toMap := make(map[string]interface{})
 	json.Unmarshal(toJson, &toMap)
 
-	setString, setValues := getMapStringWithPlaceholders(toMap)
-	whToString, whereValues := getWhereOptionsString(where)
+	setString, setValues := GetMapStringWithPlaceholders(toMap)
+	whToString, whereValues := GetWhereOptionsString(where)
 
 	values := append(setValues, whereValues...)
 	query := fmt.Sprintf("UPDATE %s SET %s WHERE %s;", table, setString, whToString)
@@ -42,7 +42,7 @@ func UpdateQuery(table string, object interface{}, where WhereOption) (string, [
 
 // DeleteQuery génère une requête préparée pour supprimer des lignes d'une table avec des conditions WHERE.
 func DeleteQuery(table string, where WhereOption) (string, []interface{}) {
-	whToString, values := getWhereOptionsString(where)
+	whToString, values := GetWhereOptionsString(where)
 
 	query := fmt.Sprintf("DELETE FROM %v WHERE %v;", table, whToString)
 
@@ -51,7 +51,7 @@ func DeleteQuery(table string, where WhereOption) (string, []interface{}) {
 
 // SelectOneFrom génère une requête préparée pour sélectionner une ligne d'une table avec des conditions WHERE.
 func SelectOneFrom(table string, where WhereOption) (string, []interface{}) {
-	whToString, values := getWhereOptionsString(where)
+	whToString, values := GetWhereOptionsString(where)
 
 	query := fmt.Sprintf("SELECT * FROM %v WHERE %v;", table, whToString)
 
@@ -79,7 +79,7 @@ func SelectAllFrom(table string, orderby string, limit []int) (string, []interfa
 
 // SelectAllWhere génère une requête préparée pour sélectionner toutes les lignes d'une table avec des conditions WHERE, un tri et une limitation.
 func SelectAllWhere(table string, where WhereOption, orderby string, limit []int) (string, []interface{}) {
-	whToString, values := getWhereOptionsString(where)
+	whToString, values := GetWhereOptionsString(where)
 
 	var order string
 	if orderby != "" {
@@ -109,7 +109,7 @@ func SelectWithJoinQuery(primaryTable string, joinConditions []JoinCondition, wh
 
 	joinClausesString := strings.Join(joinClauses, " ")
 
-	whToString, whereValues := getWhereOptionsString(where)
+	whToString, whereValues := GetWhereOptionsString(where)
 	values = append(values, whereValues...)
 
 	var order string
@@ -130,20 +130,13 @@ func SelectWithJoinQuery(primaryTable string, joinConditions []JoinCondition, wh
 
 // GetCountQuery génère une requête préparée pour compter les lignes dans une table qui correspondent aux conditions spécifiées.
 func GetCountQuery(table string, w WhereOption) (string, []interface{}) {
-	whToString, values := getWhereOptionsString(w)
-	query := fmt.Sprintf("SELECT COUNT(*) FROM %v WHERE %v;", table, whToString)
-	return query, values
-}
-
-// GetRowIndexQuery génère une requête préparée pour compter les lignes dans une table qui correspondent aux conditions spécifiées.
-func GetRowIndexQuery(table string, w WhereOption) (string, []interface{}) {
-	whToString, values := getWhereOptionsString(w)
+	whToString, values := GetWhereOptionsString(w)
 	query := fmt.Sprintf("SELECT COUNT(*) FROM %v WHERE %v;", table, whToString)
 	return query, values
 }
 
 // getWhereOptionsString génère une clause WHERE dans une requête préparée.
-func getWhereOptionsString(w WhereOption) (string, []interface{}) {
+func GetWhereOptionsString(w WhereOption) (string, []interface{}) {
 	var res string
 	var values []interface{}
 
@@ -157,7 +150,7 @@ func getWhereOptionsString(w WhereOption) (string, []interface{}) {
 	return res, values
 }
 
-func getColumnsValues(data map[string]interface{}) (string, []interface{}) {
+func GetColumnsValues(data map[string]interface{}) (string, []interface{}) {
 	var columns []string
 	var values []interface{}
 
@@ -172,7 +165,7 @@ func getColumnsValues(data map[string]interface{}) (string, []interface{}) {
 }
 
 // getMapStringWithPlaceholders génère une chaîne de mise à jour avec des marqueurs de position pour les valeurs.
-func getMapStringWithPlaceholders(data map[string]interface{}) (string, []interface{}) {
+func GetMapStringWithPlaceholders(data map[string]interface{}) (string, []interface{}) {
 	var setStrings []string
 	var values []interface{}
 
@@ -186,7 +179,7 @@ func getMapStringWithPlaceholders(data map[string]interface{}) (string, []interf
 }
 
 // placeholders génère une chaîne contenant des marqueurs de position pour les paramètres d'une requête préparée.
-func placeholders(count int) string {
+func Placeholders(count int) string {
 	if count < 1 {
 		return ""
 	}
@@ -203,8 +196,9 @@ func InsertQuery(table string, object interface{}) (string, []interface{}, error
 	}
 	toMap := make(map[string]interface{})
 	json.Unmarshal(toJson, &toMap)
-	columns, values := getColumnsValues(toMap)
-
-	query := fmt.Sprintf(`INSERT INTO %v (%v) VALUES (%v);`, table, columns, placeholders(len(values)))
+	columns, values := GetColumnsValues(toMap)
+	fmt.Println(columns)
+	fmt.Println(values)
+	query := fmt.Sprintf(`INSERT INTO %v (%v) VALUES (%v);`, table, columns, Placeholders(len(values)))
 	return query, values, nil
 }
