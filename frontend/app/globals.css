@@ -94,7 +94,6 @@ body {
 
 .checkbox-container {
   @apply flex items-center gap-1 cursor-pointer;
-  /* Combine Tailwind classes */
 }
 
 .checkbox-container input[type="checkbox"] {
@@ -103,10 +102,9 @@ body {
 
 .checkbox-container input[type="checkbox"]:checked {
   @apply bg-primary border-transparent;
-  /* Checked state styles */
 }
 
 .checkbox-container label {
-  @apply mr-2 text-sm cursor-pointer;
-  /* Style for label text */
+  @apply mr-2 cursor-pointer;
+  font-size: 11px;
 }

@@ -6,9 +6,9 @@ import { useState } from 'react';
 
 
 const followers = [
-    { name: 'Vindour', src: "/assets/profilibg.jpg", alt: "profil" },
-    { name: 'ibg', src: "/assets/profilibg.jpg", alt: "profil", },
-    { name: 'dicks', src: "/assets/profilibg.jpg", alt: "profil", },
+    { name: 'Vincent Ndour', src: "/assets/profilibg.jpg", alt: "profil" },
+    { name: 'Ibrahima Gueye', src: "/assets/profilibg.jpg", alt: "profil", },
+    { name: 'Madike Yade', src: "/assets/profilibg.jpg", alt: "profil", },
 ];
 const groups = [
     { name: 'Call of duty', src: "/assets/profilibg.jpg", alt: "profil", },

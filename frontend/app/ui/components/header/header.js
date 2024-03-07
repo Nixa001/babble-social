@@ -16,7 +16,7 @@ export function Header() {
           className=""
         />
       </Link>
-      <div className="flex xl:w-[650px] sm:w-96 h-10 w-40 border border-gray-500 items-center gap-x-2  color-black p-2 rounded-md">
+      <div className="flex xl:w-[650px] sm:w-96 h-10 w-40 border border-gray-700 items-center gap-x-2  color-black p-2 rounded-md">
         <i className="">
           <FaSearch className=" text-2xl" />
         </i>
