@@ -1,18 +1,25 @@
 package repositories
 
-import "backend/models"
+import (
+	db "backend/database"
+	opt "backend/database/operators"
+	q "backend/database/query"
+	"backend/models"
+	"database/sql"
+	"fmt"
+)
 
 type SessionRepository struct {
 	BaseRepo
 }
 
 func (s *SessionRepository) init() {
-	// s.DB =
+	s.DB = db.DB
 	s.TableName = "sessions"
 }
 
 func (s *SessionRepository) CreateSession(session *models.Session) error {
-	_, err := s.Db.Exec("INSERT INTO sessions (token, user_id, expiration) VALUES ($1, $2, $3)", session.Token, session.UserId, session.ExpirationDate)
+	err := s.DB.Insert(s.TableName, session)
 	if err != nil {
 		return err
 	}
@@ -21,24 +28,41 @@ func (s *SessionRepository) CreateSession(session *models.Session) error {
 
 func (s *SessionRepository) GetSession(token string) (*models.Session, error) {
 	var session models.Session
-	err := s.Db.QueryRow("SELECT token, user_id, expiration FROM sessions WHERE token = $1", token).Scan(&session.Token, &session.UserId, &session.ExpirationDate)
+	row, err := s.DB.GetOneForm(s.TableName, q.WhereOption{"token": opt.Equals(token)})
 	if err != nil {
-		return nil, err
+		return &session, err
+	}
+	err = row.Scan(&session.Token, &session.ExpirationDate, &session.UserId)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return &session, fmt.Errorf("no session found with this userId")
+		}
+		return &session, err
 	}
 	return &session, nil
 }
 
-func (s *SessionRepository) GetSessionByUserId(userId string) (*models.Session, error) {
+func (s *SessionRepository) GetSessionByUserId(userId string) (sessions []models.Session, err error) {
 	var session models.Session
-	err := s.Db.QueryRow("SELECT token, user_id, expiration FROM sessions WHERE user_id = $1", userId).Scan(&session.Token, &session.UserId, &session.ExpirationDate)
+	rows, err := s.DB.GetAllFrom(s.TableName, q.WhereOption{"user_id": opt.Equals(userId)}, session.ExpirationDate, nil)
 	if err != nil {
 		return nil, err
 	}
-	return &session, nil
+	for rows.Next() {
+		err = rows.Scan(&session.Token, &session.ExpirationDate, &session.UserId)
+		sessions = append(sessions, session)
+	}
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return nil, fmt.Errorf("no session found with this userId")
+		}
+		return nil, err
+	}
+	return sessions, nil
 }
 
-func (s *SessionRepository) DeleteSession(id string) error {
-	_, err := s.Db.Exec("DELETE FROM sessions WHERE id = $1", id)
+func (s *SessionRepository) DeleteSession(session *models.Session) error {
+	err := s.DB.Delete(s.TableName, q.WhereOption{"token": opt.Equals(session.Token)})
 	if err != nil {
 		return err
 	}
@@ -46,7 +70,7 @@ func (s *SessionRepository) DeleteSession(id string) error {
 }
 
 func (s *SessionRepository) UpdateSession(session *models.Session) error {
-	_, err := s.Db.Exec("UPDATE sessions SET expiration= $1, user_id = $2 WHERE token = $3", session.ExpirationDate, session.UserId, session.Token)
+	err := s.DB.Update(s.TableName, session, q.WhereOption{"token": opt.Equals(session.Token)})
 	if err != nil {
 		return err
 	}

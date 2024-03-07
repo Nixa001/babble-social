@@ -1,18 +1,24 @@
 package repositories
 
-import "backend/models"
+import (
+	db "backend/database"
+	opt "backend/database/operators"
+	q "backend/database/query"
+	"backend/models"
+	"database/sql"
+)
 
 type UserRepository struct {
 	BaseRepo
 }
 
 func (u *UserRepository) init() {
+	u.DB = db.DB
 	u.TableName = "users"
 }
 
 func (u *UserRepository) CreateUser(user *models.User) error {
-	_, err := u.Db.Exec("INSERT INTO users (first_name, last_name, user_name, gender, email, password, user_type, birth_date, avatar, about_me) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10)", user.Firstname, user.Lastname, user.Username, user.Gender, user.Email, user.Password, user.UserType, user.BirthDate, user.Avatar, user.AboutMe)
-
+	err := u.DB.Insert(u.TableName, user)
 	if err != nil {
 		return err
 	}
@@ -21,50 +27,56 @@ func (u *UserRepository) CreateUser(user *models.User) error {
 
 func (u *UserRepository) GetUserById(id int) (*models.User, error) {
 	var user models.User
-	err := u.Db.QueryRow("SELECT id, first_name, last_name, user_name, gender, email, password, user_type, birth_date, avatar, about_me FROM users WHERE id = $1", id).Scan(&user.ID, &user.Firstname, &user.Lastname, &user.Username, &user.Gender, &user.Email, &user.Password, &user.UserType, &user.BirthDate, &user.Avatar, &user.AboutMe)
+	row, err := u.DB.GetOneForm(u.TableName, q.WhereOption{"id": opt.Equals(id)})
+	if err == sql.ErrNoRows {
+		return &models.User{}, err
+	}
+	err = row.Scan(&user.ID, &user.Firstname, &user.Lastname, &user.Username, &user.Gender, &user.Email, &user.Password, &user.UserType, &user.BirthDate, &user.Avatar, &user.AboutMe)
 	if err != nil {
-		return nil, err
+		if err == sql.ErrNoRows {
+			return &models.User{}, err
+		}
+		return &models.User{}, err
 	}
 	return &user, nil
 }
 
 func (u *UserRepository) GetUserByEmail(email string) (*models.User, error) {
 	var user models.User
-	err := u.Db.QueryRow("SELECT id, first_name, last_name, user_name, gender, email, password, user_type, birth_date, avatar, about_me FROM users WHERE email = $1", email).Scan(&user.ID, &user.Firstname, &user.Lastname, &user.Username, &user.Gender, &user.Email, &user.Password, &user.UserType, &user.BirthDate, &user.Avatar, &user.AboutMe)
+	row, err := u.DB.GetOneForm(u.TableName, q.WhereOption{"email": opt.Equals(email)})
 	if err != nil {
-		return nil, err
+		return &models.User{}, err
+	}
+	err = row.Scan(user.ID, &user.Firstname, &user.Lastname, &user.Username, &user.Gender, &user.Email, &user.Password, &user.UserType, &user.BirthDate, &user.Avatar, &user.AboutMe)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return &models.User{}, err
+		}
+		return &models.User{}, err
 	}
 	return &user, nil
 }
 
 func (u *UserRepository) UpdateUser(user *models.User) error {
-	_, err := u.Db.Exec("UPDATE users SET first_name = $1, last_name = $2, user_name= $3, gender= $4, email= $5, password= $6, user_type= $7, birth_date= $8, avatar= $9, about_me= $10 WHERE id = $11", user.Firstname, user.Lastname, user.Username, user.Gender, user.Email, user.Password, user.UserType, user.BirthDate, user.Avatar, user.AboutMe, user.ID)
-	if err != nil {
-		return err
-	}
-	return nil
+	err := u.DB.Update(u.TableName, user, q.WhereOption{"id": opt.Equals(user.ID)})
+	return err
 }
 
-func (u *UserRepository) DeleteUser(id int) error {
-	_, err := u.Db.Exec("DELETE FROM users WHERE id = $1", id)
-	if err != nil {
-		return err
-	}
-	return nil
+func (u *UserRepository) DeleteUser(user *models.User) error {
+	err := u.DB.Delete(u.TableName, q.WhereOption{"id": opt.Equals(user.ID)})
+	return err
 }
 
-func (u *UserRepository) GetAllUsers() ([]models.User, error) {
-	rows, err := u.Db.Query("SELECT id, first_name, last_name, user_name, gender, email, password, user_type, birth_date, avatar, about_me FROM users")
+func (u *UserRepository) GetAllUsers() (users []models.User, err error) {
+	var user models.User
+	rows, err := u.DB.GetAllFrom(u.TableName, nil, "email", nil)
 	if err != nil {
-		return nil, err
+		return users, err
 	}
-	defer rows.Close()
-	var users []models.User
 	for rows.Next() {
-		var user models.User
 		err := rows.Scan(&user.ID, &user.Firstname, &user.Lastname, &user.Username, &user.Gender, &user.Email, &user.Password, &user.UserType, &user.BirthDate, &user.Avatar, &user.AboutMe)
 		if err != nil {
-			return nil, err
+			return users, err
 		}
 		users = append(users, user)
 	}

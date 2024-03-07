@@ -1,9 +1,11 @@
 package repositories
 
-import "database/sql"
+import (
+	db "backend/database"
+)
 
 type BaseRepo struct {
-	Db        *sql.DB
+	DB        *db.Database
 	TableName string
 }
 
