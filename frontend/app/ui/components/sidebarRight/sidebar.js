@@ -43,8 +43,8 @@ function Sidebar() {
                 {displayTable()}
             </div>
             <hr />
-            <h3 className='font-bold p-2 rounded-sm text-center '>
-                All users
+            <h3 className='font-bold p-2 rounded-sm text-center underline '>
+                Friends
             </h3>
             <div className="online"></div>
         </div>
