@@ -47,7 +47,7 @@ function Navbar() {
                     return (
                         <Link key={link.name} href={link.href}
                             className={` flex  h-[60px] items-center md:justify-start justify-center xl:w-72 md:w-48 gap-2 rounded-md mt-1
-                         font-bold hover:bg-primary hover:text-text md:p-2 w-16 md:px-3 ${isActive ? 'isActive' : ''}`}
+                         font-bold  hover:text-primary md:p-2 w-16 md:px-3 ${isActive ? 'isActive' : ''}`}
                         >
                             <LinkIcon className="xl:text-5xl text-2xl" />
                             <p className="xl:text-lg hidden md:block">{link.name}</p>

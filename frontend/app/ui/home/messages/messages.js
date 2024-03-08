@@ -1,11 +1,26 @@
 'use client'
 import Image from 'next/image';
 import { IoSend } from "react-icons/io5";
+import { displayFollowers, followerHearder } from '../../components/sidebarRight/sidebar';
+import { useState } from 'react';
 
 const Messages = () => {
+    const [activeTab, setActiveTab] = useState("users");
+    const handleTabClick = (tab) => {
+        setActiveTab(tab);
+    };
 
     const handleSendMessage = (e) => {
         e.preventDefault()
+    };
+    const displayTable = () => {
+        if (activeTab === "users") {
+            return displayFollowers(users)
+                ;
+        } else if (activeTab === "group") {
+            return displayFollowers(groups);
+        }
+        return null;
     };
 
     return (
@@ -16,14 +31,17 @@ const Messages = () => {
             <div className="w-[100%] sm:w-[30%] h-[100%]  ">
                 <div className="flex flex-col items-start justify-start border border-gray-700 h-full sm:h-[700px] overflow-hidden overflow-y-scroll">
                     {/* <div className='flex flex-col w-full bg-black justify-center'> */}
-                    <h2 className="text-2xl mb-4 text-center w-full  font-bold sm:block underline hidden">Messages</h2>
+                    <h2 className="text-2xl mb-4 text-center w-full  font-bold sm:block hidden">Messages</h2>
                     <div className='flex gap-2 justify-evenly w-full '>
-                        <h2 className="text-xl font-semibold cursor-pointer hover:underline  mb-4">Users</h2>
-                        <h2 className="text-xl font-semibold cursor-pointer hover:underline mb-4">Groups</h2>
+
+                        {followerHearder("Users", "users", activeTab, handleTabClick)}
+                        {followerHearder("Community", "group", activeTab, handleTabClick)}
+                        {/* <h2 className="text-xl font-semibold cursor-pointer hover:underline  mb-4">Users</h2>
+                        <h2 className="text-xl font-semibold cursor-pointer hover:underline mb-4">Groups</h2> */}
                     </div>
                     {/* </div> */}
                     <ul className="list-none w-[100%] lg:px-5 md:px-0 px-5 sm:block flex overflow-y-scroll">
-                        {users.map((user) => (
+                        {/* {users.map((user) => (
                             <li key={user.id} className="mb-2 hover:opacity-70 cursor-pointer ">
                                 <div className="flex flex-col flex-nowrap w-full items-center sm:flex-row ">
                                     <Image
@@ -36,7 +54,10 @@ const Messages = () => {
                                     <span className="font-medium ml-2 text-sm lg:text-md w-full nowrap">{user.username}</span>
                                 </div>
                             </li>
-                        ))}
+                        ))} */}
+
+
+                        {displayTable()}
                     </ul>
                 </div>
             </div>
@@ -55,10 +76,10 @@ const Messages = () => {
                         />
                         <div className='flex gap-2 items-center'>
                             <h3 className="user_name_post break-words max-w-[600px] w-[80%] font-bold">
-                                Nicolas Faye
+                                Mamour Drame
                             </h3>
                             <span className="username_post italic text-primary">
-                                @Nixa
+                                @Darze
                             </span>
                         </div>
                     </div>
@@ -102,21 +123,26 @@ const Messages = () => {
 
 export default Messages;
 const users = [
-    { id: 1, username: 'Mamour Drame', profilePicture: '/assets/profilibg.jpg' },
-    { id: 2, username: 'Edouard Mendy', profilePicture: '/assets/profilibg.jpg' },
+    { id: 1, name: 'Mamour Drame', src: '/assets/profilibg.jpg', alt: "profil" },
+    { id: 2, name: 'Edouard Mendy', src: '/assets/profilibg.jpg', alt: "profil" },
+    { id: 3, name: 'Vincent Ndour', src: "/assets/profilibg.jpg", alt: "profil" },
+    { id: 4, name: 'Ibrahima Gueye', src: "/assets/profilibg.jpg", alt: "profil", },
+    { id: 5, name: 'Madike Yade', src: "/assets/profilibg.jpg", alt: "profil", },
 ];
 
 const messages = [
     {
-        id: 1,
-        sender: 'Mamou Drame',
-        content: 'Hello everyone!',
-        timestamp: '2023-11-16T12:00:00.000Z',
+        id: 1, sender: 'Mamou Drame', content: 'Hello everyone!', timestamp: '2023-11-16T12:00:00.000Z',
     },
     {
-        id: 2,
-        sender: 'Edouard Mendy',
-        content: 'How are you all doing today?',
-        timestamp: '2023-11-16T12:01:00.000Z',
+        id: 2, sender: 'Nicolas Faye', content: 'How are you all doing today?', timestamp: '2023-11-16T12:01:00.000Z',
     },
 ];
+
+
+const groups = [
+    { name: 'Call of duty', src: "/assets/profilibg.jpg", alt: "profil", },
+    { name: 'Farcry 6 Team', src: "/assets/profilibg.jpg", alt: "profil" },
+    { name: 'EA Fooball 24', src: "/assets/profilibg.jpg", alt: "profil", },
+];
+
