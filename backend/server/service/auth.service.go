@@ -4,6 +4,8 @@ import (
 	"backend/models"
 	r "backend/server/repositories"
 	"fmt"
+	"net/http"
+	"strings"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -35,11 +37,19 @@ func (a *AuthService) CreateUser(user *models.User) error {
 func (a *AuthService) CheckCredentials(email, password string) (*models.User, error) {
 	user, err := a.UserRepo.GetUserByEmail(email)
 	if err != nil {
-		return &models.User{}, fmt.Errorf("Invalid Credentials")
+		return &models.User{}, fmt.Errorf("invalid credentials")
 	}
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 	if err != nil {
-		return &models.User{}, fmt.Errorf("Invalid Credentials")
+		return &models.User{}, fmt.Errorf("invalid credentials")
 	}
 	return user, nil
+}
+
+func (a *AuthService) VerifyToken(r *http.Request) (session models.Session, err error) {
+	token := r.Header.Get("Authorization")
+	if strings.TrimSpace(token) == "" {
+		return models.Session{}, fmt.Errorf("no token provided")
+	}
+	return session, nil
 }
