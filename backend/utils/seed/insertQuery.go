@@ -61,12 +61,12 @@ func InsertData(db *sql.DB) {
 	//post user
 
 	_, err = db.Exec(`
-		INSERT INTO posts (post_title, post_content, post_media, post_date, user_id, group_id, type)
-		VALUES ('First Post', 'This is the content of the first post.', '/media/first_post.jpg', '2024-03-05', 1, 1, 'private');
-		INSERT INTO posts (post_title, post_content, post_media, post_date, user_id, group_id, type)
-		VALUES ('Second Post', 'This is the content of the second post.', '/media/second_post.jpg', '2024-03-05', 2, 2, 'public');
-		INSERT INTO posts (post_title, post_content, post_media, post_date, user_id, group_id, type)
-		VALUES ('Third Post', 'This is the content of the third post.', '/media/third_post.jpg', '2024-03-05', 2, 1, 'private');
+		INSERT INTO posts (post_content, post_media, post_date, user_id, group_id, type)
+		VALUES ('This is the content of the first post.', '/media/first_post.jpg', '2024-03-05', 1, 1, 'private');
+		INSERT INTO posts (post_content, post_media, post_date, user_id, group_id, type)
+		VALUES ('This is the content of the second post.', '/media/second_post.jpg', '2024-03-05', 2, 2, 'public');
+		INSERT INTO posts (post_content, post_media, post_date, user_id, group_id, type)
+		VALUES ('This is the content of the third post.', '/media/third_post.jpg', '2024-03-05', 2, 1, 'private');
 	`)
 	if err != nil {
 		log.Fatal("Insert into posts", err.Error())
@@ -87,19 +87,19 @@ func InsertData(db *sql.DB) {
 	// 	log.Fatal("Insert into postCategory", err.Error())
 	// }
 
-	// insert into likePost
+	// insert into postReact
 	_, err = db.Exec(`
-        INSERT INTO likePost (post_id, user_id, is_like)
+        INSERT INTO postReact (post_id, user_id, is_like)
         VALUES (1, 1, true);
-        INSERT INTO likePost (post_id, user_id, is_like)
+        INSERT INTO postReact (post_id, user_id, is_like)
         VALUES (1, 2, true);
-        INSERT INTO likePost (post_id, user_id, is_like)
+        INSERT INTO postReact (post_id, user_id, is_like)
         VALUES (2, 1, true);
-        INSERT INTO likePost (post_id, user_id, is_like)
+        INSERT INTO postReact (post_id, user_id, is_like)
         VALUES (2, 2, true);
     `)
 	if err != nil {
-		log.Fatal("Insert into likePost", err.Error())
+		log.Fatal("Insert into postReact", err.Error())
 	}
 
 	//insert into comment
@@ -117,19 +117,19 @@ func InsertData(db *sql.DB) {
 		log.Fatal("Insert into comment", err.Error())
 	}
 
-	// insert into likeComment
+	// insert into commentReact
 	_, err = db.Exec(`
-        INSERT INTO likesComments (comment_id, user_id, is_like)
+        INSERT INTO commentReact (comment_id, user_id, is_like)
         VALUES (1, 1, true);
-        INSERT INTO likesComments (comment_id, user_id, is_like)
+        INSERT INTO commentReact (comment_id, user_id, is_like)
         VALUES (1, 2, true);
-        INSERT INTO likesComments (comment_id, user_id, is_like)
+        INSERT INTO commentReact (comment_id, user_id, is_like)
         VALUES (2, 1, true);
-        INSERT INTO likesComments (comment_id, user_id, is_like)
+        INSERT INTO commentReact (comment_id, user_id, is_like)
         VALUES (2, 2, true);
     `)
 	if err != nil {
-		log.Fatal("Insert into likesComments", err.Error())
+		log.Fatal("Insert into commentReact", err.Error())
 	}
 
 	// insert into session
