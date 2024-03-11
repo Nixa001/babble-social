@@ -1,3 +1,3 @@
 module social-network
 
-go 1.22.0
+go 1.23
