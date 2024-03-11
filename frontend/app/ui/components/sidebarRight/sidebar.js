@@ -43,8 +43,8 @@ function Sidebar() {
                 {displayTable()}
             </div>
             <hr />
-            <h3 className='font-bold p-2 rounded-sm text-center '>
-                All users
+            <h3 className='font-bold p-2 rounded-sm text-center underline underline-offset-4 '>
+                Friends
             </h3>
             <div className="online"></div>
         </div>
@@ -52,18 +52,18 @@ function Sidebar() {
 }
 
 
-const followerHearder = (text, state, activeTab, handleTabClick) => {
+export const followerHearder = (text, state, activeTab, handleTabClick) => {
 
     return <h3
-        className={`font-bold border border-primary cursor-pointer hover:bg-primary p-2 rounded-sm 
-    ${activeTab === state ? "bg-primary" : ""}`}
+        className={`font-bold cursor-pointer  hover:text-primary  p-2 rounded-sm 
+    ${activeTab === state ? "text-primary underline underline-offset-4" : "opacity-70"}`}
         onClick={() => { handleTabClick(state) }}
     >
         {text}
     </h3>
 }
 
-const displayFollowers = (data) => {
+export const displayFollowers = (data) => {
     return data.map((follower) => {
         return (
             <div key={follower.name} className=" hover:opacity-60 flex items-center cursor-pointer justify-start gap-2 mt-1 mb-3 p-2 ">
