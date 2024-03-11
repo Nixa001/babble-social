@@ -1,6 +1,6 @@
 import Image from "next/image";
-import Login from "./ui/components/login/login";
-import { Landing } from "./ui/components/landing-page";
+import Login from "./ui/login/login";
+import { Landing } from "./ui/components/landingpage/landing-page";
 
 export default function Home() {
   return (

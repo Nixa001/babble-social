@@ -1,9 +1,10 @@
 import React from 'react'
+import HomePage from '../ui/home/page'
 
 const Page = () => {
   return (
-    <div>
-      
+    <div className=''>
+      <HomePage />
     </div>
   )
 }
