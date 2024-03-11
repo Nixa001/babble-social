@@ -39,7 +39,7 @@ func CreateTable(db *sql.DB) {
 		log.Fatal("Users_followers table", err.Error())
 	}
 
-	// Creation de la table catégorie
+	//? Creation de la table catégorie
 	_, err = db.Exec(`
 		CREATE TABLE IF NOT EXISTS categories (
 			id INTEGER UNIQUE PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -77,42 +77,52 @@ func CreateTable(db *sql.DB) {
 		log.Fatal("Categories insert", err.Error())
 	}
 
-	// Creation de la table users
+	//? Creation de la table posts
 	_, err = db.Exec(`
 		CREATE TABLE IF NOT EXISTS posts (
 			id INTEGER UNIQUE PRIMARY KEY AUTOINCREMENT NOT NULL,
-			post_title TEXT NOT NULL,
-			post_content TEXT NOT NULL,
-			post_media TEXT NOT NULL,
+			post_content TEXT DEFAULT "NULL",
+			post_media TEXT DEFAULT "NULL",
 			post_date TEXT NOT NULL,
 			user_id INTEGER NOT NULL,
 			group_id INTEGER DEFAULT NULL,
-			type TEXT NOT NULL NOT NULL,
+			privacy TEXT DEFAULT "public",
 			FOREIGN KEY("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE
-
+			FOREIGN KEY("group_id") REFERENCES "groups"("id") ON DELETE CASCADE ON UPDATE CASCADE
 		 )
 		`)
 	if err != nil {
 		log.Fatal("Posts table", err.Error())
 	}
 
+	//? Creation de la table viewers
+	_, err = db.Exec(`
+		CREATE TABLE IF NOT EXISTS viewers (
+			post_id INTEGER NOT NULL",
+			user_id INTEGER NOT NULL,
+			FOREIGN KEY("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE
+			FOREIGN KEY("post_id") REFERENCES "posts"("id") ON DELETE CASCADE ON UPDATE CASCADE
+		 )
+		`)
+	if err != nil {
+		log.Fatal("Viewers table", err.Error())
+	}
+
 	// Création tavle belong
 	_, err = db.Exec(`
 		CREATE TABLE IF NOT EXISTS postCategory (
-			post_id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL,
-			category_id INTEGER NOT NULL,
+			post_id INTEGER NOT NULL,
+			category_id TEXT NOT NULL,
 			FOREIGN KEY(post_id) REFERENCES posts(id) ON DELETE CASCADE ON UPDATE CASCADE,
-			FOREIGN KEY(category_id) REFERENCES categories(id) ON DELETE CASCADE ON UPDATE CASCADE
 		)
 		`)
 	if err != nil {
-		log.Fatal("PostCategorie table", err.Error())
+		log.Fatal("PostCategory table", err.Error())
 	}
 
-	// Création de la table likes-post
-
+	//? Création de la table postReacts
 	_, err = db.Exec(`
-		CREATE TABLE IF NOT EXISTS likePost (
+		CREATE TABLE IF NOT EXISTS postReact (
 			id INTEGER UNIQUE PRIMARY KEY AUTOINCREMENT NOT NULL,
 			post_id INTEGER NOT NULL,
 			user_id INTEGER NOT NULL,
@@ -122,10 +132,10 @@ func CreateTable(db *sql.DB) {
 		)
 		`)
 	if err != nil {
-		log.Fatal("LikePost table", err.Error())
+		log.Fatal("postReact table", err.Error())
 	}
 
-	// Créate de la table commente
+	//? Créate de la table comment
 	_, err = db.Exec(`
 		CREATE TABLE IF NOT EXISTS comment (
 			id INTEGER UNIQUE PRIMARY KEY AUTOINCREMENT NOT NULL,
@@ -140,10 +150,10 @@ func CreateTable(db *sql.DB) {
 		log.Fatal("Comment table", err.Error())
 	}
 
-	// Creation de le table likes_comment
+	//? Creation de le table commentReact
 	_, err = db.Exec(
 		`
-		CREATE TABLE IF NOT EXISTS likesComments (
+		CREATE TABLE IF NOT EXISTS commentReacts (
 			id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
 			comment_id INTEGER NOT NULL,
 			user_id INTEGER NOT NULL,
@@ -153,7 +163,7 @@ func CreateTable(db *sql.DB) {
 		)
 	`)
 	if err != nil {
-		log.Fatal("LikesComent table", err.Error())
+		log.Fatal("commentReacts table", err.Error())
 	}
 	// Creation de la table session
 	_, err = db.Exec(`
