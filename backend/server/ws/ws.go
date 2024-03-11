@@ -2,6 +2,7 @@ package ws
 
 import (
 	"encoding/json"
+	"fmt"
 	"log"
 	"sync"
 
@@ -11,6 +12,8 @@ import (
 const (
 	WS_JOIN_EVENT       = "join-event"
 	WS_DISCONNECT_EVENT = "disconnect-event"
+	WS_ADD_FEED_POST    = "add-feed-post"
+	WS_ADD_GROUP_POST   = "add-group-post"
 )
 
 type WSClient struct {
@@ -23,7 +26,7 @@ type WSPaylaod struct {
 	From string
 	Type string
 	Data interface{}
-	To   string
+	To   []string
 }
 
 type Hub struct {
@@ -35,12 +38,12 @@ type Hub struct {
 
 var WSHub *Hub
 
-func init() {
-	WSHub = newHub()
+func Init() {
+	WSHub = NewHub()
 	go WSHub.listen()
 }
 
-func newHub() *Hub {
+func NewHub() *Hub {
 	return &Hub{
 		Clients:           &sync.Map{},
 		RegisterChannel:   make(chan *WSClient),
@@ -73,19 +76,42 @@ func (h *Hub) HandleEvent(eventPayload WSPaylaod) {
 	case WS_JOIN_EVENT:
 		h.Clients.Range(func(key, value interface{}) bool {
 			client := value.(*WSClient)
-			if client.Firstname == eventPayload.To {
-				client.OutgoingMsg <- eventPayload
+			for _, to := range eventPayload.To {
+				if client.Firstname == to {
+					client.OutgoingMsg <- eventPayload
+				}
 			}
 			return true
 		})
+	/*-------------------------------------------------------------
+	--------------------------------------------------------------*/
 	case WS_DISCONNECT_EVENT:
 		h.Clients.Range(func(key, value interface{}) bool {
 			client := value.(*WSClient)
-			if client.Firstname == eventPayload.To {
-				client.OutgoingMsg <- eventPayload
+			for _, to := range eventPayload.To {
+				if client.Firstname == to {
+					client.OutgoingMsg <- eventPayload
+				}
 			}
 			return true
 		})
+	case WS_ADD_FEED_POST:
+		h.Clients.Range(func(key, value interface{}) bool {
+			client := value.(*WSClient)
+			if eventPayload.To[0] == "all" {
+				client.OutgoingMsg <- eventPayload
+			} else {
+				for _, to := range eventPayload.To {
+					if client.Firstname == to {
+						client.OutgoingMsg <- eventPayload
+					}
+				}
+			}
+			return true
+		})
+	case WS_ADD_GROUP_POST:
+		//! handle group posts here
+		fmt.Println("in group...")
 	}
 }
 
@@ -95,7 +121,7 @@ func (wsHub *Hub) AddClient(coon *websocket.Conn, firstname string) {
 		WSCoon:      coon,
 		OutgoingMsg: make(chan interface{}),
 	}
-
+fmt.Println("client is here :", client)
 	go client.messageReader()
 	go client.messageWriter()
 
@@ -113,6 +139,7 @@ func (wsHub *Hub) AddClient(coon *websocket.Conn, firstname string) {
 
 func (client *WSClient) messageReader() {
 	for {
+		fmt.Println("reading")
 		_, message, err := client.WSCoon.ReadMessage()
 		if err != nil {
 			WSHub.UnRegisterChannel <- client
@@ -123,7 +150,7 @@ func (client *WSClient) messageReader() {
 				Data: nil,
 			}
 			WSHub.HandleEvent(newEvent)
-			return
+			panic(err)
 		}
 		var payload map[string]interface{}
 		err = json.Unmarshal(message, &payload)
