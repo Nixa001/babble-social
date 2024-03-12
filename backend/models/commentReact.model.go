@@ -1,8 +1,9 @@
 package models
 
 type CommentReact struct {
-	PostID    int  `json:"id"`
-	CommentID int  `json:"comment_id"`
-	UserID    int  `json:"user_id"`
-	Reaction  bool `json:"reaction"`
+	ID int
+	Post_id    int  
+	Comment_id int  
+	User_id    int  
+	Reaction   bool
 }
