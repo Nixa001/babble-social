@@ -3,26 +3,8 @@ import React, { useState, useEffect } from "react";
 import { postForm } from "./postForm";
 import AddPost from "./displayPost";
 
-const HomePage = () => {
-  const props = {
-    data: "This is a test",
-    title: "Test Title",
-  };
-  const [data, setData] = useState(props.data);
-  const [ws, setWS] = useState(null);
-  useEffect(() => {
-    const newWS = new WebSocket("ws://localhost:8080/socket");
-    newWS.onerror = (err) => console.error(err);
-    newWS.onopen = () => {
-      setWS(newWS);
-      // send data to server when connected
-      newWS.send(JSON.stringify({ type: "GET", request: "get10post" }));
-    };
-    newWS.onmessage = (msg) => {
-      setData(JSON.parse(msg.data));
-      console.log(`data is here => : ${data}`);
-    };
-  }, []);
+const HomePage = ({ data }) => {
+  console.log("test =>  ", data);
   return (
     <div className=" md:w-[400px] lg:w-[650px] xl:w-[800px] 2xl:w-[1000px] w-screen">
       <div className="flex justify-center mb-4">{postForm()}</div>
