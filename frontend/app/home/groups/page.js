@@ -1,9 +1,12 @@
 import React from 'react'
+import Groups from '@/app/ui/home/groups/groups'
 
-const Groups = () => {
+const page = () => {
   return (
-    <div className=''>groups</div>
+    <>
+      <Groups />
+    </>
   )
 }
 
-export default Groups
+export default page

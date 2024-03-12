@@ -32,8 +32,17 @@ function Register() {
         <div className="mt-2 sm:mt-24 flex flex-col gap-3 w-8/12 max-w-96">
           <h1 className="text-center font-bold text-4xl">Sign Up</h1>
           <div className="flex items-center justify-center gap-4">
-            <img src="/assets/login/google.svg" alt="google" />
-            <img src="/assets/login/githubb.svg" alt="github" />
+            <Image
+              src="/assets/login/google.svg" alt="google"
+              width={40}
+              height={40}
+            />
+            <Image
+              src="/assets/login/githubb.svg" alt="google"
+              width={40}
+              height={40}
+            />
+
           </div>
           <p className="error_login_msg" />
 

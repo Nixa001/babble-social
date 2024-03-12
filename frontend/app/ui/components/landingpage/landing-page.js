@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link.js";
 
 export function Landing() {
@@ -9,11 +10,7 @@ export function Landing() {
             <div className="flex items-center justify-between h-16 lg:h-20">
               <div className="flex-shrink-0">
                 <a href="#" title="" className="flex">
-                  {/* <img
-                    className="w-auto h-8"
-                    src="https://cdn.rareblocks.xyz/collection/celebration/images/logo.svg"
-                    alt=""
-                  /> */}
+                
                 </a>
               </div>
               <button
@@ -71,7 +68,7 @@ export function Landing() {
                   Welcome to SNK
                 </p>
                 <h1 className="mt-4 text-4xl font-bold lg:mt-8 sm:text-6xl xl:text-7xl">
-                Share your passions, inspire the world
+                  Share your passions, inspire the world
                 </h1>
                 <Link
                   href="/register"
@@ -107,10 +104,12 @@ export function Landing() {
                 </p>
               </div>
               <div>
-                <img
+                <Image
+                  width={1000}
+                  height={1000}
                   className="w-full"
                   src="https://cdn.rareblocks.xyz/collection/celebration/images/hero/1/hero-img.png"
-                  alt=""
+                  alt="image"
                 />
               </div>
             </div>

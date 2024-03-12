@@ -83,7 +83,7 @@ const AddPost = ({
         <Image
           src={postDataState.postImage}
           alt="Post image"
-          className="img_post w-fit"
+          className="img_post max-w-full hover:shadow-xl overflow-hidden cursor-pointer transition duration-300 ease-linear scale-95 hover:scale-100"
           width={700}
           height={200}
         />
@@ -101,7 +101,6 @@ const AddPost = ({
         <button className="dislike_post flex gap-1 items-center" onClick={handleDislikeClick}>
           <Image
             src='/assets/icons/dislikew.png'
-
             alt="Dislike icon"
             width={30}
             height={30}
