@@ -13,13 +13,13 @@ export default function Login() {
       <div className="flex flex-col items-center w-full sm:w-6/12">
         <div className="header_login flex items-center justify-around w-full">
           <Image
-            src="/assets/icons/comment.png"
+            src="/assets/logo.png"
             alt="logo"
-            width={40}
-            height={40}
-          />{" "}
+            width={100}
+            height={100}
+          />
           <div>
-            Don`&apos;`t have an account ?
+            Don&apos;t have an account ?
             <Link
               href="/register"
               className="text-primary hover:text-second cursor-pointer"

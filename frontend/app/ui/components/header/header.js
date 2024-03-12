@@ -7,12 +7,12 @@ import { IoNotifications } from "react-icons/io5";
 export function Header() {
   return (
     <div className="shadow  w-screen z-10 h-16 p-4 flex justify-between items-center">
-      <Link href="/home" className="border  rounded-full p-1">
+      <Link href="/home" className="">
         <Image
-          src="/assets/icons/comment.png"
+          src="/assets/logo.png"
           alt="logo"
-          width={40}
-          height={40}
+          width={100}
+      height={200}
           className=""
         />
       </Link>
