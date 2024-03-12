@@ -155,7 +155,7 @@ func GetColumnsValues(data map[string]interface{}) (string, []interface{}) {
 	var values []interface{}
 
 	for column, value := range data {
-		columns = append(columns, column)
+		columns = append(columns, strings.ToLower(column))
 		values = append(values, value)
 	}
 
