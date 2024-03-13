@@ -6,43 +6,8 @@ import { CreateGroup } from '../../components/modals/createGroup';
 
 const Groups = () => {
     const [formCreateGr, setFormCreateGr] = useState(false)
-    const groupData = [
-        {
-            id: 1,
-            image: "/assets/ea.jpg",
-            name: "EA Football 24",
-            description: "Un groupe pour les fans de football du monde entier...",
-            href: "/groups/join/EA Football 24",
-        },
-        {
-            id: 2,
-            image: "/assets/cod.jpg",
-            name: "Call of duty",
-            description: "Un groupe gamers du monde entier...",
-            href: "/groups/join/Call of duty",
-        },
-        {
-            id: 1,
-            image: "/assets/ea.jpg",
-            name: "EA Football 24",
-            description: "Un groupe pour les fans de football du monde entier...",
-            href: "/groups/join/EA Football 24",
-        },
-        {
-            id: 2,
-            image: "/assets/cod.jpg",
-            name: "Call of duty",
-            description: "Un groupe gamers du monde entier...",
-            href: "/groups/join/Call of duty",
-        },
-        {
-            id: 1,
-            image: "/assets/ea.jpg",
-            name: "EA Football 24",
-            description: "Un groupe pour les fans de football du monde entier...",
-            href: "/groups/join/EA Football 24",
-        },
-    ];
+    const groupData = Data
+    const groupJoined = DataJoined
 
     return (
         <div className='md:w-[400px] lg:w-[650px] xl:w-[800px] 2xl:w-[1200px] w-screen h-full 
@@ -62,7 +27,7 @@ const Groups = () => {
             </div>
             <div className='w-full flex gap-3 flex-wrap '>
 
-                {groupData.map((group) => (
+                {groupJoined.map((group) => (
                     <GroupCard key={group.id} isMember={true} {...group} />
                 ))}
 
@@ -76,7 +41,7 @@ const Groups = () => {
                     <GroupCard key={group.id} isMember={false} {...group} />
                 ))}
             </div>
-            <CreateGroup isVisible={formCreateGr} onClose={()=> setFormCreateGr(false)} />
+            <CreateGroup isVisible={formCreateGr} onClose={() => setFormCreateGr(false)} />
         </div>
     );
 };
@@ -84,12 +49,12 @@ const Groups = () => {
 export default Groups;
 
 
-const GroupCard = ({ isMember, image, name, description, href }) => {
+const GroupCard = ({ isMember, image, name, description, href, functionOnclick }) => {
+    description = description.slice(0, 50) + "..."
     return (
         <>
             {isMember ? (
-
-                <Link href={href} className="inline-flex items-center text-m font-semibold text-center text-white rounded-l">
+                < Link href={href} className="inline-flex items-center text-m font-semibold text-center text-white rounded-l">
                     <div
                         className="w-[200px] border rounded-lg shadow-2xl bg-black bg-clip-padding backdrop-filter backdrop-blur-md bg-opacity-5 border-gray-700 hover:bg-opacity-15 cursor-pointer"
                     >
@@ -106,7 +71,7 @@ const GroupCard = ({ isMember, image, name, description, href }) => {
 
                         </div>
                     </div>
-                </Link>
+                </Link >
             ) : (
                 <div
                     className="w-[200px] border rounded-lg shadow-2xl bg-gray-700 bg-clip-padding backdrop-filter backdrop-blur-md bg-opacity-10 border-gray-700 hover:bg-opacity-25 cursor-pointer"
@@ -123,9 +88,9 @@ const GroupCard = ({ isMember, image, name, description, href }) => {
                         <span className="max-h-14 overflow-hidden text-sm text-gray-300 text-center">{description}</span>
 
                         <div className="flex mt-4 md:mt-6">
-                            <Link href={href} className="inline-flex items-center px-4 py-2 text-m font-semibold text-center text-white bg-primary rounded-lg hover:bg-second">
+                            <button onClick={() => { functionOnclick() }} className="inline-flex items-center px-4 py-2 text-m font-semibold text-center text-white bg-primary rounded-lg hover:bg-second">
                                 Join
-                            </Link>
+                            </button>
                         </div>
 
                     </div>
@@ -137,3 +102,88 @@ const GroupCard = ({ isMember, image, name, description, href }) => {
 
     );
 };
+
+function JoinGroup() {
+    alert('Send join');
+}
+
+const Data = [
+    {
+        id: 1,
+        image: "/assets/ea.jpg",
+        name: "EA Football 24",
+        description: "Un groupe pour les fans de football du monde entier",
+        href: "/groups/join/EA Football 24",
+        functionOnclick: JoinGroup,
+
+    },
+    {
+        id: 2,
+        image: "/assets/cod.jpg",
+        name: "Call of duty",
+        description: "Un groupe gamers du monde entier",
+        href: "/groups/join/Call of duty",
+        functionOnclick: JoinGroup,
+    },
+    {
+        id: 3,
+        image: "/assets/100daysofcode.jpg",
+        name: "100 days of code",
+        description: "100DaysOfCode is a coding challenge for developers, with thousands of members worldwide...",
+        href: "/groups/join/EA Football 24",
+        functionOnclick: JoinGroup,
+    },
+    {
+        id: 4,
+        image: "/assets/cod.jpg",
+        name: "Call of duty",
+        description: "Un groupe gamers du monde entier",
+        href: "/groups/join/Call of duty",
+        functionOnclick: JoinGroup,
+    },
+    {
+        id: 5,
+        image: "/assets/ea.jpg",
+        name: "EA Football 24",
+        description: "Un groupe pour les fans de football du monde entier",
+        href: "/groups/join/EA Football 24",
+        functionOnclick: JoinGroup,
+    },
+];
+const DataJoined = [
+    {
+        id: 1,
+        image: "/assets/ea.jpg",
+        name: "EA Football 24",
+        description: "Un groupe pour les fans de football du monde entier",
+        href: "/home/groups/group/",
+    },
+    {
+        id: 2,
+        image: "/assets/cod.jpg",
+        name: "Call of duty",
+        description: "Un groupe gamers du monde entier",
+        href: "/home/groups/group/Call of duty",
+    },
+    {
+        id: 3,
+        image: "/assets/100daysofcode.jpg",
+        name: "100 days of code",
+        description: "100DaysOfCode is a coding challenge for developers, with thousands of members worldwide...",
+        href: "/home/groups/group/EA Football 24",
+    },
+    {
+        id: 4,
+        image: "/assets/cod.jpg",
+        name: "Call of duty",
+        description: "Un groupe gamers du monde entier",
+        href: "/home/groups/group/Call of duty",
+    },
+    {
+        id: 5,
+        image: "/assets/ea.jpg",
+        name: "EA Football 24",
+        description: "Un groupe pour les fans de football du monde entier",
+        href: "/home/groups/group/EA Football 24",
+    },
+];
