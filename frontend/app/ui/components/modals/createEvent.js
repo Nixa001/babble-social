@@ -1,6 +1,6 @@
 import React from 'react'
 
-export const CreateGroup = ({ isVisible, onClose }) => {
+export const CreateEvent = ({ isVisible, onClose }) => {
     if (!isVisible) return null;
     return (
         <div className='fixed inset-0 bg-bg bg-opacity-10 backdrop-blur-sm 
@@ -20,18 +20,20 @@ export const CreateGroup = ({ isVisible, onClose }) => {
                 </button>
                 <div>
                     <h1 className='text-2xl text-center font-bold underline underline-offset-8 mb-5'>
-                        Create a new group
+                        Create an Event
                     </h1>
                     <form className='flex flex-col gap-4 px-5'>
-                        <input type='text' required placeholder='Name' className='bg-transparent rounded-md border border-gray-700 h-[50px]
-                        focus:outline-none focus:border p-1 focus:ring-1 focus:ring-primary
-                        ' />
-                        <textarea placeholder='Group description ...' className='bg-transparent h-[100px] border rounded-md border-gray-700 resize-none
-                        focus:outline-none focus:border p-1 focus:ring-1 focus:ring-primary
+                        
+                        <textarea placeholder='Event description ...' className='bg-transparent h-[100px] border rounded-md border-gray-700 resize-none
+                        focus:outline-none  p-1 focus:ring-1 focus:ring-primary
                         '>
                         </textarea>
-                        <input type='file' className='bg-transparent' />
-                        <input type='submit' className='bg-primary rounded-md border border-gray-700 h-[50px] cursor-pointer hover:bg-second text-lg font-bold '  value={"Create group"} />
+                        <label htmlFor='date' className='text-gray-300'>
+                           Choose a date
+                        </label>
+                        <input type='date' name='date' className='border border-gray-700 bg-transparent focus:outline-none p-1 focus:ring-1 focus:ring-primary' />
+                        {/* <input type='file' className='bg-transparent' /> */}
+                        <input type='submit' className='bg-primary rounded-md border border-gray-700 h-[50px] cursor-pointer hover:bg-second text-lg font-bold '  value={"Create Event"} />
 
                     </form>
 

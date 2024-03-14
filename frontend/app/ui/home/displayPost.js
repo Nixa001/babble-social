@@ -4,7 +4,7 @@ import { MdPrivacyTip } from "react-icons/md";
 import { BiWorld } from "react-icons/bi";
 import { SiGnuprivacyguard } from "react-icons/si";
 
-const AddPost = ({
+const DisplayPost = ({
   postData,
   onLikeClick,
   onDislikeClick,
@@ -14,7 +14,6 @@ const AddPost = ({
   const [postDataState, setPostDataState] = useState({
     ...postData,
   });
-
   const handleLikeClick = () => {
     onLikeClick();
     setPostDataState((prevState) => ({
@@ -40,7 +39,7 @@ const AddPost = ({
   };
 
   return (
-    <div className="post_div mb-5 border border-gray-700 p-2 rounded-md">
+    <div className="w-fit post_div mb-5 border border-gray-700 p-2 rounded-md">
       <div className="post_div_top flex flex-col gap-1 w-fit justify-center ">
         <div className="header_pos w-fit">
           <div className="info_post flex items-start gap-2">
@@ -121,4 +120,4 @@ const AddPost = ({
   );
 };
 
-export default AddPost;
+export default DisplayPost;

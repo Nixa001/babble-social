@@ -42,7 +42,9 @@ function Navbar() {
 
                 {links.map((link) => {
                     const LinkIcon = link.icon;
-                    const isActive = (pathname === link.href);
+                    const isActive = (pathname === link.href) || pathname.includes(link.href) && link.href.length > 10;
+                    // const isActive = pathname.includes(link.href)
+                    // alert(pathname)
 
                     return (
                         <Link key={link.name} href={link.href}

@@ -37,7 +37,7 @@ function Sidebar() {
         <div className='shadowL z-0 xl:w-64 w-52 h-[700px] md:block hidden flex-col bg-text '>
             <div className='flex justify-around gap-x-1 pt-3 pb-3'>
                 {followerHearder("Followers", "followers", activeTab, handleTabClick)}
-                {followerHearder("Community", "group", activeTab, handleTabClick)}
+                {followerHearder("Groups", "group", activeTab, handleTabClick)}
             </div>
             <div className="overflow-y-scroll chrome overflow-x-hidden h-1/2">
                 {displayTable()}

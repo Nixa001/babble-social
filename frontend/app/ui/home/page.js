@@ -1,7 +1,7 @@
 "use client"
 import React from "react";
 import { postForm } from "./postForm";
-import AddPost from "./displayPost";
+import DisplayPost from "./displayPost";
 
 const HomePage = () => {
   return (
@@ -10,10 +10,10 @@ const HomePage = () => {
         {postForm()}
       </div>
       <div className="post_div_top flex flex-col items-center">
-        <AddPost postData={postData} onLikeClick={onLikeClick} onDislikeClick={onDislikeClick}
+        <DisplayPost postData={postData} onLikeClick={onLikeClick} onDislikeClick={onDislikeClick}
           onCommentClick={onCommentClick} onProfileClick={onProfileClick}
         />
-        <AddPost postData={postData2} onLikeClick={onLikeClick} onDislikeClick={onDislikeClick}
+        <DisplayPost postData={postData2} onLikeClick={onLikeClick} onDislikeClick={onDislikeClick}
           onCommentClick={onCommentClick} onProfileClick={onProfileClick}
         />
       </div>
