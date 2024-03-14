@@ -17,10 +17,7 @@ func NewServer() *Server {
 		Port: 8080,
 	}
 }
-
 func (s *Server) Run() {
 	routes := routes.Route()
-
 	http.ListenAndServe(s.Host+":"+strconv.Itoa(s.Port), routes)
-
 }

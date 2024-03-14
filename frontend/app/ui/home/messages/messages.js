@@ -3,20 +3,40 @@ import Image from 'next/image';
 import { IoSend } from "react-icons/io5";
 import { displayFollowers, followerHearder } from '../../components/sidebarRight/sidebar';
 import { useState } from 'react';
+import { postData } from '@/app/lib/utils';
 
 const Messages = () => {
     const [activeTab, setActiveTab] = useState("users");
+
     const handleTabClick = (tab) => {
         setActiveTab(tab);
     };
 
-    const handleSendMessage = (e) => {
+//Traitement lors de l'envoie de messages
+
+    const handleSendMessage = async (e) => {
         e.preventDefault()
-    };
-    const displayTable = () => {
+        let data = new FormData(e.target);
+        let obj = {}
+        data.forEach((value, key) => {
+            obj[key] = value
+        })
+        console.log(obj.message)
+        if (obj.message.trim() !== ""){
+            postData("http://localhost:8080/messages", obj)
+            .then((value) => {
+                 console.log(value)
+                 e.target.reset();
+            })
+            .catch((error) =>{
+                 console.log(error)
+            })
+        }
+    };  
+    const displayTable = () => {  
         if (activeTab === "users") {
-            return displayFollowers(users)
-                ;
+            return displayFollowers(users) ;
+
         } else if (activeTab === "group") {
             return displayFollowers(groups);
         }
@@ -25,8 +45,7 @@ const Messages = () => {
 
     return (
         <div className="md:w-[400px] lg:w-[650px] xl:w-[800px] 2xl:w-[1200px] w-screen 
-     
-      flex flex-col sm:flex-row pr-5">
+         flex flex-col sm:flex-row pr-5">
             {/* Left sidebar */}
             <div className="w-[100%] sm:w-[30%] h-[100%]  ">
                 <div className="flex flex-col items-start justify-start border border-gray-700 h-full sm:h-[700px] overflow-hidden overflow-y-scroll">
@@ -36,29 +55,14 @@ const Messages = () => {
 
                         {followerHearder("Users", "users", activeTab, handleTabClick)}
                         {followerHearder("Community", "group", activeTab, handleTabClick)}
-                        {/* <h2 className="text-xl font-semibold cursor-pointer hover:underline  mb-4">Users</h2>
-                        <h2 className="text-xl font-semibold cursor-pointer hover:underline mb-4">Groups</h2> */}
+
                     </div>
                     {/* </div> */}
+                    
                     <ul className="list-none w-[100%] lg:px-5 md:px-0 px-5 sm:block flex overflow-y-scroll">
-                        {/* {users.map((user) => (
-                            <li key={user.id} className="mb-2 hover:opacity-70 cursor-pointer ">
-                                <div className="flex flex-col flex-nowrap w-full items-center sm:flex-row ">
-                                    <Image
-                                        src={user.profilePicture}
-                                        alt={user.username}
-                                        width={40}
-                                        height={40}
-                                        className="rounded-full"
-                                    />
-                                    <span className="font-medium ml-2 text-sm lg:text-md w-full nowrap">{user.username}</span>
-                                </div>
-                            </li>
-                        ))} */}
-
-
                         {displayTable()}
                     </ul>
+
                 </div>
             </div>
             {/* Main content area */}
@@ -100,6 +104,7 @@ const Messages = () => {
                 <form className="flex justify-end mt-4 gap-2" onSubmit={handleSendMessage}>
                     <input
                         type="text"
+                        name="message"
                         className=" p-4 border border-gray-700 bg-transparent h-11 rounded-lg w-[90%] outline-none focus:ring-1 bg-primary focus:ring-primary"
                         placeholder="Your message..."
                     // value={message.content}
@@ -109,12 +114,7 @@ const Messages = () => {
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
                             <path d="M3.478 2.404a.75.75 0 0 0-.926.941l2.432 7.905H13.5a.75.75 0 0 1 0 1.5H4.984l-2.432 7.905a.75.75 0 0 0 .926.94 60.519 60.519 0 0 0 18.445-8.986.75.75 0 0 0 0-1.218A60.517 60.517 0 0 0 3.478 2.404Z" />
                         </svg>
-
-                        {/* <IoSend className='text-2xl text-center' /> */}
                     </button>
-
-
-
                 </form>
             </div>
         </div>
