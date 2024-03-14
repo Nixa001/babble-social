@@ -63,6 +63,9 @@ func (h *Hub) listen() {
 				h.Clients.Delete(client.Firstname)
 				close(client.OutgoingMsg)
 				log.Printf("Client %s disconnected\n", client.Firstname)
+
+			} else {
+				fmt.Println("window refreshed")
 			}
 		case message := <-h.SSE:
 			h.HandleEvent(message)
@@ -72,7 +75,19 @@ func (h *Hub) listen() {
 }
 
 func (h *Hub) HandleEvent(eventPayload WSPaylaod) {
+	fmt.Println("in handle event...")
 	switch eventPayload.Type {
+	case "GET":
+		fmt.Println("👨‍💻 in test case...")
+		h.Clients.Range(func(key, value interface{}) bool {
+			client := value.(*WSClient)
+			//for _, t := range eventPayload.To {
+			//if client.Firstname == to {
+			client.OutgoingMsg <- eventPayload
+			//}
+			//}
+			return true
+		})
 	case WS_JOIN_EVENT:
 		h.Clients.Range(func(key, value interface{}) bool {
 			client := value.(*WSClient)
@@ -121,7 +136,7 @@ func (wsHub *Hub) AddClient(coon *websocket.Conn, firstname string) {
 		WSCoon:      coon,
 		OutgoingMsg: make(chan interface{}),
 	}
-fmt.Println("client is here :", client)
+	fmt.Println("client is here :", client)
 	go client.messageReader()
 	go client.messageWriter()
 
@@ -150,7 +165,8 @@ func (client *WSClient) messageReader() {
 				Data: nil,
 			}
 			WSHub.HandleEvent(newEvent)
-			panic(err)
+			fmt.Println("exit")
+			return
 		}
 		var payload map[string]interface{}
 		err = json.Unmarshal(message, &payload)
@@ -158,14 +174,21 @@ func (client *WSClient) messageReader() {
 			return
 		}
 		eventType := payload["type"].(string)
-
+		fmt.Println("type is here => ", eventType)
+		fmt.Println("payload is here => ", payload)
+		//	i:=0
+		//	for {
 		wsEvent := WSPaylaod{
 			From: client.Firstname,
 			Type: eventType,
 			Data: payload,
 		}
-
 		WSHub.HandleEvent(wsEvent)
+		// i++
+		// fmt.Printf("test %v done\n", i)
+		// time.Sleep(3 * time.Second) // TODO : make it dynamic
+		//	}
+		//fmt.Println("done reading and sent to hdle event!")
 	}
 }
 
@@ -173,12 +196,8 @@ func (client *WSClient) messageWriter() {
 	for {
 		select {
 		case message := <-client.OutgoingMsg:
-			data, err := json.Marshal(message)
-			if err != nil {
-				return
-			}
-
-			err = client.WSCoon.WriteMessage(websocket.TextMessage, data)
+			fmt.Println("in writer with: ", message)
+			err := client.WSCoon.WriteJSON(message)
 			if err != nil {
 				return
 			}

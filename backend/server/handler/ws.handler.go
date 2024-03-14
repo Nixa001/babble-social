@@ -18,6 +18,7 @@ var upgrader = websocket.Upgrader{
 }
 
 func WSHandler(w http.ResponseWriter, r *http.Request) {
+
 	log.Printf("socket request from %s", r.RemoteAddr)
 	defer func() {
 		err := recover()
@@ -32,6 +33,6 @@ func WSHandler(w http.ResponseWriter, r *http.Request) {
 		log.Fatal("upgrading error: ", err)
 		return
 	}
-	//ws.Init()
+	ws.Init()
 	ws.WSHub.AddClient(con, "mass") // todo: add user id here
 }
