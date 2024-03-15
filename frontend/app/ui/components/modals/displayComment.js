@@ -84,7 +84,7 @@ const printComment = (comments) => {
         const hasImage = comment.imageComment !== ""
 
         return (
-            <div className="flex flex-col border border-gray-700 mx-5  gap-2 mb-9">
+            <div key={comment.id} className="flex flex-col border border-gray-700 mx-5  gap-2 mb-9">
                 {/* <FaUserGroup className='border rounded-full p-2 w-10 h-10' /> */}
                 <div className=' flex items-center h-fit cursor-pointer justify-start gap-2 mt-1'>
                     <Image
