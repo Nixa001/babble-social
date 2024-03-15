@@ -100,7 +100,7 @@ const Group = () => {
                     {displayEvents(events)}
                 </div>
                 <div className='w-[75%] '>
-                    <DisplayPost postData={postData2} onLikeClick={onLikeClick} onDislikeClick={onDislikeClick}
+                    <DisplayPost postData={postData1} onLikeClick={onLikeClick} onDislikeClick={onDislikeClick}
                         onCommentClick={onCommentClick} onProfileClick={onProfileClick}
                     />
 
@@ -120,6 +120,19 @@ const Group = () => {
 
 export default Group
 
+const postData1 = {
+    profilePicture: "/assets/profilibg.jpg",
+    userName: "Maurice Dassylva",
+    userHandle: "@Maurice",
+    timePosted: "2h",
+    hashtags: ["Tech", "Sport"],
+    title: "Ceci est mon titre",
+    postImage: "/assets/ea.jpg",
+    likesCount: 19,
+    dislikesCount: 20,
+    commentsCount: 3,
+}
+
 const postData2 = {
     profilePicture: "/assets/profilibg.jpg",
     userName: "Maurice Dassylva",
@@ -127,7 +140,7 @@ const postData2 = {
     timePosted: "2h",
     hashtags: ["Tech", "Sport"],
     title: "Ceci est mon titre",
-    postImage: "/assets/imagepost2.jpg",
+    postImage: "/assets/snk.jpg",
     likesCount: 19,
     dislikesCount: 20,
     commentsCount: 3,
