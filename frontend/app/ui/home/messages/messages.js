@@ -1,7 +1,7 @@
 'use client'
 import Image from 'next/image';
 import { IoSend } from "react-icons/io5";
-import { displayFollowers, followerHearder } from '../../components/sidebarRight/sidebar';
+import {  followerHearder } from '../../components/sidebarRight/sidebar';
 import { useState } from 'react';
 import { postData } from '@/app/lib/utils';
 
@@ -11,34 +11,38 @@ const Messages = () => {
     const handleTabClick = (tab) => {
         setActiveTab(tab);
     };
+     const handleUserClick = (userId) => {
+    console.log("User clicked:", userId);
+    // Ici, vous pouvez ajouter la logique pour gérer l'ID de l'utilisateur cliqué
+};
 
 //Traitement lors de l'envoie de messages
-
-    const handleSendMessage = async (e) => {
-        e.preventDefault()
-        let data = new FormData(e.target);
-        let obj = {}
-        data.forEach((value, key) => {
-            obj[key] = value
+const handleSendMessage = async (e) => {
+    e.preventDefault()
+    let data = new FormData(e.target);
+    let obj = {}
+    data.forEach((value, key) => {
+        obj[key] = value
+    })
+    console.log(obj.message)
+    if (obj.message.trim() !== ""){
+        postData("http://localhost:8080/messages", obj)
+        .then((value) => {
+             console.log(value)
+             e.target.reset();
         })
-        console.log(obj.message)
-        if (obj.message.trim() !== ""){
-            postData("http://localhost:8080/messages", obj)
-            .then((value) => {
-                 console.log(value)
-                 e.target.reset();
-            })
-            .catch((error) =>{
-                 console.log(error)
-            })
-        }
-    };  
+        .catch((error) =>{
+             console.log(error)
+        })
+    }
+};  
+
     const displayTable = () => {  
         if (activeTab === "users") {
-            return displayFollowers(users) ;
+            return displayFollowers(users, handleUserClick) ;
 
         } else if (activeTab === "group") {
-            return displayFollowers(groups);
+            return displayFollowers(groups, handleUserClick) ;
         }
         return null;
     };
@@ -141,8 +145,28 @@ const messages = [
 
 
 const groups = [
-    { name: 'Call of duty', src: "/assets/profilibg.jpg", alt: "profil", },
-    { name: 'Farcry 6 Team', src: "/assets/profilibg.jpg", alt: "profil" },
-    { name: 'EA Fooball 24', src: "/assets/profilibg.jpg", alt: "profil", },
+    {id :1, name: 'Call of duty', src: "/assets/profilibg.jpg", alt: "profil", },
+    {id :2, name: 'Farcry 6 Team', src: "/assets/profilibg.jpg", alt: "profil" },
+    {id :3, name: 'EA Fooball 24', src: "/assets/profilibg.jpg", alt: "profil", },
 ];
 
+ const displayFollowers = (data, handleUserClick) => {
+    return data.map((follower) => {
+        return (
+            <div key={follower.name} className=" hover:opacity-60 flex items-center cursor-pointer justify-start gap-2 mt-1 mb-3 p-2 "
+            onClick={() => handleUserClick(follower.id)}
+            >
+                {/* <FaUserGroup className='border rounded-full p-2 w-10 h-10' /> */}
+
+                <Image
+                    className="rounded-full "
+                    src={follower.src}
+                    alt={follower.alt}
+                    width={40}
+                    height={40}
+                    />
+                <h4 className="font-bold" >{follower.name}</h4>
+            </div>
+        );
+    })
+}

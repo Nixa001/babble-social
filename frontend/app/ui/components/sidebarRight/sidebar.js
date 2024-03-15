@@ -6,29 +6,32 @@ import { useState } from 'react';
 
 
 const followers = [
-    { name: 'Vincent Ndour', src: "/assets/profilibg.jpg", alt: "profil" },
-    { name: 'Ibrahima Gueye', src: "/assets/profilibg.jpg", alt: "profil", },
-    { name: 'Madike Yade', src: "/assets/profilibg.jpg", alt: "profil", },
+    {id : 1, name: 'Vincent Ndour', src: "/assets/profilibg.jpg", alt: "profil" },
+    {id : 2, name: 'Ibrahima Gueye', src: "/assets/profilibg.jpg", alt: "profil", },
+    {id : 3, name: 'Madike Yade', src: "/assets/profilibg.jpg", alt: "profil", },
 ];
 const groups = [
-    { name: 'Call of duty', src: "/assets/profilibg.jpg", alt: "profil", },
-    { name: 'Farcry 6 Team', src: "/assets/profilibg.jpg", alt: "profil" },
-    { name: 'EA Fooball 24', src: "/assets/profilibg.jpg", alt: "profil", },
+    {id : 1, name: 'Call of duty', src: "/assets/profilibg.jpg", alt: "profil", },
+    {id : 2, name: 'Farcry 6 Team', src: "/assets/profilibg.jpg", alt: "profil" },
+    {id : 3, name: 'EA Fooball 24', src: "/assets/profilibg.jpg", alt: "profil", },
 ];
 
 function Sidebar() {
-    const [activeTab, setActiveTab] = useState("followers");
+    const [activeTab, setActiveTab] = useState("followers")
 
     const handleTabClick = (tab) => {
         setActiveTab(tab);
     };
+    const handleSidebarUserClick = () =>{
+        alert("User clicked")   
+    }
 
     const displayTable = () => {
         if (activeTab === "followers") {
-            return displayFollowers(followers)
+            return displayFollowers(followers, handleSidebarUserClick)
                 ;
         } else if (activeTab === "group") {
-            return displayFollowers(groups);
+            return displayFollowers(groups, handleSidebarUserClick);
         }
         return null;
     };
@@ -57,16 +60,20 @@ export const followerHearder = (text, state, activeTab, handleTabClick) => {
     return <h3
         className={`font-bold cursor-pointer  hover:text-primary  p-2 rounded-sm 
     ${activeTab === state ? "text-primary underline underline-offset-4" : "opacity-70"}`}
-        onClick={() => { handleTabClick(state) }}
+        onClick={() => { handleTabClick(state) 
+        
+        }}
     >
         {text}
     </h3>
 }
 
-export const displayFollowers = (data) => {
+const displayFollowers = (data, handleUserClick) => {
     return data.map((follower) => {
         return (
-            <div key={follower.name} className=" hover:opacity-60 flex items-center cursor-pointer justify-start gap-2 mt-1 mb-3 p-2 ">
+            <div key={follower.name} className=" hover:opacity-60 flex items-center cursor-pointer justify-start gap-2 mt-1 mb-3 p-2 "
+            onClick={() => handleUserClick(follower.id)}
+            >
                 {/* <FaUserGroup className='border rounded-full p-2 w-10 h-10' /> */}
 
                 <Image
@@ -75,12 +82,13 @@ export const displayFollowers = (data) => {
                     alt={follower.alt}
                     width={40}
                     height={40}
-                />
-                <h4 className="font-bold ">{follower.name}</h4>
+                    />
+                <h4 className="font-bold" >{follower.name}</h4>
             </div>
         );
     })
 }
+
 
 
 
