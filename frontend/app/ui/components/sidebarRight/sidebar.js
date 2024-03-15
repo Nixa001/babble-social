@@ -73,10 +73,10 @@ export const displayFollowers = (data) => {
                     className="rounded-full "
                     src={follower.src}
                     alt={follower.alt}
-                    width={40}
-                    height={40}
+                    width={35}
+                    height={35}
                 />
-                <h4 className="font-bold ">{follower.name}</h4>
+                <h4 className="font-bold text-sm ">{follower.name}</h4>
             </div>
         );
     })

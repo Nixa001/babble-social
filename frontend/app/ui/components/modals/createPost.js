@@ -1,6 +1,5 @@
 import React from 'react'
 import { Checkbox, TextArea } from '../../home/postForm';
-import { useState } from 'react';
 
 export const CreatePost = ({ isVisible, onClose }) => {
     if (!isVisible) return null;

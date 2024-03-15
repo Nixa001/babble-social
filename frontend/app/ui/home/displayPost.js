@@ -3,6 +3,7 @@ import Image from "next/image";
 import { MdPrivacyTip } from "react-icons/md";
 import { BiWorld } from "react-icons/bi";
 import { SiGnuprivacyguard } from "react-icons/si";
+import { DisplayComments } from "../components/modals/displayComment";
 
 const DisplayPost = ({
   postData,
@@ -14,6 +15,8 @@ const DisplayPost = ({
   const [postDataState, setPostDataState] = useState({
     ...postData,
   });
+  const [isVisibleComment, setIsVisibleComment] = useState(false)
+
   const handleLikeClick = () => {
     onLikeClick();
     setPostDataState((prevState) => ({
@@ -106,7 +109,9 @@ const DisplayPost = ({
           />
           <span>{postDataState.dislikesCount}</span>
         </button>
-        <button className="comment_post flex gap-1 items-center" onClick={handleCommentClick}>
+        <button className="comment_post flex gap-1 items-center" onClick={() => {
+          setIsVisibleComment(true)
+        }}>
           <Image
             src="/assets/icons/comment.png"
             alt="Comment icon"
@@ -116,6 +121,8 @@ const DisplayPost = ({
           <span>{postDataState.commentsCount}</span>
         </button>
       </div>
+      <DisplayComments isVisible={isVisibleComment} onClose={() => setIsVisibleComment(false)} />
+
     </div >
   );
 };
