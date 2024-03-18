@@ -32,7 +32,7 @@ func (s *SessionRepository) GetSession(token string) (*models.Session, error) {
 	if err != nil {
 		return &session, err
 	}
-	err = row.Scan(&session.Token, &session.ExpirationDate, &session.UserId)
+	err = row.Scan(&session.Token, &session.Expiration, &session.User_id)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return &session, fmt.Errorf("no session found with this userId")
@@ -44,12 +44,12 @@ func (s *SessionRepository) GetSession(token string) (*models.Session, error) {
 
 func (s *SessionRepository) GetSessionByUserId(userId string) (sessions []models.Session, err error) {
 	var session models.Session
-	rows, err := s.DB.GetAllFrom(s.TableName, q.WhereOption{"user_id": opt.Equals(userId)}, session.ExpirationDate, nil)
+	rows, err := s.DB.GetAllFrom(s.TableName, q.WhereOption{"user_id": opt.Equals(userId)}, session.Expiration, nil)
 	if err != nil {
 		return nil, err
 	}
 	for rows.Next() {
-		err = rows.Scan(&session.Token, &session.ExpirationDate, &session.UserId)
+		err = rows.Scan(&session.Token, &session.Expiration, &session.User_id)
 		sessions = append(sessions, session)
 	}
 	if err != nil {
