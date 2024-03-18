@@ -6,7 +6,6 @@ import { CreateEvent } from '@/app/ui/components/modals/createEvent'
 import { CreatePost } from '@/app/ui/components/modals/createPost'
 import { Suggest } from '@/app/ui/components/modals/suggest'
 import { DisplayMembers } from '@/app/ui/components/modals/displayMembers'
-// import { useState } from 'react'
 
 const Group = () => {
     const [formCreateEv, setFormCreateEv] = useState(false)
@@ -68,7 +67,7 @@ const Group = () => {
                     </button>
                 </div>
             </div>
-            <p className='flex items-center gap-2 shadow w-fit font-bold rounded-md cursor-pointer py-2 px-3 border-gray-700' onClick={() => {
+            <p className='flex items-center gap-2 shadow w-fit hover:text-primary font-bold rounded-md cursor-pointer py-2 px-3 border-gray-700' onClick={() => {
                 setMembers(true)
             }}>
                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
