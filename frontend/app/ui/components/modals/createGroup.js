@@ -1,13 +1,48 @@
-import React from 'react'
+import React, { useState } from 'react';
 
 export const CreateGroup = ({ isVisible, onClose }) => {
+    const [groupName, setGroupName] = useState('');
+    const [groupDescription, setGroupDescription] = useState('');
+    const [groupImage, setGroupImage] = useState(null);
+
+    const handleNameChange = (e) => {
+        setGroupName(e.target.value);
+    };
+
+    const handleDescriptionChange = (e) => {
+        setGroupDescription(e.target.value);
+    };
+
+    const handleImageChange = (e) => {
+        setGroupImage(e.target.files[0]);
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        const formData = new FormData();
+        formData.append('name', groupName);
+        formData.append('description', groupDescription);
+        formData.append('image', groupImage);
+        console.log(formData);
+
+        try {
+            const response = await fetch('http://localhost:8080/group/creategroup', {
+                method: 'POST',
+                body: formData,
+            });
+
+            console.log('Response:', response);
+        } catch (error) {
+            console.error('Errorr:', error);
+        }
+    };
+
     if (!isVisible) return null;
     return (
         <div className='fixed inset-0 bg-bg bg-opacity-10 backdrop-blur-sm 
-        flex justify-center items-center'
-        
-        // onClick={() => onClose()}
-        >
+        flex justify-center items-center'>
+
             <div className='w-[700px] pb-5 rounded-lg shadow-2xl bg-bg bg-clip-padding backdrop-filter
              backdrop-blur-md border border-gray-700 hover:bg-opacity-95' >
                 <button className='w-full p-2 flex justify-end'
@@ -16,26 +51,22 @@ export const CreateGroup = ({ isVisible, onClose }) => {
                    hover:rotate-90 transition duration-300 ease-in-out place-self-end">
                         <path fillRule="evenodd" d="M5.47 5.47a.75.75 0 0 1 1.06 0L12 10.94l5.47-5.47a.75.75 0 1 1 1.06 1.06L13.06 12l5.47 5.47a.75.75 0 1 1-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 0 1-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 0 1 0-1.06Z" clipRule="evenodd" />
                     </svg>
-
                 </button>
                 <div>
                     <h1 className='text-2xl text-center font-bold underline underline-offset-8 mb-5'>
                         Create a new group
                     </h1>
-                    <form className='flex flex-col gap-4 px-5'>
-                        <input type='text' required placeholder='Name' className='bg-transparent rounded-md border border-gray-700 h-[50px]
+                    <form className='flex flex-col gap-4 px-5' onSubmit={handleSubmit}>
+                        <input type='text' name='name' required placeholder='Name' value={groupName} onChange={handleNameChange} className='bg-transparent rounded-md border border-gray-700 h-[50px]
                         focus:outline-none focus:border p-1 focus:ring-1 focus:ring-primary
                         ' />
-                        <textarea placeholder='Group description ...' className='bg-transparent h-[100px] border rounded-md border-gray-700 resize-none
+                        <textarea placeholder='Group description ...' name='description' value={groupDescription} onChange={handleDescriptionChange} className='bg-transparent h-[100px] border rounded-md border-gray-700 resize-none
                         focus:outline-none focus:border p-1 focus:ring-1 focus:ring-primary
                         '>
                         </textarea>
-                        <input type='file' className='bg-transparent' />
-                        <input type='submit' className='bg-primary rounded-md border border-gray-700 h-[50px] cursor-pointer hover:bg-second text-lg font-bold '  value={"Create group"} />
-
+                        <input type='file' onChange={handleImageChange} className='bg-transparent' />
+                        <input type='submit' className='bg-primary rounded-md border border-gray-700 h-[50px] cursor-pointer hover:bg-second text-lg font-bold ' value={"Create group"} />
                     </form>
-
-
                 </div>
 
             </div>

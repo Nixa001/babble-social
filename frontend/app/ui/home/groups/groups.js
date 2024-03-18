@@ -13,7 +13,7 @@ const Groups = () => {
         <div className='md:w-[400px] lg:w-[650px] xl:w-[800px] 2xl:w-[1200px] w-screen h-full 
              flex flex-col  '>
 
-            <div className='w-[95%] justify-between flex items-center mb-5 gap-5'>
+            <div className='w-[90%] justify-between flex items-center mb-5 gap-5'>
                 <h1 className='text-xl font-bold '>
                     My groups
                 </h1>

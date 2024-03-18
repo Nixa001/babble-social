@@ -1,7 +1,7 @@
 "use client";
 import React, { useState, useEffect, useContext } from "react";
 import { postForm } from "./postForm";
-import AddPost from "./displayPost";
+import DisplayPost from "./displayPost";
 import { websocketProvider } from "@/app/home/page";
 
 const HomePage = ({ data }) => {
@@ -16,14 +16,14 @@ const HomePage = ({ data }) => {
     <div className=" md:w-[400px] lg:w-[650px] xl:w-[800px] 2xl:w-[1000px] w-screen">
       <div className="flex justify-center mb-4">{postForm()}</div>
       <div className="post_div_top flex flex-col items-center">
-        <AddPost
+        <DisplayPost
           postData={postData}
           onLikeClick={onLikeClick}
           onDislikeClick={onDislikeClick}
           onCommentClick={onCommentClick}
           onProfileClick={onProfileClick}
         />
-        <AddPost
+        <DisplayPost
           postData={postData2}
           onLikeClick={onLikeClick}
           onDislikeClick={onDislikeClick}
