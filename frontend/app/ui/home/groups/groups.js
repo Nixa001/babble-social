@@ -1,13 +1,32 @@
 'use client'
+import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import React, { useState } from 'react';
+import { useEffect } from 'react';
 import { CreateGroup } from '../../components/modals/createGroup';
 
 const Groups = () => {
     const [formCreateGr, setFormCreateGr] = useState(false)
-    const groupData = Data
-    const groupJoined = DataJoined
+    // const groupData = Data
+    // const groupJoined = DataJoined
+
+    const [groupData, setGroupData] = useState([]);
+    const [groupJoined, setGroupJoined] = useState([]);
+
+    useEffect(() => {
+        fetch('http://localhost:8080/groups')
+            .then(response => response.json())
+            .then(data => {
+                setGroupData(data)
+            })
+            .catch(error => console.error('Erreur lors du chargement des données des groupes:', error));
+
+        fetch('/api/groups/joined')
+            .then(response => response.json())
+            .then(data => setGroupJoined(data))
+            .catch(error => console.error('Erreur lors du chargement des données des groupes rejoints:', error));
+    }, []);
+
 
     return (
         <div className='md:w-[400px] lg:w-[650px] xl:w-[800px] 2xl:w-[1200px] w-screen h-full 
@@ -78,7 +97,7 @@ const GroupCard = ({ isMember, image, name, description, href, functionOnclick }
                 >
                     <div className="flex flex-col items-center py-3">
                         <Image
-                            src={image}
+                            src={`/assets/${image}`}
                             alt={name}
                             width={200}
                             height={200}
@@ -152,35 +171,35 @@ const Data = [
 ];
 const DataJoined = [
     {
-        id: 1,
+        id: 111,
         image: "/assets/ea.jpg",
         name: "EA Football 24",
         description: "Un groupe pour les fans de football du monde entier",
         href: "/home/groups/group/",
     },
     {
-        id: 2,
+        id: 211,
         image: "/assets/cod.jpg",
         name: "Call of duty",
         description: "Un groupe gamers du monde entier",
         href: "/home/groups/group/",
     },
     {
-        id: 3,
+        id: 311,
         image: "/assets/100daysofcode.jpg",
         name: "100 days of code",
         description: "100DaysOfCode is a coding challenge for developers, with thousands of members worldwide...",
         href: "/home/groups/group/",
     },
     {
-        id: 4,
+        id: 411,
         image: "/assets/cod.jpg",
         name: "Call of duty",
         description: "Un groupe gamers du monde entier",
         href: "/home/groups/group/",
     },
     {
-        id: 5,
+        id: 511,
         image: "/assets/ea.jpg",
         name: "EA Football 24",
         description: "Un groupe pour les fans de football du monde entier",

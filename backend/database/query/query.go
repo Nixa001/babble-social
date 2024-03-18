@@ -1,6 +1,7 @@
 package query
 
 import (
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"strings"
@@ -201,4 +202,21 @@ func InsertQuery(table string, object interface{}) (string, []interface{}, error
 	fmt.Println(values)
 	query := fmt.Sprintf(`INSERT INTO %v (%v) VALUES (%v);`, table, columns, Placeholders(len(values)))
 	return query, values, nil
+}
+
+func InsertData(db *sql.DB, query string, values ...interface{}) error {
+	// Préparer la requête d'insertion
+	stmt, err := db.Prepare(query)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+
+	// Exécuter la requête d'insertion avec les valeurs
+	_, err = stmt.Exec(values...)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }

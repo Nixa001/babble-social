@@ -9,5 +9,7 @@ func main() {
 	utils.ClearScreen()
 	server := server.NewServer()
 
+	
+
 	server.Run()
 }

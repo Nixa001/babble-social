@@ -64,7 +64,7 @@ export const CreateGroup = ({ isVisible, onClose }) => {
                         focus:outline-none focus:border p-1 focus:ring-1 focus:ring-primary
                         '>
                         </textarea>
-                        <input type='file' onChange={handleImageChange} className='bg-transparent' />
+                        <input type='file' name='image' onChange={handleImageChange} className='bg-transparent' />
                         <input type='submit' className='bg-primary rounded-md border border-gray-700 h-[50px] cursor-pointer hover:bg-second text-lg font-bold ' value={"Create group"} />
                     </form>
                 </div>
