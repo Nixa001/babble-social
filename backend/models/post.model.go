@@ -1,12 +1,21 @@
 package models
 
 type Post struct {
-	ID      int    `json:"id"`
-	Title   string `json:"post_title"`
-	Content string `json:"post_content"`
-	Media   string `json:"post_media"`
-	Date    string `json:"post_date"`
-	UserID  int    `json:"user_id"`
-	GroupID int    `json:"group_id"`
-	Type    string `json:"type"`
+	ID       int
+	Date     string
+	Content  string   `json:"content"`
+	Media    string   `json:"media"`
+	User_id  int      `json:"userID"`
+	Group_id int      `json:"groupID"`
+	Privacy  string   `json:"privacy"`
+	Viewers  []string `json:"viewers"`
+}
+
+type DataPost []struct {
+	Avatar        string
+	Data          []Post
+	FullName      string
+	Username      string
+	comments      DataComment
+	Post_reaction [2]int
 }

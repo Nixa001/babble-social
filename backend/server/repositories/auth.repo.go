@@ -1,0 +1,84 @@
+package repositories
+
+import (
+	db "backend/database"
+	opt "backend/database/operators"
+	q "backend/database/query"
+	"backend/models"
+	"database/sql"
+)
+
+type UserRepository struct {
+	BaseRepo
+}
+
+func (u *UserRepository) init() {
+	u.DB = db.DB
+	u.TableName = "users"
+}
+
+func (u *UserRepository) CreateUser(user *models.User) error {
+	err := u.DB.Insert(u.TableName, user)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (u *UserRepository) GetUserById(id int) (*models.User, error) {
+	var user models.User
+	row, err := u.DB.GetOneForm(u.TableName, q.WhereOption{"id": opt.Equals(id)})
+	if err == sql.ErrNoRows {
+		return &models.User{}, err
+	}
+	err = row.Scan(&user.ID, &user.Firstname, &user.Lastname, &user.Username, &user.Gender, &user.Email, &user.Password, &user.UserType, &user.BirthDate, &user.Avatar, &user.AboutMe)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return &models.User{}, err
+		}
+		return &models.User{}, err
+	}
+	return &user, nil
+}
+
+func (u *UserRepository) GetUserByEmail(email string) (*models.User, error) {
+	var user models.User
+	row, err := u.DB.GetOneForm(u.TableName, q.WhereOption{"email": opt.Equals(email)})
+	if err != nil {
+		return &models.User{}, err
+	}
+	err = row.Scan(user.ID, &user.Firstname, &user.Lastname, &user.Username, &user.Gender, &user.Email, &user.Password, &user.UserType, &user.BirthDate, &user.Avatar, &user.AboutMe)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			return &models.User{}, err
+		}
+		return &models.User{}, err
+	}
+	return &user, nil
+}
+
+func (u *UserRepository) UpdateUser(user *models.User) error {
+	err := u.DB.Update(u.TableName, user, q.WhereOption{"id": opt.Equals(user.ID)})
+	return err
+}
+
+func (u *UserRepository) DeleteUser(user *models.User) error {
+	err := u.DB.Delete(u.TableName, q.WhereOption{"id": opt.Equals(user.ID)})
+	return err
+}
+
+func (u *UserRepository) GetAllUsers() (users []models.User, err error) {
+	var user models.User
+	rows, err := u.DB.GetAllFrom(u.TableName, nil, "email", nil)
+	if err != nil {
+		return users, err
+	}
+	for rows.Next() {
+		err := rows.Scan(&user.ID, &user.Firstname, &user.Lastname, &user.Username, &user.Gender, &user.Email, &user.Password, &user.UserType, &user.BirthDate, &user.Avatar, &user.AboutMe)
+		if err != nil {
+			return users, err
+		}
+		users = append(users, user)
+	}
+	return users, nil
+}
