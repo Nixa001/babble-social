@@ -155,7 +155,7 @@ func GetColumnsValues(data map[string]interface{}) (string, []interface{}) {
 	var values []interface{}
 
 	for column, value := range data {
-		columns = append(columns, column)
+		columns = append(columns, strings.ToLower(column))
 		values = append(values, value)
 	}
 
@@ -197,8 +197,6 @@ func InsertQuery(table string, object interface{}) (string, []interface{}, error
 	toMap := make(map[string]interface{})
 	json.Unmarshal(toJson, &toMap)
 	columns, values := GetColumnsValues(toMap)
-	fmt.Println(columns)
-	fmt.Println(values)
 	query := fmt.Sprintf(`INSERT INTO %v (%v) VALUES (%v);`, table, columns, Placeholders(len(values)))
 	return query, values, nil
 }
