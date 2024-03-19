@@ -25,11 +25,17 @@ SELECT
     p.media AS post_media,
     p.date AS post_date,
     p.user_id AS post_user_id,
+	u.avatar as avatar,
+    u.user_name as username,
+    concat (u.first_name, " ", u.last_name) as full_name,
     COUNT(c.id) AS comment_count,
+	GROUP_CONCAT(DISTINCT cat.category) AS categories
 FROM 
     posts AS p
+	users AS u
 LEFT JOIN 
-    comments AS c ON p.id = c.post_id
+    comments AS c ON p.id = c.post_id,
+	categories AS cat ON p.id = cat.post_id
 WHERE 
     (
         p.privacy = 'public'
@@ -59,6 +65,7 @@ WHERE
             )
         )
     )
+	GROUP BY p.id, p.content, p.media, p.date, p.user_id
 `
 
 func (p *PostRepository) init() {
@@ -181,10 +188,10 @@ func (P *PostRepository) InsertPost(post models.Post) error {
 	return nil
 }
 
-func (p *PostRepository) LoadPost(IdUser int) (models.DataPost, error) {
+func (p *PostRepository) LoadPost(IdUser int) ([]models.DataPost, error) {
 	var postTab []models.DataPost
 
-	rows, err := p.DB.Exec(GetPostQuery, IdUser)
+	rows, err := p.DB.Exec(GetPostQuery, IdUser, IdUser, IdUser, IdUser)
 	if err != nil {
 		fmt.Println("❌ Error while retrieving posts => ", err)
 		return models.DataPost{}, errors.New("error while retrieving posts from the database")
@@ -193,14 +200,39 @@ func (p *PostRepository) LoadPost(IdUser int) (models.DataPost, error) {
 
 	for rows.next() {
 		var temp models.DataPost
-		errScan := rows.scan(&temp.ID, &temp.Content, &temp.Media, &temp.Date, &temp.User_id, &temp.Avata, &temp.UserName, &temp.FullName, &temp.Comment, &temp.Categories)
+		errScan := rows.scan(&temp.ID, &temp.Content, &temp.Media, &temp.Date, &temp.User_id, &temp.Avatar, &temp.UserName, &temp.FullName, &temp.Comment, &temp.Categories)
 		if errScan != nil {
 			fmt.Println("⚠ GetPost scan err ⚠ :", errScan)
 			return models.DataPost{}, errors.New("error while scanning")
 		}
-		
+
 		temp.Content = utils.DecodeValue(temp.Content)
 		postTab = append(postTab, temp)
 	}
 	return postTab, nil
 }
+
+//todo: on process...
+func (p *PostRepository) GetOnePost(postID int) (models.DataPost, error) {
+
+	rows, err := p.DB.Exec(GetPostQuery, IdUser, IdUser, IdUser, IdUser)
+	if err != nil {
+		fmt.Println("❌ Error while retrieving posts => ", err)
+		return models.DataPost{}, errors.New("error while retrieving posts from the database")
+	}
+	defer rows.Close()
+
+	for rows.next() {
+		var temp models.DataPost
+		errScan := rows.scan(&temp.ID, &temp.Content, &temp.Media, &temp.Date, &temp.User_id, &temp.Avatar, &temp.UserName, &temp.FullName, &temp.Comment, &temp.Categories)
+		if errScan != nil {
+			fmt.Println("⚠ GetPost scan err ⚠ :", errScan)
+			return models.DataPost{}, errors.New("error while scanning")
+		}
+
+		temp.Content = utils.DecodeValue(temp.Content)
+		postTab = append(postTab, temp)
+	}
+	return postTab, nil
+}
+
