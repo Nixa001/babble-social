@@ -10,9 +10,12 @@ type Comment struct {
 }
 
 type DataComment []struct {
-	FullName      string
-	Username      string
-	Avatar        string
-	Data          []Comment
-	Comment_react [2]int
+	Avatar   string
+	Content  string
+	Date     string
+	FullName string
+	ID       int
+	Media    string
+	Post_id  string
+	Username string
 }
