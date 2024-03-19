@@ -5,27 +5,31 @@ import Link from 'next/link';
 import { useEffect } from 'react';
 import { CreateGroup } from '../../components/modals/createGroup';
 
-const Groups = () => {
-    const [formCreateGr, setFormCreateGr] = useState(false)
-    // const groupData = Data
-    // const groupJoined = DataJoined
 
+const Groups = () => {
+    const [formCreateGr, setFormCreateGr] = useState(false);
     const [groupData, setGroupData] = useState([]);
     const [groupJoined, setGroupJoined] = useState([]);
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
-        fetch('http://localhost:8080/groups')
-            .then(response => response.json())
-            .then(data => {
-                setGroupData(data)
-            })
-            .catch(error => console.error('Erreur lors du chargement des données des groupes:', error));
+        const fetchData = async () => {
+            setIsLoading(true);
+            try {
+                const response = await fetch('http://localhost:8080/groups');
+                const data = await response.json();
+                setGroupJoined(data[0]);
+                setGroupData(data[1]);
+            } catch (error) {
+                console.error('Erreur lors du chargement des données des groupes:', error);
+            } finally {
+                setIsLoading(false);
+            }
+        };
 
-        fetch('/api/groups/joined')
-            .then(response => response.json())
-            .then(data => setGroupJoined(data))
-            .catch(error => console.error('Erreur lors du chargement des données des groupes rejoints:', error));
-    }, []);
+        fetchData();
+    }, [groupJoined.length, groupData.length]);
+
 
 
     return (
@@ -34,14 +38,19 @@ const Groups = () => {
 
             <div className='w-[90%] justify-between flex items-center mb-5 gap-5'>
                 <h1 className='text-xl font-bold '>
-                    My groups
+                    Communities
                 </h1>
                 <button className="inline-flex items-center px-4 py-2 text-m font-semibold text-center 
                             text-white bg-primary rounded-lg hover:bg-second"
                     onClick={() => {
                         setFormCreateGr(true)
+
                     }}>
-                    Create a new group
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
+                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                    </svg>
+
+                    New Group
                 </button>
             </div>
             <div className='w-full flex gap-3 flex-wrap '>
@@ -52,7 +61,7 @@ const Groups = () => {
 
             </div>
             <h1 className='text-xl font-bold my-5'>
-                Discover new groups
+                Discover new communities
             </h1>
 
             <div className='w-full flex gap-3 flex-wrap pb-10 '>
@@ -60,7 +69,11 @@ const Groups = () => {
                     <GroupCard key={group.id} isMember={false} {...group} />
                 ))}
             </div>
-            <CreateGroup isVisible={formCreateGr} onClose={() => setFormCreateGr(false)} />
+            <CreateGroup isVisible={formCreateGr} onClose={() => {
+                setFormCreateGr(false)
+
+            }}
+            />
         </div>
     );
 };
@@ -68,18 +81,20 @@ const Groups = () => {
 export default Groups;
 
 
-const GroupCard = ({ isMember, image, name, description, href, functionOnclick }) => {
-    description = description.slice(0, 50) + "..."
+const GroupCard = ({ isMember, id, image, name, description, href }) => {
+    if (description.length > 50) {
+        description = description.slice(0, 50) + " ..."
+    }
     return (
         <>
             {isMember ? (
                 < Link href={href} className="inline-flex items-center text-m font-semibold text-center text-white rounded-l">
                     <div
-                        className="w-[200px] border rounded-lg shadow-2xl bg-black bg-clip-padding backdrop-filter backdrop-blur-md bg-opacity-5 border-gray-700 hover:bg-opacity-15 cursor-pointer"
+                        className="w-[200px] border rounded-lg shadow-2xl min-h-[206px] bg-black bg-clip-padding backdrop-filter backdrop-blur-md bg-opacity-5 border-gray-700 hover:bg-opacity-15 cursor-pointer"
                     >
                         <div className="flex flex-col items-center py-3">
                             <Image
-                                src={image}
+                                src={`/assets/${image}`}
                                 alt={name}
                                 width={500}
                                 height={500}
@@ -107,7 +122,7 @@ const GroupCard = ({ isMember, image, name, description, href, functionOnclick }
                         <span className="max-h-14 overflow-hidden text-sm text-gray-300 text-center">{description}</span>
 
                         <div className="flex mt-4 md:mt-6">
-                            <button onClick={() => { functionOnclick() }} className="inline-flex items-center px-4 py-2 text-m font-semibold text-center text-white bg-primary rounded-lg hover:bg-second">
+                            <button onClick={() => { JoinGroup(name) }} className="inline-flex items-center px-4 py-2 text-m font-semibold text-center text-white bg-primary rounded-lg hover:bg-second">
                                 Join
                             </button>
                         </div>
@@ -122,8 +137,8 @@ const GroupCard = ({ isMember, image, name, description, href, functionOnclick }
     );
 };
 
-function JoinGroup() {
-    alert('Send join');
+function JoinGroup(name) {
+    alert("send join " + name);
 }
 
 const Data = [
@@ -136,70 +151,10 @@ const Data = [
         functionOnclick: JoinGroup,
 
     },
-    {
-        id: 2,
-        image: "/assets/cod.jpg",
-        name: "Call of duty",
-        description: "Un groupe gamers du monde entier",
-        href: "/groups/join/Call of duty",
-        functionOnclick: JoinGroup,
-    },
-    {
-        id: 3,
-        image: "/assets/100daysofcode.jpg",
-        name: "100 days of code",
-        description: "100DaysOfCode is a coding challenge for developers, with thousands of members worldwide...",
-        href: "/groups/join/EA Football 24",
-        functionOnclick: JoinGroup,
-    },
-    {
-        id: 4,
-        image: "/assets/cod.jpg",
-        name: "Call of duty",
-        description: "Un groupe gamers du monde entier",
-        href: "/groups/join/Call of duty",
-        functionOnclick: JoinGroup,
-    },
-    {
-        id: 5,
-        image: "/assets/ea.jpg",
-        name: "EA Football 24",
-        description: "Un groupe pour les fans de football du monde entier",
-        href: "/groups/join/EA Football 24",
-        functionOnclick: JoinGroup,
-    },
 ];
 const DataJoined = [
     {
         id: 111,
-        image: "/assets/ea.jpg",
-        name: "EA Football 24",
-        description: "Un groupe pour les fans de football du monde entier",
-        href: "/home/groups/group/",
-    },
-    {
-        id: 211,
-        image: "/assets/cod.jpg",
-        name: "Call of duty",
-        description: "Un groupe gamers du monde entier",
-        href: "/home/groups/group/",
-    },
-    {
-        id: 311,
-        image: "/assets/100daysofcode.jpg",
-        name: "100 days of code",
-        description: "100DaysOfCode is a coding challenge for developers, with thousands of members worldwide...",
-        href: "/home/groups/group/",
-    },
-    {
-        id: 411,
-        image: "/assets/cod.jpg",
-        name: "Call of duty",
-        description: "Un groupe gamers du monde entier",
-        href: "/home/groups/group/",
-    },
-    {
-        id: 511,
         image: "/assets/ea.jpg",
         name: "EA Football 24",
         description: "Un groupe pour les fans de football du monde entier",

@@ -19,9 +19,12 @@ const Page = () => {
 
   return (
     <div className="">
-      <websocketProvider>
-        <HomePage data="this is a test" />
-      </websocketProvider>
+      {/* <QueryClientProvider client={queryClient}> */}
+        <websocketProvider>
+          <HomePage data="this is a test" />
+        </websocketProvider>
+      {/* </QueryClientProvider> */}
+
     </div>
   );
 };

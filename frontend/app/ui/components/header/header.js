@@ -20,9 +20,9 @@ export function Header() {
         <i className="">
           <FaSearch className=" text-2xl" />
         </i>
-        <input type="search" placeholder="Search ..." name="search" className="h-8 w-full bg-transparent text-xl focus:outline-none" />
+        <input type="search" placeholder="Search ..." name="search" className="h-8 w-full bg-transparent text-md focus:outline-none" />
       </div>
-      <div className="flex items-center text-4xl gap-x-5 mr-3">
+      <div className="flex items-center text-3xl gap-x-5 mr-3">
         <i className="hover:text-second cursor-pointer"><AiFillMessage /></i>
         <i className="hover:text-second cursor-pointer "><IoNotifications /></i>
       </div>

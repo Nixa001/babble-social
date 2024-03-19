@@ -84,7 +84,7 @@ body {
 .isActive {
   /* background: var(--primary_color); */
   color: var(--primary_color);
-  border:1px solid var(--primary_color);
+  /* border:1px solid var(--primary_color); */
 }
 
 

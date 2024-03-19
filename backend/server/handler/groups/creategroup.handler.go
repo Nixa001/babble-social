@@ -21,7 +21,7 @@ type group struct {
 	Creation_Date  string
 }
 
-var user_id int = 1
+var UserId int = 1
 
 func CreateGroupHandler(w http.ResponseWriter, r *http.Request) {
 	db, err := sql.Open("sqlite3", "./database/social_network.db")
@@ -29,6 +29,7 @@ func CreateGroupHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("Erreur lors de l'ouverture de la base de données:", err)
 		return
 	}
+	defer db.Close()
 	cors.SetCors(&w)
 	var group group = parseFormData(w, r)
 	isExist, err := checkGroupExists(db, group.Name)
@@ -76,7 +77,7 @@ func parseFormData(w http.ResponseWriter, r *http.Request) group {
 	group := group{
 		Name:           r.FormValue("name"),
 		Description:    r.FormValue("description"),
-		ID_User_Create: user_id,
+		ID_User_Create: UserId,
 		Creation_Date:  utils.GetCurrentDateTime(),
 		Avatar:         avatarGroup,
 	}
