@@ -10,7 +10,6 @@ import (
 	"io/ioutil"
 	"log"
 	"strings"
-
 	"github.com/gofrs/uuid"
 )
 
@@ -18,7 +17,8 @@ type PostRepository struct {
 	BaseRepo
 }
 
-const GetPostQuery = `
+const (
+	GetPostQuery = `
 SELECT 
     p.id AS post_id,
     p.content AS post_content,
@@ -67,6 +67,40 @@ WHERE
     )
 	GROUP BY p.id, p.content, p.media, p.date, p.user_id
 `
+	GetOnePostQuery = `
+SELECT
+    p.id,
+    p.content,
+    p.media,
+    p.date,
+    p.user_id,
+    u.avatar,
+    u.user_name,
+    concat (u.first_name, " ", u.last_name),
+    COUNT(DISTINCT c.id),
+    GROUP_CONCAT(DISTINCT cat.category),
+    CASE
+    WHEN p.privacy ="public" THEN "public"
+    WHEN p.privacy ="private" THEN (
+         SELECT GROUP_CONCAT(user_id_follower) 
+            FROM users_followers 
+            WHERE user_id_followed = p.user_id 
+    )
+    WHEN p.privacy ="almost" THEN (
+        SELECT GROUP_CONCAT(user_id)
+            FROM viewers
+            WHERE post_id = p.id
+        )
+        ELSE NULL
+    END AS isPublic
+FROM
+    posts AS p
+LEFT JOIN comment AS c ON p.id = c.post_id,
+    categories AS cat ON p.id = cat.post_id,
+    users AS u ON u.id =  p.user_id
+WHERE p.id = ?;
+`
+)
 
 func (p *PostRepository) init() {
 	p.DB = db.DB
@@ -147,20 +181,22 @@ func (P *PostRepository) InsertPost(post models.Post) error {
 	if post.ToIns.Content != "" {
 		post.ToIns.Content = utils.EncodeValue(post.ToIns.Content)
 	}
+	//-- processing image
+	if post.ToIns.Media {
+		imgData, err := base64.StdEncoding.DecodeString(post.ToIns.Media)
+		if err != nil {
+			log.Println("❌ error while decoding image", err)
+			return
+		}
 
-	imgData, err := base64.StdEncoding.DecodeString(post.ToIns.Media)
-	if err != nil {
-		log.Println("❌ error while decoding image", err)
-		return
+		err = ioutil.WriteFile(id_image, imgData) // storing in local
+		if err != nil {
+			log.Println("❌ error while storing image in local:", err)
+			return
+		}
+		post.Media = fmt.Sprintf("http://localhost:8000/images/%s", id_image)
+		log.Println("✔ image decoded successfully")
 	}
-
-	err = ioutil.WriteFile(id_image, imgData) // storing in local
-	if err != nil {
-		log.Println("❌ error while storing image in local:", err)
-		return
-	}
-	post.Media = fmt.Sprintf("http://localhost:8000/images/%s", id_image)
-	log.Println("✔ image decoded successfully")
 
 	err := p.DB.Insert(p.TableName, post.ToIns)
 	if err != nil {
@@ -212,27 +248,23 @@ func (p *PostRepository) LoadPost(IdUser int) ([]models.DataPost, error) {
 	return postTab, nil
 }
 
-//todo: on process...
 func (p *PostRepository) GetOnePost(postID int) (models.DataPost, error) {
-
-	rows, err := p.DB.Exec(GetPostQuery, IdUser, IdUser, IdUser, IdUser)
+	rows, err := p.DB.Exec(GetOnePostQuery, postID)
 	if err != nil {
-		fmt.Println("❌ Error while retrieving posts => ", err)
-		return models.DataPost{}, errors.New("error while retrieving posts from the database")
+		fmt.Println("❌ Error while retrieving in OnePost => ", err)
+		return models.DataPost{}, errors.New("error while retrieving onepost from the database")
 	}
 	defer rows.Close()
 
+	var data models.DataPost
+	//! modify retrieval
 	for rows.next() {
-		var temp models.DataPost
-		errScan := rows.scan(&temp.ID, &temp.Content, &temp.Media, &temp.Date, &temp.User_id, &temp.Avatar, &temp.UserName, &temp.FullName, &temp.Comment, &temp.Categories)
+		errScan := rows.scan(&data.ID, &data.Content, &data.Media, &data.Date, &data.Avatar, &data.UserName, &data.FullName, &data.Comments, &data.Categories, &data.Viewers)
 		if errScan != nil {
-			fmt.Println("⚠ GetPost scan err ⚠ :", errScan)
+			fmt.Println("⚠ GetOnePost scan err ⚠ :", errScan)
 			return models.DataPost{}, errors.New("error while scanning")
 		}
-
-		temp.Content = utils.DecodeValue(temp.Content)
-		postTab = append(postTab, temp)
+		data.Content = utils.DecodeValue(data.Content)
 	}
-	return postTab, nil
+	return data, nil
 }
-

@@ -7,7 +7,6 @@ import (
 	"encoding/base64"
 	"errors"
 	"fmt"
-	"go/doc/comment"
 	"io/ioutil"
 	"log"
 	"strings"
@@ -42,7 +41,7 @@ func (c *CommentRepository) init() {
 	c.TableName = "comment"
 }
 
-func (c *CommentRepository) CreateComment(Comment models.Comment) (bool, models.Errormessage) {
+func (c *CommentRepository) CreateComment(comment models.Comment) (bool, models.Errormessage) {
 	/*
 		! code here........
 		todo: check post's and user's validity
@@ -104,24 +103,25 @@ func (c *CommentRepository) InsertComment(comment models.Comment) error {
 	date, time := tools.Time() //date and time
 
 	// inserting value in database
-	//-- formatting value's special chars
 	if comment.Content != "" {
 		comment.Content = utils.EncodeValue(comment.Content)
 	}
+	// processing image
+	if comment.Media {
+		imgData, err := base64.StdEncoding.DecodeString(comment.Media)
+		if err != nil {
+			log.Println("❌ error while decoding image", err)
+			return
+		}
 
-	imgData, err := base64.StdEncoding.DecodeString(comment.Media)
-	if err != nil {
-		log.Println("❌ error while decoding image", err)
-		return
+		err = ioutil.WriteFile(id_image, imgData) // storing in local
+		if err != nil {
+			log.Println("❌ error while storing image in local:", err)
+			return
+		}
+		comment.Media = fmt.Sprintf("http://localhost:8000/images/%s", id_image)
+		log.Println("✔ image decoded successfully")
 	}
-
-	err = ioutil.WriteFile(id_image, imgData) // storing in local
-	if err != nil {
-		log.Println("❌ error while storing image in local:", err)
-		return
-	}
-	comment.Media = fmt.Sprintf("http://localhost:8000/images/%s", id_image)
-	log.Println("✔ image decoded successfully")
 
 	err := p.DB.Insert(p.TableName, comment)
 	if err != nil {
