@@ -21,23 +21,23 @@ type Group struct {
 
 const userID int = 1
 
-var Groups [][]Group
 
 func GetGroups(w http.ResponseWriter, r *http.Request) {
-
+	
 	cors.SetCors(&w)
 	var db = seed.CreateDB()
 	joinedGroups, err := getJoinedGroups(db, userID)
 	if err != nil {
 		return
 	}
-
+	
 	allGroups, err := getAllGroups(db)
 	if err != nil {
 		return
 	}
-
+	
 	filteredGroups, groups := filterGroups(joinedGroups, allGroups)
+	var Groups [][]Group
 	Groups = append(Groups, groups)
 	Groups = append(Groups, filteredGroups)
 
@@ -90,7 +90,6 @@ func getAllGroups(db *sql.DB) ([]Group, error) {
 		allGroups = append(allGroups, group)
 	}
 
-	fmt.Println(len(allGroups))
 	if err := rows.Err(); err != nil {
 		return nil, fmt.Errorf("failed to read all groups results: %w", err)
 	}
@@ -105,14 +104,14 @@ func filterGroups(joined []int, all []Group) ([]Group, []Group) {
 		isJoined := false
 		for _, id := range joined {
 			if id == group.ID {
-				group.Href = "/home/groups/group/"
 				isJoined = true
 				break
 			}
 		}
 		if !isJoined && group.ID_User_Create != userID {
 			filteredGroups = append(filteredGroups, group)
-		} else {
+			} else {
+			group.Href = "/home/groups/group/"
 			Groups = append(Groups, group)
 		}
 		// fmt.Println(group)

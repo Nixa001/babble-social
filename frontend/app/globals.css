@@ -20,6 +20,7 @@
   --text_color: #fff;
   --shadow_color: rgba(0, 0, 0, 0.69);
   --navbar_color: #fff;
+  --bg_second: #1bc3f2;
 }
 
 @media (prefers-color-scheme: dark) {
@@ -114,4 +115,7 @@ body {
   overflow-y: scroll;
   scrollbar-color: var(--primary_color) var(--border); /* Change track color */
   scrollbar-width: thin;
+}
+.bgSecond{
+
 }

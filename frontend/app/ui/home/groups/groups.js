@@ -18,64 +18,64 @@ const Groups = () => {
             try {
                 const response = await fetch('http://localhost:8080/groups');
                 const data = await response.json();
+                console.log(data);
                 setGroupJoined(data[0]);
                 setGroupData(data[1]);
             } catch (error) {
-                console.error('Erreur lors du chargement des données des groupes:', error);
+                console.error('Erreur ', error);
             } finally {
                 setIsLoading(false);
             }
         };
-
         fetchData();
-    }, [groupJoined.length, groupData.length]);
+    }, [formCreateGr]);
+
 
 
 
     return (
-        <div className='md:w-[400px] lg:w-[650px] xl:w-[800px] 2xl:w-[1200px] w-screen h-full 
-             flex flex-col  '>
-
-            <div className='w-[90%] justify-between flex items-center mb-5 gap-5'>
-                <h1 className='text-xl font-bold '>
-                    Communities
-                </h1>
-                <button className="inline-flex items-center px-4 py-2 text-m font-semibold text-center 
-                            text-white bg-primary rounded-lg hover:bg-second"
-                    onClick={() => {
-                        setFormCreateGr(true)
-
-                    }}>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                    </svg>
-
-                    New Group
-                </button>
-            </div>
-            <div className='w-full flex gap-3 flex-wrap '>
-
-                {groupJoined.map((group) => (
-                    <GroupCard key={group.id} isMember={true} {...group} />
-                ))}
-
-            </div>
-            <h1 className='text-xl font-bold my-5'>
-                Discover new communities
-            </h1>
-
-            <div className='w-full flex gap-3 flex-wrap pb-10 '>
-                {groupData.map((group) => (
-                    <GroupCard key={group.id} isMember={false} {...group} />
-                ))}
-            </div>
-            <CreateGroup isVisible={formCreateGr} onClose={() => {
-                setFormCreateGr(false)
-
-            }}
-            />
+        <div className='md:w-[400px] lg:w-[650px] xl:w-[800px] 2xl:w-[1200px] w-screen h-full flex flex-col'>
+            {isLoading ? (
+                <div>
+                    chargement ..
+                </div>
+            ) : (
+                <>
+                    <div className='w-[90%] justify-between flex items-center mb-5 gap-5'>
+                        <h1 className='text-xl font-bold'>
+                            Communities
+                        </h1>
+                        <button className="inline-flex items-center px-4 py-2 text-m font-semibold text-center text-white bg-primary rounded-lg hover:bg-second"
+                            onClick={() => {
+                                setFormCreateGr(true);
+                            }}>
+                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
+                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                            </svg>
+                            New Group
+                        </button>
+                    </div>
+                    <div className='w-full flex gap-3 flex-wrap'>
+                        {groupJoined.map((group) => (
+                            <GroupCard key={group.id} isMember={true} {...group} />
+                        ))}
+                    </div>
+                    <h1 className='text-xl font-bold my-5'>
+                        Discover new communities
+                    </h1>
+                    <div className='w-full flex gap-3 flex-wrap pb-10'>
+                        {groupData.map((group) => (
+                            <GroupCard key={group.id} isMember={false} {...group} />
+                        ))}
+                    </div>
+                    <CreateGroup isVisible={formCreateGr} onClose={() => {
+                        setFormCreateGr(false);
+                    }} />
+                </>
+            )}
         </div>
     );
+
 };
 
 export default Groups;
@@ -90,7 +90,7 @@ const GroupCard = ({ isMember, id, image, name, description, href }) => {
             {isMember ? (
                 < Link href={href} className="inline-flex items-center text-m font-semibold text-center text-white rounded-l">
                     <div
-                        className="w-[200px] border rounded-lg shadow-2xl min-h-[206px] bg-black bg-clip-padding backdrop-filter backdrop-blur-md bg-opacity-5 border-gray-700 hover:bg-opacity-15 cursor-pointer"
+                        className="w-[200px] border rounded-lg shadow-xl min-h-[206px] bg-bg bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-5 border-gray-800 hover:bg-opacity-5 hover:bg-primary cursor-pointer"
                     >
                         <div className="flex flex-col items-center py-3">
                             <Image
@@ -98,7 +98,7 @@ const GroupCard = ({ isMember, id, image, name, description, href }) => {
                                 alt={name}
                                 width={500}
                                 height={500}
-                                className="w-24 h-24 mb-3 rounded-full hover:scale-110 transition duration-300 ease-in shadow-lg"
+                                className="w-24 h-24 mb-3 rounded-full hover:scale-110 transition duration-200 ease-in shadow-lg"
                             />
                             <h5 className="mb-1 text-xl font-medium text-white text-center">{name}</h5>
                             <span className="max-h-14 overflow-hidden text-sm text-gray-300 text-center">{description}</span>
@@ -108,15 +108,15 @@ const GroupCard = ({ isMember, id, image, name, description, href }) => {
                 </Link >
             ) : (
                 <div
-                    className="w-[200px] border rounded-lg shadow-2xl bg-gray-700 bg-clip-padding backdrop-filter backdrop-blur-md bg-opacity-10 border-gray-700 hover:bg-opacity-25 cursor-pointer"
+                    className="w-[200px] border rounded-lg shadow-xl bg-primary bg-opacity-0 bg-clip-padding backdrop-filter backdrop-blur-md hover:bg-opacity-5 hover:bg-primary border-gray-800 cursor-pointer"
                 >
-                    <div className="flex flex-col items-center py-3">
+                    <div className="flex flex-col items-center h-[100%]  justify-between py-3">
                         <Image
                             src={`/assets/${image}`}
                             alt={name}
                             width={200}
                             height={200}
-                            className="w-24 h-24 mb-3 rounded-full shadow-lg"
+                            className="w-24 h-24 mb-3 hover:scale-110 duration-200 transition ease-in-out rounded-full shadow-lg"
                         />
                         <h5 className="mb-1 text-xl font-medium text-white text-center">{name}</h5>
                         <span className="max-h-14 overflow-hidden text-sm text-gray-300 text-center">{description}</span>
