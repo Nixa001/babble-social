@@ -53,3 +53,21 @@ func (a *AuthService) VerifyToken(r *http.Request) (session models.Session, err 
 	}
 	return session, nil
 }
+
+func (a *AuthService) RemoveSession(token string) error {
+	return a.SessRepo.DeleteSession(token)
+}
+
+func (a *AuthService) RemExistingSession(userId string) error {
+	sessions, err := a.SessRepo.GetSessionByUserId(userId)
+	if err != nil {
+		return err
+	}
+	for _, session := range sessions {
+		err = a.SessRepo.DeleteSession(session.Token)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
