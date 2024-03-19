@@ -26,16 +26,17 @@ type Viewers []struct {
 }
 
 type DataPost struct {
-	ID         int
-	Date       string
 	Avatar     string
-	Content    string
 	Categories string
-	Media      string
-	User_id    int
-	Group_id   int
-	Privacy    string
-	FullName   string
-	UserName   string
 	comments   int
+	Content    string
+	Date       string
+	FullName   string
+	Group_id   int
+	ID         int
+	Media      string
+	Privacy    string
+	UserName   string
+	User_id    int
+	Viewers    string
 }
