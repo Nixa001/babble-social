@@ -14,7 +14,7 @@ const (
 )
 
 type WSClient struct {
-	Firstname   string
+	Email       string
 	WSCoon      *websocket.Conn
 	OutgoingMsg chan interface{}
 }
@@ -53,13 +53,13 @@ func (h *Hub) listen() {
 	for {
 		select {
 		case client := <-h.RegisterChannel:
-			h.Clients.Store(client.Firstname, client)
-			log.Printf("Client %s connected\n", client.Firstname)
+			h.Clients.Store(client.Email, client)
+			log.Printf("Client %s connected\n", client.Email)
 		case client := <-h.UnRegisterChannel:
-			if _, ok := h.Clients.Load(client.Firstname); ok {
-				h.Clients.Delete(client.Firstname)
+			if _, ok := h.Clients.Load(client.Email); ok {
+				h.Clients.Delete(client.Email)
 				close(client.OutgoingMsg)
-				log.Printf("Client %s disconnected\n", client.Firstname)
+				log.Printf("Client %s disconnected\n", client.Email)
 			}
 		case message := <-h.SSE:
 			h.HandleEvent(message)
@@ -73,7 +73,7 @@ func (h *Hub) HandleEvent(eventPayload WSPaylaod) {
 	case WS_JOIN_EVENT:
 		h.Clients.Range(func(key, value interface{}) bool {
 			client := value.(*WSClient)
-			if client.Firstname == eventPayload.To {
+			if client.Email == eventPayload.To {
 				client.OutgoingMsg <- eventPayload
 			}
 			return true
@@ -81,7 +81,7 @@ func (h *Hub) HandleEvent(eventPayload WSPaylaod) {
 	case WS_DISCONNECT_EVENT:
 		h.Clients.Range(func(key, value interface{}) bool {
 			client := value.(*WSClient)
-			if client.Firstname == eventPayload.To {
+			if client.Email == eventPayload.To {
 				client.OutgoingMsg <- eventPayload
 			}
 			return true
@@ -89,9 +89,9 @@ func (h *Hub) HandleEvent(eventPayload WSPaylaod) {
 	}
 }
 
-func (wsHub *Hub) AddClient(coon *websocket.Conn, firstname string) {
+func (wsHub *Hub) AddClient(coon *websocket.Conn, Email string) {
 	client := &WSClient{
-		Firstname:   firstname,
+		Email:       Email,
 		WSCoon:      coon,
 		OutgoingMsg: make(chan interface{}),
 	}
@@ -102,7 +102,7 @@ func (wsHub *Hub) AddClient(coon *websocket.Conn, firstname string) {
 	wsHub.RegisterChannel <- client
 
 	var newEvent = WSPaylaod{
-		From: client.Firstname,
+		From: client.Email,
 		Type: WS_JOIN_EVENT,
 		Data: nil,
 	}
@@ -118,7 +118,7 @@ func (client *WSClient) messageReader() {
 			WSHub.UnRegisterChannel <- client
 
 			var newEvent = WSPaylaod{
-				From: client.Firstname,
+				From: client.Email,
 				Type: WS_DISCONNECT_EVENT,
 				Data: nil,
 			}
@@ -133,7 +133,7 @@ func (client *WSClient) messageReader() {
 		eventType := payload["type"].(string)
 
 		wsEvent := WSPaylaod{
-			From: client.Firstname,
+			From: client.Email,
 			Type: eventType,
 			Data: payload,
 		}
@@ -143,19 +143,15 @@ func (client *WSClient) messageReader() {
 }
 
 func (client *WSClient) messageWriter() {
-	for {
-		select {
-		case message := <-client.OutgoingMsg:
-			data, err := json.Marshal(message)
-			if err != nil {
-				return
-			}
+	for message := range client.OutgoingMsg {
+		data, err := json.Marshal(message)
+		if err != nil {
+			return
+		}
 
-			err = client.WSCoon.WriteMessage(websocket.TextMessage, data)
-			if err != nil {
-				return
-			}
-
+		err = client.WSCoon.WriteMessage(websocket.TextMessage, data)
+		if err != nil {
+			return
 		}
 	}
 }
