@@ -6,6 +6,8 @@ import (
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/gofrs/uuid/v5"
 )
 
 func ParseArrayInt(a []string) (tab []int, err error) {
@@ -79,6 +81,9 @@ func IsAlpha(input string) bool {
 }
 
 func VerifyUsername(username string) error {
+	if username == "" {
+		return nil
+	}
 	pattern := `^[a-zA-Z][a-zA-Z0-9_]{6,15}$`
 	regex := regexp.MustCompile(pattern)
 	ok := regex.MatchString(username)
@@ -106,4 +111,24 @@ func IsValidEmail(email string) error {
 
 	}
 	return nil
+}
+
+func IsValidPassword(password string) error {
+	if len(password) < 4 {
+		return fmt.Errorf("password must be at least 8 characters long")
+	}
+	return nil
+}
+
+func GenerateToken() string {
+	token, err := uuid.NewV4()
+	if err != nil {
+		fmt.Println(err)
+	}
+	return token.String()
+
+}
+
+func GenerateExpirationTime() string {
+	return time.Now().Add((time.Hour * 24)).String()
 }
