@@ -1,11 +1,14 @@
 package utils
 
 import (
+	"errors"
 	"fmt"
 	"regexp"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/gofrs/uuid/v5"
 )
 
 func ParseArrayInt(a []string) (tab []int, err error) {
@@ -113,12 +116,20 @@ func IsValidEmail(email string) error {
 	return nil
 }
 
-func IsValidImageType(contentType string) bool {
-	contentType = strings.ToLower(contentType)
-	return strings.HasPrefix(contentType, "image/jpeg") ||
-		strings.HasPrefix(contentType, "image/jpg") ||
-		strings.HasPrefix(contentType, "image/png") ||
-		strings.HasPrefix(contentType, "image/gif") ||
-		strings.HasPrefix(contentType, "image/bmp") ||
-		strings.HasPrefix(contentType, "image/webp")
+func IsValidImageType(s string) bool {
+	s = strings.ToLower(s)
+	return strings.HasSuffix(s, ".jpeg") ||
+		strings.HasSuffix(s, ".png") ||
+		strings.HasSuffix(s, ".jpg") ||
+		strings.HasSuffix(s, ".bmp") ||
+		strings.HasSuffix(s, ".webp") ||
+		strings.HasSuffix(s, ".gif")
+}
+
+func GenImageName(image string) (string, error) {
+	idImg, errImg := uuid.NewV4()
+	if errImg != nil {
+		return "", errors.New("cannot generate id for img name")
+	}
+	return fmt.Sprintf("%s%s", idImg, image), nil
 }

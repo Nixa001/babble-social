@@ -1,7 +1,9 @@
 package handler
 
 import (
+	"backend/models"
 	"backend/server/cors"
+	"backend/utils"
 	"fmt"
 	"net/http"
 )
@@ -41,5 +43,17 @@ func POSTHandler(w http.ResponseWriter, r *http.Request) {
 		Viewers := r.FormValue("viewers")
 		fmt.Println("[INFO] viewers: ", Viewers) //debug
 
+		Image, _ := utils.Uploader(w, r, 20, "image", "")
+		fmt.Println("[INFO] imagelink: ", Image) //debug
+        PostToCreate := &models.Post {
+         ToIns : &InsPost {
+		Content: PostContent,
+		Media: Image,
+		User_id: 1,
+		Group_id: 0,
+		Privacy: Privacy,
+		 },
+		}
+		fmt.Println(PostToCreate)
 	}
 }

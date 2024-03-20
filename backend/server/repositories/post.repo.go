@@ -230,7 +230,7 @@ func (p *PostRepository) LoadPost(IdUser int) ([]models.DataPost, error) {
 	rows, err := p.DB.Exec(GetPostQuery, IdUser, IdUser, IdUser, IdUser)
 	if err != nil {
 		fmt.Println("❌ Error while retrieving posts => ", err)
-		return models.DataPost{}, errors.New("error while retrieving posts from the database")
+		return nil, errors.New("error while retrieving posts from the database")
 	}
 	defer rows.Close()
 
@@ -239,7 +239,7 @@ func (p *PostRepository) LoadPost(IdUser int) ([]models.DataPost, error) {
 		errScan := rows.scan(&temp.ID, &temp.Content, &temp.Media, &temp.Date, &temp.User_id, &temp.Avatar, &temp.UserName, &temp.FullName, &temp.Comment, &temp.Categories)
 		if errScan != nil {
 			fmt.Println("⚠ GetPost scan err ⚠ :", errScan)
-			return models.DataPost{}, errors.New("error while scanning")
+			return nil, errors.New("error while scanning")
 		}
 
 		temp.Content = utils.DecodeValue(temp.Content)
