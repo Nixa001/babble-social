@@ -2,8 +2,8 @@ package models
 
 type Post struct {
 	ToIns      InsPost  `json: "insert"`
-	Categories Category `json: "categories"`
-	Viewers    Viewers  `json:"viewers"`
+	Categories []string `json: "categories"`
+	Viewers    string  `json:"viewers"`
 }
 type InsPost struct {
 	ID       int
@@ -15,8 +15,8 @@ type InsPost struct {
 	Privacy  string `json:"privacy"`
 }
 
-type Category []struct {
-	Post_id  int    `json:"postId"`
+type Category struct {
+	Post_id  string    `json:"postId"`
 	Category string `json:"category"`
 }
 

@@ -3,8 +3,10 @@ package handler
 import (
 	"backend/models"
 	"backend/server/cors"
+	"backend/server/service"
 	"backend/utils"
 	"fmt"
+	"log"
 	"net/http"
 )
 
@@ -45,15 +47,22 @@ func POSTHandler(w http.ResponseWriter, r *http.Request) {
 
 		Image, _ := utils.Uploader(w, r, 20, "image", "")
 		fmt.Println("[INFO] imagelink: ", Image) //debug
-        PostToCreate := &models.Post {
-         ToIns : &InsPost {
-		Content: PostContent,
-		Media: Image,
-		User_id: 1,
-		Group_id: 0,
-		Privacy: Privacy,
-		 },
+		PostToCreate := &models.Post{
+			ToIns: models.InsPost{
+				Content:  PostContent,
+				Media:    Image,
+				User_id:  1,
+				Group_id: 0,
+				Privacy:  Privacy,
+			},
+			Categories: categorie,
+			Viewers:    Viewers,
 		}
 		fmt.Println(PostToCreate)
+		notOk, err := service.PostServ.CreatePost(PostToCreate)
+		if !notOk {
+			log.Println("problem after create service")
+			return
+		}
 	}
 }

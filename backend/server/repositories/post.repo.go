@@ -4,12 +4,10 @@ import (
 	db "backend/database"
 	"backend/models"
 	"backend/utils"
-	"encoding/base64"
 	"errors"
 	"fmt"
-	"io/ioutil"
-	"log"
 	"strings"
+
 	"github.com/gofrs/uuid"
 )
 
@@ -112,39 +110,36 @@ func (p *PostRepository) CreatePost(post models.Post) (bool, models.Errormessage
 	//todo: checking Id_user validity
 
 	//checking Title's validity
-	if strings.TrimSpace(post.Content) == "" && strings.TrimSpace(post.Media) == "" {
-		fmt.Printf("⚠ ERROR ⚠ : Couldn't create post from user %s due to empty content and media ❌\n", user)
+	if strings.TrimSpace(post.ToIns.Content) == "" && strings.TrimSpace(post.ToIns.Media) == "" {
+		fmt.Printf("⚠ ERROR ⚠ : Couldn't create post from user %s due to empty content and media ❌\n", "1")
 		return true,
 			models.Errormessage{
 				Type:       models.BRtype,
 				Msg:        "Couldn't create post due to empty input",
 				StatusCode: models.BRstatus,
-				Location:   "home",
 				Display:    false,
 			}
 	}
 
 	//checking category's validity
 	if len(post.Categories) < 1 { //user did not select a categorie
-		fmt.Printf("⚠ ERROR ⚠ : Couldn't create post from user %s due to missing category❌\n", user)
+		fmt.Printf("⚠ ERROR ⚠ : Couldn't create post from user %s due to missing category❌\n", "1")
 		return true,
 			models.Errormessage{
 				Type:       models.BRtype,
 				Msg:        "Couldn't create post due to missing category",
 				StatusCode: models.BRstatus,
-				Location:   "home",
 				Display:    false,
 			}
 	}
 
-	if len(post.Content) > 1500 { //found only spaces,newlines in the input or chars number limit exceeded
-		fmt.Printf("⚠ ERROR ⚠ : Couldn't create post from user %s due to invalid input ❌\n", user)
+	if len(post.ToIns.Content) > 1500 { //found only spaces,newlines in the input or chars number limit exceeded
+		fmt.Printf("⚠ ERROR ⚠ : Couldn't create post from user %s due to invalid input ❌\n", "1")
 		return true,
 			models.Errormessage{
 				Type:       models.BRtype,
 				Msg:        "Couldn't create post due to invalid input",
 				StatusCode: models.BRstatus,
-				Location:   "home",
 				Display:    false,
 			}
 	}
@@ -156,7 +151,6 @@ func (p *PostRepository) CreatePost(post models.Post) (bool, models.Errormessage
 				Type:       models.ISEtype,
 				Msg:        models.ISEmsg,
 				StatusCode: models.ISEstatus,
-				Location:   "home",
 				Display:    false,
 			}
 	}
@@ -165,55 +159,37 @@ func (p *PostRepository) CreatePost(post models.Post) (bool, models.Errormessage
 
 func (P *PostRepository) InsertPost(post models.Post) error {
 	id_post, errp := uuid.NewV4()
-	id_image, errImg := uuid.NewV4()
 	if errp != nil {
 		fmt.Println("❌ Create_post ⚠ ERROR ⚠ : couldn't generate a unique post id")
 		return errp
 	}
-	if errImg != nil {
-		fmt.Println("❌ Create_post ⚠ ERROR ⚠ : couldn't generate a unique image id")
-		return errp
-	}
+	
 	date, time := utils.Time() //date and time
-
+	post.ToIns.Date = date + " " + time
 	// inserting value in database
 	//-- formatting value's special chars
 	if post.ToIns.Content != "" {
 		post.ToIns.Content = utils.EncodeValue(post.ToIns.Content)
 	}
-	//-- processing image
-	if post.ToIns.Media {
-		imgData, err := base64.StdEncoding.DecodeString(post.ToIns.Media)
-		if err != nil {
-			log.Println("❌ error while decoding image", err)
-			return
-		}
 
-		err = ioutil.WriteFile(id_image, imgData) // storing in local
-		if err != nil {
-			log.Println("❌ error while storing image in local:", err)
-			return
-		}
-		post.Media = fmt.Sprintf("http://localhost:8000/images/%s", id_image)
-		log.Println("✔ image decoded successfully")
-	}
-
-	err := p.DB.Insert(p.TableName, post.ToIns)
+	err := P.DB.Insert(P.TableName, post.ToIns)
 	if err != nil {
 		fmt.Println("❌ error while inserting post")
 		return err
 	}
 	//inserting categories
-	for i := range post.Categories {
-		errCat := p.DB.Insert("categories", post.Categories[i])
-		if errcat != nil {
+	formatedCatego := utils.FormatCategory(post.Categories, id_post.String())
+	for i := range formatedCatego {
+		errCat := P.DB.Insert("categories", formatedCatego[i])
+		if errCat != nil {
 			fmt.Println("❌ error while inserting categories")
 			return err
 		}
 	}
 	if post.ToIns.Privacy == "almost" {
-		for i := range post.Viewers {
-			errView := p.DB.Insert("viewers", post.Viewers[i])
+		formatedViewers := utils.FormatViewers(post.Viewers, id_post.String())
+		for i := range formatedViewers {
+			errView := P.DB.Insert("viewers", formatedViewers[i])
 			if errView != nil {
 				fmt.Println("❌ error while inserting viewers")
 				return err
@@ -224,10 +200,10 @@ func (P *PostRepository) InsertPost(post models.Post) error {
 	return nil
 }
 
-func (p *PostRepository) LoadPost(IdUser int) ([]models.DataPost, error) {
+func (P *PostRepository) LoadPost(IdUser int) ([]models.DataPost, error) {
 	var postTab []models.DataPost
 
-	rows, err := p.DB.Exec(GetPostQuery, IdUser, IdUser, IdUser, IdUser)
+	rows, err := P.DB.Exec(GetPostQuery, IdUser, IdUser, IdUser, IdUser)
 	if err != nil {
 		fmt.Println("❌ Error while retrieving posts => ", err)
 		return nil, errors.New("error while retrieving posts from the database")
