@@ -4,42 +4,48 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { useEffect } from 'react';
 import { CreateGroup } from '../../components/modals/createGroup';
-
+import { useQuery } from 'react-query';
 
 const Groups = () => {
     const [formCreateGr, setFormCreateGr] = useState(false);
     const [groupData, setGroupData] = useState([]);
     const [groupJoined, setGroupJoined] = useState([]);
-    const [isLoading, setIsLoading] = useState(false);
 
-    useEffect(() => {
-        const fetchData = async () => {
-            setIsLoading(true);
-            try {
-                const response = await fetch('http://localhost:8080/groups');
-                const data = await response.json();
-                console.log(data);
-                setGroupJoined(data[0]);
-                setGroupData(data[1]);
-            } catch (error) {
-                console.error('Erreur ', error);
-            } finally {
-                setIsLoading(false);
-            }
-        };
-        fetchData();
-    }, [formCreateGr]);
+    const fetchGroups = async () => {
+        try {
+            const response = await fetch('http://localhost:8080/groups');
+            const data = await response.json();
+            return { groupJoined: data[0], groupData: data[1] };
+        } catch (error) {
+            console.error('Erreur ', error);
+            return Promise.reject(error);
+        }
+    };
 
-
-
+    const { isQueryLoading, data, error } = useQuery(
+        'groups',
+        fetchGroups,
+        {
+            enabled: true,
+            refetchInterval: 5000,
+            staleTime: 1000,
+            onSuccess: (newData) => {
+                setGroupJoined(newData.groupJoined);
+                setGroupData(newData.groupData);
+            },
+            onError: (error) => {
+                console.error('Query error:', error);
+            },
+        }
+    );
 
     return (
         <div className='md:w-[400px] lg:w-[650px] xl:w-[800px] 2xl:w-[1200px] w-screen h-full flex flex-col'>
-            {isLoading ? (
+            {/* {isLoading ? (
                 <div>
                     chargement ..
                 </div>
-            ) : (
+            ) : ( */}
                 <>
                     <div className='w-[90%] justify-between flex items-center mb-5 gap-5'>
                         <h1 className='text-xl font-bold'>
@@ -72,7 +78,7 @@ const Groups = () => {
                         setFormCreateGr(false);
                     }} />
                 </>
-            )}
+            {/* )} */}
         </div>
     );
 
