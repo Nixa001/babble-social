@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link.js";
 
 export function Landing() {
@@ -8,49 +9,15 @@ export function Landing() {
           <div className="px-4 mx-auto sm:px-6 lg:px-8">
             <div className="flex items-center justify-between h-16 lg:h-20">
               <div className="flex-shrink-0">
-                <a href="#" title="" className="flex">
-                  {/* <img
-                    className="w-auto h-8"
-                    src="https://cdn.rareblocks.xyz/collection/celebration/images/logo.svg"
-                    alt=""
-                  /> */}
-                </a>
+                
+              <Image
+                  width={100}
+                  height={100}
+                  className="w-full"
+                  src="/assets/logo.png"
+                  alt="image"
+                />
               </div>
-              <button
-                type="button"
-                className="inline-flex p-2 text-black transition-all duration-200 rounded-md lg:hidden focus:bg-gray-100 hover:bg-gray-100"
-              >
-                {/* Menu open: "hidden", Menu closed: "block" */}
-                <svg
-                  className="block w-6 h-6"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M4 8h16M4 16h16"
-                  />
-                </svg>
-                {/* Menu open: "block", Menu closed: "hidden" */}
-                <svg
-                  className="hidden w-6 h-6"
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path
-                    strokeLinecap="round"
-                    strokeLinejoin="round"
-                    strokeWidth={2}
-                    d="M6 18L18 6M6 6l12 12"
-                  />
-                </svg>
-              </button>
               <Link
                 href="/register"
                 title=""
@@ -68,10 +35,10 @@ export function Landing() {
             <div className="grid items-center grid-cols-1 gap-12 lg:grid-cols-2">
               <div>
                 <p className="text-base font-semibold tracking-wider text-second uppercase">
-                  Welcome to SNK
+                  Welcome to Babble-Network
                 </p>
                 <h1 className="mt-4 text-4xl font-bold lg:mt-8 sm:text-6xl xl:text-7xl">
-                Share your passions, inspire the world
+                  Share your passions, inspire the world
                 </h1>
                 <Link
                   href="/register"
@@ -107,10 +74,12 @@ export function Landing() {
                 </p>
               </div>
               <div>
-                <img
+                <Image
+                  width={1000}
+                  height={1000}
                   className="w-full"
                   src="https://cdn.rareblocks.xyz/collection/celebration/images/hero/1/hero-img.png"
-                  alt=""
+                  alt="image"
                 />
               </div>
             </div>

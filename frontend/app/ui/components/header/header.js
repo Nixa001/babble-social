@@ -7,12 +7,12 @@ import { IoNotifications } from "react-icons/io5";
 export function Header() {
   return (
     <div className="shadow  w-screen z-10 h-16 p-4 flex justify-between items-center">
-      <Link href="/home" className="border  rounded-full p-1">
+      <Link href="/home" className="">
         <Image
-          src="/assets/icons/comment.png"
+          src="/assets/logo.png"
           alt="logo"
-          width={40}
-          height={40}
+          width={100}
+      height={200}
           className=""
         />
       </Link>
@@ -20,9 +20,9 @@ export function Header() {
         <i className="">
           <FaSearch className=" text-2xl" />
         </i>
-        <input type="search" placeholder="Search ..." name="search" className="h-8 w-full bg-transparent text-xl focus:outline-none" />
+        <input type="search" placeholder="Search ..." name="search" className="h-8 w-full bg-transparent text-md focus:outline-none" />
       </div>
-      <div className="flex items-center text-4xl gap-x-5 mr-3">
+      <div className="flex items-center text-3xl gap-x-5 mr-3">
         <i className="hover:text-second cursor-pointer"><AiFillMessage /></i>
         <i className="hover:text-second cursor-pointer "><IoNotifications /></i>
       </div>

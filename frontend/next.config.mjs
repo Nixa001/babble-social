@@ -1,6 +1,10 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
     reactStrictMode: false,
-};
-
-export default nextConfig;
+    images: {
+      domains: ['cdn.rareblocks.xyz'], // Replace with your allowed hostnames if needed
+    },
+  };
+  
+  export default nextConfig;
+  

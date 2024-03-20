@@ -19,6 +19,11 @@ func ParseArrayInt(a []string) (tab []int, err error) {
 	return tab, nil
 }
 
+func GetCurrentDateTime() string {
+	currentTime := time.Now()
+	return currentTime.Format("2006-01-02 15:04:05")
+}
+
 func FormatDuration(duration time.Duration) string {
 	// Get the individual components of the duration
 	days := duration / (24 * time.Hour)
@@ -106,4 +111,14 @@ func IsValidEmail(email string) error {
 
 	}
 	return nil
+}
+
+func IsValidImageType(contentType string) bool {
+	contentType = strings.ToLower(contentType)
+	return strings.HasPrefix(contentType, "image/jpeg") ||
+		strings.HasPrefix(contentType, "image/jpg") ||
+		strings.HasPrefix(contentType, "image/png") ||
+		strings.HasPrefix(contentType, "image/gif") ||
+		strings.HasPrefix(contentType, "image/bmp") ||
+		strings.HasPrefix(contentType, "image/webp")
 }

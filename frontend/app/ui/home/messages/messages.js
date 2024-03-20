@@ -35,7 +35,7 @@ const Messages = () => {
                     <div className='flex gap-2 justify-evenly w-full '>
 
                         {followerHearder("Users", "users", activeTab, handleTabClick)}
-                        {followerHearder("Community", "group", activeTab, handleTabClick)}
+                        {followerHearder("Communities", "group", activeTab, handleTabClick)}
                         {/* <h2 className="text-xl font-semibold cursor-pointer hover:underline  mb-4">Users</h2>
                         <h2 className="text-xl font-semibold cursor-pointer hover:underline mb-4">Groups</h2> */}
                     </div>

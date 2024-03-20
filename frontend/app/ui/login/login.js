@@ -13,13 +13,13 @@ export default function Login() {
       <div className="flex flex-col items-center w-full sm:w-6/12">
         <div className="header_login flex items-center justify-around w-full">
           <Image
-            src="/assets/icons/comment.png"
+            src="/assets/logo.png"
             alt="logo"
-            width={40}
-            height={40}
-          />{" "}
+            width={100}
+            height={100}
+          />
           <div>
-            Don't have an account ?{" "}
+            Don&apos;t have an account ?
             <Link
               href="/register"
               className="text-primary hover:text-second cursor-pointer"
@@ -33,8 +33,16 @@ export default function Login() {
           <div className="text-center login_other">
             <h4 className="font-bold text-xl mb-2">Login in to account</h4>
             <div className="flex items-center justify-center gap-4">
-              <img src="/assets/login/google.svg" alt="google" />
-              <img src="/assets/login/githubb.svg" alt="github" />
+              <Image
+                src="/assets/login/google.svg" alt="google"
+                width={40}
+                height={40}
+              />
+              <Image
+                src="/assets/login/githubb.svg" alt="google"
+                width={40}
+                height={40}
+              />
             </div>
           </div>
           <p className="error_login_msg" />

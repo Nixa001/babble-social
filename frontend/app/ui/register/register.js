@@ -13,12 +13,12 @@ function Register() {
     <div className="w-screen h-screen flex">
       <div className="flex flex-col items-center w-full sm:w-6/12">
         <div className="header_login flex items-center  justify-around w-full">
-          <Image
-            src="/assets/icons/comment.png"
+        <Image
+            src="/assets/logo.png"
             alt="logo"
-            width={40}
-            height={40}
-          />{" "}
+            width={100}
+            height={100}
+          />
           <div>
             You have already an account?{" "}
             <Link
@@ -32,8 +32,17 @@ function Register() {
         <div className="mt-2 sm:mt-24 flex flex-col gap-3 w-8/12 max-w-96">
           <h1 className="text-center font-bold text-4xl">Sign Up</h1>
           <div className="flex items-center justify-center gap-4">
-            <img src="/assets/login/google.svg" alt="google" />
-            <img src="/assets/login/githubb.svg" alt="github" />
+            <Image
+              src="/assets/login/google.svg" alt="google"
+              width={40}
+              height={40}
+            />
+            <Image
+              src="/assets/login/githubb.svg" alt="google"
+              width={40}
+              height={40}
+            />
+
           </div>
           <p className="error_login_msg" />
 

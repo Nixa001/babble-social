@@ -3,8 +3,9 @@ import Image from "next/image";
 import { MdPrivacyTip } from "react-icons/md";
 import { BiWorld } from "react-icons/bi";
 import { SiGnuprivacyguard } from "react-icons/si";
+import { DisplayComments } from "../components/modals/displayComment";
 
-const AddPost = ({
+const DisplayPost = ({
   postData,
   onLikeClick,
   onDislikeClick,
@@ -14,6 +15,7 @@ const AddPost = ({
   const [postDataState, setPostDataState] = useState({
     ...postData,
   });
+  const [isVisibleComment, setIsVisibleComment] = useState(false)
 
   const handleLikeClick = () => {
     onLikeClick();
@@ -40,7 +42,7 @@ const AddPost = ({
   };
 
   return (
-    <div className="post_div mb-5 border border-gray-700 p-2 rounded-md">
+    <div className="w-fit post_div mb-5 border border-gray-700 p-2 rounded-md">
       <div className="post_div_top flex flex-col gap-1 w-fit justify-center ">
         <div className="header_pos w-fit">
           <div className="info_post flex items-start gap-2">
@@ -83,7 +85,7 @@ const AddPost = ({
         <Image
           src={postDataState.postImage}
           alt="Post image"
-          className="img_post w-fit"
+          className="img_post max-w-full hover:shadow-xl overflow-hidden cursor-pointer transition duration-300 ease-linear scale-95 hover:scale-100"
           width={700}
           height={200}
         />
@@ -101,14 +103,15 @@ const AddPost = ({
         <button className="dislike_post flex gap-1 items-center" onClick={handleDislikeClick}>
           <Image
             src='/assets/icons/dislikew.png'
-
             alt="Dislike icon"
             width={30}
             height={30}
           />
           <span>{postDataState.dislikesCount}</span>
         </button>
-        <button className="comment_post flex gap-1 items-center" onClick={handleCommentClick}>
+        <button className="comment_post flex gap-1 items-center" onClick={() => {
+          setIsVisibleComment(true)
+        }}>
           <Image
             src="/assets/icons/comment.png"
             alt="Comment icon"
@@ -118,8 +121,10 @@ const AddPost = ({
           <span>{postDataState.commentsCount}</span>
         </button>
       </div>
+      <DisplayComments isVisible={isVisibleComment} onClose={() => setIsVisibleComment(false)} />
+
     </div >
   );
 };
 
-export default AddPost;
+export default DisplayPost;

@@ -1,9 +1,21 @@
+'use client'
 import React from 'react'
+import Groups from '@/app/ui/home/groups/groups'
 
-const Groups = () => {
+import { QueryClient } from 'react-query';
+import { QueryClientProvider } from 'react-query';
+const queryClient = new QueryClient();
+
+
+
+const page = () => {
   return (
-    <div className=''>groups</div>
+    <>
+      <QueryClientProvider client={queryClient}>
+        <Groups />
+      </QueryClientProvider>
+    </>
   )
 }
 
-export default Groups
+export default page
