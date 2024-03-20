@@ -9,14 +9,14 @@ const HomePage = () => {
     <div className=" md:w-[400px] lg:w-[650px] xl:w-[800px] 2xl:w-[1000px] w-screen">
       <div className="flex justify-center mb-4">{postForm()}</div>
       <div className="post_div_top flex flex-col items-center">
-        <DisplayPost
+        <AddPost
           postData={postData}
           onLikeClick={onLikeClick}
           onDislikeClick={onDislikeClick}
           onCommentClick={onCommentClick}
           onProfileClick={onProfileClick}
         />
-        <DisplayPost
+        <AddPost
           postData={postData2}
           onLikeClick={onLikeClick}
           onDislikeClick={onDislikeClick}
