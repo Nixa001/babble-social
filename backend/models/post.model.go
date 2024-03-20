@@ -20,11 +20,6 @@ type Category []struct {
 	Category string `json:"category"`
 }
 
-type Viewers []struct {
-	Post_id int `json:"postId"`
-	User_id int `json:"userId"`
-}
-
 type DataPost struct {
 	Avatar     string
 	Categories string
