@@ -2,15 +2,8 @@
 import React, { useState, useEffect, useContext } from "react";
 import { postForm } from "./postForm";
 import AddPost from "./displayPost";
-import { websocketProvider } from "@/app/home/page";
 
-const HomePage = ({ data }) => {
-  console.log("test =>  ", data);
-  //const [posts, setPosts] = useState(data || []);
-  // const ws = useContext(websocketProvider);
-  // ws.onmessage = (e) => {
-  //   console.log("in child homepage => ", e.data);
-  // };
+const HomePage = () => {
 
   return (
     <div className=" md:w-[400px] lg:w-[650px] xl:w-[800px] 2xl:w-[1000px] w-screen">
