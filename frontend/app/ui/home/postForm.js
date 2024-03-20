@@ -8,15 +8,14 @@ import { IoSend } from "react-icons/io5";
 export const postForm = () => {
   const handlePost = (e) => {
     e.preventDefault();
+    const data = new FormData(e.target)
+    console.log("my data => ", data)
     const   options = {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: "",
-      },
-      body: new FormData(e.target)
+      body: data
     };
     fetch("http://localhost:8080/post",options )
+    .then(x => console.log(x))
     };
 
   console.log("in postForm");
@@ -37,12 +36,12 @@ export const postForm = () => {
       />
       <div className="flex items-start justify-end">
         <div className="flex gap-1 flex-wrap mr-2 mt-1 text-sm">
-          <Checkbox label="Tech" value="cat-techno" name="techno" />
-          <Checkbox label="Sport" value="cat-sport" name="sport" />
-          <Checkbox label="Santé" value="cat-health" name="health" />
-          <Checkbox label="Musique" value="cat-music" name="music" />
-          <Checkbox label="News" value="cat-news" name="news" />
-          <Checkbox label="Other" value="cat-other" name="other" defaultChecked />
+          <Checkbox label="Tech" value="techno" name="techno" />
+          <Checkbox label="Sport" value="sport" name="sport" />
+          <Checkbox label="Santé" value="health" name="health" />
+          <Checkbox label="Musique" value="music" name="music" />
+          <Checkbox label="News" value="news" name="news" />
+          <Checkbox label="Other" value="other" name="other" defaultChecked />
         </div>
 
         {PrivacySelect()}
