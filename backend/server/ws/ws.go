@@ -75,10 +75,10 @@ func (h *Hub) listen() {
 }
 
 func (h *Hub) HandleEvent(eventPayload WSPaylaod) {
-	fmt.Println("in handle event...")
+	// fmt.Println("in handle event...")
 	switch eventPayload.Type {
 	case "GET":
-		fmt.Println("👨‍💻 in test case...")
+		// fmt.Println("👨‍💻 in test case...")
 		h.Clients.Range(func(key, value interface{}) bool {
 			client := value.(*WSClient)
 			//for _, t := range eventPayload.To {
@@ -136,7 +136,7 @@ func (wsHub *Hub) AddClient(coon *websocket.Conn, firstname string) {
 		WSCoon:      coon,
 		OutgoingMsg: make(chan interface{}),
 	}
-	fmt.Println("client is here :", client)
+	// fmt.Println("client is here :", client)
 	go client.messageReader()
 	go client.messageWriter()
 
@@ -154,7 +154,7 @@ func (wsHub *Hub) AddClient(coon *websocket.Conn, firstname string) {
 
 func (client *WSClient) messageReader() {
 	for {
-		fmt.Println("reading")
+		// fmt.Println("reading")
 		_, message, err := client.WSCoon.ReadMessage()
 		if err != nil {
 			WSHub.UnRegisterChannel <- client
@@ -174,8 +174,8 @@ func (client *WSClient) messageReader() {
 			return
 		}
 		eventType := payload["type"].(string)
-		fmt.Println("type is here => ", eventType)
-		fmt.Println("payload is here => ", payload)
+		// fmt.Println("type is here => ", eventType)
+		// fmt.Println("payload is here => ", payload)
 		//	i:=0
 		//	for {
 		wsEvent := WSPaylaod{

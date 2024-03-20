@@ -14,6 +14,7 @@ const (
 	CREATE_GROUP_ENDPOINT  = "/group/creategroup"
 	JOINED_GROUPS_ENDPOINT = "/groups_joined"
 	GETGROUPS_ENDPOINT     = "/groups"
+	GETGROUP_ENDPOINT     = "/groups/group"
 	WS_ENDPOINT            = "/socket"
 	SERVE_ASSETS           = "/uploads/"
 )
@@ -27,6 +28,7 @@ func Route() *http.ServeMux {
 	mux.HandleFunc(CREATE_GROUP_ENDPOINT, groups.CreateGroupHandler)
 	mux.HandleFunc(WS_ENDPOINT, handler.WSHandler)
 	mux.HandleFunc(GETGROUPS_ENDPOINT, groups.GetGroups)
+	mux.HandleFunc(GETGROUP_ENDPOINT, groups.GetGroup)
 	mux.HandleFunc(SERVE_ASSETS, func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, r.URL.Path[1:])
 	})

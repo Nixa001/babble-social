@@ -1,43 +1,35 @@
 package groups
 
 import (
+	"backend/models"
 	"backend/server/cors"
 	"backend/utils/seed"
 	"database/sql"
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
 )
-
-type Group struct {
-	ID             int    `json:"id"`
-	Name           string `json:"name"`
-	Description    string `json:"description"`
-	ID_User_Create int    `json:"id_user_create"`
-	Avatar         string `json:"image"`
-	Creation_Date  string `json:"creation_date"`
-	Href           string `json:"href"`
-}
 
 const userID int = 1
 
-
 func GetGroups(w http.ResponseWriter, r *http.Request) {
-	
+
 	cors.SetCors(&w)
 	var db = seed.CreateDB()
+	defer db.Close()
 	joinedGroups, err := getJoinedGroups(db, userID)
 	if err != nil {
 		return
 	}
-	
+
 	allGroups, err := getAllGroups(db)
 	if err != nil {
 		return
 	}
-	
+
 	filteredGroups, groups := filterGroups(joinedGroups, allGroups)
-	var Groups [][]Group
+	var Groups [][]models.Group
 	Groups = append(Groups, groups)
 	Groups = append(Groups, filteredGroups)
 
@@ -71,8 +63,8 @@ func getJoinedGroups(db *sql.DB, userID int) ([]int, error) {
 	return joinedGroupIDs, nil
 }
 
-func getAllGroups(db *sql.DB) ([]Group, error) {
-	var allGroups []Group
+func getAllGroups(db *sql.DB) ([]models.Group, error) {
+	var allGroups []models.Group
 
 	query := "SELECT * FROM groups"
 	rows, err := db.Query(query)
@@ -82,7 +74,7 @@ func getAllGroups(db *sql.DB) ([]Group, error) {
 	defer rows.Close()
 
 	for rows.Next() {
-		var group Group
+		var group models.Group
 		err := rows.Scan(&group.ID, &group.Name, &group.Description, &group.ID_User_Create, &group.Avatar, &group.Creation_Date)
 		if err != nil {
 			return nil, fmt.Errorf("failed to scan group data: %w", err)
@@ -97,9 +89,9 @@ func getAllGroups(db *sql.DB) ([]Group, error) {
 	return allGroups, nil
 }
 
-func filterGroups(joined []int, all []Group) ([]Group, []Group) {
-	var filteredGroups []Group
-	var Groups []Group
+func filterGroups(joined []int, all []models.Group) ([]models.Group, []models.Group) {
+	var filteredGroups []models.Group
+	var Groups []models.Group
 	for _, group := range all {
 		isJoined := false
 		for _, id := range joined {
@@ -110,8 +102,10 @@ func filterGroups(joined []int, all []Group) ([]Group, []Group) {
 		}
 		if !isJoined && group.ID_User_Create != userID {
 			filteredGroups = append(filteredGroups, group)
-			} else {
-			group.Href = "/home/groups/group/"
+		} else {
+			groupId := strconv.Itoa(group.ID)
+
+			group.Href = "/home/groups/group_id=" + groupId
 			Groups = append(Groups, group)
 		}
 		// fmt.Println(group)

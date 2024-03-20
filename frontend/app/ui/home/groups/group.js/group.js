@@ -2,6 +2,9 @@
 import Image from 'next/image'
 import React, { useState } from 'react'
 import DisplayPost from '../../displayPost'
+import { useQuery } from 'react-query';
+import { useLocation } from 'react-router-dom';
+import { usePathname } from 'next/navigation'
 import { CreateEvent } from '@/app/ui/components/modals/createEvent'
 import { CreatePost } from '@/app/ui/components/modals/createPost'
 import { Suggest } from '@/app/ui/components/modals/suggest'
@@ -10,29 +13,81 @@ import { DisplayMembers } from '@/app/ui/components/modals/displayMembers'
 const Group = () => {
     const [formCreateEv, setFormCreateEv] = useState(false)
     const [formCreateP, setFormCreateP] = useState(false)
+    const [groupPosts, setGroupPosts] = useState()
+    const [groupInfo, setGroupInfo] = useState({})
     const [suggestFriend, setSuggestFriend] = useState(false)
     const [members, setMembers] = useState(false)
 
+    const pathname = usePathname()
+    const id = pathname.split("id=")[1]
+
+    const fetchGroups = async () => {
+        try {
+            const url = `http://localhost:8080/groups/group?id=${id}`;
+
+            const response = await fetch(url, {
+                method: 'GET',
+            });
+            const data = await response.json();
+            // console.log(data);
+            return data;
+
+        } catch (error) {
+            console.error('Erreur ', error);
+            return Promise.reject(error);
+        }
+    };
+
+    useQuery('groups', fetchGroups, {
+        enabled: true,
+        refetchInterval: 10000,
+        staleTime: 8000,
+        onSuccess: (newData) => {
+            setGroupPosts(newData.posts)
+            console.log(groupPosts);
+            setGroupInfo(newData.group_data)
+            console.log(groupInfo.image);
+
+            // setGroupJoined(newData.groupJoined);
+            // setGroupData(newData.groupData);
+        },
+        onError: (error) => {
+            console.error('Query error:', error);
+        },
+    }
+    );
 
     return (
         <div className='md:w-[400px] lg:w-[650px] xl:w-[800px] 2xl:w-[1100px] w-screen h-full 
                         flex flex-col gap-2'>
             <div className="w-full h-60 mb-3" >
-                <Image
-                    src={"/assets/cover.webp"}
-                    alt='cover'
-                    width={1000}
-                    height={1000}
-                    className='w-full max-h-[250px] object-cover scale-100 hover:scale-105  rounded-sm  transition duration-300 ease-in shadow-lg'
-                />
+                {groupInfo.image ? (
+                    <Image
+                        src={`/assets/${groupInfo.image}`}
+                        alt='cover'
+                        width={1000} height={1000}
+                        className='w-full max-h-[250px] object-cover scale-100 hover:scale-105  rounded-sm  transition duration-300 ease-in shadow-lg'
+                    />
+                ) : ("")
+                }
             </div>
             <div className='flex items-center justify-between 2xl:w-[90%] w-[95%]'>
-                <div>
-                    <h1 className='text-2xl font-bold underline underline-offset-4 mb-2 '>
-                        EA Football 24
+                <div className=''>
+
+
+                    <h1 className='text-2xl font-bold underline underline-offset-4 mb-2 flex items-center gap-2 '>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
+                            <path fillRule="evenodd" d="M4.5 3.75a3 3 0 0 0-3 3v10.5a3 3 0 0 0 3 3h15a3 3 0 0 0 3-3V6.75a3 3 0 0 0-3-3h-15Zm4.125 3a2.25 2.25 0 1 0 0 4.5 2.25 2.25 0 0 0 0-4.5Zm-3.873 8.703a4.126 4.126 0 0 1 7.746 0 .75.75 0 0 1-.351.92 7.47 7.47 0 0 1-3.522.877 7.47 7.47 0 0 1-3.522-.877.75.75 0 0 1-.351-.92ZM15 8.25a.75.75 0 0 0 0 1.5h3.75a.75.75 0 0 0 0-1.5H15ZM14.25 12a.75.75 0 0 1 .75-.75h3.75a.75.75 0 0 1 0 1.5H15a.75.75 0 0 1-.75-.75Zm.75 2.25a.75.75 0 0 0 0 1.5h3.75a.75.75 0 0 0 0-1.5H15Z" clipRule="evenodd" />
+                        </svg>
+                        {groupInfo.name}
                     </h1>
-                    <p className='text-lg'>
-                        Un groupe pour les fans de football du monde entier
+                    <p className='text-lg flex items-center gap-2'>
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
+                            <path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 0 1 .67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 1 1-.671-1.34l.041-.022ZM12 9a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z" clipRule="evenodd" />
+                        </svg>
+
+
+                        {groupInfo.description}
                     </p>
                 </div>
                 <div className='flex gap-2 lg:flex-row flex-col' >
@@ -70,14 +125,15 @@ const Group = () => {
 
             <div className='flex items-center justify-between 2xl:w-[90%] w-[95%]'>
                 <p className='font-semibold flex items-center gap-1'>
-                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
-                        <path strokeLinecap="round" strokeLinejoin="round" d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
+                        <path fillRule="evenodd" d="M18.685 19.097A9.723 9.723 0 0 0 21.75 12c0-5.385-4.365-9.75-9.75-9.75S2.25 6.615 2.25 12a9.723 9.723 0 0 0 3.065 7.097A9.716 9.716 0 0 0 12 21.75a9.716 9.716 0 0 0 6.685-2.653Zm-12.54-1.285A7.486 7.486 0 0 1 12 15a7.486 7.486 0 0 1 5.855 2.812A8.224 8.224 0 0 1 12 20.25a8.224 8.224 0 0 1-5.855-2.438ZM15.75 9a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0Z" clipRule="evenodd" />
                     </svg>
 
-                    <span className='italic'>Created by: </span>   
+
+                    <span className='italic'>Created by: </span>
                     Nicolas Faye
                 </p>
-                <p className=' flex items-center gap-2 bg-primary bg-opacity-50 shadow w-fit hover:bg-opacity-70 hover:text-white font-bold rounded-md cursor-pointer py-1 px-3 border-gray-700' onClick={() => {
+                <p className=' flex items-center gap-2 bg-primary bg-opacity-50 w-fit hover:bg-opacity-70 hover:text-white font-bold rounded-md cursor-pointer py-1 px-3 border-gray-700' onClick={() => {
                     setMembers(true)
                 }}
                 >
@@ -111,13 +167,15 @@ const Group = () => {
                     {displayEvents(events)}
                 </div>
                 <div className='w-[75%] '>
-                    <DisplayPost postData={postData1} onLikeClick={onLikeClick} onDislikeClick={onDislikeClick}
-                        onCommentClick={onCommentClick} onProfileClick={onProfileClick}
-                    />
+                    {groupPosts ? (
+                        groupPosts.map((post) => {
+                            <DisplayPost postData={post} onLikeClick={onLikeClick} onDislikeClick={onDislikeClick}
+                                onCommentClick={onCommentClick} onProfileClick={onProfileClick}
+                            />
+                        })
+                    ) : ("")
 
-                    <DisplayPost postData={postData2} onLikeClick={onLikeClick} onDislikeClick={onDislikeClick}
-                        onCommentClick={onCommentClick} onProfileClick={onProfileClick}
-                    />
+                    }
                 </div>
             </div>
             <CreateEvent isVisible={formCreateEv} onClose={() => setFormCreateEv(false)} />

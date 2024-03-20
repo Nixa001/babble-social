@@ -4,6 +4,7 @@ export const CreateGroup = ({ isVisible, onClose }) => {
     const [groupName, setGroupName] = useState('');
     const [groupDescription, setGroupDescription] = useState('');
     const [groupImage, setGroupImage] = useState(null);
+    const [erroMsg, setErrorMsg] = useState("");
 
     const handleNameChange = (e) => {
         setGroupName(e.target.value);
@@ -24,14 +25,26 @@ export const CreateGroup = ({ isVisible, onClose }) => {
         formData.append('name', groupName);
         formData.append('description', groupDescription);
         formData.append('image', groupImage);
-        console.log(formData);
 
         try {
             const response = await fetch('http://localhost:8080/group/creategroup', {
                 method: 'POST',
                 body: formData,
             });
-
+            console.log(response.ok);
+            if (response.ok) {
+                setErrorMsg("")
+                setGroupName("")
+                setGroupDescription("")
+                setGroupImage("")
+                onClose()
+            }
+            if (response.status == 409) {
+                setErrorMsg("Groupe already exist")
+                setTimeout(() => {
+                    setErrorMsg("")
+                }, 3000);
+            }
             console.log('Response:', response);
         } catch (error) {
             console.error('Errorr:', error);
@@ -65,6 +78,7 @@ export const CreateGroup = ({ isVisible, onClose }) => {
                         '>
                         </textarea>
                         <input type='file' name='image' onChange={handleImageChange} className='bg-transparent' />
+                        <p className='text-red-600 text-center p-2'>{erroMsg}</p>
                         <input type='submit' className='bg-primary rounded-md border border-gray-700 h-[50px] cursor-pointer hover:bg-second text-lg font-bold ' value={"Create group"} />
                     </form>
                 </div>

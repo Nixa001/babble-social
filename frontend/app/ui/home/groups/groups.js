@@ -2,7 +2,6 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { useEffect } from 'react';
 import { CreateGroup } from '../../components/modals/createGroup';
 import { useQuery } from 'react-query';
 
@@ -22,21 +21,18 @@ const Groups = () => {
         }
     };
 
-    const { isQueryLoading, data, error } = useQuery(
-        'groups',
-        fetchGroups,
-        {
-            enabled: true,
-            refetchInterval: 5000,
-            staleTime: 1000,
-            onSuccess: (newData) => {
-                setGroupJoined(newData.groupJoined);
-                setGroupData(newData.groupData);
-            },
-            onError: (error) => {
-                console.error('Query error:', error);
-            },
-        }
+    useQuery('groups', fetchGroups, {
+        enabled: true,
+        refetchInterval: 5000,
+        staleTime: 1000,
+        onSuccess: (newData) => {
+            setGroupJoined(newData.groupJoined);
+            setGroupData(newData.groupData);
+        },
+        onError: (error) => {
+            console.error('Query error:', error);
+        },
+    }
     );
 
     return (
@@ -46,38 +42,38 @@ const Groups = () => {
                     chargement ..
                 </div>
             ) : ( */}
-                <>
-                    <div className='w-[90%] justify-between flex items-center mb-5 gap-5'>
-                        <h1 className='text-xl font-bold'>
-                            Communities
-                        </h1>
-                        <button className="inline-flex items-center px-4 py-2 text-m font-semibold text-center text-white bg-primary rounded-lg hover:bg-second"
-                            onClick={() => {
-                                setFormCreateGr(true);
-                            }}>
-                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
-                                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
-                            </svg>
-                            New Group
-                        </button>
-                    </div>
-                    <div className='w-full flex gap-3 flex-wrap'>
-                        {groupJoined.map((group) => (
-                            <GroupCard key={group.id} isMember={true} {...group} />
-                        ))}
-                    </div>
-                    <h1 className='text-xl font-bold my-5'>
-                        Discover new communities
+            <>
+                <div className='w-[90%] justify-between flex items-center mb-5 gap-5'>
+                    <h1 className='text-xl font-bold'>
+                        Communities
                     </h1>
-                    <div className='w-full flex gap-3 flex-wrap pb-10'>
-                        {groupData.map((group) => (
-                            <GroupCard key={group.id} isMember={false} {...group} />
-                        ))}
-                    </div>
-                    <CreateGroup isVisible={formCreateGr} onClose={() => {
-                        setFormCreateGr(false);
-                    }} />
-                </>
+                    <button className="inline-flex items-center px-4 py-2 text-m font-semibold text-center text-white bg-primary rounded-lg hover:bg-second"
+                        onClick={() => {
+                            setFormCreateGr(true);
+                        }}>
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={2} stroke="currentColor" className="w-6 h-6">
+                            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                        </svg>
+                        New Group
+                    </button>
+                </div>
+                <div className='w-full flex gap-3 flex-wrap'>
+                    {groupJoined.map((group) => (
+                        <GroupCard key={group.id} isMember={true} {...group} />
+                    ))}
+                </div>
+                <h1 className='text-xl font-bold my-5'>
+                    Discover new communities
+                </h1>
+                <div className='w-full flex gap-3 flex-wrap pb-10'>
+                    {groupData.map((group) => (
+                        <GroupCard key={group.id} isMember={false} {...group} />
+                    ))}
+                </div>
+                <CreateGroup isVisible={formCreateGr} onClose={() => {
+                    setFormCreateGr(false);
+                }} />
+            </>
             {/* )} */}
         </div>
     );

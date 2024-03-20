@@ -1,8 +1,10 @@
 package groups
 
 import (
+	"backend/models"
 	"backend/server/cors"
 	utils "backend/utils"
+	"backend/utils/seed"
 	"database/sql"
 	"encoding/json"
 	"fmt"
@@ -13,46 +15,46 @@ import (
 	"path/filepath"
 )
 
-type group struct {
-	Name           string
-	Description    string
-	ID_User_Create int
-	Avatar         string
-	Creation_Date  string
-}
+var group models.Group
 
 var UserId int = 1
 
 func CreateGroupHandler(w http.ResponseWriter, r *http.Request) {
-	db, err := sql.Open("sqlite3", "./database/social_network.db")
-	if err != nil {
-		fmt.Println("Erreur lors de l'ouverture de la base de données:", err)
-		return
-	}
-	defer db.Close()
 	cors.SetCors(&w)
-	var group group = parseFormData(w, r)
-	isExist, err := checkGroupExists(db, group.Name)
+
+	var db = seed.CreateDB()
+	defer db.Close()
+	var group models.Group = parseFormData(w, r)
 
 	if group.Name == "" {
-		fmt.Println("Name input required")
+		http.Error(w, "Le champ 'Name' est obligatoire", http.StatusBadRequest)
 		return
 	}
 
-	if !isExist {
-		insertGroupCreated(db, group)
-	} else {
-		fmt.Println("group already exist")
-
+	isExist, err := checkGroupExists(db, group.Name)
+	if err != nil {
+		fmt.Println("Erreur lors de la vérification du groupe:", err)
+		http.Error(w, "Erreur interne du serveur", http.StatusInternalServerError)
 		return
 	}
 
-	response := map[string]string{"message": "Groupe cree"}
+	if isExist {
+		response := map[string]string{"message": "Le groupe existe déjà"}
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusConflict)
+		json.NewEncoder(w).Encode(response)
+		return
+	}
+
+	insertGroupCreated(db, group)
+
+	response := map[string]string{"message": "Groupe créé"}
 	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusCreated)
 	json.NewEncoder(w).Encode(response)
 }
 
-func insertGroupCreated(db *sql.DB, group group) {
+func insertGroupCreated(db *sql.DB, group models.Group) {
 	stmt, err := db.Prepare("INSERT INTO groups(name, description, id_user_create, avatar, creation_date) VALUES(?, ?, ?, ?, ?)")
 	if err != nil {
 		fmt.Println("Erreur lors de la préparation de la requête d'insertion:", err)
@@ -66,21 +68,22 @@ func insertGroupCreated(db *sql.DB, group group) {
 		return
 	}
 }
-func parseFormData(w http.ResponseWriter, r *http.Request) group {
+func parseFormData(w http.ResponseWriter, r *http.Request) models.Group {
 	var avatarGroup = "profil_group_avatar.jpg"
 	err := r.ParseMultipartForm(10 << 20)
 	if err != nil {
 		http.Error(w, "Impossible de lire le form", http.StatusBadRequest)
-		return group{}
+		return models.Group{}
 	}
 
-	group := group{
+	group := models.Group{
 		Name:           r.FormValue("name"),
 		Description:    r.FormValue("description"),
 		ID_User_Create: UserId,
 		Creation_Date:  utils.GetCurrentDateTime(),
 		Avatar:         avatarGroup,
 	}
+	// fmt.Println(group)
 
 	var imageFile multipart.File
 	var handler *multipart.FileHeader
