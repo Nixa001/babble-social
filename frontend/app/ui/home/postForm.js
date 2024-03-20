@@ -7,36 +7,42 @@ import { IoSend } from "react-icons/io5";
 
 export const postForm = () => {
   const handlePost = (e) => {
-    // e.preventDefault();
-    let data = new FormData(e.target);
-    console.log("retrieved data => ", data);
-  };
+    e.preventDefault();
+    const   options = {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: "",
+      },
+      body: new FormData(e.target)
+    };
+    fetch("http://localhost:8080/post",options )
+    };
+
   console.log("in postForm");
-  // const ws = useContext(websocketProvider);
   return (
     <form
       //className="flex flex-col lg:w-[100%] 2xl-[80%] xl:w-[75%] w-[80%]  gap-1  "
-      action=""
+      //action="http://localhost:8000/posts"
       method=""
       data-form="post"
       encType="multipart/form-data"
       onSubmit={handlePost}>
       <TextArea
         label="Post Title"
-        name="content_post"
+        name="content"
         placeholder="Let's post something"
         required
         defaultValue=""
-        onChange={(event) => console.log(event.target.value)} // Handle changes
       />
       <div className="flex items-start justify-end">
         <div className="flex gap-1 flex-wrap mr-2 mt-1 text-sm">
-          <Checkbox label="Tech" value="technologie" name="techno" />
-          <Checkbox label="Sport" value="sport" name="sport" />
-          <Checkbox label="Santé" value="sante" name="sante" />
-          <Checkbox label="Musique" value="musique" name="music" />
-          <Checkbox label="News" value="news" name="news" />
-          <Checkbox label="Other" value="other" name="other" defaultChecked />
+          <Checkbox label="Tech" value="cat-techno" name="techno" />
+          <Checkbox label="Sport" value="cat-sport" name="sport" />
+          <Checkbox label="Santé" value="cat-health" name="health" />
+          <Checkbox label="Musique" value="cat-music" name="music" />
+          <Checkbox label="News" value="cat-news" name="news" />
+          <Checkbox label="Other" value="cat-other" name="other" defaultChecked />
         </div>
 
         {PrivacySelect()}
@@ -54,7 +60,7 @@ export const postForm = () => {
             />
           </svg>
         </label>
-        <input type="file" name="image_post" id="image_post" hidden />
+        <input type="file" name="image" id="image_post" hidden />
         {/* <input
                     className="bg-second text-lg font-bold pl-3 pr-3 rounded-lg cursor-pointer hover:bg-primary"
                     type="submit"
@@ -78,13 +84,13 @@ export const postForm = () => {
 };
 
 function PrivacySelect() {
- const [selectedValue, setSelectedValue] = useState("Public");
+ const [selectedValue, setSelectedValue] = useState("public");
   const [showUserList, setShowUserList] = useState(false);
   const [selectedUsers, setSelectedUsers] = useState([]);
 
   const handleChange = (event) => {
     setSelectedValue(event.target.value);
-    setShowUserList(event.target.value === "Select users");
+    setShowUserList(event.target.value === "almost");
   };
 
   const handleUserSelection = (userId) => {
@@ -106,9 +112,9 @@ function PrivacySelect() {
         className="w-32 rounded-md px-2 py-1 font-bold outline-none focus:ring-1 bg-primary focus:ring-primary">
         <option value="Public">Public</option>
         <option value="Private">Private</option>
-        <option value="Select users">Select users</option>
+        <option value="almost">Select users</option>
       </select>
-     <input type="hidden" value={selectedUsers} name="usersel"/>
+     <input type="hidden" value={selectedUsers} name="viewers"/>
       {showUserList && (
         <div className="mt-1 max-h-44  w-[300px] p-2 overflow-scroll border rounded-md">
           <ul className="flex flex-wrap gap-2">
@@ -117,7 +123,7 @@ function PrivacySelect() {
                 <label className="flex gap-1 cursor-pointer">
                   <input
                     type="checkbox"
-                    name={`select-${user.name}`}
+                    name={`view-${user.name}`}
                     //checked={selectedUsers.includes(user.name)}
                     onChange={() => handleUserSelection(user.name)}
                   />
