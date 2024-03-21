@@ -203,16 +203,16 @@ func (P *PostRepository) InsertPost(post models.Post) error {
 func (P *PostRepository) LoadPost(IdUser int) ([]models.DataPost, error) {
 	var postTab []models.DataPost
 
-	rows, err := P.DB.Exec(GetPostQuery, IdUser, IdUser, IdUser, IdUser)
+	rows, err := P.DB.Query(GetPostQuery, IdUser, IdUser, IdUser, IdUser)
 	if err != nil {
 		fmt.Println("❌ Error while retrieving posts => ", err)
 		return nil, errors.New("error while retrieving posts from the database")
 	}
 	defer rows.Close()
 
-	for rows.next() {
+	for rows.Next() {
 		var temp models.DataPost
-		errScan := rows.scan(&temp.ID, &temp.Content, &temp.Media, &temp.Date, &temp.User_id, &temp.Avatar, &temp.UserName, &temp.FullName, &temp.Comment, &temp.Categories)
+		errScan := rows.Scan(&temp.ID, &temp.Content, &temp.Media, &temp.Date, &temp.User_id, &temp.Avatar, &temp.UserName, &temp.FullName, &temp.Comments, &temp.Categories)
 		if errScan != nil {
 			fmt.Println("⚠ GetPost scan err ⚠ :", errScan)
 			return nil, errors.New("error while scanning")
@@ -225,7 +225,7 @@ func (P *PostRepository) LoadPost(IdUser int) ([]models.DataPost, error) {
 }
 
 func (p *PostRepository) GetOnePost(postID int) (models.DataPost, error) {
-	rows, err := p.DB.Exec(GetOnePostQuery, postID)
+	rows, err := p.DB.Query(GetOnePostQuery, postID)
 	if err != nil {
 		fmt.Println("❌ Error while retrieving in OnePost => ", err)
 		return models.DataPost{}, errors.New("error while retrieving onepost from the database")
@@ -234,8 +234,8 @@ func (p *PostRepository) GetOnePost(postID int) (models.DataPost, error) {
 
 	var data models.DataPost
 	//! modify retrieval
-	for rows.next() {
-		errScan := rows.scan(&data.ID, &data.Content, &data.Media, &data.Date, &data.Avatar, &data.UserName, &data.FullName, &data.Comments, &data.Categories, &data.Viewers)
+	for rows.Next() {
+		errScan := rows.Scan(&data.ID, &data.Content, &data.Media, &data.Date, &data.Avatar, &data.UserName, &data.FullName, &data.Comments, &data.Categories, &data.Viewers)
 		if errScan != nil {
 			fmt.Println("⚠ GetOnePost scan err ⚠ :", errScan)
 			return models.DataPost{}, errors.New("error while scanning")
