@@ -3,9 +3,9 @@ import React from "react";
 import Image from "next/image";
 import Link from "next/link";
 
-function Register() {
+function Register(e) {
   const handleRegister = () => {
-    alert("Register");
+   let data = new FormData(e.target);
   };
 
   return (
@@ -17,7 +17,7 @@ function Register() {
             alt="logo"
             width={40}
             height={40}
-          />{" "}
+          />
           <div>
             You have already an account?{" "}
             <Link
@@ -38,7 +38,7 @@ function Register() {
 
           <form
             className="w-full flex flex-col gap-3"
-            // method="POST"
+            method="POST"
             data-form="login"
           >
             <input
@@ -109,7 +109,7 @@ function Register() {
             {/* <Link href="/home"> */}
             <button
               className="hover:bg-second bg-primary cursor-pointer border-none w-full h-10 rounded font-bold text-text text-center"
-              onClick={() => handleRegister()}
+              onClick={() => handleRegister(e)}
             >
               Create account
             </button>
