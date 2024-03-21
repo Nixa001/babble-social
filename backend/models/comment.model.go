@@ -7,6 +7,7 @@ type Comment struct {
 	Post_id int    `json:"postID"`
 	User_id int    `json:"userID"`
 	Media   string `json:"media"`
+	User    User   `json:"user"`
 }
 
 type DataComment []struct {

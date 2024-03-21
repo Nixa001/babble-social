@@ -3,7 +3,6 @@ import Image from 'next/image'
 import React, { useState } from 'react'
 import DisplayPost from '../../displayPost'
 import { useQuery } from 'react-query';
-import { useLocation } from 'react-router-dom';
 import { usePathname } from 'next/navigation'
 import { CreateEvent } from '@/app/ui/components/modals/createEvent'
 import { CreatePost } from '@/app/ui/components/modals/createPost'
@@ -16,7 +15,9 @@ const Group = () => {
     const [groupPosts, setGroupPosts] = useState()
     const [groupInfo, setGroupInfo] = useState({})
     const [suggestFriend, setSuggestFriend] = useState(false)
-    const [members, setMembers] = useState(false)
+    const [isVisibleMembers, setIsVisibleMembers] = useState(false)
+    const [members, setMembers] = useState([])
+    const [followers, setFollowers] = useState([])
 
     const pathname = usePathname()
     const id = pathname.split("id=")[1]
@@ -40,13 +41,14 @@ const Group = () => {
 
     useQuery('groups', fetchGroups, {
         enabled: true,
-        refetchInterval: 10000,
-        staleTime: 8000,
+        refetchInterval: 2000,
+        staleTime: 1000,
         onSuccess: (newData) => {
             setGroupPosts(newData.posts)
-            console.log(groupPosts);
             setGroupInfo(newData.group_data)
-            console.log(groupInfo.image);
+            setMembers(newData.members)
+            setFollowers(newData.followers)
+            // console.log(groupInfo.creator.first_name);
 
             // setGroupJoined(newData.groupJoined);
             // setGroupData(newData.groupData);
@@ -85,8 +87,6 @@ const Group = () => {
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
                             <path fillRule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12Zm8.706-1.442c1.146-.573 2.437.463 2.126 1.706l-.709 2.836.042-.02a.75.75 0 0 1 .67 1.34l-.04.022c-1.147.573-2.438-.463-2.127-1.706l.71-2.836-.042.02a.75.75 0 1 1-.671-1.34l.041-.022ZM12 9a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z" clipRule="evenodd" />
                         </svg>
-
-
                         {groupInfo.description}
                     </p>
                 </div>
@@ -131,10 +131,14 @@ const Group = () => {
 
 
                     <span className='italic'>Created by: </span>
-                    Nicolas Faye
+                    {groupInfo.creator ?
+                        groupInfo.creator.first_name + " " +
+                        groupInfo.creator.last_name : ("")
+                    }
+
                 </p>
                 <p className=' flex items-center gap-2 bg-primary bg-opacity-50 w-fit hover:bg-opacity-70 hover:text-white font-bold rounded-md cursor-pointer py-1 px-3 border-gray-700' onClick={() => {
-                    setMembers(true)
+                    setIsVisibleMembers(true)
                 }}
                 >
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
@@ -142,7 +146,10 @@ const Group = () => {
                         <path d="M5.082 14.254a8.287 8.287 0 0 0-1.308 5.135 9.687 9.687 0 0 1-1.764-.44l-.115-.04a.563.563 0 0 1-.373-.487l-.01-.121a3.75 3.75 0 0 1 3.57-4.047ZM20.226 19.389a8.287 8.287 0 0 0-1.308-5.135 3.75 3.75 0 0 1 3.57 4.047l-.01.121a.563.563 0 0 1-.373.486l-.115.04c-.567.2-1.156.349-1.764.441Z" />
                     </svg>
 
-                    Members: <span className='italic'>20k</span>
+                    Members: <span className='italic'>
+
+                        {members.length}
+                    </span>
 
                 </p>
             </div>
@@ -169,7 +176,7 @@ const Group = () => {
                 <div className='w-[75%] '>
                     {groupPosts ? (
                         groupPosts.map((post) => {
-                            <DisplayPost postData={post} onLikeClick={onLikeClick} onDislikeClick={onDislikeClick}
+                            return <DisplayPost key={post.id} postData={post} onLikeClick={onLikeClick} onDislikeClick={onDislikeClick}
                                 onCommentClick={onCommentClick} onProfileClick={onProfileClick}
                             />
                         })
@@ -180,8 +187,8 @@ const Group = () => {
             </div>
             <CreateEvent isVisible={formCreateEv} onClose={() => setFormCreateEv(false)} />
             <CreatePost isVisible={formCreateP} onClose={() => setFormCreateP(false)} />
-            <Suggest isVisible={suggestFriend} onClose={() => setSuggestFriend(false)} />
-            <DisplayMembers isVisible={members} onClose={() => setMembers(false)} />
+            <Suggest followers={followers} isVisible={suggestFriend} onClose={() => setSuggestFriend(false)} />
+            <DisplayMembers members={members} isVisible={isVisibleMembers} onClose={() => setIsVisibleMembers(false)} />
 
         </div>
     )

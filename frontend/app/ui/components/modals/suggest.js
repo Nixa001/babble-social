@@ -1,7 +1,7 @@
 import React from 'react'
 import Image from 'next/image';
 
-export const Suggest = ({ isVisible, onClose }) => {
+export const Suggest = ({ followers, isVisible, onClose }) => {
     if (!isVisible) return null;
     return (
         <div className='fixed inset-0 bg-bg bg-opacity-10 backdrop-blur-sm 
@@ -36,14 +36,14 @@ export const Suggest = ({ isVisible, onClose }) => {
 }
 
 
-const followers = [
-    { name: 'Vindour', src: "/assets/profilibg.jpg", alt: "profil" },
-    { name: 'ibg', src: "/assets/profilibg.jpg", alt: "profil", },
-    { name: 'dicks', src: "/assets/profilibg.jpg", alt: "profil", },
-    { name: 'Vindcour', src: "/assets/profilibg.jpg", alt: "profil" },
-    { name: 'ibgs', src: "/assets/profilibg.jpg", alt: "profil", },
-    { name: 'dickss', src: "/assets/profilibg.jpg", alt: "profil", },
-];
+// const followers = [
+//     { name: 'Vindour', src: "/assets/profilibg.jpg", alt: "profil" },
+//     { name: 'ibg', src: "/assets/profilibg.jpg", alt: "profil", },
+//     { name: 'dicks', src: "/assets/profilibg.jpg", alt: "profil", },
+//     { name: 'Vindcour', src: "/assets/profilibg.jpg", alt: "profil" },
+//     { name: 'ibgs', src: "/assets/profilibg.jpg", alt: "profil", },
+//     { name: 'dickss', src: "/assets/profilibg.jpg", alt: "profil", },
+// ];
 
 export const displaySuggestFriend = (data) => {
     return data.map((follower) => {
@@ -51,15 +51,14 @@ export const displaySuggestFriend = (data) => {
             <div key={follower.name} className=" hover:opacity-90 w-[95%] flex items-center cursor-pointer justify-between gap-2 mt-1 mb-3 p-2  ">
                 {/* <FaUserGroup className='border rounded-full p-2 w-10 h-10' /> */}
                 <div className='flex items-center gap-2'>
-
                     <Image
                         className="rounded-full "
-                        src={follower.src}
+                        src={`/assets/${follower.avatar}`}
                         alt={follower.alt}
                         width={40}
                         height={40}
                     />
-                    <h4 className="font-bold ">{follower.name}</h4>
+                    <h4 className="font-bold ">{follower.first_name + " " + follower.last_name}</h4>
                 </div>
                 <button type="submit" className="bg-second h-7 text-lg font-bold px-2 rounded-md cursor-pointer hover:bg-primary">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">

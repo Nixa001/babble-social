@@ -14,6 +14,7 @@ type Group struct {
 	Name           string `json:"name"`
 	Description    string `json:"description"`
 	ID_User_Create int    `json:"id_user_create"`
+	User           User   `json:"creator"`
 	Avatar         string `json:"image"`
 	Creation_Date  string `json:"creation_date"`
 	Href           string `json:"href"`

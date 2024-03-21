@@ -1,13 +1,11 @@
 import React from 'react'
 import Image from 'next/image';
 
-export const DisplayMembers = ({ isVisible, onClose }) => {
+export const DisplayMembers = ({members, isVisible, onClose }) => {
     if (!isVisible) return null;
     return (
         <div className='fixed inset-0 bg-bg bg-opacity-10 backdrop-blur-sm 
         flex justify-center items-center'
-
-        // onClick={() => onClose()}
         >
             <div className='w-[700px] h-[600px] pb-5 rounded-lg shadow-2xl bg-bg bg-clip-padding backdrop-filter
              backdrop-blur-md border border-gray-700 hover:bg-opacity-95' >
@@ -26,7 +24,7 @@ export const DisplayMembers = ({ isVisible, onClose }) => {
                     <div className="flex flex-col lg:w-[100%] 2xl-[80%] xl:w-[75%] w-[80%]  gap-1 ">
                         <input placeholder='search friend ...' className='h-8 bg-transparent border border-gray-700 rounded-md text-center focus:outline-none focus:border-primary' />
                         <div className="flex flex-col h-[400px] overflow-scroll">
-                            {displaySuggestFriend(followers)}
+                            {displaySuggestFriend(members)}
                         </div>
                     </div>
                 </div>
@@ -48,18 +46,18 @@ const followers = [
 export const displaySuggestFriend = (data) => {
     return data.map((follower) => {
         return (
-            <div key={follower.name} className=" hover:opacity-90 w-[95%] flex items-center cursor-pointer justify-between gap-2 mt-1 mb-3 p-2  ">
+            <div key={follower.email} className=" hover:opacity-90 w-[95%] flex items-center cursor-pointer justify-between gap-2 mt-1 mb-3 p-2  ">
                 {/* <FaUserGroup className='border rounded-full p-2 w-10 h-10' /> */}
                 <div className='flex items-center gap-2'>
 
                     <Image
                         className="rounded-full "
-                        src={follower.src}
-                        alt={follower.alt}
+                        src={`/assets/${follower.avatar}`}
+                        alt={follower.avatar}
                         width={40}
                         height={40}
                     />
-                    <h4 className="font-bold ">{follower.name}</h4>
+                    <h4 className="font-bold ">{follower.first_name}</h4>
                 </div>
             </div>
         );
