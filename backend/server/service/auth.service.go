@@ -22,16 +22,13 @@ func (a *AuthService) init() {
 
 func (a *AuthService) CreateUser(user *models.User) error {
 	_, err := a.UserRepo.GetUserByEmail(user.Email)
-	if err != nil {
-		return err
+	if err == nil {
+		return fmt.Errorf("this email is already in use")
 	}
 	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 	user.Password = string(hashedPassword)
-	err = a.UserRepo.CreateUser(user)
-	if err != nil {
-		return err
-	}
-	return nil
+	err = a.UserRepo.SaveUser(user)
+	return err
 }
 
 func (a *AuthService) CheckCredentials(email, password string) (*models.User, error) {
