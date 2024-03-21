@@ -14,7 +14,12 @@ export const postForm = () => {
       method: "POST",
       body: data,
     };
-    fetch("http://localhost:8080/post", options).then((x) => console.log(x));
+    fetch("http://localhost:8080/post", options).then(async (x) => {
+      const retrieved = await x.json();
+      if (retrieved.type != "success")
+        alert(retrieved.StatusCode, retrieved.Msg);
+      console.log("response", retrieved);
+    });
   };
 
   console.log("in postForm");
@@ -123,7 +128,8 @@ function PrivacySelect() {
                     type="checkbox"
                     name={`view-${user.name}`}
                     //checked={selectedUsers.includes(user.name)}
-                    onChange={() => handleUserSelection(user.name)}
+                    value={user.id}
+                    onChange={() => handleUserSelection(user.id)}
                   />
                   {user.name}
                 </label>
@@ -137,12 +143,12 @@ function PrivacySelect() {
 }
 
 const followers = [
-  { name: "Vindour", src: "/assets/profilibg.jpg", alt: "profil" },
-  { name: "ibg", src: "/assets/profilibg.jpg", alt: "profil" },
-  { name: "dicks", src: "/assets/profilibg.jpg", alt: "profil" },
-  { name: "Vindcour", src: "/assets/profilibg.jpg", alt: "profil" },
-  { name: "ibgs", src: "/assets/profilibg.jpg", alt: "profil" },
-  { name: "dickss", src: "/assets/profilibg.jpg", alt: "profil" },
+  { name: "Vindour", src: "/assets/profilibg.jpg", alt: "profil", id: 3 },
+  { name: "ibg", src: "/assets/profilibg.jpg", alt: "profil", id: 2 },
+  { name: "daniella", src: "/assets/profilibg.jpg", alt: "profil", id: 5 },
+  { name: "Vindcour99", src: "/assets/profilibg.jpg", alt: "profil", id: 99 },
+  { name: "nixa", src: "/assets/profilibg.jpg", alt: "profil", id: 4 },
+  { name: "dickss", src: "/assets/profilibg.jpg", alt: "profil", id: 1 },
 ];
 
 export function TextArea({

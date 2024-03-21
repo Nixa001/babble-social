@@ -57,9 +57,18 @@ func POSTHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		fmt.Println(PostToCreate)
 		notOk, err := service.PostServ.CreatePost(PostToCreate)
-		if !notOk {
+		if notOk {
 			log.Println("problem after create service ", err)
+			utils.Alert(w, err)
 			return
+		} else {
+			msg := models.Errormessage{
+				Type:       "success",
+				Msg:        "post created successfully",
+				StatusCode: 200,
+				Display:    false,
+			}
+			utils.Alert(w, msg)
 		}
 	}
 }

@@ -171,10 +171,10 @@ func (P *PostRepository) InsertPost(post models.Post) error {
 	if post.ToIns.Content != "" {
 		post.ToIns.Content = utils.EncodeValue(post.ToIns.Content)
 	}
-
+	post.ToIns.ID = id_post.String()
 	err := P.DB.Insert(P.TableName, post.ToIns)
 	if err != nil {
-		fmt.Println("❌ error while inserting post")
+		fmt.Println("❌ error while inserting post", err)
 		return err
 	}
 	//inserting categories
