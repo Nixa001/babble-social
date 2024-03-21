@@ -60,15 +60,14 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusInternalServerError)
 			json.NewEncoder(w).Encode(map[string]string{"error": "Internal server error"})
 			return
-		} else {
-			token := utils.GenerateToken()
-			err := service.AuthServ.SessRepo.CreateSession(&models.Session{Token: token, User_id: user.Id, Expiration: utils.GenerateExpirationTime()})
-			if err != nil {
-				log.Println("Error creating session", err)
-				w.WriteHeader(http.StatusInternalServerError)
-				json.NewEncoder(w).Encode(map[string]string{"error": "Internal server error"})
-				return
-			}
+		}
+		token := utils.GenerateToken()
+		err = service.AuthServ.SessRepo.CreateSession(&models.Session{Token: token, User_id: user.Id, Expiration: utils.GenerateExpirationTime()})
+		if err != nil {
+			log.Println("Error creating session", err)
+			w.WriteHeader(http.StatusInternalServerError)
+			json.NewEncoder(w).Encode(map[string]string{"error": "Internal server error"})
+			return
 		}
 
 		// var newEvent = ws.WSPaylaod{
@@ -82,7 +81,8 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 		// }
 		// ws.WSHub.HandleEvent(newEvent)
 		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(map[string]any{"message": "success", "token": "token", "user": user})
+		log.Printf("User %s created successfully", user.Email)
+		json.NewEncoder(w).Encode(map[string]any{"message": "success", "token": token, "user": user})
 	default:
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		json.NewEncoder(w).Encode(map[string]string{"error": "Method not allowed"})
