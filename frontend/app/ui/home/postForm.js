@@ -8,15 +8,14 @@ import { IoSend } from "react-icons/io5";
 export const postForm = () => {
   const handlePost = (e) => {
     e.preventDefault();
-    const data = new FormData(e.target)
-    console.log("my data => ", data)
-    const   options = {
+    const data = new FormData(e.target);
+    console.log("my data => ", data);
+    const options = {
       method: "POST",
-      body: data
+      body: data,
     };
-    fetch("http://localhost:8080/post",options )
-    .then(x => console.log(x))
-    };
+    fetch("http://localhost:8080/post", options).then((x) => console.log(x));
+  };
 
   console.log("in postForm");
   return (
@@ -83,7 +82,7 @@ export const postForm = () => {
 };
 
 function PrivacySelect() {
- const [selectedValue, setSelectedValue] = useState("public");
+  const [selectedValue, setSelectedValue] = useState("public");
   const [showUserList, setShowUserList] = useState(false);
   const [selectedUsers, setSelectedUsers] = useState([]);
 
@@ -113,7 +112,7 @@ function PrivacySelect() {
         <option value="Private">Private</option>
         <option value="almost">Select users</option>
       </select>
-     <input type="hidden" value={selectedUsers} name="viewers"/>
+      <input type="hidden" value={selectedUsers} name="viewers" />
       {showUserList && (
         <div className="mt-1 max-h-44  w-[300px] p-2 overflow-scroll border rounded-md">
           <ul className="flex flex-wrap gap-2">
