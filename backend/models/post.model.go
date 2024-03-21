@@ -23,7 +23,7 @@ type Category struct {
 type DataPost struct {
 	Avatar     string
 	Categories string
-	comments   int
+	Comments   int
 	Content    string
 	Date       string
 	FullName   string

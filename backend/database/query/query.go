@@ -197,9 +197,10 @@ func InsertQuery(table string, object interface{}) (string, []interface{}, error
 	}
 	toMap := make(map[string]interface{})
 	json.Unmarshal(toJson, &toMap)
+	fmt.Println("toMap => ", toMap)
 	columns, values := GetColumnsValues(toMap)
-	fmt.Println(columns)
-	fmt.Println(values)
+	fmt.Println("parsed column => ",columns)
+	fmt.Println("parsed values => ",values)
 	query := fmt.Sprintf(`INSERT INTO %v (%v) VALUES (%v);`, table, columns, Placeholders(len(values)))
 	return query, values, nil
 }

@@ -13,9 +13,6 @@ import (
 func POSTHandler(w http.ResponseWriter, r *http.Request) {
 	// --------retrieving form values ----------
 	cors.SetCors(&w)
-	fmt.Println("r is ", r)
-	fmt.Println("w is ", w)
-
 	fmt.Println("--------------------------------------------")
 	fmt.Println("          Post Form values                 ")
 	fmt.Println("--------------------------------------------")
@@ -47,7 +44,7 @@ func POSTHandler(w http.ResponseWriter, r *http.Request) {
 
 		Image, _ := utils.Uploader(w, r, 20, "image", "")
 		fmt.Println("[INFO] imagelink: ", Image) //debug
-		PostToCreate := &models.Post{
+		PostToCreate := models.Post{
 			ToIns: models.InsPost{
 				Content:  PostContent,
 				Media:    Image,
@@ -61,7 +58,7 @@ func POSTHandler(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(PostToCreate)
 		notOk, err := service.PostServ.CreatePost(PostToCreate)
 		if !notOk {
-			log.Println("problem after create service")
+			log.Println("problem after create service ", err)
 			return
 		}
 	}

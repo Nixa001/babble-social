@@ -10,7 +10,7 @@ type PostService struct {
 }
 
 func (p *PostService) init() {
-	p.UserRepo = *r.PostRepo
+	p.PostRepo = *r.PostRepo
 }
 
 func (p *PostService) CreatePost(post models.Post) (bool, models.Errormessage) {
@@ -32,7 +32,7 @@ func (p *PostService) GetPost(Id int) ([]models.DataPost, error) {
 func (p *PostService) FetchPost(Id int) (models.DataPost, error) {
 	post, err := p.PostRepo.GetOnePost(Id)
 	if err != nil {
-		return nil, err
+		return models.DataPost{}, err
 	}
 	return post, nil
 }
