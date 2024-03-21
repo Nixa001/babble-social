@@ -8,6 +8,7 @@ import (
 	"backend/utils"
 	"encoding/json"
 	"io"
+	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -29,7 +30,6 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid request"})
 			return
 		}
-		w.WriteHeader(http.StatusCreated)
 		var user models.User
 		err = json.Unmarshal(content, &user)
 		if err != nil {
@@ -53,33 +53,36 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid username"})
 			return
 		}
-
+		user.User_type = "public"
 		err = service.AuthServ.CreateUser(&user)
 		if err != nil {
+			log.Println("Error creating user", err)
 			w.WriteHeader(http.StatusInternalServerError)
 			json.NewEncoder(w).Encode(map[string]string{"error": "Internal server error"})
 			return
 		} else {
-			err := service.AuthServ.SessRepo.CreateSession(&models.Session{User_id: user.Id, Token: utils.GenerateToken(), Expiration: utils.GenerateExpirationTime()})
+			token := utils.GenerateToken()
+			err := service.AuthServ.SessRepo.CreateSession(&models.Session{Token: token, User_id: user.Id, Expiration: utils.GenerateExpirationTime()})
 			if err != nil {
+				log.Println("Error creating session", err)
 				w.WriteHeader(http.StatusInternalServerError)
 				json.NewEncoder(w).Encode(map[string]string{"error": "Internal server error"})
 				return
 			}
 		}
 
-		var newEvent = ws.WSPaylaod{
-			From: user.Email,
-			Type: ws.WS_JOIN_EVENT,
-			Data: map[string]any{
-				"username":     user.Email,
-				"status":       "offline",
-				"unread_count": 0,
-			},
-		}
-		ws.WSHub.HandleEvent(newEvent)
-
-		json.NewEncoder(w).Encode(map[string]any{"message": "success", "token": "", "user": user})
+		// var newEvent = ws.WSPaylaod{
+		// 	From: user.Email,
+		// 	Type: ws.WS_JOIN_EVENT,
+		// 	Data: map[string]any{
+		// 		"username":     user.Email,
+		// 		"status":       "offline",
+		// 		"unread_count": 0,
+		// 	},
+		// }
+		// ws.WSHub.HandleEvent(newEvent)
+		w.WriteHeader(http.StatusOK)
+		json.NewEncoder(w).Encode(map[string]any{"message": "success", "token": "token", "user": user})
 	default:
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		json.NewEncoder(w).Encode(map[string]string{"error": "Method not allowed"})
