@@ -2,7 +2,8 @@ package routes
 
 import (
 	"backend/server/handler"
-	groups "backend/server/handler/groups"
+	"backend/server/handler/groups"
+	"backend/server/handler/user"
 	"net/http"
 )
 
@@ -12,9 +13,10 @@ const (
 	SIGNIN_ENDPOINT        = "/auth/signin"
 	LOGOUT_ENDPOINT        = "/auth/signout"
 	CREATE_GROUP_ENDPOINT  = "/group/creategroup"
+	USER_ENDPOINT          = "/userInfo"
 	JOINED_GROUPS_ENDPOINT = "/groups_joined"
 	GETGROUPS_ENDPOINT     = "/groups"
-	GETGROUP_ENDPOINT     = "/groups/group"
+	GETGROUP_ENDPOINT      = "/groups/group"
 	WS_ENDPOINT            = "/socket"
 	SERVE_ASSETS           = "/uploads/"
 )
@@ -29,6 +31,7 @@ func Route() *http.ServeMux {
 	mux.HandleFunc(WS_ENDPOINT, handler.WSHandler)
 	mux.HandleFunc(GETGROUPS_ENDPOINT, groups.GetGroups)
 	mux.HandleFunc(GETGROUP_ENDPOINT, groups.GetGroup)
+	mux.HandleFunc(USER_ENDPOINT, user.GetUser)
 	mux.HandleFunc(SERVE_ASSETS, func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, r.URL.Path[1:])
 	})

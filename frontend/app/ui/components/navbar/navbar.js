@@ -1,5 +1,7 @@
 "use client"
 import React from 'react'
+import { useState } from "react";
+import { useEffect } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { GoHomeFill } from "react-icons/go";
@@ -22,19 +24,30 @@ const links = [
     { name: 'Logout', href: '/home/logout', icon: IoLogOut },
 ];
 
-function Navbar() {
+function Navbar({ userData }) {
     // const location = useLocation();
     const pathname = usePathname();
+
+    // const { userData, followers, isLoading, error } = useFetchData();
+
     return (
         <div className='shadowL  md:navbar xl:before:w-72 before:w-48 z-0 xl:w-60 md:block md:h-[700px] flex-col'>
             <div className='md:flex hidden relative z-0 flex-col w-full h-52 items-center justify-center'>
-                <Image
-                    src="/assets/profil.jpg" alt="logo"
-                    width={80} height={80}
-                    className='rounded-full z-10'
-                />
-                <h2 className='font-semibold text-xl text-center'>Nicolas Cor Faye</h2>
-                <span className='text-md italic text-primary'>@nixa</span>
+                {userData.avatar ?
+                    <Image
+                        src={`/assets/${userData.avatar}`}
+                        alt="logo"
+                        width={80} height={80}
+                        className='rounded-full z-10'
+                    />
+                    : ("")}
+
+                <h2 className='font-semibold text-xl text-center'>
+                    {userData.first_name ? userData.first_name + " " + userData.last_name : ('')}
+                </h2>
+                <span className='text-md italic text-primary'>
+                    {userData.user_name ? "@" + userData.user_name : ("")}
+                </span>
             </div>
 
             <div className=" absolute content w-18 h-80 z-0 bg-other border-l-0 border-t-0 border-b-10 border-r-0 rounded-bl-0 rounded-tr-10 rounded-br-0 rounded-tl-0"></div>

@@ -6,8 +6,6 @@ import { QueryClient } from 'react-query';
 import { QueryClientProvider } from 'react-query';
 const queryClient = new QueryClient();
 
-
-
 const page = () => {
   return (
     <>

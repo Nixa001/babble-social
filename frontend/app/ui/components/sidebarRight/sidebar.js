@@ -5,18 +5,18 @@ import { useState } from 'react';
 
 
 
-const followers = [
-    { name: 'Vincent Ndour', src: "/assets/profilibg.jpg", alt: "profil" },
-    { name: 'Ibrahima Gueye', src: "/assets/profilibg.jpg", alt: "profil", },
-    { name: 'Madike Yade', src: "/assets/profilibg.jpg", alt: "profil", },
-];
+// const followers = [
+//     { name: 'Vincent Ndour', src: "/assets/profilibg.jpg", alt: "profil" },
+//     { name: 'Ibrahima Gueye', src: "/assets/profilibg.jpg", alt: "profil", },
+//     { name: 'Madike Yade', src: "/assets/profilibg.jpg", alt: "profil", },
+// ];
 const groups = [
     { name: 'Call of duty', src: "/assets/profilibg.jpg", alt: "profil", },
     { name: 'Farcry 6 Team', src: "/assets/profilibg.jpg", alt: "profil" },
     { name: 'EA Fooball 24', src: "/assets/profilibg.jpg", alt: "profil", },
 ];
 
-function Sidebar() {
+function Sidebar({followers}) {
     const [activeTab, setActiveTab] = useState("followers");
 
     const handleTabClick = (tab) => {
@@ -28,7 +28,7 @@ function Sidebar() {
             return displayFollowers(followers)
                 ;
         } else if (activeTab === "group") {
-            return displayFollowers(groups);
+            return displayFollowers(followers);
         }
         return null;
     };
@@ -66,17 +66,17 @@ export const followerHearder = (text, state, activeTab, handleTabClick) => {
 export const displayFollowers = (data) => {
     return data.map((follower) => {
         return (
-            <div key={follower.name} className=" hover:opacity-60 flex items-center cursor-pointer justify-start gap-2 mt-1 mb-3 p-2 ">
+            <div key={follower.id} className=" hover:opacity-60 flex items-center cursor-pointer justify-start gap-2 mt-1 mb-3 p-2 ">
                 {/* <FaUserGroup className='border rounded-full p-2 w-10 h-10' /> */}
 
                 <Image
                     className="rounded-full "
-                    src={follower.src}
-                    alt={follower.alt}
+                    src={`/assets/${follower.avatar}`}
+                    alt={follower.user_name}
                     width={35}
                     height={35}
                 />
-                <h4 className="font-bold text-sm ">{follower.name}</h4>
+                <h4 className="font-bold text-sm ">{follower.first_name + " "+follower.last_name}</h4>
             </div>
         );
     })

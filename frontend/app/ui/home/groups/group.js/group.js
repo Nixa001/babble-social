@@ -147,8 +147,7 @@ const Group = () => {
                     </svg>
 
                     Members: <span className='italic'>
-
-                        {members.length}
+                        {members? members.length :("0")}
                     </span>
 
                 </p>

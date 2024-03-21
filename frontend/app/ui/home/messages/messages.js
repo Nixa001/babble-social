@@ -123,11 +123,15 @@ const Messages = () => {
 
 export default Messages;
 const users = [
-    { id: 1, name: 'Mamour Drame', src: '/assets/profilibg.jpg', alt: "profil" },
-    { id: 2, name: 'Edouard Mendy', src: '/assets/profilibg.jpg', alt: "profil" },
-    { id: 3, name: 'Vincent Ndour', src: "/assets/profilibg.jpg", alt: "profil" },
-    { id: 4, name: 'Ibrahima Gueye', src: "/assets/profilibg.jpg", alt: "profil", },
-    { id: 5, name: 'Madike Yade', src: "/assets/profilibg.jpg", alt: "profil", },
+    { id: 1, first_name: 'Mamour', last_name: 'Drame', avatar: 'profilibg.jpg', alt: "profil" },
+    { id: 2, first_name: 'Edouard', last_name: 'Mendy', avatar: 'profilibg.jpg', alt: "profil" },
+    { id: 3, first_name: 'Vincent', last_name: 'Ndour', avatar: "profilibg.jpg", alt: "profil" },
+];
+
+const groups = [
+    { id: 1, first_name: 'Call of duty', last_name: '', avatar: 'profilibg.jpg', alt: "profil" },
+    { id: 2, first_name: 'Farcry 6 Team', last_name: '', avatar: 'profilibg.jpg', alt: "profil" },
+    { id: 3, first_name: 'EA Fooball 24', last_name: '', avatar: "profilibg.jpg", alt: "profil" },
 ];
 
 const messages = [
@@ -139,10 +143,4 @@ const messages = [
     },
 ];
 
-
-const groups = [
-    { name: 'Call of duty', src: "/assets/profilibg.jpg", alt: "profil", },
-    { name: 'Farcry 6 Team', src: "/assets/profilibg.jpg", alt: "profil" },
-    { name: 'EA Fooball 24', src: "/assets/profilibg.jpg", alt: "profil", },
-];
 
