@@ -4,6 +4,8 @@ import (
 	q "backend/database/query"
 	"database/sql"
 	"fmt"
+	"log"
+	"os"
 
 	_ "github.com/mattn/go-sqlite3"
 )
@@ -12,144 +14,113 @@ type Database struct {
 	*sql.DB
 }
 
-func NewDatabase() (*Database, error) {
-	db, err := sql.Open("sqlite3", "./social_network.db")
-	if err != nil {
-		return nil, err
-	}
-	return &Database{db}, nil
-}
-
 var DB *Database
 
-// Insert insère des données dans la table spécifiée en utilisant une requête préparée.
-// function avec value receveur de type Database
-func (d *Database) Insert(table string, data interface{}) error {
-	query, values, err := q.InsertQuery(table, data)
+func init() {
+	db, err := sql.Open("sqlite3", "../backend/database/social_network.db")
 	if err != nil {
+		log.Println("Error opening database")
 		fmt.Println(err)
-		return err
+		os.Exit(1)
 	}
-	prep, err := d.Prepare(query)
-
-	if err != nil {
-		fmt.Println(err)
-		return err
-	}
-	defer prep.Close()
-
-	_, err = prep.Exec(values...)
-	if err != nil {
-		fmt.Println(err)
-		return err
-	}
-	return nil
+	log.Println("Database opened")
+	DB = &Database{db}
 }
 
-func (d *Database) Update(table string, object interface{}, where q.WhereOption) error {
-	query, values, err := q.UpdateQuery(table, object, where)
+func (d *Database) Insert(table string, data any) error {
+	query, err := q.InsertQuery(table, data)
 	if err != nil {
-		fmt.Println(err)
-		return err
+		return fmt.Errorf("error creating insert query: %v", err)
 	}
 	prep, err := d.Prepare(query)
-
 	if err != nil {
-		fmt.Println(err)
-		return err
+		return fmt.Errorf("error preparing insert query: %v", err)
 	}
-	defer prep.Close()
+	_, err = prep.Exec()
 
-	_, err = prep.Exec(values...)
-	if err != nil {
-		fmt.Println(err)
-		return err
-	}
-	return nil
+	return err
 }
 
 func (d *Database) Delete(table string, where q.WhereOption) error {
-	query, values := q.DeleteQuery(table, where)
-	prep, err := d.Prepare(query)
 
+	query := q.DeleteQuery(table, where)
+	stmt, err := d.Prepare(query)
 	if err != nil {
-		fmt.Println(err)
-		return err
+		return fmt.Errorf("error preparing delete query: %v", err)
 	}
-	defer prep.Close()
-
-	_, err = prep.Exec(values...)
-	if err != nil {
-		fmt.Println(err)
-		return err
-	}
-	return nil
+	_, err = stmt.Exec()
+	return err
 }
 
-func (d *Database) GetOneForm(table string, where q.WhereOption) (*sql.Row, error) {
-	query, values := q.SelectOneFrom(table, where)
-	prep, err := d.Prepare(query)
+func (d *Database) Update(table string, object any, where q.WhereOption) error {
+	var err error
+	query, err := q.UpdateQuery(table, object, where)
+	if err != nil {
+		return fmt.Errorf("error creating update query: %v", err)
+	}
+	stmt, err := d.Prepare(query)
 
 	if err != nil {
-		fmt.Println(err)
+		return err
+	}
+	_, err = stmt.Exec()
+	return err
+}
+
+func (d *Database) GetOneFrom(table string, where q.WhereOption) (*sql.Row, error) {
+
+	query := q.SelectOneFrom(table, where)
+	stmt, err := d.Prepare(query)
+	if err != nil {
 		return nil, err
 	}
-	defer prep.Close()
-
-	row := prep.QueryRow(values...)
+	row := stmt.QueryRow()
 	return row, nil
 }
 
 func (d *Database) GetAllFrom(table string, where q.WhereOption, orderby string, limit []int) (*sql.Rows, error) {
 	var query string
-	var values []interface{}
 	if where == nil {
-		query, values = q.SelectAllFrom(table, orderby, limit)
+		query = q.SelectAllFrom(table, orderby, limit)
 	} else {
-		query, values = q.SelectAllWhere(table, where, orderby, limit)
+		query = q.SelectAllWhere(table, where, orderby, limit)
 	}
 
-	prep, err := d.Prepare(query)
-
+	stmt, err := d.Prepare(query)
 	if err != nil {
-		fmt.Println(err)
-		return nil, err
+		return nil, fmt.Errorf("error preparing select query: %v", err)
 	}
-	defer prep.Close()
+	rows, err := stmt.Query()
 
-	rows, err := prep.Query(values...)
 	if err != nil {
-		fmt.Println(err)
 		return nil, err
 	}
 	return rows, nil
 }
 
 func (d *Database) GetAllAndJoin(table string, j []q.JoinCondition, where q.WhereOption, orderby string, limit []int) (*sql.Rows, error) {
-	query, values := q.SelectWithJoinQuery(table, j, where, orderby, limit)
+	var query = q.SelectWithJoinQuery(table, j, where, orderby, limit)
 
-	prep, err := d.Prepare(query)
+	stmt, err := d.Prepare(query)
 	if err != nil {
 		return nil, err
 	}
-	rows, err := prep.Query(values...)
+	rows, err := stmt.Query()
 
 	if err != nil {
 		return nil, err
 	}
-
 	return rows, nil
 }
 
 func (d *Database) GetCount(table string, where q.WhereOption) (*sql.Row, error) {
-	query, values := q.GetCountQuery(table, where)
+	var query = q.GetCountQuery(table, where)
 
-	prep, err := d.Prepare(query)
+	stmt, err := d.Prepare(query)
 	if err != nil {
 		return nil, err
 	}
+	row := stmt.QueryRow()
 
-	row := prep.QueryRow(values...)
 	return row, nil
-
 }

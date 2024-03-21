@@ -87,6 +87,9 @@ func IsAlpha(input string) bool {
 }
 
 func VerifyUsername(username string) error {
+	if username == "" {
+		return nil
+	}
 	pattern := `^[a-zA-Z][a-zA-Z0-9_]{6,15}$`
 	regex := regexp.MustCompile(pattern)
 	ok := regex.MatchString(username)
@@ -132,4 +135,24 @@ func GenImageName(image string) (string, error) {
 		return "", errors.New("cannot generate id for img name")
 	}
 	return fmt.Sprintf("%s%s", idImg, image), nil
+}
+
+func IsValidPassword(password string) error {
+	if len(password) < 4 {
+		return fmt.Errorf("password must be at least 8 characters long")
+	}
+	return nil
+}
+
+func GenerateToken() string {
+	token, err := uuid.NewV4()
+	if err != nil {
+		fmt.Println(err)
+	}
+	return token.String()
+
+}
+
+func GenerateExpirationTime() string {
+	return time.Now().Add((time.Hour * 24)).String()
 }
