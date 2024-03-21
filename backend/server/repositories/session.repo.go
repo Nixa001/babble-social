@@ -20,10 +20,7 @@ func (s *SessionRepository) init() {
 
 func (s *SessionRepository) CreateSession(session *models.Session) error {
 	err := s.DB.Insert(s.TableName, session)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 func (s *SessionRepository) GetSession(token string) (*models.Session, error) {
