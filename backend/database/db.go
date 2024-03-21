@@ -4,6 +4,7 @@ import (
 	q "backend/database/query"
 	"database/sql"
 	"fmt"
+	"log"
 	"os"
 
 	_ "github.com/mattn/go-sqlite3"
@@ -18,25 +19,22 @@ var DB *Database
 func init() {
 	db, err := sql.Open("sqlite3", "../backend/database/social_network.db")
 	if err != nil {
-		fmt.Println("Error opening database")
+		log.Println("Error opening database")
 		fmt.Println(err)
 		os.Exit(1)
 	}
-	fmt.Println("Database opened")
+	log.Println("Database opened")
 	DB = &Database{db}
 }
 
 func (d *Database) Insert(table string, data any) error {
-
 	query, err := q.InsertQuery(table, data)
 	if err != nil {
-		fmt.Println(err)
-		return err
+		return fmt.Errorf("error creating insert query: %v", err)
 	}
 	prep, err := d.Prepare(query)
 	if err != nil {
-		fmt.Println(err)
-		return err
+		return fmt.Errorf("error preparing insert query: %v", err)
 	}
 	_, err = prep.Exec()
 
@@ -48,8 +46,7 @@ func (d *Database) Delete(table string, where q.WhereOption) error {
 	query := q.DeleteQuery(table, where)
 	stmt, err := d.Prepare(query)
 	if err != nil {
-		fmt.Println(err)
-		return err
+		return fmt.Errorf("error preparing delete query: %v", err)
 	}
 	_, err = stmt.Exec()
 	return err
@@ -59,8 +56,7 @@ func (d *Database) Update(table string, object any, where q.WhereOption) error {
 	var err error
 	query, err := q.UpdateQuery(table, object, where)
 	if err != nil {
-		fmt.Println(err)
-		return err
+		return fmt.Errorf("error creating update query: %v", err)
 	}
 	stmt, err := d.Prepare(query)
 
@@ -78,7 +74,6 @@ func (d *Database) GetOneFrom(table string, where q.WhereOption) (*sql.Row, erro
 	if err != nil {
 		return nil, err
 	}
-	fmt.Println("Query prepared")
 	row := stmt.QueryRow()
 	return row, nil
 }
@@ -93,8 +88,7 @@ func (d *Database) GetAllFrom(table string, where q.WhereOption, orderby string,
 
 	stmt, err := d.Prepare(query)
 	if err != nil {
-		fmt.Println(err)
-		return nil, err
+		return nil, fmt.Errorf("error preparing select query: %v", err)
 	}
 	rows, err := stmt.Query()
 

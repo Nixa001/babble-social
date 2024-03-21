@@ -43,8 +43,7 @@ func getMapString(opt UpdateOption) string {
 func UpdateQuery(table string, object any, where WhereOption) (string, error) {
 	toJson, err := json.Marshal(object)
 	if err != nil {
-		fmt.Println(err)
-		return "", err
+		return "", fmt.Errorf("error marshalling object: %v", err)
 	}
 	toMap := make(map[string]interface{})
 	json.Unmarshal(toJson, &toMap)
@@ -105,14 +104,14 @@ func SelectAllWhere(table string, where WhereOption, orderby string, limit []int
 func InsertQuery(table string, object any) (string, error) {
 	toJson, err := json.Marshal(object)
 	if err != nil {
-		fmt.Println(err)
-		return "", err
+		return "", fmt.Errorf("error marshalling object: %v", err)
 	}
 	toMap := make(map[string]interface{})
 	json.Unmarshal(toJson, &toMap)
 	columns, values := getColumnsValues(toMap)
 
 	query := fmt.Sprintf(`INSERT INTO %v (%v) VALUES (%v);`, table, columns, values)
+
 	return query, nil
 }
 
