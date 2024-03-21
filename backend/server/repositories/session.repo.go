@@ -28,7 +28,7 @@ func (s *SessionRepository) CreateSession(session *models.Session) error {
 
 func (s *SessionRepository) GetSession(token string) (*models.Session, error) {
 	var session models.Session
-	row, err := s.DB.GetOneForm(s.TableName, q.WhereOption{"token": opt.Equals(token)})
+	row, err := s.DB.GetOneFrom(s.TableName, q.WhereOption{"token": opt.Equals(token)})
 	if err != nil {
 		return &session, err
 	}

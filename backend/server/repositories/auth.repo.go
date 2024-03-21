@@ -6,6 +6,7 @@ import (
 	q "backend/database/query"
 	"backend/models"
 	"database/sql"
+	"fmt"
 )
 
 type UserRepository struct {
@@ -17,7 +18,7 @@ func (u *UserRepository) init() {
 	u.TableName = "users"
 }
 
-func (u *UserRepository) CreateUser(user *models.User) error {
+func (u *UserRepository) SaveUser(user *models.User) error {
 	err := u.DB.Insert(u.TableName, user)
 	if err != nil {
 		return err
@@ -27,7 +28,7 @@ func (u *UserRepository) CreateUser(user *models.User) error {
 
 func (u *UserRepository) GetUserById(id int) (*models.User, error) {
 	var user models.User
-	row, err := u.DB.GetOneForm(u.TableName, q.WhereOption{"id": opt.Equals(id)})
+	row, err := u.DB.GetOneFrom(u.TableName, q.WhereOption{"id": opt.Equals(id)})
 	if err == sql.ErrNoRows {
 		return &models.User{}, err
 	}
@@ -42,7 +43,7 @@ func (u *UserRepository) GetUserById(id int) (*models.User, error) {
 }
 func (u *UserRepository) GetUserByToken(token string) (*models.User, error) {
 	var user models.User
-	row, err := u.DB.GetOneForm(u.TableName, q.WhereOption{"token": opt.Equals(token)})
+	row, err := u.DB.GetOneFrom(u.TableName, q.WhereOption{"token": opt.Equals(token)})
 	if err == sql.ErrNoRows {
 		return &models.User{}, err
 	}
@@ -55,11 +56,12 @@ func (u *UserRepository) GetUserByToken(token string) (*models.User, error) {
 	}
 	return &user, nil
 }
+
 func (u *UserRepository) GetUserByEmail(email string) (*models.User, error) {
 	var user models.User
-	row, err := u.DB.GetOneForm(u.TableName, q.WhereOption{"email": opt.Equals(email)})
+	row, err := u.DB.GetOneFrom(u.TableName, q.WhereOption{"email": opt.Equals(email)})
 	if err != nil {
-		return &models.User{}, err
+		return &models.User{}, fmt.Errorf("error getting user by email: %v", err)
 	}
 	err = row.Scan(user.Id, &user.First_name, &user.Last_name, &user.User_name, &user.Gender, &user.Email, &user.Password, &user.User_type, &user.Birth_date, &user.Avatar, &user.About_me)
 	if err != nil {
