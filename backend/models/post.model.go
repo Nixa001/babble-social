@@ -28,7 +28,7 @@ type DataPost struct {
 	Date       string
 	FullName   string
 	Group_id   int
-	ID         int
+	ID         string
 	Media      string
 	Privacy    string
 	UserName   string

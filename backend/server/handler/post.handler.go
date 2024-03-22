@@ -12,13 +12,15 @@ import (
 
 func POSTHandler(w http.ResponseWriter, r *http.Request) {
 	// --------retrieving form values ----------
+	idUser := "1"
 	cors.SetCors(&w)
-	fmt.Println("--------------------------------------------")
-	fmt.Println("          Post Form values                 ")
-	fmt.Println("--------------------------------------------")
-	if r.Method == "POST" {
+	log.Println("--------------------------------------------")
+	log.Println("          Post Form values                 ")
+	log.Println("--------------------------------------------")
+	switch r.Method {
+	case "POST":
 		PostContent := r.FormValue("content")
-		fmt.Println("[INFO] post content: ", PostContent) //debug
+		log.Println("[INFO] post content: ", PostContent) //debug
 
 		Sport := r.FormValue("sport")
 		Health := r.FormValue("health")
@@ -34,16 +36,16 @@ func POSTHandler(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 		categorie = sortCat
-		fmt.Println("[INFO] categories: ", categorie) //debug
+		log.Println("[INFO] categories: ", categorie) //debug
 
 		Privacy := r.FormValue("privacy")
-		fmt.Println("[INFO] privacy: ", Privacy) //debug
+		log.Println("[INFO] privacy: ", Privacy) //debug
 
-		Viewers := r.FormValue("viewers")
-		fmt.Println("[INFO] viewers: ", Viewers) //debug
+		Viewers := fmt.Sprintf("%s, %s", idUser, r.FormValue("viewers"))
+		log.Println("[INFO] viewers: ", Viewers) //debug
 
 		Image, _ := utils.Uploader(w, r, 20, "image", "")
-		fmt.Println("[INFO] imagelink: ", Image) //debug
+		log.Println("[INFO] imagelink: ", Image) //debug
 		PostToCreate := models.Post{
 			ToIns: models.InsPost{
 				Content:  PostContent,
@@ -55,7 +57,7 @@ func POSTHandler(w http.ResponseWriter, r *http.Request) {
 			Categories: categorie,
 			Viewers:    Viewers,
 		}
-		fmt.Println(PostToCreate)
+		log.Println(PostToCreate)
 		notOk, err := service.PostServ.CreatePost(PostToCreate)
 		if notOk {
 			log.Println("problem after create service ", err)
@@ -70,5 +72,37 @@ func POSTHandler(w http.ResponseWriter, r *http.Request) {
 			}
 			utils.Alert(w, msg)
 		}
+	case "GET":
+		log.Println("in get method")
+		postTab, err := service.PostServ.GetPost(1)
+		if err != nil {
+			log.Println("problem after get service ", err)
+			msg := models.Errormessage{
+				Type:       "Internal Servor Error",
+				Msg:        "Oops something wrong occured !",
+				StatusCode: 500,
+				Display:    true,
+			}
+			utils.Alert(w, msg)
+			return
+		} else {
+			log.Println("Gotten => ", postTab)
+			//log.Println("Gotten top => ", postTab[0])
+			utils.AlertPostData(w, models.WResponse{
+				Type:       "loadPost",
+				Data:       postTab,
+				StatusCode: 200,
+				Display:    false,
+				Msg:        "posts retrieved succesfully",
+			})
+		}
+	default:
+		msg := models.Errormessage{
+			Type:       "Not allowed",
+			Msg:        "Method not allowed",
+			StatusCode: 401,
+			Display:    true,
+		}
+		utils.Alert(w, msg)
 	}
 }

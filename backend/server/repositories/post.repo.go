@@ -29,10 +29,10 @@ SELECT
     COUNT(c.id) AS comment_count,
 	GROUP_CONCAT(DISTINCT cat.category) AS categories
 FROM 
-    posts AS p
+    posts AS p,
 	users AS u
 LEFT JOIN 
-    comments AS c ON p.id = c.post_id,
+    comment AS c ON p.id = c.post_id,
 	categories AS cat ON p.id = cat.post_id
 WHERE 
     (
@@ -64,6 +64,7 @@ WHERE
         )
     )
 	GROUP BY p.id, p.content, p.media, p.date, p.user_id
+	ORDER BY p.timestamp DESC;
 `
 	GetOnePostQuery = `
 SELECT
@@ -163,7 +164,7 @@ func (P *PostRepository) InsertPost(post models.Post) error {
 		fmt.Println("❌ Create_post ⚠ ERROR ⚠ : couldn't generate a unique post id")
 		return errp
 	}
-	
+
 	date, time := utils.Time() //date and time
 	post.ToIns.Date = date + " " + time
 	// inserting value in database
