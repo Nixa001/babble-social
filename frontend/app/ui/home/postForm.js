@@ -64,11 +64,6 @@ export const postForm = () => {
           </svg>
         </label>
         <input type="file" name="image" id="image_post" hidden />
-        {/* <input
-                    className="bg-second text-lg font-bold pl-3 pr-3 rounded-lg cursor-pointer hover:bg-primary"
-                    type="submit"
-                    value="Post"
-                /> */}
         <button
           type="submit"
           className="bg-second h-full text-lg font-bold pl-3 pr-3 rounded-lg cursor-pointer hover:bg-primary">

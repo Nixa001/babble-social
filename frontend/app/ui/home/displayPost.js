@@ -39,7 +39,7 @@ const DisplayPost = ({
   const handleProfileClick = () => {
     onProfileClick();
   };
-  console.log("in display 🔔", postData);
+  //console.log("in display 🔔", postData);
   return (
     <div className="w-fit post_div mb-5 border border-gray-700 p-2 rounded-md">
       <div className="post_div_top flex flex-col gap-1 w-fit justify-center ">
