@@ -33,9 +33,9 @@ func FormatCategory(categories []string, postID string) []models.Category {
 func FormatViewers(viewers string, postID string) []models.Viewers {
 	var tab []models.Viewers
 	for _, v := range strings.Split(viewers, ",") {
-		id, err := strconv.Atoi(v)
+		id, err := strconv.Atoi(strings.TrimSpace(v))
 		if err != nil {
-			fmt.Println("error while converting viewer id")
+			fmt.Println("❌ error while converting viewer id in format viewer")
 			return nil
 		}
 		tab = append(tab, models.Viewers{Post_id: postID, User_id: id})
