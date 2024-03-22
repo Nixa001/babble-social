@@ -25,6 +25,7 @@
 			content TEXT DEFAULT "NULL",
 			media TEXT DEFAULT "NULL",
 			date TEXT NOT NULL,
+			timestamp CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 			user_id INTEGER NOT NULL,
 			group_id INTEGER DEFAULT NULL,
 			privacy TEXT DEFAULT "public",

@@ -1,10 +1,11 @@
--- database: social_networkiTEST.db
+-- database: social_network.db
 SELECT
     p.id AS post_id,
     p.content AS post_content,
     p.media AS post_media,
     p.date AS post_date,
     p.user_id AS post_user_id,
+    p.privacy,
     u.avatar as avatar,
     u.user_name as username,
     concat (u.first_name, " ", u.last_name) as full_name,
@@ -61,7 +62,6 @@ GROUP BY
     p.media,
     p.date,
     p.user_id;
-
 
 -------getonePost
 
