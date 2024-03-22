@@ -90,37 +90,6 @@ const DisplayPost = ({
           height={200}
         />
       </div>
-      <div className="footer_post w-fit flex gap-4">
-        <button className="like_post flex gap-1 items-center" onClick={handleLikeClick}>
-          <Image
-            src='/assets/icons/likew.png'
-            alt="Like icon"
-            width={30}
-            height={30}
-          />
-          <span>{postDataState.likesCount}</span>
-        </button>
-        <button className="dislike_post flex gap-1 items-center" onClick={handleDislikeClick}>
-          <Image
-            src='/assets/icons/dislikew.png'
-            alt="Dislike icon"
-            width={30}
-            height={30}
-          />
-          <span>{postDataState.dislikesCount}</span>
-        </button>
-        <button className="comment_post flex gap-1 items-center" onClick={() => {
-          setIsVisibleComment(true)
-        }}>
-          <Image
-            src="/assets/icons/comment.png"
-            alt="Comment icon"
-            width={30}
-            height={30}
-          />
-          <span>{postDataState.commentsCount}</span>
-        </button>
-      </div>
       <DisplayComments isVisible={isVisibleComment} onClose={() => setIsVisibleComment(false)} />
 
     </div >

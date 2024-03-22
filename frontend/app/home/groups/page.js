@@ -4,7 +4,7 @@ import Groups from '@/app/ui/home/groups/groups'
 
 import { QueryClient } from 'react-query';
 import { QueryClientProvider } from 'react-query';
-const queryClient = new QueryClient();
+export const queryClient = new QueryClient();
 
 
 
