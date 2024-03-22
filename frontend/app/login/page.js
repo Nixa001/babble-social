@@ -1,10 +1,9 @@
-import React from "react";
-import Login from "../ui/components/login/login";
+import Login from "../ui/components/login/login.js";
 
 const Page = () => {
   return (
     <>
-      <Login />{" "}
+      <Login />
     </>
   );
 };
