@@ -43,10 +43,11 @@ func CreateTable(db *sql.DB) {
 	//? Creation de la table posts
 	_, err = db.Exec(`
 		CREATE TABLE IF NOT EXISTS posts (
-			id INTEGER UNIQUE PRIMARY KEY AUTOINCREMENT NOT NULL,
+			id TEXT UNIQUE PRIMARY KEY  NOT NULL,
 			content TEXT DEFAULT "NULL",
 			media TEXT DEFAULT "NULL",
 			date TEXT NOT NULL,
+			timestamp CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 			user_id INTEGER NOT NULL,
 			group_id INTEGER DEFAULT NULL,
 			privacy TEXT DEFAULT "public",
@@ -61,7 +62,7 @@ func CreateTable(db *sql.DB) {
 	//? Creation de la table viewers
 	_, err = db.Exec(`
 		CREATE TABLE IF NOT EXISTS viewers (
-			post_id INTEGER NOT NULL",
+			post_id TEXT NOT NULL",
 			user_id INTEGER NOT NULL,
 			FOREIGN KEY("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE
 			FOREIGN KEY("post_id") REFERENCES "posts"("id") ON DELETE CASCADE ON UPDATE CASCADE
@@ -74,7 +75,7 @@ func CreateTable(db *sql.DB) {
 	// Création tavle belong
 	_, err = db.Exec(`
 		CREATE TABLE IF NOT EXISTS categories (
-			post_id INTEGER NOT NULL,
+			post_id TEXT NOT NULL,
 			category TEXT NOT NULL,
 			FOREIGN KEY(post_id) REFERENCES posts(id) ON DELETE CASCADE ON UPDATE CASCADE,
 		)

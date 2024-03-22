@@ -179,7 +179,7 @@ func getColumnsValues(toMap map[string]interface{}) (string, string) {
 		if columns != "" {
 			columns += ", "
 		}
-		columns += k
+		columns += strings.ToLower(k)
 		if v1, ok := v.(string); ok {
 			values += fmt.Sprintf("\"%v\"", v1)
 		} else {

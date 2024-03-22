@@ -42,3 +42,10 @@ func FormatViewers(viewers string, postID string) []models.Viewers {
 	}
 	return tab
 }
+
+func FormatImgLink(name string) string {
+	if name != "" {
+		return fmt.Sprintf("http://localhost:8080/uploads/%s", name)
+	}
+	return "NULL"
+}

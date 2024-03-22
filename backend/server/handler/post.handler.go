@@ -49,7 +49,7 @@ func POSTHandler(w http.ResponseWriter, r *http.Request) {
 		PostToCreate := models.Post{
 			ToIns: models.InsPost{
 				Content:  PostContent,
-				Media:    Image,
+				Media:    utils.FormatImgLink(Image),
 				User_id:  1,
 				Group_id: 0,
 				Privacy:  Privacy,
