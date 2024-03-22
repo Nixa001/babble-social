@@ -2,6 +2,7 @@ package database
 
 import (
 	q "backend/database/query"
+	"backend/utils/seed"
 	"database/sql"
 	"fmt"
 	"log"
@@ -23,12 +24,14 @@ func init() {
 		fmt.Println(err)
 		os.Exit(1)
 	}
+	seed.CreateTable(db)
 	log.Println("Database opened")
 	DB = &Database{db}
 }
 
 func (d *Database) Insert(table string, data any) error {
 	query, err := q.InsertQuery(table, data)
+	fmt.Println(query)
 	if err != nil {
 		return fmt.Errorf("error creating insert query: %v", err)
 	}
