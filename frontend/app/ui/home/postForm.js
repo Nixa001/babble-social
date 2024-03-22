@@ -22,7 +22,7 @@ export const postForm = () => {
     });
   };
 
-  console.log("in postForm");
+ // console.log("in postForm");
   return (
     <form
       //className="flex flex-col lg:w-[100%] 2xl-[80%] xl:w-[75%] w-[80%]  gap-1  "
@@ -45,7 +45,7 @@ export const postForm = () => {
           <Checkbox label="Santé" value="health" name="health" />
           <Checkbox label="Musique" value="music" name="music" />
           <Checkbox label="News" value="news" name="news" />
-          <Checkbox label="Other" value="other" name="other" defaultChecked />
+          <Checkbox label="Other" value="other" name="other" true />
         </div>
 
         {PrivacySelect()}
