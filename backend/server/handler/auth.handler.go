@@ -30,38 +30,40 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid request"})
 			return
 		}
-		var user models.User
-		err = json.Unmarshal(content, &user)
+		var formatedUser models.FormatedUser
+		err = json.Unmarshal(content, &formatedUser)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid request"})
 			return
-		} else if err := utils.IsValidEmail(strings.TrimSpace(user.Email)); err != nil {
+		} else if err := utils.IsValidEmail(strings.TrimSpace(formatedUser.Email)); err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid email"})
 			return
-		} else if err := utils.VerifyName(strings.TrimSpace(user.First_name)); err != nil {
+		} else if err := utils.VerifyName(strings.TrimSpace(formatedUser.First_name)); err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid first name"})
 			return
-		} else if err := utils.VerifyName(strings.TrimSpace(user.Last_name)); err != nil {
+		} else if err := utils.VerifyName(strings.TrimSpace(formatedUser.Last_name)); err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid last name"})
 			return
-		} else if err := utils.VerifyUsername(user.User_name); err != nil {
+		} else if err := utils.VerifyUsername(formatedUser.User_name); err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid username"})
 			return
 		}
-		user.User_type = "public"
-		err = service.AuthServ.CreateUser(&user)
+		formatedUser.User_type = "public"
+		err = service.AuthServ.CreateUser(&formatedUser)
 		if err != nil {
 			log.Println("Error creating user", err)
 			w.WriteHeader(http.StatusInternalServerError)
 			json.NewEncoder(w).Encode(map[string]string{"error": "Internal server error"})
 			return
 		}
+		user, _ := service.AuthServ.UserRepo.GetUserByEmail(formatedUser.Email)
 		token := utils.GenerateToken()
+
 		err = service.AuthServ.SessRepo.CreateSession(&models.Session{Token: token, User_id: user.Id, Expiration: utils.GenerateExpirationTime()})
 		if err != nil {
 			log.Println("Error creating session", err)

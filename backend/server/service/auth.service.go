@@ -20,7 +20,7 @@ func (a *AuthService) init() {
 	a.SessRepo = *r.SessionRepo
 }
 
-func (a *AuthService) CreateUser(user *models.User) error {
+func (a *AuthService) CreateUser(user *models.FormatedUser) error {
 	_, err := a.UserRepo.GetUserByEmail(user.Email)
 	if err == nil {
 		return fmt.Errorf("this email is already in use")

@@ -18,7 +18,7 @@ func (u *UserRepository) init() {
 	u.TableName = "users"
 }
 
-func (u *UserRepository) SaveUser(user *models.User) error {
+func (u *UserRepository) SaveUser(user *models.FormatedUser) error {
 	err := u.DB.Insert(u.TableName, user)
 	if err != nil {
 		return err
