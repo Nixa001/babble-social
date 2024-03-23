@@ -3,6 +3,7 @@ package utils
 import (
 	"backend/models"
 	"fmt"
+	"log"
 	"strconv"
 	"strings"
 	"time"
@@ -35,7 +36,7 @@ func FormatViewers(viewers string, postID string) []models.Viewers {
 	for _, v := range strings.Split(viewers, ",") {
 		id, err := strconv.Atoi(strings.TrimSpace(v))
 		if err != nil {
-			fmt.Println("❌ error while converting viewer id in format viewer")
+			log.Println("❌ error while converting viewer id in format viewer")
 			return nil
 		}
 		tab = append(tab, models.Viewers{Post_id: postID, User_id: id})

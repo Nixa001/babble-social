@@ -5,7 +5,7 @@ import (
 	"backend/models"
 	"backend/utils"
 	"errors"
-	"fmt"
+	"log"
 	"strings"
 
 	"github.com/gofrs/uuid"
@@ -112,7 +112,7 @@ func (p *PostRepository) CreatePost(post models.Post) (bool, models.Errormessage
 
 	//checking Title's validity
 	if strings.TrimSpace(post.ToIns.Content) == "" && strings.TrimSpace(post.ToIns.Media) == "" {
-		fmt.Printf("⚠ ERROR ⚠ : Couldn't create post from user %s due to empty content and media ❌\n", "1")
+		log.Printf("⚠ ERROR ⚠ : Couldn't create post from user %s due to empty content and media ❌\n", "1")
 		return true,
 			models.Errormessage{
 				Type:       models.BRtype,
@@ -124,7 +124,7 @@ func (p *PostRepository) CreatePost(post models.Post) (bool, models.Errormessage
 
 	//checking category's validity
 	if len(post.Categories) < 1 { //user did not select a categorie
-		fmt.Printf("⚠ ERROR ⚠ : Couldn't create post from user %s due to missing category❌\n", "1")
+		log.Printf("⚠ ERROR ⚠ : Couldn't create post from user %s due to missing category❌\n", "1")
 		return true,
 			models.Errormessage{
 				Type:       models.BRtype,
@@ -135,7 +135,7 @@ func (p *PostRepository) CreatePost(post models.Post) (bool, models.Errormessage
 	}
 
 	if len(post.ToIns.Content) > 1500 { //found only spaces,newlines in the input or chars number limit exceeded
-		fmt.Printf("⚠ ERROR ⚠ : Couldn't create post from user %s due to invalid input ❌\n", "1")
+		log.Printf("⚠ ERROR ⚠ : Couldn't create post from user %s due to invalid input ❌\n", "1")
 		return true,
 			models.Errormessage{
 				Type:       models.BRtype,
@@ -161,7 +161,7 @@ func (p *PostRepository) CreatePost(post models.Post) (bool, models.Errormessage
 func (P *PostRepository) InsertPost(post models.Post) error {
 	id_post, errp := uuid.NewV4()
 	if errp != nil {
-		fmt.Println("❌ Create_post ⚠ ERROR ⚠ : couldn't generate a unique post id")
+		log.Println("❌ Create_post ⚠ ERROR ⚠ : couldn't generate a unique post id")
 		return errp
 	}
 
@@ -175,7 +175,7 @@ func (P *PostRepository) InsertPost(post models.Post) error {
 	post.ToIns.ID = id_post.String()
 	err := P.DB.Insert(P.TableName, post.ToIns)
 	if err != nil {
-		fmt.Println("❌ error while inserting post", err)
+		log.Println("❌ error while inserting post", err)
 		return err
 	}
 	//inserting categories
@@ -183,7 +183,7 @@ func (P *PostRepository) InsertPost(post models.Post) error {
 	for i := range formatedCatego {
 		errCat := P.DB.Insert("categories", formatedCatego[i])
 		if errCat != nil {
-			fmt.Println("❌ error while inserting categories")
+			log.Println("❌ error while inserting categories")
 			return err
 		}
 	}
@@ -192,12 +192,12 @@ func (P *PostRepository) InsertPost(post models.Post) error {
 		for i := range formatedViewers {
 			errView := P.DB.Insert("viewers", formatedViewers[i])
 			if errView != nil {
-				fmt.Println("❌ error while inserting viewers")
+				log.Println("❌ error while inserting viewers")
 				return err
 			}
 		}
 	}
-	fmt.Println("✅ post has been created successfully")
+	log.Println("✅ post has been created successfully")
 	return nil
 }
 
@@ -206,7 +206,7 @@ func (P *PostRepository) LoadPost(IdUser int) ([]models.DataPost, error) {
 
 	rows, err := P.DB.Query(GetPostQuery, IdUser, IdUser, IdUser, IdUser)
 	if err != nil {
-		fmt.Println("❌ Error while retrieving posts => ", err)
+		log.Println("❌ Error while retrieving posts => ", err)
 		return nil, errors.New("error while retrieving posts from the database")
 	}
 	defer rows.Close()
@@ -215,7 +215,7 @@ func (P *PostRepository) LoadPost(IdUser int) ([]models.DataPost, error) {
 		var temp models.DataPost
 		errScan := rows.Scan(&temp.ID, &temp.Content, &temp.Media, &temp.Date, &temp.User_id, &temp.Avatar, &temp.UserName, &temp.FullName, &temp.Comments, &temp.Categories)
 		if errScan != nil {
-			fmt.Println("⚠ GetPost scan err ⚠ :", errScan)
+			log.Println("⚠ GetPost scan err ⚠ :", errScan)
 			return nil, errors.New("error while scanning")
 		}
 
@@ -228,7 +228,7 @@ func (P *PostRepository) LoadPost(IdUser int) ([]models.DataPost, error) {
 func (p *PostRepository) GetOnePost(postID int) (models.DataPost, error) {
 	rows, err := p.DB.Query(GetOnePostQuery, postID)
 	if err != nil {
-		fmt.Println("❌ Error while retrieving in OnePost => ", err)
+		log.Println("❌ Error while retrieving in OnePost => ", err)
 		return models.DataPost{}, errors.New("error while retrieving onepost from the database")
 	}
 	defer rows.Close()
@@ -238,7 +238,7 @@ func (p *PostRepository) GetOnePost(postID int) (models.DataPost, error) {
 	for rows.Next() {
 		errScan := rows.Scan(&data.ID, &data.Content, &data.Media, &data.Date, &data.Avatar, &data.UserName, &data.FullName, &data.Comments, &data.Categories, &data.Viewers)
 		if errScan != nil {
-			fmt.Println("⚠ GetOnePost scan err ⚠ :", errScan)
+			log.Println("⚠ GetOnePost scan err ⚠ :", errScan)
 			return models.DataPost{}, errors.New("error while scanning")
 		}
 		data.Content = utils.DecodeValue(data.Content)

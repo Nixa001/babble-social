@@ -73,7 +73,7 @@ func POSTHandler(w http.ResponseWriter, r *http.Request) {
 			utils.Alert(w, msg)
 		}
 	case "GET":
-		log.Println("in get method")
+		log.Println("[FETCHING DATA ◼◼◼]")
 		postTab, err := service.PostServ.GetPost(1)
 		if err != nil {
 			log.Println("problem after get service ", err)
@@ -86,7 +86,7 @@ func POSTHandler(w http.ResponseWriter, r *http.Request) {
 			utils.Alert(w, msg)
 			return
 		} else {
-			log.Println("Gotten => ", postTab)
+			//log.Println("Gotten => ", postTab)
 			//log.Println("Gotten top => ", postTab[0])
 			utils.AlertPostData(w, models.WResponse{
 				Type:       "loadPost",

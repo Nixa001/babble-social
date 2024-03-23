@@ -3,6 +3,7 @@ package utils
 import (
 	"backend/models"
 	"encoding/json"
+	"log"
 	"net/http"
 )
 
@@ -14,6 +15,7 @@ func Alert(w http.ResponseWriter, msg models.Errormessage) {
 	response["display"] = msg.Display
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(msg.StatusCode)
+	log.Printf("[Alert]: ERROR => %v, %v\n", response["msg"], response["status"])
 	json.NewEncoder(w).Encode(response)
 }
 
@@ -26,5 +28,6 @@ func AlertPostData(w http.ResponseWriter, msg models.WResponse) {
 	response["data"] = msg.Data
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(msg.StatusCode)
+	log.Println("[Alert Post Data]: ", response["data"])
 	json.NewEncoder(w).Encode(response)
 }
