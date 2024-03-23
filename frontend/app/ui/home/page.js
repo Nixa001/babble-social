@@ -23,7 +23,7 @@ const HomePage = () => {
     staleTime: 500,
     onSuccess: (newData) => {
       setPosts(newData.posts);
-     // console.log("debug => ", posts);
+      // console.log("debug => ", posts);
     },
     onError: (error) => {
       console.error("Query error in posts:", error);
@@ -35,6 +35,7 @@ const HomePage = () => {
       <div className="post_div_top flex flex-col items-center">
         {posts.map((e) => (
           <AddPost
+            key={e.ID}
             postData={e}
             onLikeClick={onLikeClick}
             onDislikeClick={onDislikeClick}
@@ -46,7 +47,6 @@ const HomePage = () => {
     </div>
   );
 };
-
 
 export default HomePage;
 
