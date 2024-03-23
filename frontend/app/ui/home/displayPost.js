@@ -5,6 +5,8 @@ import { MdPrivacyTip } from "react-icons/md";
 import { BiWorld } from "react-icons/bi";
 import { SiGnuprivacyguard } from "react-icons/si";
 import { DisplayComments } from "../components/modals/displayComment";
+import { QueryClientProvider } from "react-query";
+import { queryClient } from "@/app/home/groups/page";
 
 const DisplayPost = ({
   postData,
@@ -108,10 +110,13 @@ const DisplayPost = ({
           <span>{postDataState.Comments}</span>
         </button>
       </div>
-      <DisplayComments
-        isVisible={isVisibleComment}
-        onClose={() => setIsVisibleComment(false)}
-      />
+      <QueryClientProvider client={queryClient}>
+        <DisplayComments
+          isVisible={isVisibleComment}
+          postId={postDataState.ID}
+          onClose={() => setIsVisibleComment(false)}
+        />
+      </QueryClientProvider>
     </div>
   );
 };
