@@ -15,11 +15,12 @@ var (
 	// SessionRepo is the repository for session
 	SessionRepo = &SessionRepository{}
 	PostRepo    = &PostRepository{}
+	CommentRepo = &CommentRepository{}
 )
 
 func init() {
 	UserRepo.init()
 	SessionRepo.init()
 	PostRepo.init()
-
+	CommentRepo.init()
 }

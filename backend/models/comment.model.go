@@ -1,19 +1,20 @@
 package models
 
 type Comment struct {
-	ID      int
+	ID      string
 	Date    string
-	Content string `json:"content"`
-	Post_id int    `json:"postID"`
-	User_id int    `json:"userID"`
-	Media   string `json:"media"`
+	Content string
+	Post_id string
+	User_id int
+	Media   string
 }
 
-type DataComment []struct {
+type DataComment struct {
 	Avatar   string
 	Content  string
 	Date     string
 	FullName string
+	UserName string
 	ID       int
 	Media    string
 	Post_id  string
