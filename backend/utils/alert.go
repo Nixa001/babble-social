@@ -19,7 +19,7 @@ func Alert(w http.ResponseWriter, msg models.Errormessage) {
 	json.NewEncoder(w).Encode(response)
 }
 
-func AlertPostData(w http.ResponseWriter, msg models.WResponse) {
+func AlertData(w http.ResponseWriter, msg models.WResponse) {
 	response := map[string]interface{}{}
 	response["msg"] = msg.Msg
 	response["status"] = msg.StatusCode
@@ -28,6 +28,6 @@ func AlertPostData(w http.ResponseWriter, msg models.WResponse) {
 	response["data"] = msg.Data
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(msg.StatusCode)
-	log.Println("[Alert Post Data]: ", response["data"])
+	log.Println("[Alert Data sent]: ", response["data"])
 	json.NewEncoder(w).Encode(response)
 }
