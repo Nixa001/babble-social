@@ -1,20 +1,66 @@
+"use client";
 import React from "react";
-import { useState } from "react";
+import { useState} from "react";
 import { useQuery } from "react-query";
-
 
 export const DisplayComments = ({ isVisible, postId, onClose }) => {
   // const Comments = comments
-  const handleCommentClick = () => {
-    alert("comment");
+  const fetchComments = async () => {
+    const dataID = new FormData();
+    dataID.append("postID", postId);
+    dataID.append("type", "loadComments");
+    const options = {
+      method: "POST",
+      body: dataID,
+    }; 
+    try {
+      const response = await fetch("http://localhost:8080/comment", options);
+      const data = await response.json();
+      return { comments: data.data };
+    } catch (error) {
+      console.error("Error while querying comments ", error);
+      return Promise.reject(error);
+    }
   };
+  // const handleChange = (event) => {
+  //   const file = event.target.files[0];
+  //   setImg(file);
+  //   console.log("File uploaded : ", img);
+  // };
+  const [comments, setComments] = useState([]);
+  useQuery("comments", fetchComments, {
+    enabled: isVisible,
+    refetchInterval: 1000,
+    staleTime: 500,
+    onSuccess: (newData) => {
+      setComments(newData.comments);
+      //  console.log("fetched comms => ", comments);
+    },
+    onError: (error) => {
+      console.error("Query error in comments:", error);
+    },
+  });
+
+  //const [img, setImg] = useState(null);
+
+  // const handleCommentClick = () => {
+  //   alert("comment");
+  // };
   if (!isVisible) return null;
+
   /*------------------------------------------------------------------------
   -----------------------------------------------------------------------*/
   const handleSubmit = (e) => {
     e.preventDefault();
     const data = new FormData(e.target);
+    data.append("postID", postId);
+    data.append("type", "addComment");
+    let obj = {};
+    data.forEach((key, value) => {
+      obj[value] = key;
+    });
     console.log("my comment data => ", data);
+    console.log("my comment data transf => ", obj);
     const options = {
       method: "POST",
       body: data,
@@ -28,29 +74,6 @@ export const DisplayComments = ({ isVisible, postId, onClose }) => {
   };
   /*------------------------------------------------------------------------
   -----------------------------------------------------------------------*/
-  const [comments, setComments] = useState([]);
-  const fetchComments = async () => {
-    try {
-      const response = await fetch("http://localhost:8080/comment");
-      const data = await response.json();
-      return { comments: data.data };
-    } catch (error) {
-      console.error("Error while querying comments ", error);
-      return Promise.reject(error);
-    }
-  };
-  useQuery("posts", fetchComments, {
-    enabled: isVisible,
-    refetchInterval: 1000,
-    staleTime: 500,
-    onSuccess: (newData) => {
-      setComments(newData.comments);
-      // console.log("debug => ", posts);
-    },
-    onError: (error) => {
-      console.error("Query error in comments:", error);
-    },
-  });
 
   return (
     <div
@@ -86,13 +109,14 @@ export const DisplayComments = ({ isVisible, postId, onClose }) => {
 
           <form
             className="flex items-center justify-center w-[100%] gap-1"
-            action=""
-            method="POST"
+            // method="POST"
             data-form="post"
+            onSubmit={handleSubmit}
             encType="multipart/form-data">
             <input
               type="text"
               placeholder="Your comment ..."
+              name="content"
               className="bg-transparent border border-gray-700 w-[80%] h-10 px-3 rounded-lg "
             />
             <label htmlFor="image_post" className=" cursor-pointer mr-2">
@@ -108,10 +132,15 @@ export const DisplayComments = ({ isVisible, postId, onClose }) => {
                 />
               </svg>
             </label>
-            <input type="file" name="image_post" id="image_post" hidden />
+            <input
+              type="file"
+              name="image"
+              // onChange={handleChange}
+              id="image_post"
+              //  hidden
+            />
             <button
               type="submit"
-              onClick={handleCommentClick}
               className="bg-second h-10 text-lg font-bold pl-3 pr-3 rounded-lg cursor-pointer flex items-center hover:bg-primary">
               <svg
                 xmlns="http://www.w3.org/2000/svg"
@@ -134,7 +163,7 @@ export const DisplayComments = ({ isVisible, postId, onClose }) => {
 // ]
 
 const printComment = (comments) => {
-  return comments.map((comment) => {
+  return comments?.map((comment) => {
     const hasImage = comment.imageComment !== "";
 
     return (
@@ -145,7 +174,7 @@ const printComment = (comments) => {
         <div className=" flex items-center h-fit cursor-pointer justify-start gap-2 mt-1">
           <img
             className="rounded-full "
-            src={comment.Avatar}
+            src={comment.Avatar || "/assets/profilibg.jpg"}
             alt="img user"
             width={35}
             height={35}
@@ -153,7 +182,7 @@ const printComment = (comments) => {
           <h4 className="font-bold text-sm ">{comment.FullName}</h4>
         </div>
         <p className="">{comment.Content}</p>
-        {hasImage ? (
+        {comment.Media != "NULL" && (
           <img
             className=" "
             src={comment.Media}
@@ -161,8 +190,6 @@ const printComment = (comments) => {
             width={300}
             height={300}
           />
-        ) : (
-          ""
         )}
       </div>
     );

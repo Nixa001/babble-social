@@ -5,8 +5,6 @@ import { MdPrivacyTip } from "react-icons/md";
 import { BiWorld } from "react-icons/bi";
 import { SiGnuprivacyguard } from "react-icons/si";
 import { DisplayComments } from "../components/modals/displayComment";
-import { QueryClientProvider } from "react-query";
-import { queryClient } from "@/app/home/groups/page";
 
 const DisplayPost = ({
   postData,
@@ -18,25 +16,25 @@ const DisplayPost = ({
   const [postDataState, setPostDataState] = useState(postData);
   const [isVisibleComment, setIsVisibleComment] = useState(false);
 
-  const handleLikeClick = () => {
-    onLikeClick();
-    setPostDataState((prevState) => ({
-      ...prevState,
-      likesCount: prevState.likesCount + 1,
-    }));
-  };
+  // const handleLikeClick = () => {
+  //   onLikeClick();
+  //   setPostDataState((prevState) => ({
+  //     ...prevState,
+  //     likesCount: prevState.likesCount + 1,
+  //   }));
+  // };
 
-  const handleDislikeClick = () => {
-    onDislikeClick();
-    setPostDataState((prevState) => ({
-      ...prevState,
-      dislikesCount: prevState.dislikesCount + 1,
-    }));
-  };
+  // const handleDislikeClick = () => {
+  //   onDislikeClick();
+  //   setPostDataState((prevState) => ({
+  //     ...prevState,
+  //     dislikesCount: prevState.dislikesCount + 1,
+  //   }));
+  // };
 
-  const handleCommentClick = () => {
-    onCommentClick();
-  };
+  // const handleCommentClick = () => {
+  //   onCommentClick();
+  // };
 
   const handleProfileClick = () => {
     onProfileClick();
@@ -110,13 +108,11 @@ const DisplayPost = ({
           <span>{postDataState.Comments}</span>
         </button>
       </div>
-      <QueryClientProvider client={queryClient}>
         <DisplayComments
           isVisible={isVisibleComment}
           postId={postDataState.ID}
           onClose={() => setIsVisibleComment(false)}
         />
-      </QueryClientProvider>
     </div>
   );
 };
