@@ -23,12 +23,12 @@ func POSTHandler(w http.ResponseWriter, r *http.Request) {
 		PostContent := r.FormValue("content")
 		log.Println("[INFO] post content: ", PostContent) //debug
 
-		Sport := r.FormValue("sport")
-		Health := r.FormValue("health")
-		Music := r.FormValue("music")
-		News := r.FormValue("news")
-		Others := r.FormValue("others")
-		Techno := r.FormValue("techno")
+		Sport := r.FormValue("Sport")
+		Health := r.FormValue("Health")
+		Music := r.FormValue("Music")
+		News := r.FormValue("News")
+		Others := r.FormValue("Others")
+		Techno := r.FormValue("Tech")
 		categorie := []string{Health, Sport, News, Techno, Others, Music}
 		var sortCat []string
 		for _, v := range categorie {

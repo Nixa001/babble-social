@@ -8,7 +8,7 @@ type Errormessage struct {
 }
 
 const (
-	BRstatus = 404
+	BRstatus = 400
 	BRtype   = "Bad Request"
 	//----------------------
 	ISEstatus = 500
