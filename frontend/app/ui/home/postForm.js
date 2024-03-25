@@ -6,6 +6,10 @@ import { FaImage } from "react-icons/fa6";
 import { IoSend } from "react-icons/io5";
 
 export const postForm = () => {
+  const [textarea, setTextarea] = useState(""),
+    [imgs, setImgs] = useState(null),
+    [privacy, setPrivacy] = useState();
+
   const handlePost = (e) => {
     e.preventDefault();
     const data = new FormData(e.target);
@@ -16,13 +20,17 @@ export const postForm = () => {
     };
     fetch("http://localhost:8080/post", options).then(async (x) => {
       const retrieved = await x.json();
-      if (retrieved.type != "success")
-        alert(retrieved.StatusCode, retrieved.Msg);
       console.log("response", retrieved);
+      if (retrieved.type != "success") {
+        alert(`${retrieved.status} - ${retrieved.msg}`);
+        return;
+      }
+      setTextarea("");
+      setImgs(null);
     });
   };
 
- // console.log("in postForm");
+  // console.log("in postForm");
   return (
     <form
       //className="flex flex-col lg:w-[100%] 2xl-[80%] xl:w-[75%] w-[80%]  gap-1  "
@@ -36,16 +44,17 @@ export const postForm = () => {
         name="content"
         placeholder="Let's post something"
         required
-        defaultValue=""
+        value={textarea}
+        onChange={(e) => setTextarea(e.target.value)}
       />
       <div className="flex items-start justify-end">
         <div className="flex gap-1 flex-wrap mr-2 mt-1 text-sm">
-          <Checkbox label="Tech" value="techno" name="techno" />
-          <Checkbox label="Sport" value="sport" name="sport" />
-          <Checkbox label="Santé" value="health" name="health" />
-          <Checkbox label="Musique" value="music" name="music" />
-          <Checkbox label="News" value="news" name="news" />
-          <Checkbox label="Other" value="other" name="other" true />
+          <Checkbox label="Tech" value="Tech" name="Tech" />
+          <Checkbox label="Sport" value="Sport" name="Sport" />
+          <Checkbox label="Health" value="Health" name="Health" />
+          <Checkbox label="Music" value="Music" name="Music" />
+          <Checkbox label="News" value="News" name="News" />
+          <Checkbox label="Other" value="Other" name="Others" true />
         </div>
 
         {PrivacySelect()}
@@ -63,7 +72,12 @@ export const postForm = () => {
             />
           </svg>
         </label>
-        <input type="file" name="image" id="image_post" hidden />
+        <input
+          type="file"
+          name="image"
+          id="image_post"
+          onChange={(e) => setImgs(e.target.files[0])}
+        />
         <button
           type="submit"
           className="bg-second h-full text-lg font-bold pl-3 pr-3 rounded-lg cursor-pointer hover:bg-primary">
@@ -151,7 +165,7 @@ export function TextArea({
   name,
   placeholder,
   required,
-  defaultValue,
+  value,
   onChange,
 }) {
   return (
@@ -162,7 +176,7 @@ export function TextArea({
         name={name}
         placeholder={placeholder}
         required={required}
-        defaultValue={defaultValue}
+        value={value}
         onChange={onChange}
       />
     </div>
