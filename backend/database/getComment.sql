@@ -1,4 +1,4 @@
--- database: social_networkiTEST.db
+-- database: social_network.db
 SELECT DISTINCT
     c.id,
     c.content,
@@ -12,6 +12,6 @@ FROM
     comment AS c
     LEFT JOIN users AS u on u.id = c.user_id
 WHERE
-    c.post_id = 1
+    c.post_id = "b01af696-f879-41a1-bfb0-70fa01852138"
 ORDER BY c.id
     DESC;
