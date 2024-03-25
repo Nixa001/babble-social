@@ -8,8 +8,6 @@ import (
 	"fmt"
 	"log"
 	"strings"
-
-	"github.com/gofrs/uuid"
 )
 
 type CommentRepository struct {
@@ -29,9 +27,9 @@ SELECT DISTINCT
 FROM
     comment AS c
     LEFT JOIN users AS u on u.id = c.user_id
-WHERE ?
+WHERE c.post_id = ?
 ORDER BY c.id
-    DESC;
+    ASC;
 `
 
 func (c *CommentRepository) init() {
@@ -85,11 +83,11 @@ func (c *CommentRepository) CreateComment(comment models.Comment) (bool, models.
 
 func (c *CommentRepository) InsertComment(comment models.Comment) error {
 	//generating commentID, date and time
-	id_comment, errp := uuid.NewV4() //id
-	if errp != nil {
-		log.Println("❌ Create_comment ⚠ ERROR ⚠ : couldn't generate a unique comment id")
-		return errp
-	}
+	// id_comment, errp := uuid.NewV4() //id
+	// if errp != nil {
+	// 	log.Println("❌ Create_comment ⚠ ERROR ⚠ : couldn't generate a unique comment id")
+	// 	return errp
+	// }
 	date, time := utils.Time() //date and time
 	comment.Date = date + " " + time
 	// inserting value in database
@@ -103,15 +101,15 @@ func (c *CommentRepository) InsertComment(comment models.Comment) error {
 		return err
 	}
 
-	log.Printf("✅ comment %s has been added to database successfully\n", id_comment.String())
+	log.Printf("✅ comment has been added to database successfully\n")
 
 	return nil
 }
 
 func (c *CommentRepository) LoadComment(postID string) ([]models.DataComment, error) {
+	//fmt.Println("loading comments for post ", postID)
 	var commentTab []models.DataComment
-	Condition := fmt.Sprintf("c.post_id = '%v' ", postID)
-	rows, err := c.DB.Query(GetCommentQuery, Condition)
+	rows, err := c.DB.Query(GetCommentQuery, postID)
 	if err != nil {
 		log.Println("❌ Error while retrieving comments => ", err)
 		return nil, errors.New("error while retrieving comments from the database")
@@ -130,6 +128,7 @@ func (c *CommentRepository) LoadComment(postID string) ([]models.DataComment, er
 		temp.Content = utils.DecodeValue(temp.Content)
 		commentTab = append(commentTab, temp)
 	}
+	//log.Println("retrieved => ", commentTab)
 	return commentTab, nil
 }
 

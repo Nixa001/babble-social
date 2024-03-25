@@ -26,7 +26,7 @@ SELECT
 	u.avatar as avatar,
     u.user_name as username,
     concat (u.first_name, " ", u.last_name) as full_name,
-    COUNT(c.id) AS comment_count,
+    COUNT(DISTINCT c.id) AS comment_count,
 	GROUP_CONCAT(DISTINCT cat.category) AS categories
 FROM 
     posts AS p,

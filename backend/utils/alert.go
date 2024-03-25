@@ -15,7 +15,7 @@ func Alert(w http.ResponseWriter, msg models.Errormessage) {
 	response["display"] = msg.Display
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(msg.StatusCode)
-	log.Printf("[Alert]: ERROR => %v, %v\n", response["msg"], response["status"])
+	log.Printf("[Alert]: %v, %v\n", response["msg"], response["status"])
 	json.NewEncoder(w).Encode(response)
 }
 
@@ -28,6 +28,6 @@ func AlertData(w http.ResponseWriter, msg models.WResponse) {
 	response["data"] = msg.Data
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(msg.StatusCode)
-	log.Println("[Alert Data sent]: ", response["data"])
+	//log.Println("[Alert Data sent]: ", response["data"])
 	json.NewEncoder(w).Encode(response)
 }

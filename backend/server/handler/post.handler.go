@@ -14,11 +14,12 @@ func POSTHandler(w http.ResponseWriter, r *http.Request) {
 	// --------retrieving form values ----------
 	idPost := "1"
 	cors.SetCors(&w)
-	log.Println("--------------------------------------------")
-	log.Println("          Post Form values                 ")
-	log.Println("--------------------------------------------")
+
 	switch r.Method {
 	case "POST":
+		log.Println("--------------------------------------------")
+		log.Println("          Post Form values                 ")
+		log.Println("--------------------------------------------")
 		PostContent := r.FormValue("content")
 		log.Println("[INFO] post content: ", PostContent) //debug
 
@@ -73,7 +74,7 @@ func POSTHandler(w http.ResponseWriter, r *http.Request) {
 			utils.Alert(w, msg)
 		}
 	case "GET":
-		log.Println("[FETCHING POST DATA ◼◼◼]")
+		//log.Println("[FETCHING POST DATA ◼◼◼]")
 		postTab, err := service.PostServ.GetPost(1)
 		if err != nil {
 			log.Println("problem after get service ", err)

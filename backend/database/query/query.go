@@ -103,7 +103,7 @@ func SelectAllWhere(table string, where WhereOption, orderby string, limit []int
 }
 
 func InsertQuery(table string, object any) (string, error) {
-	fmt.Println("initial => ", object)
+	//fmt.Println("initial => ", object)
 	toJson, err := json.Marshal(object)
 	if err != nil {
 		return "", fmt.Errorf("error marshalling object: %v", err)
@@ -168,7 +168,7 @@ func getWhereOptionsString(w WhereOption) string {
 
 func getColumnsValues(toMap map[string]interface{}) (string, string) {
 	var columns, values string
-	fmt.Println("to map => ", toMap)
+//	fmt.Println("to map => ", toMap)
 	for k, v := range toMap {
 		if v == 0 || v == "" || v == nil {
 			continue
@@ -186,8 +186,8 @@ func getColumnsValues(toMap map[string]interface{}) (string, string) {
 			values += fmt.Sprintf("%v", v)
 		}
 	}
-	fmt.Println("columns => ", columns)
-	fmt.Println("values => ", values)
+	//fmt.Println("columns => ", columns)
+	//fmt.Println("values => ", values)
 	return columns, values
 }
 
