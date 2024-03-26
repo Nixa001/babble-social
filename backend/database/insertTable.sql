@@ -1,4 +1,4 @@
--- database: social_networki.db
+-- database: social_network.db
 	CREATE TABLE IF NOT EXISTS users (
 		    id INTEGER UNIQUE PRIMARY KEY AUTOINCREMENT,
 			first_name TEXT NOT NULL,
@@ -21,10 +21,11 @@
 			);
         
     CREATE TABLE IF NOT EXISTS posts (
-			id INTEGER UNIQUE PRIMARY KEY AUTOINCREMENT NOT NULL,
+			id TEXT UNIQUE PRIMARY KEY NOT NULL,
 			content TEXT DEFAULT "NULL",
-			media TEXT DEFAULT "NULL",
+			media TEXT DEFAULT "",
 			date TEXT NOT NULL,
+			timestamp CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 			user_id INTEGER NOT NULL,
 			group_id INTEGER DEFAULT NULL,
 			privacy TEXT DEFAULT "public",

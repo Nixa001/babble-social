@@ -22,16 +22,13 @@ func (a *AuthService) init() {
 
 func (a *AuthService) CreateUser(user *models.User) error {
 	_, err := a.UserRepo.GetUserByEmail(user.Email)
-	if err != nil {
-		return err
+	if err == nil {
+		return fmt.Errorf("this email is already in use")
 	}
 	hashedPassword, _ := bcrypt.GenerateFromPassword([]byte(user.Password), bcrypt.DefaultCost)
 	user.Password = string(hashedPassword)
-	err = a.UserRepo.CreateUser(user)
-	if err != nil {
-		return err
-	}
-	return nil
+	err = a.UserRepo.SaveUser(user)
+	return err
 }
 
 func (a *AuthService) CheckCredentials(email, password string) (*models.User, error) {
@@ -52,4 +49,22 @@ func (a *AuthService) VerifyToken(r *http.Request) (session models.Session, err 
 		return models.Session{}, fmt.Errorf("no token provided")
 	}
 	return session, nil
+}
+
+func (a *AuthService) RemoveSession(token string) error {
+	return a.SessRepo.DeleteSession(token)
+}
+
+func (a *AuthService) RemExistingSession(userId string) error {
+	sessions, err := a.SessRepo.GetSessionByUserId(userId)
+	if err != nil {
+		return err
+	}
+	for _, session := range sessions {
+		err = a.SessRepo.DeleteSession(session.Token)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }

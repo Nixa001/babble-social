@@ -28,6 +28,7 @@ const Groups = () => {
         onSuccess: (newData) => {
             setGroupJoined(newData.groupJoined);
             setGroupData(newData.groupData);
+            console.log();
         },
         onError: (error) => {
             console.error('Query error:', error);
@@ -66,9 +67,9 @@ const Groups = () => {
                     Discover new communities
                 </h1>
                 <div className='w-full flex gap-3 flex-wrap pb-10'>
-                    {groupData.map((group) => (
+                    {groupData? groupData.map((group) => (
                         <GroupCard key={group.id} isMember={false} {...group} />
-                    ))}
+                    )):('')}
                 </div>
                 <CreateGroup isVisible={formCreateGr} onClose={() => {
                     setFormCreateGr(false);
@@ -96,7 +97,7 @@ const GroupCard = ({ isMember, id, image, name, description, href }) => {
                     >
                         <div className="flex flex-col items-center py-3">
                             <Image
-                                src={`/assets/${image}`}
+                                src={image}
                                 alt={name}
                                 width={500}
                                 height={500}

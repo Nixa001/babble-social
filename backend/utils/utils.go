@@ -1,11 +1,14 @@
 package utils
 
 import (
+	"errors"
 	"fmt"
 	"regexp"
 	"strconv"
 	"strings"
 	"time"
+
+	"github.com/gofrs/uuid/v5"
 )
 
 func ParseArrayInt(a []string) (tab []int, err error) {
@@ -84,6 +87,9 @@ func IsAlpha(input string) bool {
 }
 
 func VerifyUsername(username string) error {
+	if username == "" {
+		return nil
+	}
 	pattern := `^[a-zA-Z][a-zA-Z0-9_]{6,15}$`
 	regex := regexp.MustCompile(pattern)
 	ok := regex.MatchString(username)
@@ -113,12 +119,40 @@ func IsValidEmail(email string) error {
 	return nil
 }
 
-func IsValidImageType(contentType string) bool {
-	contentType = strings.ToLower(contentType)
-	return strings.HasPrefix(contentType, "image/jpeg") ||
-		strings.HasPrefix(contentType, "image/jpg") ||
-		strings.HasPrefix(contentType, "image/png") ||
-		strings.HasPrefix(contentType, "image/gif") ||
-		strings.HasPrefix(contentType, "image/bmp") ||
-		strings.HasPrefix(contentType, "image/webp")
+func IsValidImageType(s string) bool {
+	s = strings.ToLower(s)
+	return strings.HasSuffix(s, ".jpeg") ||
+		strings.HasSuffix(s, ".png") ||
+		strings.HasSuffix(s, ".jpg") ||
+		strings.HasSuffix(s, ".bmp") ||
+		strings.HasSuffix(s, ".webp") ||
+		strings.HasSuffix(s, ".gif")
+}
+
+func GenImageName(image string) (string, error) {
+	idImg, errImg := uuid.NewV4()
+	if errImg != nil {
+		return "", errors.New("cannot generate id for img name")
+	}
+	return fmt.Sprintf("%s%s", idImg, image), nil
+}
+
+func IsValidPassword(password string) error {
+	if len(password) < 4 {
+		return fmt.Errorf("password must be at least 8 characters long")
+	}
+	return nil
+}
+
+func GenerateToken() string {
+	token, err := uuid.NewV4()
+	if err != nil {
+		fmt.Println(err)
+	}
+	return token.String()
+
+}
+
+func GenerateExpirationTime() string {
+	return time.Now().Add((time.Hour * 24)).String()
 }

@@ -20,19 +20,16 @@ func (s *SessionRepository) init() {
 
 func (s *SessionRepository) CreateSession(session *models.Session) error {
 	err := s.DB.Insert(s.TableName, session)
-	if err != nil {
-		return err
-	}
-	return nil
+	return err
 }
 
 func (s *SessionRepository) GetSession(token string) (*models.Session, error) {
 	var session models.Session
-	row, err := s.DB.GetOneForm(s.TableName, q.WhereOption{"token": opt.Equals(token)})
+	row, err := s.DB.GetOneFrom(s.TableName, q.WhereOption{"token": opt.Equals(token)})
 	if err != nil {
 		return &session, err
 	}
-	err = row.Scan(&session.Token, &session.ExpirationDate, &session.UserId)
+	err = row.Scan(&session.Token, &session.Expiration, &session.User_id)
 	if err != nil {
 		if err == sql.ErrNoRows {
 			return &session, fmt.Errorf("no session found with this userId")
@@ -44,12 +41,12 @@ func (s *SessionRepository) GetSession(token string) (*models.Session, error) {
 
 func (s *SessionRepository) GetSessionByUserId(userId string) (sessions []models.Session, err error) {
 	var session models.Session
-	rows, err := s.DB.GetAllFrom(s.TableName, q.WhereOption{"user_id": opt.Equals(userId)}, session.ExpirationDate, nil)
+	rows, err := s.DB.GetAllFrom(s.TableName, q.WhereOption{"user_id": opt.Equals(userId)}, session.Expiration, nil)
 	if err != nil {
 		return nil, err
 	}
 	for rows.Next() {
-		err = rows.Scan(&session.Token, &session.ExpirationDate, &session.UserId)
+		err = rows.Scan(&session.Token, &session.Expiration, &session.User_id)
 		sessions = append(sessions, session)
 	}
 	if err != nil {
@@ -61,8 +58,8 @@ func (s *SessionRepository) GetSessionByUserId(userId string) (sessions []models
 	return sessions, nil
 }
 
-func (s *SessionRepository) DeleteSession(session *models.Session) error {
-	err := s.DB.Delete(s.TableName, q.WhereOption{"token": opt.Equals(session.Token)})
+func (s *SessionRepository) DeleteSession(token string) error {
+	err := s.DB.Delete(s.TableName, q.WhereOption{"token": opt.Equals(token)})
 	if err != nil {
 		return err
 	}

@@ -39,51 +39,15 @@ func CreateTable(db *sql.DB) {
 		log.Fatal("Users_followers table", err.Error())
 	}
 
-	// //? Creation de la table catégorie
-	// _, err = db.Exec(`
-	// 	CREATE TABLE IF NOT EXISTS categories (
-	// 		id INTEGER UNIQUE PRIMARY KEY AUTOINCREMENT NOT NULL,
-	// 		category_name TEXT NOT NULL
-	// 	)
-	// 	`)
-
-	// if err != nil {
-	// 	log.Fatal("Categories table", err.Error())
-	// }
-
-	// // var idCategory string
-	// var counter int
-	// err = db.QueryRow("SELECT COUNT(*)  FROM categories WHERE category_name = 'other'").Scan(&counter)
-	// if err != nil {
-	// 	log.Fatal("Categories table", err.Error())
-	// }
-	// if counter == 0 {
-	// 	_, err = db.Exec(`
-	// 		INSERT INTO categories (category_name) VALUES ('technologie');
-	// 		INSERT INTO categories (category_name) VALUES ('sport');
-	// 		INSERT INTO categories (category_name) VALUES ('other');
-	// 		INSERT INTO categories (category_name) VALUES ('musique');
-	// 		INSERT INTO categories (category_name) VALUES ('sante');
-	// 		INSERT INTO categories (category_name) VALUES ('news');
-	// 		`)
-	// 	if err != nil {
-	// 		log.Fatal("Categories insert", err.Error())
-	// 	}
-	// }
-
-	// Inserer donnee de la table catégorie
-
-	if err != nil {
-		log.Fatal("Categories insert", err.Error())
-	}
 
 	//? Creation de la table posts
 	_, err = db.Exec(`
 		CREATE TABLE IF NOT EXISTS posts (
-			id INTEGER UNIQUE PRIMARY KEY AUTOINCREMENT NOT NULL,
+			id TEXT UNIQUE PRIMARY KEY  NOT NULL,
 			content TEXT DEFAULT "NULL",
 			media TEXT DEFAULT "NULL",
 			date TEXT NOT NULL,
+			timestamp CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 			user_id INTEGER NOT NULL,
 			group_id INTEGER DEFAULT NULL,
 			privacy TEXT DEFAULT "public",
@@ -98,7 +62,7 @@ func CreateTable(db *sql.DB) {
 	//? Creation de la table viewers
 	_, err = db.Exec(`
 		CREATE TABLE IF NOT EXISTS viewers (
-			post_id INTEGER NOT NULL",
+			post_id TEXT NOT NULL",
 			user_id INTEGER NOT NULL,
 			FOREIGN KEY("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE
 			FOREIGN KEY("post_id") REFERENCES "posts"("id") ON DELETE CASCADE ON UPDATE CASCADE
@@ -110,8 +74,8 @@ func CreateTable(db *sql.DB) {
 
 	// Création tavle belong
 	_, err = db.Exec(`
-		CREATE TABLE IF NOT EXISTS Categories (
-			post_id INTEGER NOT NULL,
+		CREATE TABLE IF NOT EXISTS categories (
+			post_id TEXT NOT NULL,
 			category TEXT NOT NULL,
 			FOREIGN KEY(post_id) REFERENCES posts(id) ON DELETE CASCADE ON UPDATE CASCADE,
 		)
@@ -139,7 +103,7 @@ func CreateTable(db *sql.DB) {
 	_, err = db.Exec(`
 		CREATE TABLE IF NOT EXISTS comment (
 			id INTEGER UNIQUE PRIMARY KEY AUTOINCREMENT NOT NULL,
-			content TEXT DEFAULT NULL,
+			content TEXT DEFAULT "NULL",
 			date TEXT  NOT NULL,
 			media TEXT DEFAULT NULL,
 			post_id INTEGER NOT NULL,

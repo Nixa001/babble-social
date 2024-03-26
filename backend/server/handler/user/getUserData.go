@@ -41,7 +41,7 @@ func GetUserData(db *sql.DB, userID int) (models.User, error) {
 	defer rows.Close()
 
 	for rows.Next() {
-		err := rows.Scan(&user.ID, &user.Firstname, &user.Lastname, &user.Username, &user.Gender, &user.Email, &user.Password, &user.UserType, &user.BirthDate, &user.Avatar, &user.AboutMe)
+		err := rows.Scan(&user.Id, &user.First_name, &user.Last_name, &user.User_name, &user.Gender, &user.Email, &user.Password, &user.User_type, &user.Birth_date, &user.Avatar, &user.About_me)
 		if err != nil {
 			return user, fmt.Errorf("err scan group data: %w", err)
 		}

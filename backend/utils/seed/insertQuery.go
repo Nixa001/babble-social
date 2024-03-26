@@ -61,50 +61,67 @@ func InsertData(db *sql.DB) {
 	//post user
 
 	_, err = db.Exec(`
-		INSERT INTO posts (post_content, post_media, post_date, user_id, group_id, type)
-		VALUES ('This is the content of the first post.', '/media/first_post.jpg', '2024-03-05', 1, 1, 'private');
-		INSERT INTO posts (post_content, post_media, post_date, user_id, group_id, type)
-		VALUES ('This is the content of the second post.', '/media/second_post.jpg', '2024-03-05', 2, 2, 'public');
-		INSERT INTO posts (post_content, post_media, post_date, user_id, group_id, type)
-		VALUES ('This is the content of the third post.', '/media/third_post.jpg', '2024-03-05', 2, 1, 'private');
+		INSERT INTO posts (content, media, date, user_id, group_id, privacy)
+		VALUES ('This is the content of the first post.', '/media/first_post.jpg', '2024-03-05', 1, 0, 'private');
+		INSERT INTO posts (content, media, date, user_id, group_id, privacy)
+		VALUES ('This is the content of the second post.', '/media/second_post.jpg', '2024-03-05',1 , 0, 'public');
+		INSERT INTO posts (content, media, date, user_id, group_id, privacy)
+		VALUES ('This is the content of the third post.', '/media/third_post.jpg', '2024-03-05', 1, 0, 'almost');
+	`)
+	if err != nil {
+		log.Fatal("Insert into posts", err.Error())
+	}
+	// categories
+	_, err = db.Exec(`
+		INSERT INTO categories (post_id, category)
+		VALUES (1, other );
+		INSERT INTO categories (post_id, category)
+		VALUES (1, sport );
+		INSERT INTO categories (post_id, category)
+		VALUES (2, music );
+		INSERT INTO categories (post_id, category)
+		VALUES (2, technologie );
+		INSERT INTO categories (post_id, category)
+		VALUES (3, other );
+		INSERT INTO categories (post_id, category)
+		VALUES (3, news );
 	`)
 	if err != nil {
 		log.Fatal("Insert into posts", err.Error())
 	}
 
-	//insert into belongs
+	//! insert into postReact
 	// _, err = db.Exec(`
-	//     INSERT INTO postCategory (post_id, category_id)
-	//     VALUES (1, 1);
-	//     INSERT INTO postCategory (post_id, category_id)
-	//     VALUES (1, 2);
-	//     INSERT INTO postCategory (post_id, category_id)
-	//     VALUES (2, 1);
-	//     INSERT INTO postCategory (post_id, category_id)
-	//     VALUES (2, 2);
+	//     INSERT INTO postReact (post_id, user_id, is_like)
 	// `)
 	// if err != nil {
-	// 	log.Fatal("Insert into postCategory", err.Error())
+	// 	log.Fatal("Insert into postReact", err.Error())
 	// }
 
-	// insert into postReact
+	// insert viewers
 	_, err = db.Exec(`
-        INSERT INTO postReact (post_id, user_id, is_like)
-        VALUES (1, 1, true);
-        INSERT INTO postReact (post_id, user_id, is_like)
-        VALUES (1, 2, true);
-        INSERT INTO postReact (post_id, user_id, is_like)
-        VALUES (2, 1, true);
-        INSERT INTO postReact (post_id, user_id, is_like)
-        VALUES (2, 2, true);
-    `)
+		INSERT INTO viewers (post_id, user_id)
+		VALUES (1, 1);
+
+		INSERT INTO viewers (post_id, user_id)
+		VALUES (1, 2);
+
+		INSERT INTO viewers (post_id, user_id)
+		VALUES (2, 3);
+
+		INSERT INTO viewers (post_id, user_id)
+		VALUES (3, 4);
+
+		INSERT INTO viewers (post_id, user_id)
+		VALUES (3, 5);
+	`)
 	if err != nil {
-		log.Fatal("Insert into postReact", err.Error())
+		log.Fatal("Insert into posts", err.Error())
 	}
 
 	//insert into comment
 	_, err = db.Exec(`
-        INSERT INTO comment (post_id, user_id, content_comment)
+        INSERT INTO comment (post_id, user_id, media, content, date)
         VALUES (1, 1, 'This is the first comment');
         INSERT INTO comment (post_id, user_id, content_comment)
         VALUES (1, 2, 'This is the second comment');

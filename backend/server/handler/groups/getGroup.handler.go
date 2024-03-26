@@ -3,6 +3,7 @@ package groups
 import (
 	"backend/models"
 	"backend/server/cors"
+	"backend/server/service"
 	"backend/utils/seed"
 	"database/sql"
 	"encoding/json"
@@ -30,10 +31,10 @@ type Post struct {
 }
 
 type ResponseGroup struct {
-	GroupData models.Group  `json:"group_data"`
-	Posts     []Post        `json:"posts"`
-	Members   []models.User `json:"members"`
-	Followers []models.User `json:"followers"`
+	GroupData models.Group      `json:"group_data"`
+	Posts     []models.DataPost `json:"posts"`
+	Members   []models.User     `json:"members"`
+	Followers []models.User     `json:"followers"`
 }
 
 const userId int = 1
@@ -65,7 +66,7 @@ func GetGroup(w http.ResponseWriter, r *http.Request) {
 	}
 	// fmt.Println(groupId)
 
-	allPosts, err := getPosts(db, groupId)
+	allPosts, err := service.PostServ.GetPost(groupId)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -114,7 +115,7 @@ func GetUserData(db *sql.DB, userID int) (models.User, error) {
 	defer rows.Close()
 
 	for rows.Next() {
-		err := rows.Scan(&user.ID, &user.Firstname, &user.Lastname, &user.Username, &user.Gender, &user.Email, &user.Password, &user.UserType, &user.BirthDate, &user.Avatar, &user.AboutMe)
+		err := rows.Scan(&user.Id, &user.First_name, &user.Last_name, &user.User_name, &user.Gender, &user.Email, &user.Password, &user.User_type, &user.Birth_date, &user.Avatar, &user.About_me)
 		if err != nil {
 			return user, fmt.Errorf("err scan group data: %w", err)
 		}
@@ -159,10 +160,10 @@ func getComments(db *sql.DB, postID int) ([]models.Comment, error) {
 		if err != nil {
 			return comments, fmt.Errorf("%w", err)
 		}
-		comment.User, err = GetUserData(db, comment.User_id)
-		if err != nil {
-			return comments, fmt.Errorf("%w", err)
-		}
+		// comment.User, err = GetUserData(db, comment.User_id)
+		// if err != nil {
+		// 	return comments, fmt.Errorf("%w", err)
+		// }
 		comments = append(comments, comment)
 	}
 	return comments, nil
@@ -194,8 +195,8 @@ func getPosts(db *sql.DB, groupID int) ([]Post, error) {
 		}
 
 		// fmt.Println(post.Comments)
-		post.FullName = user.Firstname + " " + user.Lastname
-		post.Username = user.Username
+		post.FullName = user.First_name + " " + user.Last_name
+		post.Username = user.User_name
 		post.User = user
 
 		post.Likes, post.Dislikes = getLikesDislikes(db, post.ID)

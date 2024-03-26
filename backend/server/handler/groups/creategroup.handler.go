@@ -8,11 +8,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
-	"io"
-	"mime/multipart"
 	"net/http"
-	"os"
-	"path/filepath"
 )
 
 var group models.Group
@@ -85,41 +81,44 @@ func parseFormData(w http.ResponseWriter, r *http.Request) models.Group {
 	}
 	// fmt.Println(group)
 
-	var imageFile multipart.File
-	var handler *multipart.FileHeader
-	if r.MultipartForm != nil && r.MultipartForm.File != nil {
-		file, fileHeader, err := r.FormFile("image")
-		if err != nil {
-			fmt.Println("Image par defaut")
-			return group
-		}
-		defer file.Close()
-		imageFile = file
-		handler = fileHeader
-	}
+	// var imageFile multipart.File
+	Image, _ := utils.Uploader(w, r, 20, "image", "")
+	group.Avatar = utils.FormatImgLink(Image)
 
-	if imageFile != nil {
-		uploadsDir := "./uploads"
-		ext := filepath.Ext(handler.Filename)
-		newFileName := fmt.Sprintf("profil_group_%s%s", group.Name, ext)
-		avatarGroup = newFileName
-		if utils.IsValidImageType(newFileName) {
-			uploadsPath := filepath.Join(uploadsDir, newFileName)
-			newFile, err := os.Create(uploadsPath)
-			if err != nil {
-				http.Error(w, "Impossible de creer l image", http.StatusInternalServerError)
-				return group
-			}
-			defer newFile.Close()
+	// var handler *multipart.FileHeader
+	// if r.MultipartForm != nil && r.MultipartForm.File != nil {
+	// 	file, fileHeader, err := r.FormFile("image")
+	// 	if err != nil {
+	// 		fmt.Println("Image par defaut")
+	// 		return group
+	// 	}
+	// 	defer file.Close()
+	// 	imageFile = file
+	// 	handler = fileHeader
+	// }
 
-			_, err = io.Copy(newFile, imageFile)
-			if err != nil {
-				http.Error(w, "Impossible de copier l image", http.StatusInternalServerError)
-				return group
-			}
-			group.Avatar = avatarGroup
-		}
-	}
+	// if imageFile != nil {
+	// uploadsDir := "./uploads"
+	// ext := filepath.Ext(handler.Filename)
+	// newFileName := fmt.Sprintf("profil_group_%s%s", group.Name, ext)
+	// avatarGroup = newFileName
+	// if utils.IsValidImageType(newFileName) {
+	// 	uploadsPath := filepath.Join(uploadsDir, newFileName)
+	// 	newFile, err := os.Create(uploadsPath)
+	// 	if err != nil {
+	// 		http.Error(w, "Impossible de creer l image", http.StatusInternalServerError)
+	// 		return group
+	// 	}
+	// 	defer newFile.Close()
+
+	// 	_, err = io.Copy(newFile, imageFile)
+	// 	if err != nil {
+	// 		http.Error(w, "Impossible de copier l image", http.StatusInternalServerError)
+	// 		return group
+	// 	}
+	// 	group.Avatar = avatarGroup
+	// }
+	// }
 	return group
 }
 

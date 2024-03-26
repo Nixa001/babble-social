@@ -1,42 +1,116 @@
 "use client";
-import { websocketProvider } from "@/app/home/page";
-import React, { useCallback, useContext } from "react";
+import React from "react";
 import { useState } from "react";
-import { FaImage } from "react-icons/fa6";
-import { IoSend } from "react-icons/io5";
+import {  toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export const postForm = () => {
+  const [textarea, setTextarea] = useState(""),
+    [tech, setTech] = useState(false),
+    [sport, setSport] = useState(false),
+    [health, setHealth] = useState(false),
+    [music, setMusic] = useState(false),
+    [news, setNews] = useState(false),
+    [other, setOther] = useState(true),
+    [privacy, setPrivacy] = useState();
+  //  [imgs, setImgs] = useState(null),
+
   const handlePost = (e) => {
-    // e.preventDefault();
-    let data = new FormData(e.target);
-    console.log("retrieved data => ", data);
+    e.preventDefault();
+    const data = new FormData(e.target);
+    console.log("my data => ", data);
+    const options = {
+      method: "POST",
+      body: data,
+    };
+    fetch("http://localhost:8080/post", options).then(async (x) => {
+      const retrieved = await x.json();
+      console.log("response", retrieved);
+      if (retrieved.type != "success") {
+        toast.error(retrieved.msg, {
+          position: "bottom-left",
+          autoClose: 4000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+          // transition: "bounce",
+        });
+        return;
+      }
+      //!emptying inputs after submit
+      setTextarea("");
+      setSport(false);
+      setTech(false);
+      setSport(false);
+      setHealth(false);
+      setMusic(false);
+      setNews(false);
+      setOther(true);
+    });
   };
-  console.log("in postForm");
-  // const ws = useContext(websocketProvider);
+
   return (
     <form
-      //className="flex flex-col lg:w-[100%] 2xl-[80%] xl:w-[75%] w-[80%]  gap-1  "
-      action=""
+      className="flex flex-col lg:w-[100%] 2xl-[80%] xl:w-[75%] w-[80%]  gap-1  "
       method=""
       data-form="post"
       encType="multipart/form-data"
       onSubmit={handlePost}>
       <TextArea
         label="Post Title"
-        name="content_post"
+        name="content"
         placeholder="Let's post something"
         required
-        defaultValue=""
-        onChange={(event) => console.log(event.target.value)} // Handle changes
+        value={textarea}
+        onChange={(e) => setTextarea(e.target.value)}
       />
       <div className="flex items-start justify-end">
         <div className="flex gap-1 flex-wrap mr-2 mt-1 text-sm">
-          <Checkbox label="Tech" value="technologie" name="techno" />
-          <Checkbox label="Sport" value="sport" name="sport" />
-          <Checkbox label="Santé" value="sante" name="sante" />
-          <Checkbox label="Musique" value="musique" name="music" />
-          <Checkbox label="News" value="news" name="news" />
-          <Checkbox label="Other" value="other" name="other" defaultChecked />
+          <Checkbox
+            label="Tech"
+            value="Tech"
+            name="Tech"
+            checked={tech}
+            onChange={() => (tech ? setTech(false) : setTech(true))}
+          />
+          <Checkbox
+            label="Sport"
+            value="Sport"
+            name="Sport"
+            checked={sport}
+            onChange={() => (sport ? setSport(false) : setSport(true))}
+          />
+          <Checkbox
+            label="Health"
+            value="Health"
+            name="Health"
+            checked={health}
+            onChange={() => (health ? setHealth(false) : setHealth(true))}
+          />
+          <Checkbox
+            label="Music"
+            value="Music"
+            name="Music"
+            checked={music}
+            onChange={() => (music ? setMusic(false) : setMusic(true))}
+          />
+          <Checkbox
+            label="News"
+            value="News"
+            name="News"
+            checked={news}
+            onChange={() => (news ? setNews(false) : setNews(true))}
+          />
+          <Checkbox
+            label="Other"
+            value="Other"
+            name="Others"
+            checked={other}
+            onChange={() => (other ? setOther(false) : setOther(true))}
+          />
         </div>
 
         {PrivacySelect()}
@@ -54,12 +128,7 @@ export const postForm = () => {
             />
           </svg>
         </label>
-        <input type="file" name="image_post" id="image_post" hidden />
-        {/* <input
-                    className="bg-second text-lg font-bold pl-3 pr-3 rounded-lg cursor-pointer hover:bg-primary"
-                    type="submit"
-                    value="Post"
-                /> */}
+        <input type="file" name="image" id="image_post" />
         <button
           type="submit"
           className="bg-second h-full text-lg font-bold pl-3 pr-3 rounded-lg cursor-pointer hover:bg-primary">
@@ -73,18 +142,19 @@ export const postForm = () => {
         </button>
         {/* < Button text="Log In" onClick={handlePost()} /> */}
       </div>
+      ={" "}
     </form>
   );
 };
 
 function PrivacySelect() {
- const [selectedValue, setSelectedValue] = useState("Public");
+  const [selectedValue, setSelectedValue] = useState("public");
   const [showUserList, setShowUserList] = useState(false);
   const [selectedUsers, setSelectedUsers] = useState([]);
 
   const handleChange = (event) => {
     setSelectedValue(event.target.value);
-    setShowUserList(event.target.value === "Select users");
+    setShowUserList(event.target.value === "almost");
   };
 
   const handleUserSelection = (userId) => {
@@ -104,11 +174,11 @@ function PrivacySelect() {
         name="privacy"
         onChange={handleChange}
         className="w-32 rounded-md px-2 py-1 font-bold outline-none focus:ring-1 bg-primary focus:ring-primary">
-        <option value="Public">Public</option>
+        <option value="public">Public</option>
         <option value="Private">Private</option>
-        <option value="Select users">Select users</option>
+        <option value="almost">Select users</option>
       </select>
-     <input type="hidden" value={selectedUsers} name="usersel"/>
+      <input type="hidden" value={selectedUsers} name="viewers" />
       {showUserList && (
         <div className="mt-1 max-h-44  w-[300px] p-2 overflow-scroll border rounded-md">
           <ul className="flex flex-wrap gap-2">
@@ -117,9 +187,10 @@ function PrivacySelect() {
                 <label className="flex gap-1 cursor-pointer">
                   <input
                     type="checkbox"
-                    name={`select-${user.name}`}
+                    name={`view-${user.name}`}
                     //checked={selectedUsers.includes(user.name)}
-                    onChange={() => handleUserSelection(user.name)}
+                    value={user.id}
+                    onChange={() => handleUserSelection(user.id)}
                   />
                   {user.name}
                 </label>
@@ -133,12 +204,12 @@ function PrivacySelect() {
 }
 
 const followers = [
-  { name: "Vindour", src: "/assets/profilibg.jpg", alt: "profil" },
-  { name: "ibg", src: "/assets/profilibg.jpg", alt: "profil" },
-  { name: "dicks", src: "/assets/profilibg.jpg", alt: "profil" },
-  { name: "Vindcour", src: "/assets/profilibg.jpg", alt: "profil" },
-  { name: "ibgs", src: "/assets/profilibg.jpg", alt: "profil" },
-  { name: "dickss", src: "/assets/profilibg.jpg", alt: "profil" },
+  { name: "Vindour", src: "/assets/profilibg.jpg", alt: "profil", id: 3 },
+  { name: "ibg", src: "/assets/profilibg.jpg", alt: "profil", id: 2 },
+  { name: "daniella", src: "/assets/profilibg.jpg", alt: "profil", id: 5 },
+  { name: "Vindcour99", src: "/assets/profilibg.jpg", alt: "profil", id: 99 },
+  { name: "nixa", src: "/assets/profilibg.jpg", alt: "profil", id: 4 },
+  { name: "dickss", src: "/assets/profilibg.jpg", alt: "profil", id: 1 },
 ];
 
 export function TextArea({
@@ -146,7 +217,7 @@ export function TextArea({
   name,
   placeholder,
   required,
-  defaultValue,
+  value,
   onChange,
 }) {
   return (
@@ -157,14 +228,14 @@ export function TextArea({
         name={name}
         placeholder={placeholder}
         required={required}
-        defaultValue={defaultValue}
+        value={value}
         onChange={onChange}
       />
     </div>
   );
 }
 
-export function Checkbox({ label, value, name, defaultChecked = false }) {
+export function Checkbox({ label, value, name, checked, onChange }) {
   return (
     <div className="checkbox-container">
       <input
@@ -172,7 +243,8 @@ export function Checkbox({ label, value, name, defaultChecked = false }) {
         id={label}
         value={value}
         name={name}
-        defaultChecked={defaultChecked}
+        checked={checked}
+        onChange={onChange}
       />
       <label htmlFor={label}>{label}</label>
     </div>
