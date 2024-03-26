@@ -38,7 +38,7 @@ WHERE
     (
         p.privacy = 'public'
         OR (
-            p.privacy = 'private' AND (
+            p.privacy = 'Private' AND (
                 p.user_id = ? -- Post creator
                 OR EXISTS (
                     SELECT 1
