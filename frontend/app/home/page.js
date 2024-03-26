@@ -1,11 +1,16 @@
+'use client';
 import React from 'react'
 import HomePage from '../ui/home/page'
+import { WebSocketProvider } from '../_lib/websocket'
 
 const Page = () => {
   return (
-    <div className=''>
-      <HomePage />
-    </div>
+    <WebSocketProvider> 
+      <div className=''>
+        <HomePage />
+      </div>
+    </WebSocketProvider>
+
   )
 }
 

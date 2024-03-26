@@ -160,3 +160,17 @@ func findLastMessage(messages []models.Chat, userID int) models.Chat {
 	}
 	return lastMessage
 }
+
+// InsertMessage insère un nouveau message dans la base de données.
+func InsertMessage(db *sql.DB, userSender, userReceiver int, messageContent, date string) error {
+	// Préparation de la requête SQL pour insérer un nouveau message.
+	query := `INSERT INTO messages (user_id_sender, user_id_receiver, message_content, date) VALUES (?, ?, ?, ?);`
+	// Exécution de la requête avec les valeurs fournies.
+	_, err := db.Exec(query, userSender, userReceiver, messageContent, date)
+	if err != nil {
+		fmt.Println("Erreur lors de l'insertion du message:", err)
+		return err
+	}
+
+	return nil
+}

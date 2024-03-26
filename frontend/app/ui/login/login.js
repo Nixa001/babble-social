@@ -2,10 +2,18 @@
 import Link from "next/link";
 import Image from "next/image";
 import Button from "../components/button/button";
+import { useContext } from "react";
+import { WebSocketContext } from "@/app/_lib/websocket";
 
 export default function Login() {
+  // const socket = useContext(WebSocketContext)
+  const {sendMessageToServer} = useContext(WebSocketContext)
   const handleLogin = () => {
-    alert("Login");
+    const message = {type:"join", data: "login"}
+    sendMessageToServer(message)
+    alert("Login"); 
+    
+    // readMessage(message)
   };
 
   return (

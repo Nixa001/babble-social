@@ -1,48 +1,64 @@
 'use client'
 import Image from 'next/image';
 import { IoSend } from "react-icons/io5";
-import {  followerHearder } from '../../components/sidebarRight/sidebar';
-import { useState } from 'react';
+import { displayFollowers, followerHearder } from '../../components/sidebarRight/sidebar';
+import { useContext, useEffect, useState } from 'react';
 import { postData } from '@/app/lib/utils';
+import useSocket, { WebSocketContext } from '@/app/_lib/websocket';
 
 const Messages = () => {
     const [activeTab, setActiveTab] = useState("users");
+    const { socket, sendMessageToServer, allMessages } = useContext(WebSocketContext)
+    // const {sendMessage} = useSocket('ws://localhost:8080/ws');
 
     const handleTabClick = (tab) => {
         setActiveTab(tab);
     };
-     const handleUserClick = (userId) => {
-    console.log("User clicked:", userId);
-    // Ici, vous pouvez ajouter la logique pour gérer l'ID de l'utilisateur cliqué
-};
 
-//Traitement lors de l'envoie de messages
-const handleSendMessage = async (e) => {
-    e.preventDefault()
-    let data = new FormData(e.target);
-    let obj = {}
-    data.forEach((value, key) => {
-        obj[key] = value
-    })
-    console.log(obj.message)
-    if (obj.message.trim() !== ""){
-        postData("http://localhost:8080/messages", obj)
-        .then((value) => {
-             console.log(value)
-             e.target.reset();
-        })
-        .catch((error) =>{
-             console.log(error)
-        })
-    }
-};  
 
-    const displayTable = () => {  
+    //Traitement des message entre user
+    useEffect(() => {
+        console.log("all messages", allMessages);
+    }, [allMessages])
+
+    const handleUserClick = (userId) => {
+        console.log("User clicked:", userId);
+        sendMessageToServer({ type: 'id-receiver-event', data: userId });
+        // console.log("all messages", allMessages);
+        // Ici, vous pouvez ajouter la logique pour gérer l'ID de l'utilisateur cliqué
+
+
+    };
+
+    //Traitement de message entre user et Groups
+
+    const handleGroupClick = (GroupId) => {
+        console.log("Group clicked:", GroupId);
+        sendMessageToServer({ type: 'idGroup-receiver-event', data: GroupId });
+        // Ici, vous pouvez ajouter la logique pour gérer l'ID de l'utilisateur cliqué
+    };
+
+    //Traitement lors de l'envoie de messages
+    const handleSendMessage = async (e) => {
+        e.preventDefault()
+        let data = new FormData(e.target);
+        let obj = {}
+        data.forEach((value, key) => {
+            obj[key] = value
+        })
+        console.log(obj.message)
+        if (obj.message.trim() !== "") {
+            sendMessageToServer({ type: 'message-user-event', data: obj.message })
+            e.target.reset();
+        }
+    };
+
+    const displayTable = () => {
         if (activeTab === "users") {
-            return displayFollowers(users, handleUserClick) ;
+            return displayFollowers(users, handleUserClick);
 
         } else if (activeTab === "group") {
-            return displayFollowers(groups, handleUserClick) ;
+            return displayFollowers(groups, handleGroupClick);
         }
         return null;
     };
@@ -62,7 +78,7 @@ const handleSendMessage = async (e) => {
 
                     </div>
                     {/* </div> */}
-                    
+
                     <ul className="list-none w-[100%] lg:px-5 md:px-0 px-5 sm:block flex overflow-y-scroll">
                         {displayTable()}
                     </ul>
@@ -92,16 +108,7 @@ const handleSendMessage = async (e) => {
                         </div>
                     </div>
                     <div className="h-full overflow-y-auto">
-                        {messages.map((message) => (
-                            <div key={message.id} className="message-container flex items-end mb-4">
-                                <div className="flex flex-col">
-                                    <p className="text-sm font-semibold mb-1">{message.sender}</p>
-                                    <div className=" font-semibold bg-primary p-4 rounded-lg">
-                                        {message.content}
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
+                    {displayMessages(allMessages.length > 0 ? allMessages[0] : messages)}
                     </div>
                 </div>
 
@@ -111,8 +118,6 @@ const handleSendMessage = async (e) => {
                         name="message"
                         className=" p-4 border border-gray-700 bg-transparent h-11 rounded-lg w-[90%] outline-none focus:ring-1 bg-primary focus:ring-primary"
                         placeholder="Your message..."
-                    // value={message.content}
-                    // onChange={(e) => setMessage(e.target.value)}
                     />
                     <button type="submit" className="bg-primary  hover:bg-second font-bold px-4 rounded-lg">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
@@ -125,6 +130,19 @@ const handleSendMessage = async (e) => {
     );
 };
 
+
+const displayMessages = (messages) => {
+    return messages.map((message) => (
+        <div key={message.id} className="message-container flex items-end mb-4">
+            <div className="flex flex-col">
+                <p className="text-sm font-semibold mb-1">{message.first_name}</p>
+                <div className="font-semibold bg-primary p-4 rounded-lg">
+                    {message.message_content}
+                </div>
+            </div>
+        </div>
+    ));
+};
 export default Messages;
 const users = [
     { id: 1, name: 'Mamour Drame', src: '/assets/profilibg.jpg', alt: "profil" },
@@ -136,37 +154,17 @@ const users = [
 
 const messages = [
     {
-        id: 1, sender: 'Mamou Drame', content: 'Hello everyone!', timestamp: '2023-11-16T12:00:00.000Z',
+        id: 1, first_name: 'Mamou Drame', message_content: 'Hello everyone!', timestamp: '2023-11-16T12:00:00.000Z',
     },
     {
-        id: 2, sender: 'Nicolas Faye', content: 'How are you all doing today?', timestamp: '2023-11-16T12:01:00.000Z',
+        id: 2, first_name: 'Nicolas Faye', message_content: 'How are you all doing today?', timestamp: '2023-11-16T12:01:00.000Z',
     },
 ];
 
 
 const groups = [
-    {id :1, name: 'Call of duty', src: "/assets/profilibg.jpg", alt: "profil", },
-    {id :2, name: 'Farcry 6 Team', src: "/assets/profilibg.jpg", alt: "profil" },
-    {id :3, name: 'EA Fooball 24', src: "/assets/profilibg.jpg", alt: "profil", },
+    { id: 1, name: 'Call of duty', src: "/assets/profilibg.jpg", alt: "profil", },
+    { id: 2, name: 'Farcry 6 Team', src: "/assets/profilibg.jpg", alt: "profil" },
+    { id: 3, name: 'EA Fooball 24', src: "/assets/profilibg.jpg", alt: "profil", },
 ];
 
- const displayFollowers = (data, handleUserClick) => {
-    return data.map((follower) => {
-        return (
-            <div key={follower.name} className=" hover:opacity-60 flex items-center cursor-pointer justify-start gap-2 mt-1 mb-3 p-2 "
-            onClick={() => handleUserClick(follower.id)}
-            >
-                {/* <FaUserGroup className='border rounded-full p-2 w-10 h-10' /> */}
-
-                <Image
-                    className="rounded-full "
-                    src={follower.src}
-                    alt={follower.alt}
-                    width={40}
-                    height={40}
-                    />
-                <h4 className="font-bold" >{follower.name}</h4>
-            </div>
-        );
-    })
-}

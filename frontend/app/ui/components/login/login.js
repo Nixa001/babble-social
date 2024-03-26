@@ -3,10 +3,6 @@ import Link from "next/link";
 import Image from "next/image";
 
 export default function Login() {
-  const handleLogin = () => {
-    alert("Login");
-  };
-
   return (
     <div className="w-screen h-screen flex">
       <div className="flex flex-col items-center w-full sm:w-6/12">
@@ -73,3 +69,4 @@ export default function Login() {
     </div>
   );
 }
+

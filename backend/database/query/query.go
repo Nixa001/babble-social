@@ -79,13 +79,13 @@ func SelectAllFrom(table string, orderby string, limit []int) string {
 	}
 	query := fmt.Sprintf("SELECT * FROM %v %s;", table, order)
 	if limit != nil {
-		query = fmt.Sprintf("SELECT * FROM %v %s LIMIT %v, %v;", table, order,limit[0],limit[1])
+		query = fmt.Sprintf("SELECT * FROM %v %s LIMIT %v, %v;", table, order, limit[0], limit[1])
 
 	}
 	return query
 }
 
-func SelectAllWhere(table string, where WhereOption, orderby string,limit []int) string {
+func SelectAllWhere(table string, where WhereOption, orderby string, limit []int) string {
 
 	whToString := getWhereOptionsString(where)
 	var order string
@@ -95,7 +95,7 @@ func SelectAllWhere(table string, where WhereOption, orderby string,limit []int)
 	query := fmt.Sprintf("SELECT * FROM %v WHERE %v %s;", table, whToString, order)
 
 	if limit != nil {
-		query = fmt.Sprintf("SELECT * FROM %v WHERE %v %s LIMIT %v, %v;", table, whToString, order,limit[0],limit[1])
+		query = fmt.Sprintf("SELECT * FROM %v WHERE %v %s LIMIT %v, %v;", table, whToString, order, limit[0], limit[1])
 
 	}
 
@@ -116,7 +116,7 @@ func InsertQuery(table string, object any) (string, error) {
 	return query, nil
 }
 
-func SelectWithJoinQuery(primaryTable string, joinConditions []JoinCondition, where WhereOption, orderby string,limit []int) string {
+func SelectWithJoinQuery(primaryTable string, joinConditions []JoinCondition, where WhereOption, orderby string, limit []int) string {
 
 	joinClauses := []string{}
 
@@ -135,7 +135,7 @@ func SelectWithJoinQuery(primaryTable string, joinConditions []JoinCondition, wh
 
 	query := fmt.Sprintf("SELECT %v.* FROM %s %s WHERE %s %s;", primaryTable, primaryTable, joinClausesString, whToString, order)
 	if limit != nil {
-		query = fmt.Sprintf("SELECT %v.* FROM %s %s WHERE %s %s LIMIT %v, %v;", primaryTable, primaryTable, joinClausesString, whToString, order,limit[0],limit[1])
+		query = fmt.Sprintf("SELECT %v.* FROM %s %s WHERE %s %s LIMIT %v, %v;", primaryTable, primaryTable, joinClausesString, whToString, order, limit[0], limit[1])
 	}
 	return query
 }
