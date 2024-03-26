@@ -45,7 +45,7 @@ func (c *CommentRepository) CreateComment(comment models.Comment) (bool, models.
 		todo: inssert comment in database
 	*/
 	//checking content's validity
-	if strings.TrimSpace(comment.Content) == "" && strings.TrimSpace(comment.Media) == "" {
+	if strings.TrimSpace(comment.Content) == "" && strings.TrimSpace(comment.Media) == "NULL" {
 		log.Printf("⚠ ERROR ⚠ : Couldn't create comment from user %s due to empty content and media ❌\n", "1")
 		return true,
 			models.Errormessage{

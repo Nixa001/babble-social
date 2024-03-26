@@ -103,7 +103,7 @@ func CreateTable(db *sql.DB) {
 	_, err = db.Exec(`
 		CREATE TABLE IF NOT EXISTS comment (
 			id INTEGER UNIQUE PRIMARY KEY AUTOINCREMENT NOT NULL,
-			content TEXT DEFAULT NULL,
+			content TEXT DEFAULT "NULL",
 			date TEXT  NOT NULL,
 			media TEXT DEFAULT NULL,
 			post_id INTEGER NOT NULL,

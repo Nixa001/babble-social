@@ -111,7 +111,10 @@ func (p *PostRepository) CreatePost(post models.Post) (bool, models.Errormessage
 	//todo: checking Id_user validity
 
 	//checking Title's validity
-	if strings.TrimSpace(post.ToIns.Content) == "" && strings.TrimSpace(post.ToIns.Media) == "" {
+	log.Println("ins content => ", post.ToIns.Content, " length => ", len([]rune(post.ToIns.Content)))
+	log.Println("ins media => ", post.ToIns.Media, " length => ", len([]rune(post.ToIns.Media)))
+	
+	if strings.TrimSpace(post.ToIns.Content) == "" && strings.TrimSpace(post.ToIns.Media) == "NULL" {
 		log.Printf("⚠ ERROR ⚠ : Couldn't create post from user %s due to empty content and media ❌\n", "1")
 		return true,
 			models.Errormessage{
