@@ -1,9 +1,8 @@
 "use client";
-import { websocketProvider } from "@/app/home/page";
-import React, { useCallback, useContext } from "react";
+import React from "react";
 import { useState } from "react";
-import { FaImage } from "react-icons/fa6";
-import { IoSend } from "react-icons/io5";
+import {  toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export const postForm = () => {
   const [textarea, setTextarea] = useState(""),
@@ -28,7 +27,17 @@ export const postForm = () => {
       const retrieved = await x.json();
       console.log("response", retrieved);
       if (retrieved.type != "success") {
-        alert(`${retrieved.status} - ${retrieved.msg}`);
+        toast.error(retrieved.msg, {
+          position: "bottom-left",
+          autoClose: 4000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+          // transition: "bounce",
+        });
         return;
       }
       //!emptying inputs after submit
@@ -119,11 +128,7 @@ export const postForm = () => {
             />
           </svg>
         </label>
-        <input
-          type="file"
-          name="image"
-          id="image_post"
-        />
+        <input type="file" name="image" id="image_post" />
         <button
           type="submit"
           className="bg-second h-full text-lg font-bold pl-3 pr-3 rounded-lg cursor-pointer hover:bg-primary">
@@ -137,6 +142,7 @@ export const postForm = () => {
         </button>
         {/* < Button text="Log In" onClick={handlePost()} /> */}
       </div>
+      ={" "}
     </form>
   );
 };

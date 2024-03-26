@@ -2,6 +2,7 @@
 import React from "react";
 import { useState } from "react";
 import { useQuery } from "react-query";
+import { toast } from "react-toastify";
 
 export const DisplayComments = ({ isVisible, postId, onClose, increment }) => {
   // const Comments = comments
@@ -61,11 +62,21 @@ export const DisplayComments = ({ isVisible, postId, onClose, increment }) => {
       const retrieved = await x.json();
       console.log("response comment", retrieved);
       if (retrieved.type != "success") {
-        alert(retrieved.status, retrieved.msg);
+        toast.error(retrieved.msg, {
+          position: "top-right",
+          autoClose: 4000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+          // transition: "bounce",
+        });
         return;
       }
       setValue("");
-      increment()
+      increment();
     });
   };
   /*------------------------------------------------------------------------
