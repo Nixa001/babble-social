@@ -66,6 +66,26 @@ WHERE
 	GROUP BY p.id, p.content, p.media, p.date, p.user_id
 	ORDER BY p.timestamp DESC;
 `
+GetPostGroupQuery = `
+SELECT 
+    p.id AS post_id,
+    p.content AS post_content,
+    p.media AS post_media,
+    p.date AS post_date,
+    p.user_id AS post_user_id,
+	u.avatar as avatar,
+    u.user_name as username,
+    concat (u.first_name, " ", u.last_name) as full_name,
+    COUNT(DISTINCT c.id) AS comment_count
+FROM 
+    posts AS p,
+	users AS u
+LEFT JOIN 
+    comment AS c ON p.id = c.post_id
+WHERE group_id = ?
+	GROUP BY p.id, p.content, p.media, p.date, p.user_id
+	ORDER BY p.timestamp DESC;
+`
 	GetOnePostQuery = `
 SELECT
     p.id,
@@ -228,10 +248,10 @@ func (P *PostRepository) LoadPost(IdUser int) ([]models.DataPost, error) {
 	return postTab, nil
 }
 
-func (p *PostRepository) GetOnePost(postID int) (models.DataPost, error) {
-	rows, err := p.DB.Query(GetOnePostQuery, postID)
+func (p *PostRepository) LoadPostGroup(GroupID int) (models.DataPost, error) {
+	rows, err := p.DB.Query(GetPostGroupQuery, GroupID)
 	if err != nil {
-		log.Println("❌ Error while retrieving in OnePost => ", err)
+		log.Println("❌ Error while retrieving in GroupPost => ", err)
 		return models.DataPost{}, errors.New("error while retrieving onepost from the database")
 	}
 	defer rows.Close()
@@ -239,9 +259,9 @@ func (p *PostRepository) GetOnePost(postID int) (models.DataPost, error) {
 	var data models.DataPost
 	//! modify retrieval
 	for rows.Next() {
-		errScan := rows.Scan(&data.ID, &data.Content, &data.Media, &data.Date, &data.Avatar, &data.UserName, &data.FullName, &data.Comments, &data.Categories, &data.Viewers)
+		errScan := rows.Scan(&data.ID, &data.Content, &data.Media, &data.Date, &data.Avatar, &data.UserName, &data.FullName, &data.Comments)
 		if errScan != nil {
-			log.Println("⚠ GetOnePost scan err ⚠ :", errScan)
+			log.Println("⚠ loadPostGroup scan err ⚠ :", errScan)
 			return models.DataPost{}, errors.New("error while scanning")
 		}
 		data.Content = utils.DecodeValue(data.Content)

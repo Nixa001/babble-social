@@ -29,8 +29,8 @@ func (p *PostService) GetPost(Id int) ([]models.DataPost, error) {
 	return posts, nil
 }
 
-func (p *PostService) FetchPost(Id int) (models.DataPost, error) {
-	post, err := p.PostRepo.GetOnePost(Id)
+func (p *PostService) FetchPostGroup(Id int) (models.DataPost, error) {
+	post, err := p.PostRepo.LoadPostGroup(Id)
 	if err != nil {
 		return models.DataPost{}, err
 	}
