@@ -13,28 +13,10 @@ const DisplayPost = ({
   onCommentClick,
   onProfileClick,
 }) => {
-  const [postDataState, setPostDataState] = useState(postData);
-  const [isVisibleComment, setIsVisibleComment] = useState(false);
+  const [postDataState, setPostDataState] = useState(postData),
+   [isVisibleComment, setIsVisibleComment] = useState(false),
+   [commentCounter, setCommentCounter] = useState(postDataState.Comments)
 
-  // const handleLikeClick = () => {
-  //   onLikeClick();
-  //   setPostDataState((prevState) => ({
-  //     ...prevState,
-  //     likesCount: prevState.likesCount + 1,
-  //   }));
-  // };
-
-  // const handleDislikeClick = () => {
-  //   onDislikeClick();
-  //   setPostDataState((prevState) => ({
-  //     ...prevState,
-  //     dislikesCount: prevState.dislikesCount + 1,
-  //   }));
-  // };
-
-  // const handleCommentClick = () => {
-  //   onCommentClick();
-  // };
 
   const handleProfileClick = () => {
     onProfileClick();
@@ -105,13 +87,14 @@ const DisplayPost = ({
             width={30}
             height={30}
           />
-          <span>{postDataState.Comments}</span>
+          <span>{commentCounter}</span>
         </button>
       </div>
         <DisplayComments
           isVisible={isVisibleComment}
           postId={postDataState.ID}
           onClose={() => setIsVisibleComment(false)}
+          increment = {()=> setCommentCounter(prevCount => prevCount + 1)}
         />
     </div>
   );

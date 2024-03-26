@@ -7,8 +7,14 @@ import { IoSend } from "react-icons/io5";
 
 export const postForm = () => {
   const [textarea, setTextarea] = useState(""),
-    [imgs, setImgs] = useState(null),
+    [tech, setTech] = useState(false),
+    [sport, setSport] = useState(false),
+    [health, setHealth] = useState(false),
+    [music, setMusic] = useState(false),
+    [news, setNews] = useState(false),
+    [other, setOther] = useState(true),
     [privacy, setPrivacy] = useState();
+  //  [imgs, setImgs] = useState(null),
 
   const handlePost = (e) => {
     e.preventDefault();
@@ -25,16 +31,21 @@ export const postForm = () => {
         alert(`${retrieved.status} - ${retrieved.msg}`);
         return;
       }
+      //!emptying inputs after submit
       setTextarea("");
-      setImgs(null);
+      setSport(false);
+      setTech(false);
+      setSport(false);
+      setHealth(false);
+      setMusic(false);
+      setNews(false);
+      setOther(true);
     });
   };
 
-  // console.log("in postForm");
   return (
     <form
-      //className="flex flex-col lg:w-[100%] 2xl-[80%] xl:w-[75%] w-[80%]  gap-1  "
-      //action="http://localhost:8000/posts"
+      className="flex flex-col lg:w-[100%] 2xl-[80%] xl:w-[75%] w-[80%]  gap-1  "
       method=""
       data-form="post"
       encType="multipart/form-data"
@@ -49,12 +60,48 @@ export const postForm = () => {
       />
       <div className="flex items-start justify-end">
         <div className="flex gap-1 flex-wrap mr-2 mt-1 text-sm">
-          <Checkbox label="Tech" value="Tech" name="Tech" />
-          <Checkbox label="Sport" value="Sport" name="Sport" />
-          <Checkbox label="Health" value="Health" name="Health" />
-          <Checkbox label="Music" value="Music" name="Music" />
-          <Checkbox label="News" value="News" name="News" />
-          <Checkbox label="Other" value="Other" name="Others" true />
+          <Checkbox
+            label="Tech"
+            value="Tech"
+            name="Tech"
+            checked={tech}
+            onChange={() => (tech ? setTech(false) : setTech(true))}
+          />
+          <Checkbox
+            label="Sport"
+            value="Sport"
+            name="Sport"
+            checked={sport}
+            onChange={() => (sport ? setSport(false) : setSport(true))}
+          />
+          <Checkbox
+            label="Health"
+            value="Health"
+            name="Health"
+            checked={health}
+            onChange={() => (health ? setHealth(false) : setHealth(true))}
+          />
+          <Checkbox
+            label="Music"
+            value="Music"
+            name="Music"
+            checked={music}
+            onChange={() => (music ? setMusic(false) : setMusic(true))}
+          />
+          <Checkbox
+            label="News"
+            value="News"
+            name="News"
+            checked={news}
+            onChange={() => (news ? setNews(false) : setNews(true))}
+          />
+          <Checkbox
+            label="Other"
+            value="Other"
+            name="Others"
+            checked={other}
+            onChange={() => (other ? setOther(false) : setOther(true))}
+          />
         </div>
 
         {PrivacySelect()}
@@ -76,7 +123,6 @@ export const postForm = () => {
           type="file"
           name="image"
           id="image_post"
-          onChange={(e) => setImgs(e.target.files[0])}
         />
         <button
           type="submit"
@@ -183,7 +229,7 @@ export function TextArea({
   );
 }
 
-export function Checkbox({ label, value, name, defaultChecked = false }) {
+export function Checkbox({ label, value, name, checked, onChange }) {
   return (
     <div className="checkbox-container">
       <input
@@ -191,7 +237,8 @@ export function Checkbox({ label, value, name, defaultChecked = false }) {
         id={label}
         value={value}
         name={name}
-        defaultChecked={defaultChecked}
+        checked={checked}
+        onChange={onChange}
       />
       <label htmlFor={label}>{label}</label>
     </div>

@@ -1,9 +1,9 @@
 "use client";
 import React from "react";
-import { useState} from "react";
+import { useState } from "react";
 import { useQuery } from "react-query";
 
-export const DisplayComments = ({ isVisible, postId, onClose }) => {
+export const DisplayComments = ({ isVisible, postId, onClose, increment }) => {
   // const Comments = comments
   const fetchComments = async () => {
     const dataID = new FormData();
@@ -12,7 +12,7 @@ export const DisplayComments = ({ isVisible, postId, onClose }) => {
     const options = {
       method: "POST",
       body: dataID,
-    }; 
+    };
     try {
       const response = await fetch("http://localhost:8080/comment", options);
       const data = await response.json();
@@ -22,12 +22,9 @@ export const DisplayComments = ({ isVisible, postId, onClose }) => {
       return Promise.reject(error);
     }
   };
-  // const handleChange = (event) => {
-  //   const file = event.target.files[0];
-  //   setImg(file);
-  //   console.log("File uploaded : ", img);
-  // };
-  const [comments, setComments] = useState([]);
+
+  const [comments, setComments] = useState([]),
+    [value, setValue] = useState("");
   useQuery("comments", fetchComments, {
     enabled: isVisible,
     refetchInterval: 1000,
@@ -41,11 +38,6 @@ export const DisplayComments = ({ isVisible, postId, onClose }) => {
     },
   });
 
-  //const [img, setImg] = useState(null);
-
-  // const handleCommentClick = () => {
-  //   alert("comment");
-  // };
   if (!isVisible) return null;
 
   /*------------------------------------------------------------------------
@@ -67,9 +59,13 @@ export const DisplayComments = ({ isVisible, postId, onClose }) => {
     };
     fetch("http://localhost:8080/comment", options).then(async (x) => {
       const retrieved = await x.json();
-      if (retrieved.type != "success")
-        alert(retrieved.StatusCode, retrieved.Msg);
       console.log("response comment", retrieved);
+      if (retrieved.type != "success") {
+        alert(retrieved.status, retrieved.msg);
+        return;
+      }
+      setValue("");
+      increment()
     });
   };
   /*------------------------------------------------------------------------
@@ -118,6 +114,8 @@ export const DisplayComments = ({ isVisible, postId, onClose }) => {
               placeholder="Your comment ..."
               name="content"
               className="bg-transparent border border-gray-700 w-[80%] h-10 px-3 rounded-lg "
+              value={value}
+              onChange={(x) => setValue(x.target.value)}
             />
             <label htmlFor="image_post" className=" cursor-pointer mr-2">
               <svg
@@ -181,7 +179,7 @@ const printComment = (comments) => {
           />
           <h4 className="font-bold text-sm ">{comment.FullName}</h4>
         </div>
-        <p className="">{comment.Content}</p>
+        {comment.Content != "NULL" && <p className="">{comment.Content}</p>}
         {comment.Media != "NULL" && (
           <img
             className=" "
