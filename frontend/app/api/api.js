@@ -20,7 +20,7 @@ console.log(state);
     console.log(email);
   console.log(password);
   try {
-    const response = await fetch(`${NEXT_PUBLIC_API_URL}/auth/login`, {
+    const response = await fetch(`localhost:8080/auth/signin`, {
         method: 'POST',
         credentials: 'include',
         headers: {
