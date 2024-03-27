@@ -106,7 +106,6 @@ func SignInHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodPost:
 		credentials := make(map[string]string, 2)
-		fmt.Println(r)
 		content, err := io.ReadAll(r.Body)
 		if err == nil {
 			w.WriteHeader(http.StatusUnauthorized)

@@ -41,15 +41,16 @@ console.log(state);
   }
 }
 export async function logoutUser() {
-    const response = await fetch(`${NEXT_PUBLIC_API_URL}/auth/logout`, {
-        method: 'GET',
+    const response = await fetch(`localhost:8080/auth/signout`, {
+      method: 'GET',
+      Autorisation: localStorage.getItem('token'),
         credentials: 'include',
     });
     return response.json();
 }
 
 export async function registerUser(data) {
-    const response = await fetch(`${NEXT_PUBLIC_API_URL}/auth/register`, {
+    const response = await fetch(`localhost:8080/auth/signup`, {
         method: 'POST',
         credentials: 'include',
         headers: {
