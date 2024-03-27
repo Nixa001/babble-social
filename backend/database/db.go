@@ -31,7 +31,6 @@ func init() {
 
 func (d *Database) Insert(table string, data any) error {
 	query, err := q.InsertQuery(table, data)
-	fmt.Println(query)
 	if err != nil {
 		return fmt.Errorf("error creating insert query: %v", err)
 	}
@@ -88,7 +87,7 @@ func (d *Database) GetAllFrom(table string, where q.WhereOption, orderby string,
 	} else {
 		query = q.SelectAllWhere(table, where, orderby, limit)
 	}
-
+	fmt.Println("Query:", query)
 	stmt, err := d.Prepare(query)
 	if err != nil {
 		return nil, fmt.Errorf("error preparing select query: %v", err)
