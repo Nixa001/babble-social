@@ -26,5 +26,4 @@ func (s *Server) Run() {
 	routes := routes.Route()
 	http.ListenAndServe(s.Host+":"+strconv.Itoa(s.Port), routes)
 	fmt.Println("Server running on port", s.Port)
-
 }
