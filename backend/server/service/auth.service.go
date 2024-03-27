@@ -3,6 +3,7 @@ package service
 import (
 	"backend/models"
 	r "backend/server/repositories"
+	"backend/utils"
 	"fmt"
 	"net/http"
 	"strings"
@@ -20,7 +21,7 @@ func (a *AuthService) init() {
 	a.SessRepo = *r.SessionRepo
 }
 
-func (a *AuthService) CreateUser(user *models.FormatedUser) error {
+func (a *AuthService) CreateUser(user models.FormatedUser) error {
 	_, err := a.UserRepo.GetUserByEmail(user.Email)
 	if err == nil {
 		return fmt.Errorf("this email is already in use")
@@ -31,14 +32,14 @@ func (a *AuthService) CreateUser(user *models.FormatedUser) error {
 	return err
 }
 
-func (a *AuthService) CheckCredentials(email, password string) (*models.User, error) {
+func (a *AuthService) CheckCredentials(email, password string) (models.User, error) {
 	user, err := a.UserRepo.GetUserByEmail(email)
 	if err != nil {
-		return &models.User{}, fmt.Errorf("invalid credentials")
+		return models.User{}, fmt.Errorf("invalid credentials")
 	}
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 	if err != nil {
-		return &models.User{}, fmt.Errorf("invalid credentials")
+		return models.User{}, fmt.Errorf("invalid credentials")
 	}
 	return user, nil
 }
@@ -55,11 +56,12 @@ func (a *AuthService) RemoveSession(token string) error {
 	return a.SessRepo.DeleteSession(token)
 }
 
-func (a *AuthService) RemExistingSession(userId string) error {
+func (a *AuthService) RemExistingSession(userId int) error {
 	sessions, err := a.SessRepo.GetSessionByUserId(userId)
 	if err != nil {
 		return err
 	}
+
 	for _, session := range sessions {
 		err = a.SessRepo.DeleteSession(session.Token)
 		if err != nil {
@@ -67,4 +69,16 @@ func (a *AuthService) RemExistingSession(userId string) error {
 		}
 	}
 	return nil
+}
+
+func (a *AuthService) CreateSession(user models.User) (models.Session, error) {
+	_ = a.RemExistingSession(user.Id)
+	token := utils.GenerateToken()
+
+	err := a.SessRepo.SaveSession(models.Session{User_id: user.Id, Token: token, Expiration: utils.GenerateExpirationTime()})
+	if err != nil {
+		return models.Session{}, err
+	}
+	return models.Session{User_id: user.Id, Token: token, Expiration: utils.GenerateExpirationTime()}, nil
+
 }
