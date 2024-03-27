@@ -7,10 +7,10 @@ import (
 	"backend/server/ws"
 	"backend/utils"
 	"encoding/json"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
-	"strconv"
 	"strings"
 )
 
@@ -54,24 +54,27 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		formatedUser.User_type = "public"
-		err = service.AuthServ.CreateUser(&formatedUser)
+		err = service.AuthServ.CreateUser(formatedUser)
 		if err != nil {
 			log.Println("Error creating user", err)
 			w.WriteHeader(http.StatusInternalServerError)
 			json.NewEncoder(w).Encode(map[string]string{"error": "Internal server error"})
 			return
 		}
-		user, _ := service.AuthServ.UserRepo.GetUserByEmail(formatedUser.Email)
-		token := utils.GenerateToken()
-
-		err = service.AuthServ.SessRepo.CreateSession(&models.Session{Token: token, User_id: user.Id, Expiration: utils.GenerateExpirationTime()})
+		user, err := service.AuthServ.UserRepo.GetUserByEmail(formatedUser.Email)
+		if err != nil {
+			log.Println(" Handler Error getting user", err)
+			w.WriteHeader(http.StatusInternalServerError)
+			json.NewEncoder(w).Encode(map[string]string{"error": "Internal server error"})
+			return
+		}
+		session, err := service.AuthServ.CreateSession(user)
 		if err != nil {
 			log.Println("Error creating session", err)
 			w.WriteHeader(http.StatusInternalServerError)
 			json.NewEncoder(w).Encode(map[string]string{"error": "Internal server error"})
 			return
 		}
-
 		// var newEvent = ws.WSPaylaod{
 		// 	From: user.Email,
 		// 	Type: ws.WS_JOIN_EVENT,
@@ -84,7 +87,7 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 		// ws.WSHub.HandleEvent(newEvent)
 		w.WriteHeader(http.StatusOK)
 		log.Printf("User %s created successfully", user.Email)
-		json.NewEncoder(w).Encode(map[string]any{"message": "success", "token": token, "user": user})
+		json.NewEncoder(w).Encode(map[string]any{"message": "success", "token": session.Token, "user": user})
 	default:
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		json.NewEncoder(w).Encode(map[string]string{"error": "Method not allowed"})
@@ -93,6 +96,7 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func SignInHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("Sign in handler")
 	cors.SetCors(&w)
 	if r.Method == http.MethodOptions {
 		w.WriteHeader(http.StatusOK)
@@ -102,46 +106,42 @@ func SignInHandler(w http.ResponseWriter, r *http.Request) {
 	switch r.Method {
 	case http.MethodPost:
 		credentials := make(map[string]string, 2)
+		fmt.Println(r)
 		content, err := io.ReadAll(r.Body)
 		if err == nil {
-			w.WriteHeader(http.StatusUnprocessableEntity)
+			w.WriteHeader(http.StatusUnauthorized)
 			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid credentials"})
 			return
 		}
+		fmt.Println(content)
 
 		err = json.Unmarshal(content, &credentials)
 		if err == nil {
-			w.WriteHeader(http.StatusUnprocessableEntity)
-			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid credentials"})
+			w.WriteHeader(http.StatusUnauthorized)
+			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid credentials 0"})
 			return
 		}
 		email, password := credentials["email"], credentials["password"]
 
 		if utils.IsValidEmail(strings.TrimSpace(email)) != nil || utils.IsValidPassword(strings.TrimSpace(password)) != nil {
 			w.WriteHeader(http.StatusBadRequest)
-			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid email"})
+			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid credentials 1"})
 			return
 		}
 		user, err := service.AuthServ.CheckCredentials(email, password)
 		if err != nil {
 			w.WriteHeader(http.StatusUnauthorized)
-			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid credentials"})
+			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid credentials 2"})
 			return
 		}
-		err = service.AuthServ.RemExistingSession(strconv.Itoa(user.Id))
+
+		session, err := service.AuthServ.CreateSession(user)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			json.NewEncoder(w).Encode(map[string]string{"error": "Internal server error"})
 			return
 		}
-		token := utils.GenerateToken()
-		err = service.AuthServ.SessRepo.CreateSession(&models.Session{User_id: user.Id, Token: token, Expiration: utils.GenerateExpirationTime()})
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			json.NewEncoder(w).Encode(map[string]string{"error": "Internal server error"})
-			return
-		}
-		json.NewEncoder(w).Encode(map[string]any{"message": "success", "token": token, "user": user})
+		json.NewEncoder(w).Encode(map[string]any{"message": "success", "token": session.Token, "user": user})
 	default:
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		json.NewEncoder(w).Encode(map[string]string{"error": "Method not allowed"})
