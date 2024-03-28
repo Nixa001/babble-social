@@ -1,13 +1,13 @@
 "use client";
-import React from "react";
+import { registerUser } from "@/app/api/api.js";
 import Image from "next/image";
 import Link from "next/link";
+import { useFormState } from "react-dom";
 
 function Register(e) {
-  const handleRegister = () => {
-   let data = new FormData(e.target);
-  };
-
+  const [errorMessage, formAction] = useFormState(registerUser, undefined);
+  // const { pending } = useFormStatus()
+  // const router = useRouter();
   return (
     <div className="w-screen h-screen flex">
       <div className="flex flex-col items-center w-full sm:w-6/12">
@@ -38,7 +38,7 @@ function Register(e) {
 
           <form
             className="w-full flex flex-col gap-3"
-            method="POST"
+            action={formAction}
             data-form="login"
           >
             <input
@@ -46,6 +46,7 @@ function Register(e) {
               id="firstname"
               name="firstname"
               placeholder="Firstname"
+              required
               className="h-10 rounded pl-2 border border-border_color text-bg"
             />
             <input
@@ -53,50 +54,15 @@ function Register(e) {
               id="lastname"
               name="lastname"
               placeholder="Lastname"
+              required
               className="h-10 rounded pl-2 border border-border_color text-bg"
             />
-
-            <input
-              type="email"
-              id="email"
-              name="email"
-              placeholder="E-mail"
-              className="h-10 rounded pl-2 border border-border_color text-bg"
-            />
-            <input
-              type="text"
-              id="username"
-              name="username"
-              placeholder="Username"
-              className="h-10 rounded pl-2 border border-border_color text-bg"
-            />
-            <input
-              type="password"
-              id="password"
-              name="password"
-              placeholder="Password"
-              className="h-10 w-full rounded pl-2 border border-border_color text-bg"
-            />
-            <input
-              type="password"
-              id="password"
-              name="password"
-              placeholder="Confirm your password"
-              className="h-10 rounded pl-2 border border-border_color text-bg"
-            />
-            <textarea
-              type="text"
-              id="aboutme"
-              name="aboutme"
-              placeholder="About me"
-              className="h-20 pt-6 rounded pl-2 border border-border_color text-bg resize-none"
-            />
-
             <input
               type="date"
               id="dateofbirth"
               name="dateofbirth"
               placeholder="Date of birth"
+              required
               className="h-10 rounded pl-2 border border-border_color text-bg"
             />
             <input
@@ -106,11 +72,48 @@ function Register(e) {
               placeholder="Avatar"
               className="rounded border border-border_color text-bg"
             />
-            {/* <Link href="/home"> */}
-            <button
-              className="hover:bg-second bg-primary cursor-pointer border-none w-full h-10 rounded font-bold text-text text-center"
-              onClick={() => handleRegister(e)}
-            >
+            <input
+              type="text"
+              id="username"
+              name="username"
+              placeholder="Username"
+              className="h-10 rounded pl-2 border border-border_color text-bg"
+            />
+            <input
+              type="email"
+              id="email"
+              name="email"
+              placeholder="E-mail"
+              required
+              className="h-10 rounded pl-2 border border-border_color text-bg"
+            />
+            <input
+              type="password"
+              id="password"
+              name="password"
+              placeholder="Password"
+              required
+              className="h-10 w-full rounded pl-2 border border-border_color text-bg"
+            />
+            <textarea
+              type="text"
+              id="aboutme"
+              name="aboutme"
+              placeholder="About me"
+              className="h-20 pt-6 rounded pl-2 border border-border_color text-bg resize-none"
+            />
+
+            <div>
+              {errorMessage && errorMessage === "ok" ? (
+                <div className="items-center w-full bg-red-100 border border-red-400 rounded-md py-2 px-3 mb-4 text-red-700">
+                  <strong className="font-bold">Wrong Credentials </strong>
+                  <br />
+                  <span className="block sm:inline">{errorMessage.error}</span>
+                </div>
+              ) : // router.push("/home")
+              undefined}
+            </div>
+            <button className="hover:bg-second bg-primary cursor-pointer border-none w-full h-10 rounded font-bold text-text text-center">
               Create account
             </button>
             {/* </Link> */}

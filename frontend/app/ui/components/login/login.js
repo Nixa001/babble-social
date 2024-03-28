@@ -1,11 +1,14 @@
-"use client"
+"use client";
 import { loginUser } from "@/app/api/api.js";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/navigation.js";
 import { useFormState } from "react-dom";
 export default function Login() {
-  const [errorMessage, formAction] = useFormState(loginUser, undefined)
-// const { pending } = useFormStatus()
+  const [errorMessage, formAction] = useFormState(loginUser, undefined);
+  // const { pending } = useFormStatus()
+  const router = useRouter();
+
   return (
     <div className="w-screen h-screen flex">
       <div className="flex flex-col items-center w-full sm:w-6/12">
@@ -59,13 +62,17 @@ export default function Login() {
               required
               className="h-10 rounded pl-2 border border-border_color text-bg"
             />
-            <div>{errorMessage && (
-        <div className="items-center w-full bg-red-100 border border-red-400 rounded-md py-2 px-3 mb-4 text-red-700">
-          <strong className="font-bold">Wrong Credentials </strong>
-          <br />
-          <span className="block sm:inline">{errorMessage.error}</span>
-        </div>
-      )}</div>
+            <div>
+              {errorMessage && errorMessage === "ok" ? (
+                <div className="items-center w-full bg-red-100 border border-red-400 rounded-md py-2 px-3 mb-4 text-red-700">
+                  <strong className="font-bold">Wrong Credentials </strong>
+                  <br />
+                  <span className="block sm:inline">{errorMessage.error}</span>
+                </div>
+              ) : (
+                router.push("/home")
+              )}
+            </div>
             <button
               className="hover:bg-second bg-primary cursor-pointer text-text border-none w-full h-10 rounded font-bold text-center"
               // aria-disabled={pending}
