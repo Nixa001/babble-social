@@ -25,6 +25,7 @@ func init() {
 		os.Exit(1)
 	}
 	seed.CreateTable(db)
+	// seed.InsertData(db)
 	log.Println("Database opened")
 	DB = &Database{db}
 }
@@ -87,7 +88,6 @@ func (d *Database) GetAllFrom(table string, where q.WhereOption, orderby string,
 	} else {
 		query = q.SelectAllWhere(table, where, orderby, limit)
 	}
-	fmt.Println("Query:", query)
 	stmt, err := d.Prepare(query)
 	if err != nil {
 		return nil, fmt.Errorf("error preparing select query: %v", err)
