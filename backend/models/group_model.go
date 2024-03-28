@@ -18,4 +18,5 @@ type Group struct {
 	Avatar         string `json:"image"`
 	Creation_Date  string `json:"creation_date"`
 	Href           string `json:"href"`
+	State           string `json:"state"`
 }

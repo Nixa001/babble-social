@@ -3,6 +3,7 @@ package groups
 import (
 	"backend/models"
 	"backend/server/cors"
+	joingroup "backend/server/handler/groups/joinGroup"
 	"backend/utils/seed"
 	"database/sql"
 	"encoding/json"
@@ -28,7 +29,7 @@ func GetGroups(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	filteredGroups, groups := filterGroups(joinedGroups, allGroups)
+	filteredGroups, groups := filterGroups(db,joinedGroups, allGroups)
 	var Groups [][]models.Group
 	Groups = append(Groups, groups)
 	Groups = append(Groups, filteredGroups)
@@ -89,7 +90,7 @@ func getAllGroups(db *sql.DB) ([]models.Group, error) {
 	return allGroups, nil
 }
 
-func filterGroups(joined []int, all []models.Group) ([]models.Group, []models.Group) {
+func filterGroups(db *sql.DB, joined []int, all []models.Group) ([]models.Group, []models.Group) {
 	var filteredGroups []models.Group
 	var Groups []models.Group
 	for _, group := range all {
@@ -101,6 +102,11 @@ func filterGroups(joined []int, all []models.Group) ([]models.Group, []models.Gr
 			}
 		}
 		if !isJoined && group.ID_User_Create != userID {
+			check, state := joingroup.CheckJoinNotification(group.ID_User_Create, userID, group.ID,db)
+			if check !=0 &&state==0{
+				group.State ="disable"
+			}
+
 			filteredGroups = append(filteredGroups, group)
 		} else {
 			groupId := strconv.Itoa(group.ID)
@@ -112,3 +118,11 @@ func filterGroups(joined []int, all []models.Group) ([]models.Group, []models.Gr
 	}
 	return filteredGroups, Groups
 }
+// func checkNotif(db *sql.DB, groupID, userID int) (bool, error) {
+// 	var exists bool
+// 	err := db.QueryRow("SELECT EXISTS(SELECT id FROM notifications WHERE notification_type = ?)", groupName).Scan(&exists)
+// 	if err != nil {
+// 		return false, err
+// 	}
+// 	return exists, nil
+// }

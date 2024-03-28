@@ -27,6 +27,15 @@ func init() {
 	DB = &Database{db}
 }
 
+func NewDatabase() *sql.DB {
+	db, err := sql.Open("sqlite3", "../backend/database/social_network.db")
+	if err != nil {
+		log.Fatal("Error opening database: ", err)
+	}
+	return db
+}
+
+
 func (d *Database) Insert(table string, data any) error {
 	query, err := q.InsertQuery(table, data)
 	if err != nil {
