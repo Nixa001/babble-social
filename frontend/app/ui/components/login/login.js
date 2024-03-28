@@ -3,12 +3,11 @@ import { loginUser } from "@/app/api/api.js";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation.js";
-import { useFormState } from "react-dom";
+import { useFormState, useFormStatus } from "react-dom";
 export default function Login() {
   const [errorMessage, formAction] = useFormState(loginUser, undefined);
-  // const { pending } = useFormStatus()
+  const { pending } = useFormStatus();
   const router = useRouter();
-
   return (
     <div className="w-screen h-screen flex">
       <div className="flex flex-col items-center w-full sm:w-6/12">
@@ -18,7 +17,7 @@ export default function Login() {
             alt="logo"
             width={40}
             height={40}
-          />{" "}
+          />
           <div>
             Don't have an account ?
             <Link
@@ -63,19 +62,26 @@ export default function Login() {
               className="h-10 rounded pl-2 border border-border_color text-bg"
             />
             <div>
-              {errorMessage && errorMessage === "ok" ? (
-                <div className="items-center w-full bg-red-100 border border-red-400 rounded-md py-2 px-3 mb-4 text-red-700">
-                  <strong className="font-bold">Wrong Credentials </strong>
-                  <br />
-                  <span className="block sm:inline">{errorMessage.error}</span>
-                </div>
-              ) : (
-                router.push("/home")
-              )}
+              {errorMessage
+                ? errorMessage.error === "ok"
+                  ? router.push("/home")
+                  : (console.log(errorMessage.error),
+                    (
+                      <div className="items-center w-full bg-red-100 border border-red-400 rounded-md py-2 px-3 mb-4 text-red-700">
+                        <strong className="font-bold">
+                          Wrong Credentials{" "}
+                        </strong>
+                        <br />
+                        <span className="block sm:inline">
+                          {errorMessage.error}
+                        </span>
+                      </div>
+                    ))
+                : null}
             </div>
             <button
               className="hover:bg-second bg-primary cursor-pointer text-text border-none w-full h-10 rounded font-bold text-center"
-              // aria-disabled={pending}
+              aria-disabled={pending}
             >
               Log In
             </button>

@@ -27,7 +27,6 @@ export async function loginUser(state, formData) {
       return { error: "Invalid email or password." };
     }
     if (response.ok) {
-      console.log("loginUser ok");
       return { error: "ok" };
     }
   } catch (error) {
