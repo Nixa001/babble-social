@@ -35,11 +35,11 @@ func (a *AuthService) CreateUser(user models.FormatedUser) error {
 func (a *AuthService) CheckCredentials(email, password string) (models.User, error) {
 	user, err := a.UserRepo.GetUserByEmail(email)
 	if err != nil {
-		return models.User{}, fmt.Errorf("invalid credentials")
+		return models.User{}, fmt.Errorf("invalid Email")
 	}
 	err = bcrypt.CompareHashAndPassword([]byte(user.Password), []byte(password))
 	if err != nil {
-		return models.User{}, fmt.Errorf("invalid credentials")
+		return models.User{}, fmt.Errorf("invalid Password")
 	}
 	return user, nil
 }

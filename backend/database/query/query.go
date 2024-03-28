@@ -67,7 +67,6 @@ func SelectOneFrom(table string, where WhereOption) string {
 
 	whToString := getWhereOptionsString(where)
 	query := fmt.Sprintf("SELECT * FROM %v WHERE %v;", table, whToString)
-	fmt.Println(query)
 	return query
 }
 
