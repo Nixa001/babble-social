@@ -115,7 +115,7 @@ const GroupCard = ({ isMember, id, image, name, description, href }) => {
                 >
                     <div className="flex flex-col items-center h-[100%]  justify-between py-3">
                         <Image
-                            src={`/assets/${image}`}
+                            src={`${image}`}
                             alt={name}
                             width={200}
                             height={200}

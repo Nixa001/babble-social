@@ -14,8 +14,8 @@ const DisplayPost = ({
   onProfileClick,
 }) => {
   const [postDataState, setPostDataState] = useState(postData),
-   [isVisibleComment, setIsVisibleComment] = useState(false),
-   [commentCounter, setCommentCounter] = useState(postDataState.Comments)
+    [isVisibleComment, setIsVisibleComment] = useState(false),
+    [commentCounter, setCommentCounter] = useState(postDataState.Comments)
 
 
   const handleProfileClick = () => {
@@ -41,7 +41,7 @@ const DisplayPost = ({
                   {postDataState.FullName}
                 </h3>
                 <span className="username_post italic text-primary">
-                  {postDataState.UserName}
+                  @{postDataState.UserName}
                 </span>
                 <div className="flex">
                   <MdPrivacyTip className="text-2xl" />
@@ -53,7 +53,7 @@ const DisplayPost = ({
                 <span>{postDataState.Date}</span>
                 <div className="flex gap-1 italic text-primary">
                   {postDataState.Categories.split(",").map((tag) => (
-                    <span key={tag} className="mr-1">
+                    <span key={postDataState.Id + tag} className="mr-1">
                       #{tag}
                     </span>
                   ))}
@@ -90,12 +90,13 @@ const DisplayPost = ({
           <span>{commentCounter}</span>
         </button>
       </div>
-        <DisplayComments
-          isVisible={isVisibleComment}
-          postId={postDataState.ID}
-          onClose={() => setIsVisibleComment(false)}
-          increment = {()=> setCommentCounter(prevCount => prevCount + 1)}
-        />
+      <DisplayComments
+        isVisible={isVisibleComment}
+        key={postDataState.ID}
+        postId={postDataState.ID + postDataState.Content}
+        onClose={() => setIsVisibleComment(false)}
+        increment={() => setCommentCounter(prevCount => prevCount + 1)}
+      />
     </div>
   );
 };

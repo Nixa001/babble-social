@@ -49,7 +49,6 @@ const Group = () => {
             setMembers(newData.members)
             setFollowers(newData.followers)
             // console.log(groupInfo.creator.first_name);
-
             // setGroupJoined(newData.groupJoined);
             // setGroupData(newData.groupData);
         },
@@ -65,7 +64,7 @@ const Group = () => {
             <div className="w-full h-60 mb-3" >
                 {groupInfo.image ? (
                     <Image
-                        src={`/assets/${groupInfo.image}`}
+                        src={`${groupInfo.image}`}
                         alt='cover'
                         width={1000} height={1000}
                         className='w-full max-h-[250px] object-cover scale-100 hover:scale-105  rounded-sm  transition duration-300 ease-in shadow-lg'
@@ -175,12 +174,11 @@ const Group = () => {
                 <div className='w-[75%] '>
                     {groupPosts ? (
                         groupPosts.map((post) => {
-                            return <DisplayPost key={post.id} postData={post} onLikeClick={onLikeClick} onDislikeClick={onDislikeClick}
+                            return <DisplayPost key={post.ID} postData={post} onLikeClick={onLikeClick} onDislikeClick={onDislikeClick}
                                 onCommentClick={onCommentClick} onProfileClick={onProfileClick}
                             />
                         })
                     ) : ("")
-
                     }
                 </div>
             </div>

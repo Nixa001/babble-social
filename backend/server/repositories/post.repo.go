@@ -66,7 +66,7 @@ WHERE
 	GROUP BY p.id, p.content, p.media, p.date, p.user_id
 	ORDER BY p.timestamp DESC;
 `
-GetPostGroupQuery = `
+	GetPostGroupQuery = `
 SELECT 
     p.id AS post_id,
     p.content AS post_content,
@@ -133,7 +133,7 @@ func (p *PostRepository) CreatePost(post models.Post) (bool, models.Errormessage
 	//checking Title's validity
 	log.Println("ins content => ", post.ToIns.Content, " length => ", len([]rune(post.ToIns.Content)))
 	log.Println("ins media => ", post.ToIns.Media, " length => ", len([]rune(post.ToIns.Media)))
-	
+
 	if strings.TrimSpace(post.ToIns.Content) == "" && strings.TrimSpace(post.ToIns.Media) == "NULL" {
 		log.Printf("⚠ ERROR ⚠ : Couldn't create post from user %s due to empty content and media ❌\n", "1")
 		return true,

@@ -1,8 +1,58 @@
 import React from 'react'
 import { Checkbox, TextArea } from '../../home/postForm';
 
+import { useState } from "react";
+import { toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
 export const CreatePost = ({ isVisible, onClose }) => {
     if (!isVisible) return null;
+
+
+    const [textarea, setTextarea] = useState(""),
+        [tech, setTech] = useState(false),
+        [sport, setSport] = useState(false),
+        [health, setHealth] = useState(false),
+        [music, setMusic] = useState(false),
+        [news, setNews] = useState(false),
+        [other, setOther] = useState(true),
+        [privacy, setPrivacy] = useState();
+    const handlePost = (e) => {
+        e.preventDefault();
+        const data = new FormData(e.target);
+        console.log("my data => ", data);
+        const options = {
+            method: "POST",
+            body: data,
+        };
+        fetch("http://localhost:8080/group/postgroup", options).then(async (x) => {
+            const retrieved = await x.json();
+            console.log("response", retrieved);
+            if (retrieved.type != "success") {
+                toast.error(retrieved.msg, {
+                    position: "bottom-left",
+                    autoClose: 4000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                    // transition: "bounce",
+                });
+                return;
+            }
+            //!emptying inputs after submit
+            setTextarea("");
+            setSport(false);
+            setTech(false);
+            setSport(false);
+            setHealth(false);
+            setMusic(false);
+            setNews(false);
+            setOther(true);
+        });
+    };
     return (
         <div className='fixed inset-0 bg-bg bg-opacity-10 backdrop-blur-sm 
         flex justify-center items-center'
@@ -26,18 +76,18 @@ export const CreatePost = ({ isVisible, onClose }) => {
                     <form
                         className="flex flex-col lg:w-[100%] 2xl-[80%] xl:w-[75%] w-[80%]  gap-1 
                          "
-                        action=""
-                        method="POST"
+                        onSubmit={handlePost}
+                        method=""
                         data-form="post"
                         encType="multipart/form-data"
                     >
                         <TextArea
-                            label="Post Title"
-                            name="title_post"
                             placeholder="Let's post something"
                             required
-                            defaultValue=""
-                            onChange={(event) => console.log(event.target.value)} // Handle changes
+                            label="Post Title"
+                            name="content"
+                            value={textarea}
+                            onChange={(e) => setTextarea(e.target.value)} // Handle changes
                         />
                         <div className="flex items-center justify-end">
                             <div className="flex gap-1 flex-wrap mr-2 mt-1 text-sm">
