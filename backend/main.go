@@ -14,7 +14,7 @@ func main() {
 	// if err != nil {
 	// 	fmt.Println(err)
 	// }
-	// fmt.Println("message entre deux user: ")
+	// fmt.Println("message entre deux user: ", message)
 	// for _, msg := range message {
 	// 	fmt.Println(msg.ID, "===", msg.MessageContent, "===", msg.Date)
 	// }
@@ -42,6 +42,11 @@ func main() {
 	// if err != nil {
 	// 	fmt.Println(err)
 	// }
+	// nsg, err := seed.GetGroupMessage(seed.DB, 1)
+	// if err != nil {
+	// 	fmt.Println(err)
+	// }
+	// fmt.Println(nsg)
 	fmt.Println("http://localhost:8080")
 	server := server.NewServer()
 	server.Run()

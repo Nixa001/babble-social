@@ -4,18 +4,32 @@ import Image from "next/image";
 import Button from "../components/button/button";
 import { useContext } from "react";
 import { WebSocketContext } from "@/app/_lib/websocket";
+import { useRouter } from "next/navigation";
+import { postData } from "@/app/lib/utils";
 
 export default function Login() {
-  // const socket = useContext(WebSocketContext)
+  const router = useRouter();
   const {sendMessageToServer} = useContext(WebSocketContext)
-  const handleLogin = () => {
-    const message = {type:"join", data: "login"}
-    sendMessageToServer(message)
-    alert("Login"); 
-    
-    // readMessage(message)
+  // const router = useRouter();
+  const handleLogin = (e) => {
+    e.preventDefault();
+    // Assurez-vous de passer l'élément <form> au constructeur FormData
+    let data = new FormData(e.target.form);
+    let obj = {};
+    data.forEach((value, key) => {
+       obj[key] = value;
+    });
+    postData("http://localhost:8080/login", obj)
+     .then((res) => {
+       console.log(res);
+       router.push('/home')
+     })
+     .catch((err) => {
+        console.log(err);
+      });
+    console.log(obj); // Affiche l'objet contenant les données du formulaire
   };
-
+  
   return (
     <div className="w-screen h-screen flex">
       <div className="flex flex-col items-center w-full sm:w-6/12">

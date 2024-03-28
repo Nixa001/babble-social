@@ -40,18 +40,29 @@ const Messages = () => {
 
     //Traitement lors de l'envoie de messages
     const handleSendMessage = async (e) => {
-        e.preventDefault()
+        e.preventDefault();
         let data = new FormData(e.target);
-        let obj = {}
+        let obj = {};
         data.forEach((value, key) => {
-            obj[key] = value
-        })
-        console.log(obj.message)
+            obj[key] = value;
+        });
+        console.log(obj.message);
         if (obj.message.trim() !== "") {
-            sendMessageToServer({ type: 'message-user-event', data: obj.message })
+            // Détermine le type de message en fonction de activeTab
+            const messageType = activeTab === "group" ? "message-group-event" : "message-user-event";
+
+            // Prépare les données du message
+            const messageData = {
+                type: messageType,
+                data: obj.message
+            };
+
+            // Envoie le message au serveur
+            sendMessageToServer(messageData);
             e.target.reset();
         }
     };
+
 
     const displayTable = () => {
         if (activeTab === "users") {
@@ -62,6 +73,7 @@ const Messages = () => {
         }
         return null;
     };
+
 
     return (
         <div className="md:w-[400px] lg:w-[650px] xl:w-[800px] 2xl:w-[1200px] w-screen 
@@ -108,7 +120,7 @@ const Messages = () => {
                         </div>
                     </div>
                     <div className="h-full overflow-y-auto">
-                    {displayMessages(allMessages.length > 0 ? allMessages[0] : messages)}
+                        {displayMessages(allMessages.length > 0 ? allMessages[0] : messages)}
                     </div>
                 </div>
 

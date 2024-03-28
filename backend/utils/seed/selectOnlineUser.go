@@ -13,6 +13,7 @@ import (
 	"backend/models"
 	"database/sql"
 	"fmt"
+	"log"
 	"sort"
 	"strings"
 )
@@ -152,7 +153,7 @@ func ListeUsers(db *sql.DB, userID int) ([][]models.User, error) {
 func findLastMessage(messages []models.Chat, userID int) models.Chat {
 	var lastMessage models.Chat
 	for _, message := range messages {
-		if message.UserSender == userID || message.UserReceiver == userID {
+		if message.UserSender == userID || *message.UserReceiver == userID {
 			if strings.Compare(lastMessage.Date, message.Date) < 0 {
 				lastMessage = message
 			}
@@ -173,4 +174,41 @@ func InsertMessage(db *sql.DB, userSender, userReceiver int, messageContent, dat
 	}
 
 	return nil
+}
+
+// getGroupMessage récupère les messages pour un groupe spécifique
+func GetGroupMessage(db *sql.DB, groupIDReceiver int) ([]models.Chat, error) {
+	// Préparation de la requête SQL
+	query := `SELECT * FROM messages WHERE group_id_receiver = ?`
+	rows, err := db.Query(query, groupIDReceiver)
+	if err != nil {
+		log.Printf("Erreur lors de la récupération des messages du groupe: %v", err)
+		return nil, err
+	}
+	defer rows.Close()
+
+	// Préparation du slice pour stocker les messages
+	var messages []models.Chat
+
+	// Parcours des résultats et remplissage du slice
+	for rows.Next() {
+		var message models.Chat
+		var userReceiver, groupIDReceiver *int
+		err := rows.Scan(&message.ID, &message.UserSender, &userReceiver, &message.MessageContent, &groupIDReceiver, &message.Date)
+		if err != nil {
+			log.Printf("Erreur lors de la lecture des messages du groupe: %v", err)
+			return nil, err
+		}
+		message.UserReceiver = userReceiver
+		message.GroupIDReceiver = groupIDReceiver
+		messages = append(messages, message)
+	}
+
+	// Vérification d'une éventuelle erreur lors de la récupération des résultats
+	if err = rows.Err(); err != nil {
+		log.Printf("Erreur lors de la récupération des messages du groupe: %v", err)
+		return nil, err
+	}
+
+	return messages, nil
 }

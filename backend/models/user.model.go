@@ -13,3 +13,8 @@ type User struct {
 	Avatar    string `json:"avatar"`
 	AboutMe   string `json:"about_me"`
 }
+
+type Credentials struct {
+	Email    string `json:"email"`
+	Password string `json:"password"`
+}

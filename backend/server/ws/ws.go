@@ -118,9 +118,9 @@ func (h *Hub) HandleEvent(eventPayload WSPaylaod) {
 	case WS_MESSAGEGROUP_EVENT:
 		h.Clients.Range(func(key, value interface{}) bool {
 			client := value.(*WSClient)
-			if client.Firstname == eventPayload.From {
-				client.OutgoingMsg <- eventPayload
-			}
+			// if client.Firstname == eventPayload.From {
+			client.OutgoingMsg <- eventPayload
+			// }
 			return true
 		})
 	}
@@ -173,7 +173,7 @@ func (client *WSClient) messageReader() {
 			WSHub.HandleEvent(wsEvent)
 
 		case WS_IDGROUP_RECEIVER_EVENT:
-			data := "DM GROUP RECEIVER EVENT"
+			data, _ := seed.GetGroupMessage(seed.DB, 1)
 			wsEvent := WSPaylaod{
 				From: "",
 				Type: eventType,
@@ -183,10 +183,10 @@ func (client *WSClient) messageReader() {
 
 		case WS_MESSAGEUSER_EVENT:
 
-			err := seed.InsertMessage(seed.DB, 1, 2, payload["data"].(string), "2000-01-01")
-			if err != nil {
-				fmt.Println(err)
-			}
+			// err := seed.InsertMessage(seed.DB, 1, 2, payload["data"].(string), "2000-01-01")
+			// if err != nil {
+			// 	fmt.Println(err)
+			// }
 			data := "communication between User"
 			msEvent := WSPaylaod{
 				From: "",
