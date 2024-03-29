@@ -71,7 +71,7 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		user, err := service.AuthServ.UserRepo.GetUserByEmail(formatedUser.Email)
 		if err != nil {
-			log.Println(" Handler Error getting user", err)
+			log.Println("Handler Error getting user", err)
 			w.WriteHeader(http.StatusInternalServerError)
 			json.NewEncoder(w).Encode(map[string]string{"error": "Internal server error"})
 			return
@@ -121,7 +121,6 @@ func SignInHandler(w http.ResponseWriter, r *http.Request) {
 			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid credentials"})
 			return
 		}
-		fmt.Println(content)
 
 		err = json.Unmarshal(content, &credentials)
 		if err != nil {
@@ -147,6 +146,7 @@ func SignInHandler(w http.ResponseWriter, r *http.Request) {
 
 		session, err := service.AuthServ.CreateSession(user)
 		if err != nil {
+			fmt.Println("Error creating session", err)
 			w.WriteHeader(http.StatusInternalServerError)
 			json.NewEncoder(w).Encode(map[string]string{"error": "Internal server error"})
 			return
@@ -174,7 +174,6 @@ func SignOutHandler(w http.ResponseWriter, r *http.Request) {
 			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid request"})
 			return
 		}
-		//recupere le user à partir du token
 		user, err := service.AuthServ.UserRepo.GetUserByToken(token)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
@@ -207,6 +206,7 @@ func SignOutHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func VerifySessionHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("Verify session handler")
 	cors.SetCors(&w)
 	if r.Method == http.MethodOptions {
 		w.WriteHeader(http.StatusOK)
@@ -218,13 +218,8 @@ func VerifySessionHandler(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(map[string]string{"error": "Invalid token"})
 		return
 	}
-	user, err := service.AuthServ.UserRepo.GetUserByToken(session.Token)
-	if err != nil {
-		w.WriteHeader(http.StatusInternalServerError)
-		json.NewEncoder(w).Encode(map[string]string{"error": "Internal server error"})
-		return
-	}
+
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(map[string]any{"message": "success", "user": user})
+	json.NewEncoder(w).Encode(map[string]any{"message": "success", "token": session.Token})
 
 }
