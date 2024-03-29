@@ -1,58 +1,59 @@
-"use server";
-
-import { redirect } from "next/navigation.js";
-
+"use client";
+import { useEffect, useState } from "react";
 const NEXT_PUBLIC_API_URL = `http://localhost:8080`;
 
 export async function getSession() {
-  const response = await fetch(`${NEXT_PUBLIC_API_URL}/auth/session`, {
+  return fetch(`${NEXT_PUBLIC_API_URL}/auth/session`, {
     method: "GET",
     credentials: "include",
-  });
-  return response.json();
-}
-export async function loginUser(state, formData) {
-  let email = formData.get("email");
-  let password = formData.get("password");
-  try {
-    const response = await fetch(`${NEXT_PUBLIC_API_URL}/auth/signin`, {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ email, password }),
+  })
+    .then((response) => response.json())
+    .catch((error) => {
+      console.error(error);
+      throw new Error("An error occurred while fetching session data.");
     });
-    if (response.status === 401) {
-      return { error: "Invalid email or password." };
-    }
-    if (response.ok) {
-      return { error: "ok" };
-    }
-  } catch (error) {
-    console.error(error);
-    return { error: "An error occurred. Please try again." };
-  }
+}
+
+export async function loginUser(email, password) {
+  return fetch(`${NEXT_PUBLIC_API_URL}/auth/signin`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({ email, password }),
+  })
+    .then((response) => {
+      if (response.status === 401) {
+        return { error: "Invalid email or password." };
+      }
+      if (response.ok) {
+        return response.json().then((json) => {
+          console.log(json);
+          return { error: null, data: json };
+        });
+      }
+      throw new Error("An error occurred.");
+    })
+    .catch((error) => {
+      console.error(error);
+      return { error: "An error occurred. Please try again." };
+    });
 }
 export async function logoutUser() {
   let token = localStorage.getItem("token") || "none";
-  try {
-    const response = await fetch(`${NEXT_PUBLIC_API_URL}/auth/signout`, {
-      method: "DELETE",
-      headers: {
-        Autorisation: JSON.stringify({ token }),
-        accept: "application/json",
-      },
-      credentials: "include",
+
+  return fetch(`${NEXT_PUBLIC_API_URL}/auth/signout`, {
+    method: "DELETE",
+    headers: {
+      Authorization: JSON.stringify({ token }),
+      accept: "application/json",
+    },
+  })
+    .then((response) => response.json())
+    .catch((error) => {
+      console.error(error);
+      return { error: "Not authorized!!!" };
     });
-    if (response.ok) {
-      redirect("/home");
-    }
-    return response.json();
-  } catch (error) {
-    console.error(error);
-    return { error: "Not authorize !!!" };
-  }
 }
 
 export async function registerUser(state, formData) {
@@ -66,43 +67,75 @@ export async function registerUser(state, formData) {
     password: formData.get("password"),
     about_me: formData.get("aboutme"),
   };
-  console.log(data);
-  try {
-    const response = await fetch(`${NEXT_PUBLIC_API_URL}/auth/signup`, {
-      method: "POST",
-      credentials: "include",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify(data),
+
+  return fetch(`${NEXT_PUBLIC_API_URL}/auth/signup`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  })
+    .then((response) => {
+      if (response.status === 401) {
+        return { error: "Invalid credentials." };
+      }
+      if (response.ok) {
+        return response.json().then((json) => ({ error: null, data: json }));
+      }
+      throw new Error("An error occurred.");
+    })
+    .catch((error) => {
+      console.error(error);
+      return { error: "An error occurred. Please try again." };
     });
-    if (response.status === 401) {
-      return { error: "Invalid credentials." };
-    }
-    if (response.ok) {
-      console.log("registerUser ok");
-      return { error: "ok", response: response.json() };
-    }
-  } catch (error) {
-    console.log(error);
-    return { error: "An error occurred. Please try again." };
-  }
 }
 
 export async function getProfile() {
-  const response = await fetch(`${NEXT_PUBLIC_API_URL}/auth/profile`, {
-    method: "GET",
-    credentials: "include",
-  });
-  return response.json();
-}
-
-export async function getUserByToken(token) {
-  const response = await fetch(`${NEXT_PUBLIC_API_URL}/auth/user`, {
+  return fetch(`${NEXT_PUBLIC_API_URL}/auth/profile`, {
     method: "GET",
     headers: {
-      Authorisation: localStorage.getItem("token"),
+      Authorization: localStorage.getItem("token"),
     },
-  });
-  return response.json();
+  })
+    .then((response) => response.json())
+    .catch((error) => {
+      console.error(error);
+      throw new Error("An error occurred while fetching profile data.");
+    });
+}
+
+export function useSession() {
+  const [session, setSession] = useState(null);
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token") || null;
+
+    async function fetchSessionData() {
+      try {
+        const response = await fetch(`${NEXT_PUBLIC_API_URL}/auth/session`, {
+          method: "GET",
+          headers: {
+            Authorization: token,
+          },
+        });
+
+        if (!response.ok) {
+          throw new Error(
+            `Failed to fetch session data. Status: ${response.status}`
+          );
+        }
+
+        const sessionData = await response.json();
+        setSession(sessionData);
+      } catch (error) {
+        console.error(error);
+        setError(error);
+      }
+    }
+
+    fetchSessionData();
+  }, []);
+
+  return { session, error };
 }
