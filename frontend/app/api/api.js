@@ -91,7 +91,7 @@ export async function registerUser(state, formData) {
 }
 
 export async function getProfile() {
-  return fetch(`${NEXT_PUBLIC_API_URL}/auth/profile`, {
+  return fetch(`${NEXT_PUBLIC_API_URL}/profile`, {
     method: "GET",
     headers: {
       Authorization: localStorage.getItem("token"),

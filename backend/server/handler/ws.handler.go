@@ -3,7 +3,7 @@ package handler
 import (
 	"backend/server/service"
 	"backend/server/ws"
-	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/gorilla/websocket"
@@ -23,11 +23,11 @@ func WSHandler(w http.ResponseWriter, r *http.Request) {
 	coon, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
 		//TODO handle error here
-		fmt.Println("Error to ws")
+		log.Println("Error to ws")
 	}
 	user, err := service.AuthServ.UserRepo.GetUserById(session.User_id)
 	if err != nil {
-		fmt.Println("internal Server")
+		log.Println("internal Server")
 	}
 	ws.WSHub.AddClient(coon, user.Email)
 }

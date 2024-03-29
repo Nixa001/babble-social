@@ -128,11 +128,3 @@ func GenerateToken() string {
 	return token.String()
 
 }
-
-func CompareTime(stringTime string) bool {
-	t, err := time.Parse(time.RFC3339, stringTime)
-	if err != nil {
-		fmt.Println(err)
-	}
-	return t.Before(time.Now())
-}

@@ -1,5 +1,5 @@
 "use client";
-import { loginUser } from "@/app/api/api.js";
+import { loginUser, logoutUser } from "@/app/api/api.js";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -70,8 +70,6 @@ export default function Login() {
               <img src="/assets/login/githubb.svg" alt="github" />
             </div>
           </div>
-          <p className="error_login_msg" />
-
           <form
             onSubmit={handleLogin}
             className="form_login flex flex-col gap-3"

@@ -7,7 +7,6 @@ import (
 	"backend/server/ws"
 	"backend/utils"
 	"encoding/json"
-	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -15,7 +14,7 @@ import (
 )
 
 func SignUpHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Sign up handler")
+	log.Println("Sign up handler")
 	cors.SetCors(&w)
 	if r.Method == http.MethodOptions {
 		w.WriteHeader(http.StatusOK)
@@ -31,32 +30,30 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid request"})
 			return
 		}
-		fmt.Println("content:", content)
 		var formatedUser models.FormatedUser
 		err = json.Unmarshal(content, &formatedUser)
-		fmt.Println("FormatedUser:", formatedUser)
 		if err != nil {
-			fmt.Println("Invalid request", err)
+			log.Println("Invalid request", err)
 			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid request"})
 			return
 		} else if err := utils.IsValidEmail(strings.TrimSpace(formatedUser.Email)); err != nil {
-			fmt.Println("Invalid email", err)
+			log.Println("Invalid email", err)
 			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid email"})
 			return
 		} else if err := utils.VerifyName(strings.TrimSpace(formatedUser.First_name)); err != nil {
-			fmt.Println("Invalid first name", err)
+			log.Println("Invalid first name", err)
 			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid first name"})
 			return
 		} else if err := utils.VerifyName(strings.TrimSpace(formatedUser.Last_name)); err != nil {
-			fmt.Println("Invalid last name", err)
+			log.Println("Invalid last name", err)
 			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid last name"})
 			return
 		} else if err := utils.VerifyUsername(formatedUser.User_name); err != nil {
-			fmt.Println("Invalid username", err)
+			log.Println("Invalid username", err)
 			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid username"})
 			return
@@ -104,7 +101,7 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func SignInHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Sign in handler")
+	log.Println("Sign in handler")
 	cors.SetCors(&w)
 	if r.Method == http.MethodOptions {
 		w.WriteHeader(http.StatusOK)
@@ -116,7 +113,7 @@ func SignInHandler(w http.ResponseWriter, r *http.Request) {
 		credentials := make(map[string]string, 2)
 		content, err := io.ReadAll(r.Body)
 		if err != nil {
-			fmt.Println("Invalid credentials 0", err)
+			log.Println("Invalid credentials 0 :", err)
 			w.WriteHeader(http.StatusUnauthorized)
 			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid credentials"})
 			return
@@ -131,14 +128,14 @@ func SignInHandler(w http.ResponseWriter, r *http.Request) {
 		email, password := credentials["email"], credentials["password"]
 
 		if utils.IsValidEmail(strings.TrimSpace(email)) != nil || utils.IsValidPassword(strings.TrimSpace(password)) != nil {
-			fmt.Println("Invalid credentials 1", err)
+			log.Println("Invalid credentials 1", err)
 			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid credentials 1"})
 			return
 		}
 		user, err := service.AuthServ.CheckCredentials(email, password)
 		if err != nil {
-			fmt.Println("Invalid credentials 2", err)
+			log.Println("Invalid credentials 2", err)
 			w.WriteHeader(http.StatusUnauthorized)
 			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid credentials 2"})
 			return
@@ -146,7 +143,7 @@ func SignInHandler(w http.ResponseWriter, r *http.Request) {
 
 		session, err := service.AuthServ.CreateSession(user)
 		if err != nil {
-			fmt.Println("Error creating session", err)
+			log.Println("Error creating session", err)
 			w.WriteHeader(http.StatusInternalServerError)
 			json.NewEncoder(w).Encode(map[string]string{"error": "Internal server error"})
 			return
@@ -206,7 +203,7 @@ func SignOutHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func VerifySessionHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Verify session handler")
+	log.Println("Verify session handler")
 	cors.SetCors(&w)
 	if r.Method == http.MethodOptions {
 		w.WriteHeader(http.StatusOK)

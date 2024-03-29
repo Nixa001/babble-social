@@ -7,6 +7,7 @@ import (
 	"backend/models"
 	"database/sql"
 	"fmt"
+	"log"
 )
 
 type UserRepository struct {
@@ -61,7 +62,7 @@ func (u *UserRepository) GetUserByEmail(email string) (models.User, error) {
 	var user models.User
 	row, err := u.DB.GetOneFrom(u.TableName, q.WhereOption{"email": opt.Equals(email)})
 	if err != nil {
-		fmt.Println("Error getting user by email:", err)
+		log.Println("Error getting user by email:", err)
 		return models.User{}, fmt.Errorf("error getting user by email: %v", err)
 	}
 
