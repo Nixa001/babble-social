@@ -5,8 +5,11 @@ import (
 	r "backend/server/repositories"
 	"backend/utils"
 	"fmt"
+	"log"
 	"net/http"
+	"net/url"
 	"strings"
+	"time"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -45,9 +48,24 @@ func (a *AuthService) CheckCredentials(email, password string) (models.User, err
 }
 
 func (a *AuthService) VerifyToken(r *http.Request) (session models.Session, err error) {
+	fmt.Println("VerifyToken")
 	token := r.Header.Get("Authorization")
-	if strings.TrimSpace(token) == "" {
-		return models.Session{}, fmt.Errorf("no token provided")
+	if token == "" {
+		token, _ = url.QueryUnescape(r.URL.Query().Get("token"))
+		token = strings.ReplaceAll(token, " ", "+")
+	}
+
+	if token == "" {
+		return models.Session{}, fmt.Errorf("missing token")
+	}
+	session, err = a.SessRepo.GetSession(token)
+	if err != nil {
+		fmt.Println("Error getting session", err)
+		return models.Session{}, err
+	}
+	if session.Expiration.Before(time.Now()) {
+		fmt.Println("token expired")
+		return models.Session{}, fmt.Errorf("token expired")
 	}
 	return session, nil
 }
@@ -72,13 +90,17 @@ func (a *AuthService) RemExistingSession(userId int) error {
 }
 
 func (a *AuthService) CreateSession(user models.User) (models.Session, error) {
-	_ = a.RemExistingSession(user.Id)
+	err := a.RemExistingSession(user.Id)
+	if err != nil {
+		log.Println("Error removing existing session", err)
+		return models.Session{}, err
+	}
 	token := utils.GenerateToken()
-
-	err := a.SessRepo.SaveSession(models.Session{User_id: user.Id, Token: token, Expiration: utils.GenerateExpirationTime()})
+	expiration := time.Now().Add(3 * time.Hour)
+	err = a.SessRepo.SaveSession(models.Session{User_id: user.Id, Token: token, Expiration: expiration})
 	if err != nil {
 		return models.Session{}, err
 	}
-	return models.Session{User_id: user.Id, Token: token, Expiration: utils.GenerateExpirationTime()}, nil
+	return models.Session{User_id: user.Id, Token: token, Expiration: expiration}, nil
 
 }
