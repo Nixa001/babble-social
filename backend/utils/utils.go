@@ -129,6 +129,10 @@ func GenerateToken() string {
 
 }
 
-func GenerateExpirationTime() string {
-	return time.Now().Add((time.Hour * 24)).String()
+func CompareTime(stringTime string) bool {
+	t, err := time.Parse(time.RFC3339, stringTime)
+	if err != nil {
+		fmt.Println(err)
+	}
+	return t.Before(time.Now())
 }
