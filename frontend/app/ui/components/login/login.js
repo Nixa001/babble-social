@@ -44,7 +44,7 @@ export default function Login() {
   return (
     <div className="w-screen h-screen flex">
       <div className="flex flex-col items-center w-full sm:w-6/12">
-        <div className="header_login flex items-center justify-around w-full">
+        <div className="flex items-center justify-around w-full">
           <Image
             src="/assets/icons/comment.png"
             alt="logo"
@@ -75,11 +75,9 @@ export default function Login() {
           <form
             onSubmit={handleLogin}
             className="form_login flex flex-col gap-3"
-            data-form="login"
           >
             <input
               type="email"
-              id="email"
               name="email"
               placeholder="Email"
               required
@@ -90,7 +88,6 @@ export default function Login() {
 
             <input
               type="password"
-              id="password"
               name="password"
               placeholder="Password"
               required
