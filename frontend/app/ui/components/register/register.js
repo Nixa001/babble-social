@@ -2,18 +2,35 @@
 import { registerUser } from "@/app/api/api.js";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/navigation.js";
-import { useFormState, useFormStatus } from "react-dom";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 
-function Register(e) {
-  const [errorMessage, formAction] = useFormState(registerUser, undefined);
-  const { pending } = useFormStatus();
+function Register() {
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [pending, setPending] = useState(false);
   const router = useRouter();
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setPending(true);
+    try {
+      const response = await registerUser(e.target);
+      if (response.error === "ok") {
+        router.push("/home");
+      } else {
+        setErrorMessage(response.error);
+      }
+    } catch (error) {
+      setErrorMessage("An error occurred");
+    }
+
+    setPending(false);
+  };
 
   return (
     <div className="w-screen h-screen flex">
       <div className="flex flex-col items-center w-full sm:w-6/12">
-        <div className="header_login flex items-center  justify-around w-full">
+        <div className="header_login flex items-center justify-around w-full">
           <Image
             src="/assets/icons/comment.png"
             alt="logo"
@@ -21,7 +38,7 @@ function Register(e) {
             height={40}
           />
           <div>
-            You have already an account?{" "}
+            You already have an account?{" "}
             <Link
               href="/login"
               className="text-primary hover:text-second cursor-pointer"
@@ -40,7 +57,7 @@ function Register(e) {
 
           <form
             className="w-full flex flex-col gap-3"
-            action={formAction}
+            onSubmit={handleSubmit}
             data-form="login"
           >
             <input
@@ -106,34 +123,24 @@ function Register(e) {
             />
 
             <div>
-              {errorMessage
-                ? errorMessage.error === "ok"
-                  ? router.push("/home")
-                  : (console.log(errorMessage.error),
-                    (
-                      <div className="items-center w-full bg-red-100 border border-red-400 rounded-md py-2 px-3 mb-4 text-red-700">
-                        <strong className="font-bold">
-                          Wrong Credentials{" "}
-                        </strong>
-                        <br />
-                        <span className="block sm:inline">
-                          {errorMessage.error}
-                        </span>
-                      </div>
-                    ))
-                : null}
+              {errorMessage && (
+                <div className="items-center w-full bg-red-100 border border-red-400 rounded-md py-2 px-3 mb-4 text-red-700">
+                  <strong className="font-bold">Wrong Credentials </strong>
+                  <br />
+                  <span className="block sm:inline">{errorMessage}</span>
+                </div>
+              )}
             </div>
             <button
               className="hover:bg-second bg-primary cursor-pointer border-none w-full h-10 rounded font-bold text-text text-center"
-              aria-disabled={pending}
+              disabled={pending}
             >
               Create account
             </button>
-            {/* </Link> */}
           </form>
         </div>
       </div>
-      <div className="bg-[url('/assets/login/bg.jpg')] bg-cover bg-center w-6/12 h-screen hidden sm:block"></div>{" "}
+      <div className="bg-[url('/assets/login/bg.jpg')] bg-cover bg-center w-6/12 h-screen hidden sm:block"></div>
     </div>
   );
 }
