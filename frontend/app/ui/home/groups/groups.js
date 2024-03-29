@@ -79,8 +79,8 @@ const Groups = () => {
         <div className="w-full flex gap-3 flex-wrap pb-10">
           {groupData
             ? groupData.map((group) => (
-                <GroupCard key={group.id} isMember={false} {...group} />
-              ))
+              <GroupCard key={group.id} isMember={false} {...group} />
+            ))
             : ""}
         </div>
         <CreateGroup
@@ -97,7 +97,7 @@ const Groups = () => {
 
 export default Groups;
 
-const GroupCard = ({ isMember, id, image, name, description, href,state }) => {
+const GroupCard = ({ isMember, id, image, name, description, href, state }) => {
   if (description.length > 50) {
     description = description.slice(0, 50) + " ...";
   }
@@ -166,21 +166,21 @@ const GroupCard = ({ isMember, id, image, name, description, href,state }) => {
               {name}
             </h5>
             <span className="max-h-14 overflow-hidden text-sm text-gray-300 text-center">
-              {description ?  description  : ""}
+              {description ? description : ""}
             </span>
 
             <div className="flex mt-4 md:mt-6">
-                {state!=='disable'?(
+              {state !== 'disable' ? (
 
-                    <button
-                    onClick={() => {
-                        JoinGroup(id, sendMessage, readMessages);
-                    }}
-                    className="inline-flex items-center px-4 py-2 text-m font-semibold text-center text-white bg-primary rounded-lg hover:bg-second"
-                    >
-                Join
-              </button>
-                  ):('')}
+                <button
+                  onClick={() => {
+                    JoinGroup(id, sendMessage, readMessages);
+                  }}
+                  className="inline-flex items-center px-4 py-2 text-m font-semibold text-center text-white bg-primary rounded-lg hover:bg-second"
+                >
+                  Join
+                </button>
+              ) : ('')}
             </div>
           </div>
         </div>

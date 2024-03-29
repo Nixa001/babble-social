@@ -27,7 +27,7 @@ const DisplayPost = ({
       <div className="post_div_top flex flex-col gap-1 w-fit justify-center ">
         <div className="header_pos w-fit">
           <div className="info_post flex items-start gap-2">
-            <img
+            <Image
               src={`/assets/${postDataState.Avatar}` || "/assets/profilibg.jpg"}
               alt="Profile picture"
               onClick={handleProfileClick}
@@ -66,7 +66,7 @@ const DisplayPost = ({
           </div>
         </div>
         {postDataState.Media != "NULL" && (
-          <img
+          <Image
             src={postDataState.Media}
             alt="Post image"
             className="img_post max-w-full hover:shadow-xl overflow-hidden cursor-pointer transition duration-300 ease-linear scale-95 hover:scale-100"

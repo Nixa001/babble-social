@@ -5,18 +5,18 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-export const CreatePost = ({ isVisible, onClose }) => {
+export const CreatePost = ({ isVisible, onClose, id }) => {
+    const [textarea, setTextarea] = useState("");
+    const [tech, setTech] = useState(false);
+    const [sport, setSport] = useState(false);
+    const [health, setHealth] = useState(false);
+    const [music, setMusic] = useState(false);
+    const [news, setNews] = useState(false);
+    const [other, setOther] = useState(true);
+    const [privacy, setPrivacy] = useState();
     if (!isVisible) return null;
 
 
-    const [textarea, setTextarea] = useState(""),
-        [tech, setTech] = useState(false),
-        [sport, setSport] = useState(false),
-        [health, setHealth] = useState(false),
-        [music, setMusic] = useState(false),
-        [news, setNews] = useState(false),
-        [other, setOther] = useState(true),
-        [privacy, setPrivacy] = useState();
     const handlePost = (e) => {
         e.preventDefault();
         const data = new FormData(e.target);
@@ -25,9 +25,11 @@ export const CreatePost = ({ isVisible, onClose }) => {
             method: "POST",
             body: data,
         };
-        fetch("http://localhost:8080/group/postgroup", options).then(async (x) => {
+        fetch(`http://localhost:8080/group/postgroup?id=${id}`, options).then(async (x) => {
             const retrieved = await x.json();
             console.log("response", retrieved);
+            onClose()
+
             if (retrieved.type != "success") {
                 toast.error(retrieved.msg, {
                     position: "bottom-left",
@@ -90,24 +92,66 @@ export const CreatePost = ({ isVisible, onClose }) => {
                             onChange={(e) => setTextarea(e.target.value)} // Handle changes
                         />
                         <div className="flex items-center justify-end">
-                            <div className="flex gap-1 flex-wrap mr-2 mt-1 text-sm">
-                                <Checkbox label="Tech" value="technologie" name="techno" />
-                                <Checkbox label="Sport" value="sport" name="sport" />
-                                <Checkbox label="Santé" value="sante" name="sante" />
-                                <Checkbox label="Musique" value="musique" name="music" />
-                                <Checkbox label="News" value="news" name="news" />
-                                <Checkbox label="Other" value="other" name="other" defaultChecked />
+                            <div className="flex gap-1 flex-wrap mr-2 mt-1 text-sm"> <Checkbox
+                                label="Tech"
+                                value="Tech"
+                                name="Tech"
+                                checked={tech}
+                                onChange={() => (tech ? setTech(false) : setTech(true))}
+                            />
+                                <Checkbox
+                                    label="Sport"
+                                    value="Sport"
+                                    name="Sport"
+                                    checked={sport}
+                                    onChange={() => (sport ? setSport(false) : setSport(true))}
+                                />
+                                <Checkbox
+                                    label="Health"
+                                    value="Health"
+                                    name="Health"
+                                    checked={health}
+                                    onChange={() => (health ? setHealth(false) : setHealth(true))}
+                                />
+                                <Checkbox
+                                    label="Music"
+                                    value="Music"
+                                    name="Music"
+                                    checked={music}
+                                    onChange={() => (music ? setMusic(false) : setMusic(true))}
+                                />
+                                <Checkbox
+                                    label="News"
+                                    value="News"
+                                    name="News"
+                                    checked={news}
+                                    onChange={() => (news ? setNews(false) : setNews(true))}
+                                />
+                                <Checkbox
+                                    label="Other"
+                                    value="Other"
+                                    name="Others"
+                                    checked={other}
+                                    onChange={() => (other ? setOther(false) : setOther(true))}
+                                />
 
                             </div>
 
+
                             <label htmlFor="image_post" className=" cursor-pointer mr-2">
-                                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-8 h-8">
-                                    <path fillRule="evenodd" d="M1.5 6a2.25 2.25 0 0 1 2.25-2.25h16.5A2.25 2.25 0 0 1 22.5 6v12a2.25 2.25 0 0 1-2.25 2.25H3.75A2.25 2.25 0 0 1 1.5 18V6ZM3 16.06V18c0 .414.336.75.75.75h16.5A.75.75 0 0 0 21 18v-1.94l-2.69-2.689a1.5 1.5 0 0 0-2.12 0l-.88.879.97.97a.75.75 0 1 1-1.06 1.06l-5.16-5.159a1.5 1.5 0 0 0-2.12 0L3 16.061Zm10.125-7.81a1.125 1.125 0 1 1 2.25 0 1.125 1.125 0 0 1-2.25 0Z" clipRule="evenodd" />
+                                <svg
+                                    xmlns="http://www.w3.org/2000/svg"
+                                    viewBox="0 0 24 24"
+                                    fill="currentColor"
+                                    className="w-8 h-8">
+                                    <path
+                                        fillRule="evenodd"
+                                        d="M1.5 6a2.25 2.25 0 0 1 2.25-2.25h16.5A2.25 2.25 0 0 1 22.5 6v12a2.25 2.25 0 0 1-2.25 2.25H3.75A2.25 2.25 0 0 1 1.5 18V6ZM3 16.06V18c0 .414.336.75.75.75h16.5A.75.75 0 0 0 21 18v-1.94l-2.69-2.689a1.5 1.5 0 0 0-2.12 0l-.88.879.97.97a.75.75 0 1 1-1.06 1.06l-5.16-5.159a1.5 1.5 0 0 0-2.12 0L3 16.061Zm10.125-7.81a1.125 1.125 0 1 1 2.25 0 1.125 1.125 0 0 1-2.25 0Z"
+                                        clipRule="evenodd"
+                                    />
                                 </svg>
-
                             </label>
-                            <input type="file" name="image_post" id="image_post" hidden />
-
+                            <input type="file" name="image" id="image_post" />
                             <button type="submit" className="bg-second h-full text-lg font-bold pl-3 pr-3 rounded-lg cursor-pointer flex items-center hover:bg-primary">
                                 Post
                                 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">

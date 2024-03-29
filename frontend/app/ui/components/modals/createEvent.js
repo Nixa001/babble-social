@@ -1,11 +1,45 @@
-import React from 'react'
+import React, { useState } from 'react'
 
 export const CreateEvent = ({ isVisible, onClose }) => {
+
+    const [textarea, setTextarea] = useState("");
+    const [date, setDate] = useState("");
+
+    const handlePost = (e) => {
+        e.preventDefault();
+        const data = new FormData(e.target);
+        console.log("my data => ", data);
+        const options = {
+            method: "POST",
+            body: data,
+        };
+        fetch(`http://localhost:8080/group/createEvent?id=${id}`, options).then(async (x) => {
+            const retrieved = await x.json();
+            console.log("response", retrieved);
+            onClose()
+
+            if (retrieved.type != "success") {
+                toast.error(retrieved.msg, {
+                    position: "bottom-left",
+                    autoClose: 4000,
+                    hideProgressBar: false,
+                    closeOnClick: true,
+                    pauseOnHover: true,
+                    draggable: true,
+                    progress: undefined,
+                    theme: "dark",
+                    // transition: "bounce",
+                });
+                return;
+            }
+        });
+    };
+
     if (!isVisible) return null;
     return (
         <div className='fixed inset-0 bg-bg bg-opacity-10 backdrop-blur-sm 
         flex justify-center items-center'
-        
+
         // onClick={() => onClose()}
         >
             <div className='w-[700px] pb-5 rounded-lg shadow-2xl bg-bg bg-clip-padding backdrop-filter
@@ -22,18 +56,25 @@ export const CreateEvent = ({ isVisible, onClose }) => {
                     <h1 className='text-2xl text-center font-bold underline underline-offset-8 mb-5'>
                         Create an Event
                     </h1>
-                    <form className='flex flex-col gap-4 px-5'>
-                        
+                    <form className='flex flex-col gap-4 px-5'
+                        onSubmit={handlePost}
+                        data-form="post"
+                        encType="multipart/form-data"
+                        >
+
                         <textarea placeholder='Event description ...' className='bg-transparent h-[100px] border rounded-md border-gray-700 resize-none
                         focus:outline-none  p-1 focus:ring-1 focus:ring-primary
-                        '>
+                        '
+                        name='content'
+                        onChange={(e) => setTextarea(e.target.value)}
+                        >
                         </textarea>
                         <label htmlFor='date' className='text-gray-300'>
-                           Choose a date
+                            Choose a date
                         </label>
                         <input type='date' name='date' className='border border-gray-700 bg-transparent focus:outline-none p-1 focus:ring-1 focus:ring-primary' />
                         {/* <input type='file' className='bg-transparent' /> */}
-                        <input type='submit' className='bg-primary rounded-md border border-gray-700 h-[50px] cursor-pointer hover:bg-second text-lg font-bold '  value={"Create Event"} />
+                        <input type='submit' className='bg-primary rounded-md border border-gray-700 h-[50px] cursor-pointer hover:bg-second text-lg font-bold ' value={"Create Event"} />
 
                     </form>
 

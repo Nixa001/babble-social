@@ -1,3 +1,5 @@
+
+'use client'
 import React, { useState } from "react";
 // import Notification from './Notification';
 const notif = (type, message) => {

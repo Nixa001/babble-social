@@ -183,7 +183,7 @@ const Group = () => {
                 </div>
             </div>
             <CreateEvent isVisible={formCreateEv} onClose={() => setFormCreateEv(false)} />
-            <CreatePost isVisible={formCreateP} onClose={() => setFormCreateP(false)} />
+            <CreatePost isVisible={formCreateP} onClose={() => setFormCreateP(false)} id={id}/>
             <Suggest followers={followers} isVisible={suggestFriend} onClose={() => setSuggestFriend(false)} />
             <DisplayMembers members={members} isVisible={isVisibleMembers} onClose={() => setIsVisibleMembers(false)} />
 
@@ -260,3 +260,4 @@ const events = [
     { id: 2, description: 'Description event 2', src: "/assets/profilibg.jpg", alt: "profil", },
     { id: 3, description: 'Description event 3', src: "/assets/profilibg.jpg", alt: "profil", },
 ];
+

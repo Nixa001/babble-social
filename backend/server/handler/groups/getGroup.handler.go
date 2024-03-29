@@ -10,7 +10,6 @@ import (
 	"fmt"
 	"log"
 	"net/http"
-	"net/url"
 	"strconv"
 )
 
@@ -44,27 +43,7 @@ func GetGroup(w http.ResponseWriter, r *http.Request) {
 	var db = seed.CreateDB()
 	defer db.Close()
 
-	parsedURL, err := url.Parse(r.URL.String())
-	if err != nil {
-		fmt.Fprintf(w, "Error parsing URL: %v", err)
-		http.Error(w, "Bad Request", http.StatusBadRequest)
-		return
-	}
-
-	values := parsedURL.Query()
-	id := values.Get("id")
-	groupId, err := strconv.Atoi(id)
-	if err != nil {
-		fmt.Println("Invalid Id")
-		return
-	}
-
-	if id == "" {
-		fmt.Fprintf(w, "No 'id' parameter found in the URL")
-		http.Error(w, "Missing ID", http.StatusBadRequest)
-		return
-	}
-	// fmt.Println(groupId)
+	groupId, err := GetGroupIDFromRequest(w, r)
 
 	allPosts, err := service.PostServ.GetPost(groupId)
 	if err != nil {
@@ -104,6 +83,24 @@ func GetGroup(w http.ResponseWriter, r *http.Request) {
 	w.Write(jsonData)
 
 }
+
+func GetGroupIDFromRequest(w http.ResponseWriter, r *http.Request) (int, error) {
+	id := r.URL.Query().Get("id")
+	if id == "" {
+		fmt.Fprintf(w, "No id in URL")
+		http.Error(w, "no ID", http.StatusBadRequest)
+		return 0, fmt.Errorf("no group ID")
+	}
+
+	groupID, err := strconv.Atoi(id)
+	if err != nil {
+		fmt.Println("Invalid Id")
+		return 0, fmt.Errorf("invalid group ID")
+	}
+
+	return groupID, nil
+}
+
 func GetUserData(db *sql.DB, userID int) (models.User, error) {
 	var user models.User
 

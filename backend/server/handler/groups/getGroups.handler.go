@@ -29,7 +29,7 @@ func GetGroups(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	filteredGroups, groups := filterGroups(db,joinedGroups, allGroups)
+	filteredGroups, groups := filterGroups(db, joinedGroups, allGroups)
 	var Groups [][]models.Group
 	Groups = append(Groups, groups)
 	Groups = append(Groups, filteredGroups)
@@ -102,9 +102,10 @@ func filterGroups(db *sql.DB, joined []int, all []models.Group) ([]models.Group,
 			}
 		}
 		if !isJoined && group.ID_User_Create != userID {
-			check, state := joingroup.CheckJoinNotification(group.ID_User_Create, userID, group.ID,db)
-			if check !=0 &&state==0{
-				group.State ="disable"
+
+			check, state := joingroup.CheckJoinNotification(group.ID_User_Create, userID, group.ID, db)
+			if check != 0 && state == 0 {
+				group.State = "disable"
 			}
 
 			filteredGroups = append(filteredGroups, group)
@@ -118,11 +119,11 @@ func filterGroups(db *sql.DB, joined []int, all []models.Group) ([]models.Group,
 	}
 	return filteredGroups, Groups
 }
-// func checkNotif(db *sql.DB, groupID, userID int) (bool, error) {
-// 	var exists bool
-// 	err := db.QueryRow("SELECT EXISTS(SELECT id FROM notifications WHERE notification_type = ?)", groupName).Scan(&exists)
-// 	if err != nil {
-// 		return false, err
-// 	}
-// 	return exists, nil
-// }
+func CheckNotif(db *sql.DB, groupID, userID int) (bool, error) {
+	var exists bool
+	err := db.QueryRow("SELECT EXISTS(SELECT id FROM notifications WHERE user_id_sender = $1 AND id_group = $2)", userID, groupID).Scan(&exists)
+	if err != nil {
+		return false, err
+	}
+	return exists, nil
+}

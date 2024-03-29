@@ -57,8 +57,26 @@ func insertGroupCreated(db *sql.DB, group models.Group) {
 		return
 	}
 	defer stmt.Close()
+	if group.Avatar == "NULL" {
+		group.Avatar = "http://localhost:8080/uploads/35a23cb2-d742-48fa-8d77-8a6e19bf571fsnk.jpg"
+	}
 
 	_, err = stmt.Exec(group.Name, group.Description, group.ID_User_Create, group.Avatar, group.Creation_Date)
+	if err != nil {
+		fmt.Println("Erreur lors de l'insertion des données:", err)
+		return
+	}
+
+	err = db.QueryRow("SELECT id FROM groups WHERE name = ?", group.Name).Scan(&group.ID)
+
+	stmt, err = db.Prepare("INSERT INTO group_followers(user_id, group_id) VALUES(?, ?)")
+	if err != nil {
+		fmt.Println("Erreur lors de la préparation de la requête d'insertion:", err)
+		return
+	}
+	defer stmt.Close()
+
+	_, err = stmt.Exec(group.ID_User_Create, group.ID)
 	if err != nil {
 		fmt.Println("Erreur lors de l'insertion des données:", err)
 		return

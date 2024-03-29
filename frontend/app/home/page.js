@@ -1,9 +1,9 @@
 "use client";
 import React from "react";
-import HomePage from "../ui/home/page";
 import {QueryClientProvider } from "react-query";
 import { queryClient } from "./groups/page";
 import { ToastContainer } from "react-toastify";
+import HomePage from "../ui/home/page";
 
 const Page = () => {
   return (

@@ -4,7 +4,7 @@ import { useState } from "react";
 import {  toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-export const postForm = () => {
+export const PostForm = () => {
   const [textarea, setTextarea] = useState(""),
     [tech, setTech] = useState(false),
     [sport, setSport] = useState(false),

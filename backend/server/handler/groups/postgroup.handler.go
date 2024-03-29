@@ -11,58 +11,41 @@ import (
 )
 
 func PostGroupHandler(w http.ResponseWriter, r *http.Request) {
-	// --------retrieving form values ----------
-	idPost := "1"
 	cors.SetCors(&w)
 
 	switch r.Method {
 	case "POST":
-		log.Println("--------------------------------------------")
-		log.Println("          Post Form values                 ")
-		log.Println("--------------------------------------------")
-		PostContent := r.FormValue("content")
-		log.Println("[INFO] post content: ", PostContent) //debug
-
-		Sport := r.FormValue("Sport")
-		Health := r.FormValue("Health")
-		Music := r.FormValue("Music")
-		News := r.FormValue("News")
-		Others := r.FormValue("Others")
-		Techno := r.FormValue("Tech")
-		categorie := []string{Health, Sport, News, Techno, Others, Music}
-		var sortCat []string
-		for _, v := range categorie {
-			if v != "" {
-				sortCat = append(sortCat, v)
-			}
+		content := r.FormValue("content")
+		groupID, err := GetGroupIDFromRequest(w, r)
+		if err != nil {
+			return
 		}
-		categorie = sortCat
-		log.Println("[INFO] categories: ", categorie) //debug
+		
+		categories := getCategoriesFromForm(r)
+		privacy := r.FormValue("privacy")
+		viewers := fmt.Sprintf("%s, %s", "1", r.FormValue("viewers"))
+		imageLink, err := utils.Uploader(w, r, 20, "image", "")
+		if err != nil {
+			fmt.Println("Upload img")
+			return
+		}
 
-		Privacy := r.FormValue("privacy")
-		log.Println("[INFO] privacy: ", Privacy) //debug
-
-		Viewers := fmt.Sprintf("%s, %s", idPost, r.FormValue("viewers"))
-		log.Println("[INFO] viewers: ", Viewers) //debug
-
-		Image, _ := utils.Uploader(w, r, 20, "image", "")
-		log.Println("[INFO] imagelink: ", Image) //debug
-		PostToCreate := models.Post{
+		post := models.Post{
 			ToIns: models.InsPost{
-				Content:  PostContent,
-				Media:    utils.FormatImgLink(Image),
+				Content:  content,
+				Media:    utils.FormatImgLink(imageLink),
 				User_id:  1,
-				Group_id: 0,
-				Privacy:  Privacy,
+				Group_id: groupID,
+				Privacy:  privacy,
 			},
-			Categories: categorie,
-			Viewers:    Viewers,
+			Categories: categories,
+			Viewers:    viewers,
 		}
-		log.Println(PostToCreate)
-		notOk, err := service.PostServ.CreatePost(PostToCreate)
+
+		notOk, err1 := service.PostServ.CreatePost(post)
 		if notOk {
 			log.Println("problem after create service ", err)
-			utils.Alert(w, err)
+			utils.Alert(w, err1)
 			return
 		} else {
 			msg := models.Errormessage{
@@ -74,4 +57,15 @@ func PostGroupHandler(w http.ResponseWriter, r *http.Request) {
 			utils.Alert(w, msg)
 		}
 	}
+}
+
+func getCategoriesFromForm(r *http.Request) []string {
+	categories := []string{"Health", "Sport", "News", "Techno", "Others", "Music"}
+	var selectedCategories []string
+	for _, cat := range categories {
+		if r.FormValue(cat) != "" {
+			selectedCategories = append(selectedCategories, cat)
+		}
+	}
+	return selectedCategories
 }
