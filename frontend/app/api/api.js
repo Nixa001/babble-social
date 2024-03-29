@@ -35,10 +35,14 @@ export async function loginUser(state, formData) {
   }
 }
 export async function logoutUser() {
+  let token = localStorage.getItem("token") || "none";
   try {
     const response = await fetch(`${NEXT_PUBLIC_API_URL}/auth/signout`, {
-      method: "GET",
-      Autorisation: localStorage.getItem("token"),
+      method: "DELETE",
+      headers: {
+        Autorisation: JSON.stringify({ token }),
+        accept: "application/json",
+      },
       credentials: "include",
     });
     if (response.ok) {
@@ -77,7 +81,7 @@ export async function registerUser(state, formData) {
     }
     if (response.ok) {
       console.log("registerUser ok");
-      return { error: "ok" };
+      return { error: "ok", response: response.json() };
     }
   } catch (error) {
     console.log(error);

@@ -2,12 +2,14 @@
 import { registerUser } from "@/app/api/api.js";
 import Image from "next/image";
 import Link from "next/link";
-import { useFormState } from "react-dom";
+import { useRouter } from "next/navigation.js";
+import { useFormState, useFormStatus } from "react-dom";
 
 function Register(e) {
   const [errorMessage, formAction] = useFormState(registerUser, undefined);
-  // const { pending } = useFormStatus()
-  // const router = useRouter();
+  const { pending } = useFormStatus();
+  const router = useRouter();
+
   return (
     <div className="w-screen h-screen flex">
       <div className="flex flex-col items-center w-full sm:w-6/12">
@@ -104,16 +106,27 @@ function Register(e) {
             />
 
             <div>
-              {errorMessage && errorMessage === "ok" ? (
-                <div className="items-center w-full bg-red-100 border border-red-400 rounded-md py-2 px-3 mb-4 text-red-700">
-                  <strong className="font-bold">Wrong Credentials </strong>
-                  <br />
-                  <span className="block sm:inline">{errorMessage.error}</span>
-                </div>
-              ) : // router.push("/home")
-              undefined}
+              {errorMessage
+                ? errorMessage.error === "ok"
+                  ? router.push("/home")
+                  : (console.log(errorMessage.error),
+                    (
+                      <div className="items-center w-full bg-red-100 border border-red-400 rounded-md py-2 px-3 mb-4 text-red-700">
+                        <strong className="font-bold">
+                          Wrong Credentials{" "}
+                        </strong>
+                        <br />
+                        <span className="block sm:inline">
+                          {errorMessage.error}
+                        </span>
+                      </div>
+                    ))
+                : null}
             </div>
-            <button className="hover:bg-second bg-primary cursor-pointer border-none w-full h-10 rounded font-bold text-text text-center">
+            <button
+              className="hover:bg-second bg-primary cursor-pointer border-none w-full h-10 rounded font-bold text-text text-center"
+              aria-disabled={pending}
+            >
               Create account
             </button>
             {/* </Link> */}
