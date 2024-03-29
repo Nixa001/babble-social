@@ -25,7 +25,7 @@ func init() {
 		os.Exit(1)
 	}
 	seed.CreateTable(db)
-	seed.InsertData(db)
+	// seed.InsertData(db)
 	log.Println("Database opened")
 	DB = &Database{db}
 }
