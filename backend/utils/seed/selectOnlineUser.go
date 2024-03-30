@@ -74,13 +74,13 @@ func SelectFollowersAndFollowing(db *sql.DB, userID int) ([]models.User, error) 
 	userMap := make(map[int]models.User)
 	for rows.Next() {
 		var user models.User
-		err := rows.Scan(&user.ID, &user.Firstname, &user.Lastname, &user.Username, &user.Gender, &user.Email, &user.Password, &user.UserType, &user.BirthDate, &user.Avatar, &user.AboutMe)
+		err := rows.Scan(&user.Id, &user.First_name, &user.Last_name, &user.User_name, &user.Gender, &user.Email, &user.Password, &user.User_type, &user.Birth_date, &user.Avatar, &user.About_me)
 		if err != nil {
 			return nil, err
 		}
 		// Add the user to the map if it's not already present.
-		if _, exists := userMap[user.ID]; !exists {
-			userMap[user.ID] = user
+		if _, exists := userMap[user.Id]; !exists {
+			userMap[user.Id] = user
 		}
 	}
 
@@ -109,13 +109,13 @@ func ListeUsers(db *sql.DB, userID int) ([][]models.User, error) {
 
 	// Trier les utilisateurs par ordre alphabétique des noms de famille.
 	sort.Slice(followersAndFollowing, func(i, j int) bool {
-		return followersAndFollowing[i].Firstname < followersAndFollowing[j].Lastname
+		return followersAndFollowing[i].First_name < followersAndFollowing[j].Last_name
 	})
 
 	// Récupérer les messages entre l'utilisateur actuel et chaque utilisateur suivi/suivi.
 	var messages []models.Chat
 	for _, user := range followersAndFollowing {
-		userMessages, err := SelectMsgBetweenUsers(db, userID, user.ID)
+		userMessages, err := SelectMsgBetweenUsers(db, userID, user.Id)
 		if err != nil {
 			return nil, err
 		}
@@ -126,8 +126,8 @@ func ListeUsers(db *sql.DB, userID int) ([][]models.User, error) {
 	if len(messages) > 0 {
 		sort.Slice(followersAndFollowing, func(i, j int) bool {
 			// Trouver le dernier message de chaque utilisateur.
-			lastMessageI := findLastMessage(messages, followersAndFollowing[i].ID)
-			lastMessageJ := findLastMessage(messages, followersAndFollowing[j].ID)
+			lastMessageI := findLastMessage(messages, followersAndFollowing[i].Id)
+			lastMessageJ := findLastMessage(messages, followersAndFollowing[j].Id)
 
 			// Trier par date du dernier message.
 			return strings.Compare(lastMessageI.Date, lastMessageJ.Date) > 0
