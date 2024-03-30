@@ -11,7 +11,6 @@ import (
 	"log"
 	"net/http"
 	"strconv"
-	"strings"
 	"time"
 )
 
@@ -367,11 +366,11 @@ func formatDateTimeFr(dateStr string) string {
 		panic(err)
 	}
 
-	weekday := strings.ToUpper(t.Weekday().String()[:3])
+	weekday := t.Weekday().String()[:3]
 	day := t.Day()
-	month := strings.ToUpper(t.Month().String()[:3])
+	month := (t.Month().String()[:3])
 	year := t.Year()
 	hour := t.Hour()
 
-	return fmt.Sprintf("%s %d %s %d à %dH", weekday, day, month, year, hour)
+	return fmt.Sprintf("%s %d %s %d at %dH", weekday, day, month, year, hour)
 }

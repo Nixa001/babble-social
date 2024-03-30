@@ -176,7 +176,7 @@ const Group = () => {
             </div>
             <div className='w-full flex justify-between'>
                 <div className='w-[20%]'>
-                    <h1 className=' text-xl flex items-center gap-2 font-extrabold w-fit border border-gray-700 shadow-lg px-2 rounded-md '>
+                    <h1 className=' text-xl flex items-center gap-2 font-extrabold w-fit underline shadow-lg px-2 rounded-md '>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
                         </svg>
@@ -184,7 +184,7 @@ const Group = () => {
                     </h1>
 
                     {eventsJoined ? (displayEvents(eventsJoined)) : ('')}
-                    <h1 className=' text-xl flex items-center gap-2 font-extrabold w-fit border border-gray-700 shadow-lg px-2 rounded-md mt-4 '>
+                    <h1 className=' text-xl flex items-center gap-2 font-extrabold w-fit underline shadow-lg px-2 rounded-md mt-4 '>
                         <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth={1.5} stroke="currentColor" className="w-6 h-6">
                             <path strokeLinecap="round" strokeLinejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
                         </svg>
@@ -214,19 +214,6 @@ const Group = () => {
 
 export default Group
 
-const postData1 = {
-    profilePicture: "/assets/profilibg.jpg",
-    userName: "Maurice Dassylva",
-    userHandle: "@Maurice",
-    timePosted: "2h",
-    hashtags: ["Tech", "Sport"],
-    title: "Ceci est mon titre",
-    postImage: "/assets/ea.jpg",
-    likesCount: 19,
-    dislikesCount: 20,
-    commentsCount: 3,
-}
-
 const onCommentClick = () => {
     alert('Comment disp')
 
@@ -240,15 +227,17 @@ const onProfileClick = () => {
 export const displayEvents = (events) => {
     return events.map((event) => {
         return (
-            <div key={event.id} className=" hover:text-primary flex items-center cursor-pointer justify-start gap-2 p-2 ">
+            <div key={event.id} className=" shadow-2xl   flex flex-col items-start border border-gray-700 rounded cursor-pointer justify-start gap-2 p-1 mt-1 hover:bg-gray-600 ">
                 {/* <FaUserGroup className='border rounded-full p-2 w-10 h-10' /> */}
+                <div className='flex text-wrap break-words' >
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
+                        <path d="M12.75 12.75a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM7.5 15.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5ZM8.25 17.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM9.75 15.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5ZM10.5 17.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12 15.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5ZM12.75 17.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM14.25 15.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5ZM15 17.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM16.5 15.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5ZM15 12.75a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM16.5 13.5a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z" />
+                        <path fillRule="evenodd" d="M6.75 2.25A.75.75 0 0 1 7.5 3v1.5h9V3A.75.75 0 0 1 18 3v1.5h.75a3 3 0 0 1 3 3v11.25a3 3 0 0 1-3 3H5.25a3 3 0 0 1-3-3V7.5a3 3 0 0 1 3-3H6V3a.75.75 0 0 1 .75-.75Zm13.5 9a1.5 1.5 0 0 0-1.5-1.5H5.25a1.5 1.5 0 0 0-1.5 1.5v7.5a1.5 1.5 0 0 0 1.5 1.5h13.5a1.5 1.5 0 0 0 1.5-1.5v-7.5Z" clipRule="evenodd" />
+                    </svg>
+                    <p className="font-semibold ">{event.description}</p>
+                </div>
+                <p className="font-semibold "> {event.date}</p>
 
-                <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
-                    <path d="M12.75 12.75a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM7.5 15.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5ZM8.25 17.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM9.75 15.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5ZM10.5 17.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12 15.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5ZM12.75 17.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM14.25 15.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5ZM15 17.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM16.5 15.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5ZM15 12.75a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM16.5 13.5a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z" />
-                    <path fillRule="evenodd" d="M6.75 2.25A.75.75 0 0 1 7.5 3v1.5h9V3A.75.75 0 0 1 18 3v1.5h.75a3 3 0 0 1 3 3v11.25a3 3 0 0 1-3 3H5.25a3 3 0 0 1-3-3V7.5a3 3 0 0 1 3-3H6V3a.75.75 0 0 1 .75-.75Zm13.5 9a1.5 1.5 0 0 0-1.5-1.5H5.25a1.5 1.5 0 0 0-1.5 1.5v7.5a1.5 1.5 0 0 0 1.5 1.5h13.5a1.5 1.5 0 0 0 1.5-1.5v-7.5Z" clipRule="evenodd" />
-                </svg>
-
-                <p className="font-semibold ">{event.description}</p>
             </div>
         );
     })
@@ -256,7 +245,7 @@ export const displayEvents = (events) => {
 export const displayEventToJoin = (events) => {
     return events.map((event) => {
         return (
-            <div key={event.id} className="  flex flex-col items-start justify-start gap-2 p-2 ">
+            <div key={event.id} className="  flex flex-col items-start border border-gray-700 rounded  justify-start gap-2 p-1 mt-1 ">
                 {/* <FaUserGroup className='border rounded-full p-2 w-10 h-10' /> */}
                 <div className='flex' >
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
@@ -269,11 +258,19 @@ export const displayEventToJoin = (events) => {
                 <div className='flex gap-1'>
 
                     {/* <button>Going</button> */}
-                    <button className="bg-primary hover:bg-gray-100 text-sm text-gray-900  py-1 px-2 rounded">
-                        Going
+                    <button className="bg-primary hover:bg-gray-600 text-sm text-white py-1 px-2 rounded"
+                        onClick={() => going(event.id)}
+                    >
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
+                            <path fillRule="evenodd" d="M19.916 4.626a.75.75 0 0 1 .208 1.04l-9 13.5a.75.75 0 0 1-1.154.114l-6-6a.75.75 0 0 1 1.06-1.06l5.353 5.353 8.493-12.74a.75.75 0 0 1 1.04-.207Z" clipRule="evenodd" />
+                        </svg>
                     </button>
-                    <button className="bg-red-400 hover:bg-gray-100 text-sm  text-gray-900 py-1 px-2 rounded">
-                        Not Going
+                    <button
+                        onClick={() => notGoing(event.id)}
+                        className="bg-red-400 hover:bg-gray-600 text-sm  text-white py-1 px-2 rounded">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
+                            <path fillRule="evenodd" d="M5.47 5.47a.75.75 0 0 1 1.06 0L12 10.94l5.47-5.47a.75.75 0 1 1 1.06 1.06L13.06 12l5.47 5.47a.75.75 0 1 1-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 0 1-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 0 1 0-1.06Z" clipRule="evenodd" />
+                        </svg>
                     </button>
                 </div>
             </div>
@@ -287,3 +284,38 @@ const events = [
     { id: 3, description: 'Description event 3', src: "/assets/profilibg.jpg", alt: "profil", },
 ];
 
+function notGoing(id) {
+    alert(id)
+}
+function going(id) {
+    alert(id)
+    // const data = new FormData();
+    // data.request = "going"
+    // console.log("my data => ", data);
+    // const options = {
+    //     method: "POST",
+    //     body: data,
+    // };
+    // fetch(`http://localhost:8080/group/eventrequest?id=${id}`, options).then(async (x) => {
+    //     const retrieved = await x.json();
+    //     console.log("response", retrieved);
+    //     onClose()
+
+    //     if (retrieved.type != "success") {
+    //         toast.error(retrieved.msg, {
+    //             position: "bottom-left",
+    //             autoClose: 4000,
+    //             hideProgressBar: false,
+    //             closeOnClick: true,
+    //             pauseOnHover: true,
+    //             draggable: true,
+    //             progress: undefined,
+    //             theme: "dark",
+    //             // transition: "bounce",
+    //         });
+    //         return;
+    //     }
+    //     //!emptying inputs after submit
+    //     setTextarea("");
+    // });
+};

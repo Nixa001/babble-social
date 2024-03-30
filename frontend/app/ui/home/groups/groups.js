@@ -30,7 +30,6 @@ const Groups = () => {
     onSuccess: (newData) => {
       setGroupJoined(newData.groupJoined);
       setGroupData(newData.groupData);
-      console.log();
     },
     onError: (error) => {
       console.error("Query error:", error);

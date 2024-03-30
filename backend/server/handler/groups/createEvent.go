@@ -11,6 +11,8 @@ import (
 	"time"
 )
 
+// func (w http.ResponseWriter, r *http.Request) {}
+
 func CreateEventHandler(w http.ResponseWriter, r *http.Request) {
 	userID := 1
 	cors.SetCors(&w)
@@ -21,7 +23,7 @@ func CreateEventHandler(w http.ResponseWriter, r *http.Request) {
 		dates := r.FormValue("date")
 		heure := r.FormValue("heure")
 
-		if description=="" || dates =="" ||heure==""{
+		if description == "" || dates == "" || heure == "" {
 			fmt.Println("all fill required")
 			return
 		}
