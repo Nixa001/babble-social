@@ -13,12 +13,12 @@ func CreateTable(db *sql.DB) {
 		    id INTEGER UNIQUE PRIMARY KEY AUTOINCREMENT NOT NULL,
 			first_name TEXT NOT NULL,
 			last_name TEXT NOT NULL,
-			user_name TEXT NOT NULL,
-			gender TEXT NOT NULL,
+			user_name TEXT,
+			gender TEXT,
 			email TEXT NOT NULL UNIQUE,
 			password TEXT NOT NULL,
 			user_type VARCHAR(25) NOT NULL,
-			birth_date VARCHAR(12),
+			birth_date VARCHAR(12) NOT NULL,
 			avatar VARCHAR(256),
 			about_me TEXT
 			)
@@ -159,7 +159,7 @@ func CreateTable(db *sql.DB) {
 	_, err = db.Exec(`
 	CREATE TABLE IF NOT EXISTS sessions (
     	token TEXT PRIMARY KEY NOT NULL,
-    	user_id INT NOT NULL,
+    	user_id INTEGER NOT NULL,
     	expiration DATETIME NOT NULL,
 		FOREIGN KEY("user_id") REFERENCES  users(id) ON DELETE CASCADE ON UPDATE CASCADE
 		)

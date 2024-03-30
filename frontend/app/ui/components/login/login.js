@@ -1,8 +1,46 @@
 "use client";
-import Link from "next/link";
+import { loginUser } from "@/app/api/api.js";
 import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function Login() {
+  const [errorMessage, setErrorMessage] = useState(null);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const router = useRouter();
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+
+    try {
+      const response = await loginUser(email, password);
+      if (response.error === null && response.data) {
+        localStorage.setItem("token", response.data.token);
+        router.push("/home");
+      } else {
+        setErrorMessage(response.error);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      const response = await logoutUser();
+      if (response.error === null) {
+        localStorage.removeItem("token");
+        router.push("/");
+      } else {
+        setErrorMessage(response.error);
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   return (
     <div className="w-screen h-screen flex">
       <div className="flex flex-col items-center w-full sm:w-6/12">
@@ -12,14 +50,14 @@ export default function Login() {
             alt="logo"
             width={40}
             height={40}
-          />{" "}
+          />
           <div>
-            Don't have an account ?{" "}
+            Don't have an account ?
             <Link
               href="/register"
               className="text-primary hover:text-second cursor-pointer"
             >
-              Sign Up.{" "}
+              Sign Up.
             </Link>
           </div>
         </div>
@@ -35,16 +73,19 @@ export default function Login() {
           <p className="error_login_msg" />
 
           <form
+            onSubmit={handleLogin}
             className="form_login flex flex-col gap-3"
-            method="POST"
             data-form="login"
           >
             <input
-              type="text"
+              type="email"
               id="email"
               name="email"
-              placeholder="Email or Username"
+              placeholder="Email"
+              required
               className="h-10 rounded pl-2 border border-border_color text-bg"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
 
             <input
@@ -52,20 +93,30 @@ export default function Login() {
               id="password"
               name="password"
               placeholder="Password"
+              required
               className="h-10 rounded pl-2 border border-border_color text-bg"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
-            <Link href="/home">
+            <div>
+              {errorMessage && (
+                <div className="items-center w-full bg-red-100 border border-red-400 rounded-md py-2 px-3 mb-4 text-red-700">
+                  <strong className="font-bold">Wrong Credentials </strong>
+                  <br />
+                  <span className="block sm:inline">{errorMessage}</span>
+                </div>
+              )}
+            </div>
             <button
+              type="submit"
               className="hover:bg-second bg-primary cursor-pointer text-text border-none w-full h-10 rounded font-bold text-center"
-              // onClick={() => handleLogin()}
             >
               Log In
             </button>
-            </Link>
           </form>
         </div>
       </div>
-      <div className="bg-[url('/assets/login/bg.jpg')] bg-cover bg-center w-6/12 h-screen hidden sm:block"></div>{" "}
+      <div className="bg-[url('/assets/login/bg.jpg')] bg-cover bg-center w-6/12 h-screen hidden sm:block"></div>
     </div>
   );
 }

@@ -43,8 +43,7 @@ func getMapString(opt UpdateOption) string {
 func UpdateQuery(table string, object any, where WhereOption) (string, error) {
 	toJson, err := json.Marshal(object)
 	if err != nil {
-		fmt.Println(err)
-		return "", err
+		return "", fmt.Errorf("error marshalling object: %v", err)
 	}
 	toMap := make(map[string]interface{})
 	json.Unmarshal(toJson, &toMap)
@@ -68,7 +67,6 @@ func SelectOneFrom(table string, where WhereOption) string {
 
 	whToString := getWhereOptionsString(where)
 	query := fmt.Sprintf("SELECT * FROM %v WHERE %v;", table, whToString)
-
 	return query
 }
 
@@ -105,14 +103,14 @@ func SelectAllWhere(table string, where WhereOption, orderby string, limit []int
 func InsertQuery(table string, object any) (string, error) {
 	toJson, err := json.Marshal(object)
 	if err != nil {
-		fmt.Println(err)
-		return "", err
+		return "", fmt.Errorf("error marshalling object: %v", err)
 	}
 	toMap := make(map[string]interface{})
 	json.Unmarshal(toJson, &toMap)
 	columns, values := getColumnsValues(toMap)
 
 	query := fmt.Sprintf(`INSERT INTO %v (%v) VALUES (%v);`, table, columns, values)
+
 	return query, nil
 }
 
@@ -189,37 +187,5 @@ func getColumnsValues(toMap map[string]interface{}) (string, string) {
 
 func AllTablesQuery() string {
 	query := "SELECT name FROM sqlite_schema WHERE type='table' AND name NOT LIKE 'sqlite_%';"
-	return query
-}
-
-func SearchPostSuggestionQuery(keywords []string) string {
-	var cases string
-	var wh string
-
-	for i, word := range keywords {
-		cases += fmt.Sprintf(`
-		CASE
-			WHEN title LIKE "%%%s%%" THEN 1 ELSE 0
-		END
-			`, word)
-		wh += fmt.Sprintf(`
-			title LIKE "%%%v%%"
-			`, word)
-		if i < len(keywords)-1 {
-			cases += "+"
-			wh += "OR"
-		}
-	}
-
-	query := fmt.Sprintf(`
-	SELECT posts.*,
-		%s AS relevance_score
-	FROM posts
-	WHERE
-		%s
-	ORDER BY
-	relevance_score DESC;
-	`, cases, wh)
-
 	return query
 }

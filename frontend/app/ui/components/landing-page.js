@@ -1,6 +1,17 @@
+"use client";
+import { useSession } from "@/app/api/api.js";
 import Link from "next/link.js";
+import { useRouter } from "next/navigation.js";
+import { useEffect } from "react";
 
 export function Landing() {
+  const router = useRouter();
+  const { session, error } = useSession();
+  useEffect(() => {
+    if (session !== null) {
+      router.push("/home");
+    }
+  }, [session]);
   return (
     <div className="">
       <div className=" h-screen">
@@ -71,7 +82,7 @@ export function Landing() {
                   Welcome to SNK
                 </p>
                 <h1 className="mt-4 text-4xl font-bold lg:mt-8 sm:text-6xl xl:text-7xl">
-                Share your passions, inspire the world
+                  Share your passions, inspire the world
                 </h1>
                 <Link
                   href="/register"
@@ -118,5 +129,5 @@ export function Landing() {
         </section>
       </div>
     </div>
-  )
+  );
 }

@@ -1,17 +1,30 @@
 package models
 
 type User struct {
-	ID        int    `json:"id"`
-	Firstname string `json:"first_name"`
-	Lastname  string `json:"last_name"`
-	Username  string `json:"user_name"`
-	Gender    string `json:"gender"`
-	Email     string `json:"email"`
-	Password  string `json:"password"`
-	UserType  string `json:"user_type"`
-	BirthDate string `json:"birth_date"`
-	Avatar    string `json:"avatar"`
-	AboutMe   string `json:"about_me"`
+	Id         int    `json:"id"`
+	First_name string `json:"first_name"`
+	Last_name  string `json:"last_name"`
+	User_name  string `json:"user_name"`
+	Gender     string `json:"gender"`
+	User_type  string `json:"user_type"`
+	Birth_date string `json:"birth_date"`
+	Avatar     string `json:"avatar"`
+	About_me   string `json:"about_me"`
+	Password   string `json:"password"`
+	Email      string `json:"email"`
+}
+
+type FormatedUser struct {
+	First_name string `json:"first_name"`
+	Last_name  string `json:"last_name"`
+	User_name  string `json:"user_name"`
+	Gender     string `json:"gender"`
+	User_type  string `json:"user_type"`
+	Birth_date string `json:"birth_date"`
+	Avatar     string `json:"avatar"`
+	About_me   string `json:"about_me"`
+	Password   string `json:"password"`
+	Email      string `json:"email"`
 }
 
 type Credentials struct {

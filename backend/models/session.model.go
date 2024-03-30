@@ -1,15 +1,9 @@
 package models
 
 import "time"
-type Sessions struct {
-	ID              int    `json:"id"`
-	UserID          int    `json:"userID"`
-	TokenExpiration string `json:"tokenExperation"`
-}
 
 type Session struct {
-	ID         string
-	UserID       int
-	Expiration time.Time
+	Token      string    `json:"token"`
+	User_id    int       `json:"user_id"`
+	Expiration time.Time `json:"expiration"`
 }
-var UserSession Session
