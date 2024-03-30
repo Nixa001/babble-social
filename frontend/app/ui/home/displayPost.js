@@ -8,8 +8,6 @@ import { DisplayComments } from "../components/modals/displayComment";
 
 const DisplayPost = ({
   postData,
-  onLikeClick,
-  onDislikeClick,
   onCommentClick,
   onProfileClick,
 }) => {

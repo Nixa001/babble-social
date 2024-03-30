@@ -15,6 +15,7 @@ const (
 	POST_ENDPOINT          = "/post"
 	COMMENT_ENDPOINT       = "/comment"
 	CREATE_GROUP_ENDPOINT  = "/group/creategroup"
+	CREATE_EVENT_ENDPOINT  = "/group/createEvent"
 	POST_GROUP_ENDPOINT    = "/group/postgroup"
 	USER_ENDPOINT          = "/userInfo"
 	JOINED_GROUPS_ENDPOINT = "/groups_joined"
@@ -33,6 +34,7 @@ func Route() *http.ServeMux {
 	mux.HandleFunc(POST_ENDPOINT, handler.POSTHandler)
 	mux.HandleFunc(COMMENT_ENDPOINT, handler.COMMENTHandler)
 	mux.HandleFunc(CREATE_GROUP_ENDPOINT, groups.CreateGroupHandler)
+	mux.HandleFunc(CREATE_EVENT_ENDPOINT, groups.CreateEventHandler)
 	mux.HandleFunc(POST_GROUP_ENDPOINT, groups.PostGroupHandler)
 	mux.HandleFunc(GETGROUPS_ENDPOINT, groups.GetGroups)
 	mux.HandleFunc(WS_ENDPOINT, handler.WSHandler)

@@ -11,6 +11,8 @@ import (
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
+	"time"
 )
 
 type Post struct {
@@ -30,10 +32,12 @@ type Post struct {
 }
 
 type ResponseGroup struct {
-	GroupData models.Group      `json:"group_data"`
-	Posts     []models.DataPost `json:"posts"`
-	Members   []models.User     `json:"members"`
-	Followers []models.User     `json:"followers"`
+	GroupData   models.Group      `json:"group_data"`
+	Posts       []models.DataPost `json:"posts"`
+	Members     []models.User     `json:"members"`
+	Followers   []models.User     `json:"followers"`
+	Event       []models.Event    `json:"events"`
+	EventJoined []models.Event    `json:"events_joined"`
 }
 
 const userId int = 1
@@ -67,11 +71,15 @@ func GetGroup(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 		return
 	}
+	events, eventJoined, err := GetEvent(db, groupId, userId)
+
 	responseGroup := ResponseGroup{
-		GroupData: groupData,
-		Posts:     allPosts,
-		Members:   members,
-		Followers: followers,
+		GroupData:   groupData,
+		Posts:       allPosts,
+		Members:     members,
+		Followers:   followers,
+		Event:       events,
+		EventJoined: eventJoined,
 	}
 	jsonData, err := json.Marshal(responseGroup)
 	if err != nil {
@@ -121,9 +129,78 @@ func GetUserData(db *sql.DB, userID int) (models.User, error) {
 	if err := rows.Err(); err != nil {
 		return user, fmt.Errorf("err read all groups results: %w", err)
 	}
-
-	// fmt.Println(user)
 	return user, nil
+}
+func GetEventJoined(db *sql.DB, userID int) ([]int, error) {
+	var events []int
+
+	query := "SELECT event_id FROM event_joined WHERE user_id =?"
+	rows, err := db.Query(query, userID)
+	if err != nil {
+		return events, fmt.Errorf("err execute user query: %w", err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var event int
+		err := rows.Scan(&event)
+		if err != nil {
+			return events, fmt.Errorf("err scan group data: %w", err)
+		}
+		events = append(events, event)
+	}
+
+	if err := rows.Err(); err != nil {
+		return events, fmt.Errorf("err read all groups results: %w", err)
+	}
+
+	return events, nil
+}
+
+func GetEvent(db *sql.DB, groupID, userID int) ([]models.Event, []models.Event, error) {
+	var events []models.Event
+	var eventsJoined []models.Event
+
+	events_joined_id, err := GetEventJoined(db, userID)
+	if err != nil {
+		fmt.Println("error on GetEventJoined", err)
+	}
+
+	query := "SELECT * FROM event WHERE group_id =?"
+	rows, err := db.Query(query, groupID)
+	if err != nil {
+		return events, events, fmt.Errorf("err execute user query: %w", err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var event models.Event
+		err := rows.Scan(&event.ID, &event.GroupID, &event.UserID, &event.Description, &event.Date)
+		if err != nil {
+			return events, events, fmt.Errorf("err scan group data: %w", err)
+		}
+		event.Date = formatDateTimeFr(event.Date)
+		if contains(events_joined_id, event.ID) {
+			eventsJoined = append(eventsJoined, event)
+		} else {
+			events = append(events, event)
+		}
+	}
+
+	if err := rows.Err(); err != nil {
+		return events, events, fmt.Errorf("err read all groups results: %w", err)
+	}
+
+	return events, eventsJoined, nil
+}
+
+func contains(arr []int, value int) bool {
+	for _, element := range arr {
+		if element == value {
+			return true
+		}
+	}
+	return false
 }
 
 func getLikesDislikes(db *sql.DB, postID int) (int, int) {
@@ -282,4 +359,19 @@ func getFollowers(db *sql.DB, userID int) ([]models.User, error) {
 	}
 
 	return followers, nil
+}
+
+func formatDateTimeFr(dateStr string) string {
+	t, err := time.Parse(time.RFC3339, dateStr)
+	if err != nil {
+		panic(err)
+	}
+
+	weekday := strings.ToUpper(t.Weekday().String()[:3])
+	day := t.Day()
+	month := strings.ToUpper(t.Month().String()[:3])
+	year := t.Year()
+	hour := t.Hour()
+
+	return fmt.Sprintf("%s %d %s %d à %dH", weekday, day, month, year, hour)
 }

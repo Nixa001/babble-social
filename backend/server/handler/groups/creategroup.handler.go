@@ -61,13 +61,14 @@ func insertGroupCreated(db *sql.DB, group models.Group) {
 		group.Avatar = "http://localhost:8080/uploads/35a23cb2-d742-48fa-8d77-8a6e19bf571fsnk.jpg"
 	}
 
-	_, err = stmt.Exec(group.Name, group.Description, group.ID_User_Create, group.Avatar, group.Creation_Date)
+	result, err := stmt.Exec(group.Name, group.Description, group.ID_User_Create, group.Avatar, group.Creation_Date)
 	if err != nil {
 		fmt.Println("Erreur lors de l'insertion des données:", err)
 		return
 	}
 
-	err = db.QueryRow("SELECT id FROM groups WHERE name = ?", group.Name).Scan(&group.ID)
+	id, _ := result.LastInsertId()
+	group.ID = int(id)
 
 	stmt, err = db.Prepare("INSERT INTO group_followers(user_id, group_id) VALUES(?, ?)")
 	if err != nil {
