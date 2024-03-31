@@ -8,7 +8,7 @@ import useSocket, { WebSocketContext } from '@/app/_lib/websocket';
 
 const Messages = () => {
     const [activeTab, setActiveTab] = useState("users");
-    const { socket, sendMessageToServer, allMessages } = useContext(WebSocketContext)
+    const {sendMessageToServer, allMessages } = useContext(WebSocketContext)
     // const {sendMessage} = useSocket('ws://localhost:8080/ws');
 
     const handleTabClick = (tab) => {

@@ -73,13 +73,8 @@ func (h *Hub) HandleEvent(eventPayload WSPaylaod) {
 	case WS_JOIN_EVENT:
 		h.Clients.Range(func(key, value interface{}) bool {
 			client := value.(*WSClient)
-			if client.Firstname == eventPayload.To {
-				client.OutgoingMsg <- eventPayload
-			}
-			// for _, v := range eventPayload.To {
-			// 	if v == client.Firstname {
-
-			// 	}
+			// if client.Firstname == eventPayload.To {
+			client.OutgoingMsg <- eventPayload
 			// }
 			return true
 		})
@@ -162,6 +157,22 @@ func (client *WSClient) messageReader() {
 		eventType := payload["type"].(string)
 		// EvenType le type d'evenement socket
 		switch eventType {
+
+		case WS_JOIN_EVENT:
+			dataMap, ok := payload["data"].(map[string]interface{})
+			if !ok {
+				return
+			}
+			user, ok := dataMap["user"] // Assuming "user" is a string
+			if !ok {
+				return
+			}
+			userMap, ok := user.(map[string]interface{})
+			if !ok {
+				return
+			}
+			fmt.Println("participant", userMap["first_name"].(string))
+			WSHub.AddClient(client.WSCoon, userMap["first_name"].(string))
 
 		case WS_IDRECEIVER_EVENT:
 			data, _ := seed.SelectMsgBetweenUsers(seed.DB, 1, 2)

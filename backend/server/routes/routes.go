@@ -13,6 +13,7 @@ const (
 	MESSAGE_ENDPOINT = "/message"
 	WS_ENDPOINT      = "/ws"
 	VERIF_SESS_ENDPOINT = "/auth/session"
+	GET_USER_SESS_ENDPOINT = "/auth/usersessions"
 )
 
 func Route() *http.ServeMux {
@@ -23,6 +24,7 @@ func Route() *http.ServeMux {
 	mux.HandleFunc(SIGNIN_ENDPOINT, (handler.SignInHandler))
 	mux.HandleFunc(LOGOUT_ENDPOINT, (handler.AuthorizeMiddleware(handler.SignOutHandler)))
 	mux.HandleFunc(VERIF_SESS_ENDPOINT, (handler.VerifySessionHandler))
+	mux.HandleFunc(GET_USER_SESS_ENDPOINT, (handler.GetUserSession))
 
 	return mux
 }
