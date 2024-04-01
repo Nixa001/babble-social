@@ -98,6 +98,7 @@ func (a *AuthService) CreateSession(user models.User) (models.Session, error) {
 	expiration := time.Now().Add(3 * time.Hour)
 	err = a.SessRepo.SaveSession(models.Session{Token: token, User_id: user.Id, Expiration: expiration})
 	if err != nil {
+		log.Println("Error saving session", err)
 		return models.Session{}, err
 	}
 	return models.Session{Token: token, User_id: user.Id, Expiration: expiration}, nil

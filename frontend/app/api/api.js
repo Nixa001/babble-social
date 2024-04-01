@@ -2,18 +2,6 @@
 import { useEffect, useState } from "react";
 const NEXT_PUBLIC_API_URL = `http://localhost:8080`;
 
-export async function getSession() {
-  return fetch(`${NEXT_PUBLIC_API_URL}/auth/session`, {
-    method: "GET",
-    credentials: "include",
-  })
-    .then((response) => response.json())
-    .catch((error) => {
-      console.error(error);
-      throw new Error("An error occurred while fetching session data.");
-    });
-}
-
 export async function loginUser(email, password) {
   return fetch(`${NEXT_PUBLIC_API_URL}/auth/signin`, {
     method: "POST",
