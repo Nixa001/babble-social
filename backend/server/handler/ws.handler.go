@@ -1,8 +1,9 @@
 package handler
 
 import (
-	"backend/server/service"
+	"backend/server/cors"
 	"backend/server/ws"
+	"fmt"
 	"log"
 	"net/http"
 
@@ -12,22 +13,35 @@ import (
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,
+
+	CheckOrigin: func(r *http.Request) bool {
+		return true
+	},
 }
 
 func WSHandler(w http.ResponseWriter, r *http.Request) {
-	session, err := service.AuthServ.VerifyToken(r)
+	fmt.Println("Hello, world!")
+	cors.SetCors(&w)
+
+	conn, err := upgrader.Upgrade(w, r, nil)
 	if err != nil {
-		//TODO handle error here
+		log.Println("Erreur de mise a niveau de la connexion", err)
 		return
 	}
-	coon, err := upgrader.Upgrade(w, r, nil)
-	if err != nil {
-		//TODO handle error here
-		log.Println("Error to ws")
-	}
-	user, err := service.AuthServ.UserRepo.GetUserById(session.User_id)
-	if err != nil {
-		log.Println("internal Server")
-	}
-	ws.WSHub.AddClient(coon, user.Email)
+	ws.Init()
+	ws.WSHub.AddClient(conn, "mail@a.com")
+
+	// go func() {
+	// 	for {
+	// 		_, message, err := conn.ReadMessage()
+	// 		if err != nil {
+	// 			log.Println("Erreur lors de la lecture du message:", err)
+	// 			return
+	// 		}
+	// 		log.Println("Message reçu:", string(message))
+	// 	}
+	// }()
+
+	fmt.Println("Ws is running")
+	// _ = conn.Close()
 }

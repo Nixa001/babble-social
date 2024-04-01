@@ -1,6 +1,7 @@
 package utils
 
 import (
+	"errors"
 	"fmt"
 	"regexp"
 	"strconv"
@@ -19,6 +20,11 @@ func ParseArrayInt(a []string) (tab []int, err error) {
 		tab = append(tab, r)
 	}
 	return tab, nil
+}
+
+func GetCurrentDateTime() string {
+	currentTime := time.Now()
+	return currentTime.Format("2006-01-02 15:04:05")
 }
 
 func FormatDuration(duration time.Duration) string {
@@ -111,6 +117,24 @@ func IsValidEmail(email string) error {
 
 	}
 	return nil
+}
+
+func IsValidImageType(s string) bool {
+	s = strings.ToLower(s)
+	return strings.HasSuffix(s, ".jpeg") ||
+		strings.HasSuffix(s, ".png") ||
+		strings.HasSuffix(s, ".jpg") ||
+		strings.HasSuffix(s, ".bmp") ||
+		strings.HasSuffix(s, ".webp") ||
+		strings.HasSuffix(s, ".gif")
+}
+
+func GenImageName(image string) (string, error) {
+	idImg, errImg := uuid.NewV4()
+	if errImg != nil {
+		return "", errors.New("cannot generate id for img name")
+	}
+	return fmt.Sprintf("%s%s", idImg, image), nil
 }
 
 func IsValidPassword(password string) error {

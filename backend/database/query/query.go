@@ -1,6 +1,7 @@
 package query
 
 import (
+	"database/sql"
 	"encoding/json"
 	"fmt"
 	"strings"
@@ -101,6 +102,7 @@ func SelectAllWhere(table string, where WhereOption, orderby string, limit []int
 }
 
 func InsertQuery(table string, object any) (string, error) {
+	//fmt.Println("initial => ", object)
 	toJson, err := json.Marshal(object)
 	if err != nil {
 		return "", fmt.Errorf("error marshalling object: %v", err)
@@ -165,6 +167,7 @@ func getWhereOptionsString(w WhereOption) string {
 
 func getColumnsValues(toMap map[string]interface{}) (string, string) {
 	var columns, values string
+//	fmt.Println("to map => ", toMap)
 	for k, v := range toMap {
 		if v == 0 || v == "" || v == nil {
 			continue
@@ -175,17 +178,36 @@ func getColumnsValues(toMap map[string]interface{}) (string, string) {
 		if columns != "" {
 			columns += ", "
 		}
-		columns += k
+		columns += strings.ToLower(k)
 		if v1, ok := v.(string); ok {
 			values += fmt.Sprintf("\"%v\"", v1)
 		} else {
 			values += fmt.Sprintf("%v", v)
 		}
 	}
+	//fmt.Println("columns => ", columns)
+	//fmt.Println("values => ", values)
 	return columns, values
 }
 
 func AllTablesQuery() string {
 	query := "SELECT name FROM sqlite_schema WHERE type='table' AND name NOT LIKE 'sqlite_%';"
 	return query
+}
+
+func InsertData(db *sql.DB, query string, values ...interface{}) error {
+	// Préparer la requête d'insertion
+	stmt, err := db.Prepare(query)
+	if err != nil {
+		return err
+	}
+	defer stmt.Close()
+
+	// Exécuter la requête d'insertion avec les valeurs
+	_, err = stmt.Exec(values...)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
