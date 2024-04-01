@@ -12,6 +12,7 @@ const (
 	SIGNUP_ENDPOINT           = "/auth/signup"
 	SIGNIN_ENDPOINT           = "/auth/signin"
 	LOGOUT_ENDPOINT           = "/auth/signout"
+	VERIFY_SESS_ENDPOINT      = "/auth/session"
 	POST_ENDPOINT             = "/post"
 	COMMENT_ENDPOINT          = "/comment"
 	CREATE_GROUP_ENDPOINT     = "/group/creategroup"
@@ -28,10 +29,11 @@ const (
 
 func Route() *http.ServeMux {
 	mux := http.NewServeMux()
-	mux.HandleFunc(HOME_ENDPOINT, handler.IndexHandler)
+	// mux.HandleFunc(HOME_ENDPOINT, handler.IndexHandler)
 	mux.HandleFunc(SIGNUP_ENDPOINT, handler.SignUpHandler)
 	mux.HandleFunc(SIGNIN_ENDPOINT, handler.SignInHandler)
 	mux.HandleFunc(LOGOUT_ENDPOINT, handler.AuthorizeMiddleware(handler.SignOutHandler))
+	mux.HandleFunc(VERIFY_SESS_ENDPOINT, handler.VerifySessionHandler)
 	mux.HandleFunc(POST_ENDPOINT, handler.POSTHandler)
 	mux.HandleFunc(COMMENT_ENDPOINT, handler.COMMENTHandler)
 	mux.HandleFunc(CREATE_GROUP_ENDPOINT, groups.CreateGroupHandler)
@@ -40,7 +42,6 @@ func Route() *http.ServeMux {
 	mux.HandleFunc(POST_GROUP_ENDPOINT, groups.PostGroupHandler)
 	mux.HandleFunc(GETGROUPS_ENDPOINT, groups.GetGroups)
 	mux.HandleFunc(WS_ENDPOINT, handler.WSHandler)
-
 	mux.HandleFunc(GETGROUP_ENDPOINT, groups.GetGroup)
 	mux.HandleFunc(USER_ENDPOINT, user.GetUser)
 	mux.HandleFunc(SERVE_ASSETS, func(w http.ResponseWriter, r *http.Request) {
