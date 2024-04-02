@@ -7,6 +7,7 @@ import { useSession } from "@/app/api/api";
 
 const HomePage = () => {
   const [posts, setPosts] = useState([]),
+  [fetchState, setFetchState] = useState(true),
     sessionId = "1"; //TODO: get user id from api.
   console.log("i got session => ", sessionId);
   const userID = new FormData();
@@ -28,7 +29,7 @@ const HomePage = () => {
   };
 
   useQuery("posts", fetchPosts, {
-    enabled: true,
+    enabled: fetchState,
     refetchInterval: 1000,
     staleTime: 500,
     onSuccess: (newData) => {
@@ -37,6 +38,7 @@ const HomePage = () => {
     },
     onError: (error) => {
       console.error("Query error in posts:", error);
+      setFetchState(false)
     },
   });
   return (

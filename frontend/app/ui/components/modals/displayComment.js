@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 
 export const DisplayComments = ({ isVisible, postId, onClose, increment }) => {
   // const Comments = comments
+  const [fetcherState, setFetcherState] = useState(isVisible);
   const fetchComments = async () => {
     const dataID = new FormData();
     dataID.append("postID", postId);
@@ -21,6 +22,7 @@ export const DisplayComments = ({ isVisible, postId, onClose, increment }) => {
       return { comments: data.data };
     } catch (error) {
       console.error("Error while querying comments ", error);
+      setFetcherState(false);
       return Promise.reject(error);
     }
   };
@@ -28,7 +30,7 @@ export const DisplayComments = ({ isVisible, postId, onClose, increment }) => {
   const [comments, setComments] = useState([]),
     [value, setValue] = useState("");
   useQuery("comments", fetchComments, {
-    enabled: isVisible,
+    enabled: fetcherState,
     refetchInterval: 1000,
     staleTime: 500,
     onSuccess: (newData) => {

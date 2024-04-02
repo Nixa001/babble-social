@@ -10,6 +10,7 @@ import { JoinGroup } from "./group.utils/joinGroup";
 const Groups = () => {
   const [formCreateGr, setFormCreateGr] = useState(false);
   const [groupData, setGroupData] = useState([]);
+  const [fetcherState, setFetcherState] = useState(true)
   const [groupJoined, setGroupJoined] = useState([]);
 
   const fetchGroups = async () => {
@@ -19,12 +20,13 @@ const Groups = () => {
       return { groupJoined: data[0], groupData: data[1] };
     } catch (error) {
       console.error("Erreur ", error);
+      setFetcherState(false)
       return Promise.reject(error);
     }
   };
 
   useQuery("groups", fetchGroups, {
-    enabled: true,
+    enabled: fetcherState,
     refetchInterval: 5000,
     staleTime: 1000,
     onSuccess: (newData) => {
