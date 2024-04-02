@@ -4,9 +4,7 @@ import React from 'react'
 
 const Groups = () => {
   return (
-    <WebSocketProvider> 
       <div className=''>groups</div>
-    </WebSocketProvider>
   )
 }
 

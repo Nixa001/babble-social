@@ -17,7 +17,7 @@ export default function Login() {
     try {
       const response = await loginUser(email, password);
       if (response.error === null && response.data) {
-        localStorage.setItem("token", response.data.token);
+        
        sendMessageToServer({type : "join-event", data : response.data})
         router.push("/home");
       } else {

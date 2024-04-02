@@ -1,16 +1,13 @@
-'use client'
-import { WebSocketProvider } from '@/app/_lib/websocket'
+
 import Messages from '@/app/ui/home/messages/messages'
 import React from 'react'
 
 const page = () => {
 
   return (
-    <WebSocketProvider>
       <div>
         <Messages />
       </div>
-    </WebSocketProvider>
   )
 }
 

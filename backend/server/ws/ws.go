@@ -20,7 +20,7 @@ const (
 )
 
 type WSClient struct {
-	Firstname   string
+	Email       string
 	WSCoon      *websocket.Conn
 	OutgoingMsg chan interface{}
 }
@@ -28,7 +28,7 @@ type WSPaylaod struct {
 	From string
 	Type string
 	Data interface{}
-	To   string
+	To   []string
 }
 type Hub struct {
 	Clients           *sync.Map
@@ -55,13 +55,13 @@ func (h *Hub) listen() {
 	for {
 		select {
 		case client := <-h.RegisterChannel:
-			h.Clients.Store(client.Firstname, client)
-			log.Printf("Client %s connected\n", client.Firstname)
+			h.Clients.Store(client.Email, client)
+			log.Printf("Client %s connected\n", client.Email)
 		case client := <-h.UnRegisterChannel:
-			if _, ok := h.Clients.Load(client.Firstname); ok {
-				h.Clients.Delete(client.Firstname)
+			if _, ok := h.Clients.Load(client.Email); ok {
+				h.Clients.Delete(client.Email)
 				close(client.OutgoingMsg)
-				log.Printf("Client %s disconnected\n", client.Firstname)
+				log.Printf("Client %s disconnected\n", client.Email)
 			}
 		case message := <-h.SSE:
 			h.HandleEvent(message)
@@ -71,33 +71,44 @@ func (h *Hub) listen() {
 func (h *Hub) HandleEvent(eventPayload WSPaylaod) {
 	switch eventPayload.Type {
 	case WS_JOIN_EVENT:
+		fmt.Println("tous les client", h.Clients)
 		h.Clients.Range(func(key, value interface{}) bool {
 			client := value.(*WSClient)
-			// if client.Firstname == eventPayload.To {
-			client.OutgoingMsg <- eventPayload
-			// }
+			for _, name := range eventPayload.To {
+				if client.Email == name {
+					client.OutgoingMsg <- eventPayload
+					break // Exit the loop once a match is found
+				}
+			}
 			return true
 		})
 	case WS_DISCONNECT_EVENT:
 		h.Clients.Range(func(key, value interface{}) bool {
 			client := value.(*WSClient)
-			if client.Firstname == eventPayload.To {
-				client.OutgoingMsg <- eventPayload
+			fmt.Println("2", client)
+			for _, name := range eventPayload.To {
+				if client.Email == name {
+					client.OutgoingMsg <- eventPayload
+					break // Exit the loop once a match is found
+				}
 			}
 			return true
 		})
 	case WS_IDRECEIVER_EVENT:
 		h.Clients.Range(func(key, value interface{}) bool {
 			client := value.(*WSClient)
-			// if client.Firstname == eventPayload.From {
+			// for _, name := range eventPayload.To {
+			// 	if client.Email == name {
 			client.OutgoingMsg <- eventPayload
+			// break // Exit the loop once a match is found
+			// 	}
 			// }
 			return true
 		})
 	case WS_IDGROUP_RECEIVER_EVENT:
 		h.Clients.Range(func(key, value any) bool {
 			client := value.(*WSClient)
-			// if client.Firstname == eventPayload.From {
+			// if client.Email == eventPayload.From {
 			client.OutgoingMsg <- eventPayload
 			// }
 			return true
@@ -105,7 +116,7 @@ func (h *Hub) HandleEvent(eventPayload WSPaylaod) {
 	case WS_MESSAGEUSER_EVENT:
 		h.Clients.Range(func(key, value interface{}) bool {
 			client := value.(*WSClient)
-			// if client.Firstname == eventPayload.From {
+			// if client.Email == eventPayload.From {
 			client.OutgoingMsg <- eventPayload
 			// }
 			return true
@@ -113,28 +124,32 @@ func (h *Hub) HandleEvent(eventPayload WSPaylaod) {
 	case WS_MESSAGEGROUP_EVENT:
 		h.Clients.Range(func(key, value interface{}) bool {
 			client := value.(*WSClient)
-			// if client.Firstname == eventPayload.From {
+			// for _, name := range eventPayload.To {
+			// 	if client.Email == name {
 			client.OutgoingMsg <- eventPayload
+			// break // Exit the loop once a match is found
+			// 	}
 			// }
 			return true
 		})
 	}
 }
-func (wsHub *Hub) AddClient(coon *websocket.Conn, firstname string) {
+func (wsHub *Hub) AddClient(coon *websocket.Conn, Email string) {
 	client := &WSClient{
-		Firstname:   firstname,
+		Email:       Email,
 		WSCoon:      coon,
 		OutgoingMsg: make(chan interface{}),
 	}
 	go client.messageReader()
 	go client.messageWriter()
 	wsHub.RegisterChannel <- client
-	var newEvent = WSPaylaod{
-		From: client.Firstname,
-		Type: WS_JOIN_EVENT,
-		Data: nil,
-	}
-	wsHub.HandleEvent(newEvent)
+	// var newEvent = WSPaylaod{
+	// 	From: client.Email,
+	// 	Type: WS_JOIN_EVENT,
+	// 	Data: nil,
+	// }
+	// wsHub.HandleEvent(newEvent)
+	// return
 }
 func (client *WSClient) messageReader() {
 	for {
@@ -142,7 +157,7 @@ func (client *WSClient) messageReader() {
 		if err != nil {
 			WSHub.UnRegisterChannel <- client
 			var newEvent = WSPaylaod{
-				From: client.Firstname,
+				From: client.Email,
 				Type: WS_DISCONNECT_EVENT,
 				Data: nil,
 			}
@@ -159,20 +174,12 @@ func (client *WSClient) messageReader() {
 		switch eventType {
 
 		case WS_JOIN_EVENT:
-			dataMap, ok := payload["data"].(map[string]interface{})
-			if !ok {
-				return
+			var newEvent = WSPaylaod{
+				From: client.Email,
+				Type: WS_JOIN_EVENT,
+				Data: "New client joined",
 			}
-			user, ok := dataMap["user"] // Assuming "user" is a string
-			if !ok {
-				return
-			}
-			userMap, ok := user.(map[string]interface{})
-			if !ok {
-				return
-			}
-			fmt.Println("participant", userMap["first_name"].(string))
-			WSHub.AddClient(client.WSCoon, userMap["first_name"].(string))
+			WSHub.HandleEvent(newEvent)
 
 		case WS_IDRECEIVER_EVENT:
 			data, _ := seed.SelectMsgBetweenUsers(seed.DB, 1, 2)
@@ -182,6 +189,7 @@ func (client *WSClient) messageReader() {
 				Data: data,
 			}
 			WSHub.HandleEvent(wsEvent)
+			return
 
 		case WS_IDGROUP_RECEIVER_EVENT:
 			data, _ := seed.GetGroupMessage(seed.DB, 1)
@@ -191,13 +199,14 @@ func (client *WSClient) messageReader() {
 				Data: data,
 			}
 			WSHub.HandleEvent(wsEvent)
+			return
 
 		case WS_MESSAGEUSER_EVENT:
 
-			// err := seed.InsertMessage(seed.DB, 1, 2, payload["data"].(string), "2000-01-01")
-			// if err != nil {
-			// 	fmt.Println(err)
-			// }
+			err := seed.InsertMessage(seed.DB, 1, 2, payload["data"].(string), "2000-01-01")
+			if err != nil {
+				fmt.Println(err)
+			}
 			data := "communication between User"
 			msEvent := WSPaylaod{
 				From: "",
@@ -205,6 +214,7 @@ func (client *WSClient) messageReader() {
 				Data: data,
 			}
 			WSHub.HandleEvent(msEvent)
+			return
 
 		case WS_MESSAGEGROUP_EVENT:
 			data := "communication between Group"
@@ -214,6 +224,7 @@ func (client *WSClient) messageReader() {
 				Data: data,
 			}
 			WSHub.HandleEvent(GPEvent)
+			return
 		}
 
 	}

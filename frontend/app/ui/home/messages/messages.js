@@ -5,10 +5,11 @@ import { displayFollowers, followerHearder } from '../../components/sidebarRight
 import { useContext, useEffect, useState } from 'react';
 import { postData } from '@/app/lib/utils';
 import useSocket, { WebSocketContext } from '@/app/_lib/websocket';
+import { getSessionUser } from '@/app/_lib/utils';
 
 const Messages = () => {
     const [activeTab, setActiveTab] = useState("users");
-    const {sendMessageToServer, allMessages } = useContext(WebSocketContext)
+    const { sendMessageToServer, allMessages } = useContext(WebSocketContext)
     // const {sendMessage} = useSocket('ws://localhost:8080/ws');
 
     const handleTabClick = (tab) => {
@@ -21,20 +22,26 @@ const Messages = () => {
         console.log("all messages", allMessages);
     }, [allMessages])
 
-    const handleUserClick = (userId) => {
+    const handleUserClick = async (userId) => {
         console.log("User clicked:", userId);
-        sendMessageToServer({ type: 'id-receiver-event', data: userId });
-        // console.log("all messages", allMessages);
-        // Ici, vous pouvez ajouter la logique pour gérer l'ID de l'utilisateur cliqué
+        // Récupérer l'ID de l'utilisateur en session
+        const sessionUser = await getSessionUser();
+        const sessionUserId = sessionUser.id; // A
+        console.log("Session user", sessionUserId);
+        sendMessageToServer({ type: 'id-receiver-event', data: { clickedUserId: userId, sessionUserId: sessionUserId } });
 
 
     };
 
     //Traitement de message entre user et Groups
 
-    const handleGroupClick = (GroupId) => {
+    const handleGroupClick = async (GroupId) => {
         console.log("Group clicked:", GroupId);
-        sendMessageToServer({ type: 'idGroup-receiver-event', data: GroupId });
+        const sessionUser = await getSessionUser();
+        const sessionUserId = sessionUser.id; // A
+        console.log("Session user", sessionUserId);
+        const token = localStorage.getItem('token');
+        sendMessageToServer({ type: 'idGroup-receiver-event', data: { idgroud : GroupId, token : token}  });
         // Ici, vous pouvez ajouter la logique pour gérer l'ID de l'utilisateur cliqué
     };
 
@@ -50,24 +57,20 @@ const Messages = () => {
         if (obj.message.trim() !== "") {
             // Détermine le type de message en fonction de activeTab
             const messageType = activeTab === "group" ? "message-group-event" : "message-user-event";
-
             // Prépare les données du message
             const messageData = {
                 type: messageType,
                 data: obj.message
             };
-
             // Envoie le message au serveur
             sendMessageToServer(messageData);
             e.target.reset();
         }
     };
 
-
     const displayTable = () => {
         if (activeTab === "users") {
             return displayFollowers(users, handleUserClick);
-
         } else if (activeTab === "group") {
             return displayFollowers(groups, handleGroupClick);
         }
@@ -105,7 +108,6 @@ const Messages = () => {
                         <Image
                             src='/assets/profilibg.jpg'
                             alt="Profile picture"
-                            //   onClick={handleProfileClick}
                             className="profile_pic rounded-full cursor-pointer hover:opacity-60"
                             width={50}
                             height={50}
