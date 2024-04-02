@@ -102,7 +102,6 @@ const GroupCard = ({ isMember, id, image, name, description, href, state }) => {
   }
 
   const { sendMessage, readMessages, messages } = useApi();
-  console.log(messages);
   const handleLoginJoinMessage = () => {
     // console.log("handleLoginJoinMessage ", id);
     const joinMessage = messages.find(
@@ -111,7 +110,7 @@ const GroupCard = ({ isMember, id, image, name, description, href, state }) => {
     if (joinMessage) {
       messages.map((message) => {
         if (message.Data.id_group === id) {
-          // console.log("Message ", message);
+          console.log("Message ", message);
           return;
         }
       });

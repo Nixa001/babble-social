@@ -31,12 +31,12 @@ type Post struct {
 }
 
 type ResponseGroup struct {
-	GroupData   models.Group      `json:"group_data"`
-	Posts       []models.DataPost `json:"posts"`
-	Members     []models.User     `json:"members"`
-	Followers   []models.User     `json:"followers"`
-	Event       []models.Event    `json:"events"`
-	EventJoined []models.Event    `json:"events_joined"`
+	GroupData   models.Group         `json:"group_data"`
+	Posts       []models.DataPost    `json:"posts"`
+	Members     []models.User        `json:"members"`
+	Followers   []models.User        `json:"followers"`
+	Event       []models.Event       `json:"events"`
+	EventJoined []models.EventJoined `json:"events_joined"`
 }
 
 const userId int = 1
@@ -71,6 +71,7 @@ func GetGroup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	events, eventJoined, err := GetEvent(db, groupId, userId)
+	// fmt.Println("eventJoined: ", eventJoined)
 
 	responseGroup := ResponseGroup{
 		GroupData:   groupData,
@@ -156,19 +157,18 @@ func GetEventJoined(db *sql.DB, userID int) ([]int, error) {
 	return events, nil
 }
 
-func GetEvent(db *sql.DB, groupID, userID int) ([]models.Event, []models.Event, error) {
+func GetEvent(db *sql.DB, groupID, userID int) ([]models.Event, []models.EventJoined, error) {
 	var events []models.Event
 	var eventsJoined []models.Event
-
 	events_joined_id, err := GetEventJoined(db, userID)
 	if err != nil {
 		fmt.Println("error on GetEventJoined", err)
 	}
-
+	
 	query := "SELECT * FROM event WHERE group_id =?"
 	rows, err := db.Query(query, groupID)
 	if err != nil {
-		return events, events, fmt.Errorf("err execute user query: %w", err)
+		return events, nil, fmt.Errorf("err execute user query: %w", err)
 	}
 	defer rows.Close()
 
@@ -176,7 +176,7 @@ func GetEvent(db *sql.DB, groupID, userID int) ([]models.Event, []models.Event, 
 		var event models.Event
 		err := rows.Scan(&event.ID, &event.GroupID, &event.UserID, &event.Description, &event.Date)
 		if err != nil {
-			return events, events, fmt.Errorf("err scan group data: %w", err)
+			return events, nil, fmt.Errorf("err scan group data: %w", err)
 		}
 		event.Date = formatDateTimeFr(event.Date)
 		if contains(events_joined_id, event.ID) {
@@ -187,10 +187,32 @@ func GetEvent(db *sql.DB, groupID, userID int) ([]models.Event, []models.Event, 
 	}
 
 	if err := rows.Err(); err != nil {
-		return events, events, fmt.Errorf("err read all groups results: %w", err)
+		return events, nil, fmt.Errorf("err read all groups results: %w", err)
 	}
 
-	return events, eventsJoined, nil
+	// query = "SELECT * FROM event_joined WHERE group_id =?"
+	query = "SELECT event_joined.id, event_joined.event_id, event_joined.user_id, event_joined.group_id, event.description, event.event_date FROM event_joined INNER JOIN event ON event_joined.event_id = event.id WHERE event_joined.group_id = ?"
+
+	rows, err = db.Query(query, groupID)
+	if err != nil {
+		return events, nil, fmt.Errorf("err execute user query: %w", err)
+	}
+	defer rows.Close()
+
+	var dataEventJoint []models.EventJoined
+	for rows.Next() {
+		var event models.EventJoined
+		err := rows.Scan(&event.ID, &event.Event_id, &event.User_id, &event.Group_id, &event.Description, &event.Date)
+		if err != nil {
+			fmt.Println("error scanning event ", err)
+			log.Fatal(err.Error())
+		}
+		dataEventJoint = append(dataEventJoint, event)
+		
+		// fmt.Println("dataEventJoint ", event)
+	}
+
+	return events, dataEventJoint, nil
 }
 
 func contains(arr []int, value int) bool {

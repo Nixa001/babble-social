@@ -2,6 +2,7 @@ package ws
 
 import (
 	"backend/database"
+	"backend/server/handler/groups/events"
 	joingroup "backend/server/handler/groups/joinGroup"
 	"encoding/json"
 	"errors"
@@ -177,9 +178,33 @@ func (h *Hub) HandleEvent(eventPayload WSPaylaod) {
 	case "JoinGroup":
 		h.Clients.Range(func(key, value interface{}) bool {
 			client := value.(*WSClient)
-			// if client.Mail == eventPayload.To {
-			client.OutgoingMsg <- eventPayload
-			// }
+			if client.Mail == eventPayload.To {
+				client.OutgoingMsg <- eventPayload
+			}
+			return true
+		})
+	case "NotGoingEvent":
+		h.Clients.Range(func(key, value interface{}) bool {
+			client := value.(*WSClient)
+			if client.Mail == eventPayload.To {
+				client.OutgoingMsg <- eventPayload
+			}
+			return true
+		})
+	case "GoingEvent":
+		h.Clients.Range(func(key, value interface{}) bool {
+			client := value.(*WSClient)
+			if client.Mail == eventPayload.To {
+				client.OutgoingMsg <- eventPayload
+			}
+			return true
+		})
+	case "Desplayed Events":
+		h.Clients.Range(func(key, value interface{}) bool {
+			client := value.(*WSClient)
+			if client.Mail == eventPayload.To {
+				client.OutgoingMsg <- eventPayload
+			}
 			return true
 		})
 	}
@@ -213,12 +238,13 @@ func (wsHub *Hub) AddClient(coon *websocket.Conn, Mail string) {
 }
 
 /*
-	La fonction `func (client *WSClient) messageReader()` est une méthode définie sur la structure
+La fonction `func (client *WSClient) messageReader()` est une méthode définie sur la structure
 
 `WSClient` dans Go. Cette méthode est chargée de lire les messages de la connexion WebSocket
 associée au client.
 */
 func (client *WSClient) messageReader() {
+	Db := database.NewDatabase()
 	for {
 		_, message, err := client.WSCoon.ReadMessage()
 		if err != nil {
@@ -265,9 +291,7 @@ func (client *WSClient) messageReader() {
 				fmt.Println("Erreur de recuperation de donnee")
 				return
 			}
-			Db := database.NewDatabase()
 
-			fmt.Println("aaa", Db.Ping())
 			err = joingroup.InsertNotification(int(groupeId), Db)
 			if err != nil {
 				fmt.Println("Error inserting", err.Error())
@@ -289,6 +313,90 @@ func (client *WSClient) messageReader() {
 				To:   "Adimine group",
 			}
 			WSHub.HandleEvent(wsEvent)
+
+		case "NotGoingEvent":
+			jsonData, err := json.Marshal(wsEvent.Data)
+			if err != nil {
+				fmt.Println("Erreur de conversion en json", err)
+				return
+			}
+			var parseData map[string]interface{}
+			if err := json.Unmarshal(jsonData, &parseData); err != nil {
+				fmt.Println("Erreur de conversion en json", err)
+			}
+
+			groupeId, ok := parseData["groupId"].(float64)
+			if !ok {
+				fmt.Println("Erreur de recuperation de donnee")
+				return
+			}
+			event_id, ok := parseData["event_id"].(float64)
+			if !ok {
+				fmt.Println("Erreur de recuperation de donnee")
+				return
+			}
+
+			dataSend := struct {
+				Group_id int    `json:"id_group"`
+				Event_id int    `json:"button"`
+				Message  string `json:"message"`
+				Type     string ` json:"type"`
+			}{
+				Group_id: int(groupeId),
+				Event_id: int(event_id),
+				Message:  "Delete event for user",
+				Type:     "NotGoingEvent",
+			}
+
+			wsEvent = WSPaylaod{
+				From: client.Mail,
+				Type: eventType,
+				Data: dataSend,
+				To:   "Adimine group",
+			}
+			WSHub.HandleEvent(wsEvent)
+
+		case "GoingEvent":
+			fmt.Println("000000000000000000====")
+			jsonData, err := json.Marshal(wsEvent.Data)
+			if err != nil {
+				fmt.Println("Erreur de conversion en json", err)
+				return
+			}
+			var parseData map[string]interface{}
+			if err := json.Unmarshal(jsonData, &parseData); err != nil {
+				fmt.Println("Erreur de conversion en json", err)
+			}
+
+			groupeId, ok := parseData["groupId"].(float64)
+			if !ok {
+				fmt.Println("Erreur de recuperation de donnee")
+				return
+			}
+			event_id, ok := parseData["event_id"].(float64)
+			if !ok {
+				fmt.Println("Erreur de recuperation de donnee")
+				return
+			}
+			// fmt.Println("+++++++", groupeId)
+			// return
+			err = events.JoinEvent(1, int(groupeId), int(event_id), Db)
+			if err != nil {
+				log.Fatal(err.Error())
+			}
+			fmt.Println(groupeId)
+			fmt.Println(event_id)
+			// Db := database.NewDatabase()
+
+			// fmt.Println("aaa", Db.Ping())
+			// err = going.InsertNotification(int(groupeId), Db)
+		case "Desplayed Events":
+			jsonData, err := json.Marshal(wsEvent.Data)
+			if err != nil {
+				fmt.Println("Erreur de conversion en json", err)
+				return
+			}
+			fmt.Println("JsonData:", string(jsonData))
 		}
 
 	}
@@ -352,3 +460,5 @@ func SendMessage(client *WSClient, reponsData interface{}) {
 	fmt.Println("=========Payload: ", payload.Data)
 	client.OutgoingMsg <- payload
 }
+
+// query = "SELECT id, event_id, user_id, group_id, description, event_date FROM event_joined INNER JOIN event ON event_joined.event_id = event.id WHERE event_joined.user_id = ?"

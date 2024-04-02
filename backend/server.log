@@ -1,3 +1,8 @@
-2024/03/30 06:07:31 Hi big dev !
-let's debug session started at : 2024/03/30 06:07:31
-2024/03/30 06:19:46 [Alert]: post created successfully, 200
+2024/04/02 04:52:46 Hi big dev !
+let's debug session started at : 2024/04/02 04:52:46
+2024/04/02 04:52:52 Client mail@a.com connected
+2024/04/02 04:54:40 Client mail@a.com disconnected
+2024/04/02 04:54:43 Client mail@a.com connected
+2024/04/02 04:54:47 Client mail@a.com disconnected
+2024/04/02 04:54:47 Client mail@a.com connected
+2024/04/02 04:55:07 Client mail@a.com disconnected
