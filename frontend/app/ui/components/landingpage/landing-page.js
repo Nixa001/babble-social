@@ -1,7 +1,9 @@
+"use client"
 import { useSession } from "@/app/api/api.js";
 import Image from "next/image";
 import Link from "next/link.js";
 import { useRouter } from "next/navigation.js";
+import { useEffect} from "react";
 
 export function Landing() {
   const router = useRouter();

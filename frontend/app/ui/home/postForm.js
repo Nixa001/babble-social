@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { useState } from "react";
-import {  toast } from "react-toastify";
+import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
 export const PostForm = () => {
@@ -17,7 +17,10 @@ export const PostForm = () => {
 
   const handlePost = (e) => {
     e.preventDefault();
+    const sessionID = 1;
     const data = new FormData(e.target);
+    data.append("userID", sessionID);
+    data.append("type", "createPost");
     console.log("my data => ", data);
     const options = {
       method: "POST",

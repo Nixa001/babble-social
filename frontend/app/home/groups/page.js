@@ -5,6 +5,8 @@ import Groups from "@/app/ui/home/groups/groups";
 import { QueryClient } from "react-query";
 import { QueryClientProvider } from "react-query";
 import { ApiProvider } from "@/app/_lib/utils";
+import { ToastContainer } from "react-toastify";
+
 export const queryClient = new QueryClient();
 
 const page = () => {

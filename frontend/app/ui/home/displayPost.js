@@ -6,15 +6,10 @@ import { BiWorld } from "react-icons/bi";
 import { SiGnuprivacyguard } from "react-icons/si";
 import { DisplayComments } from "../components/modals/displayComment";
 
-const DisplayPost = ({
-  postData,
-  onCommentClick,
-  onProfileClick,
-}) => {
+const DisplayPost = ({ postData, onCommentClick, onProfileClick }) => {
   const [postDataState, setPostDataState] = useState(postData),
     [isVisibleComment, setIsVisibleComment] = useState(false),
-    [commentCounter, setCommentCounter] = useState(postDataState.Comments)
-
+    [commentCounter, setCommentCounter] = useState(postDataState.Comments);
 
   const handleProfileClick = () => {
     onProfileClick();
@@ -25,8 +20,8 @@ const DisplayPost = ({
       <div className="post_div_top flex flex-col gap-1 w-fit justify-center ">
         <div className="header_pos w-fit">
           <div className="info_post flex items-start gap-2">
-            <Image
-              src={`/assets/${postDataState.Avatar}` || "/assets/profilibg.jpg"}
+            <img
+              src={`${postDataState.Avatar}` || "/assets/profilibg.jpg"}
               alt="Profile picture"
               onClick={handleProfileClick}
               className="profile_pic rounded-full cursor-pointer hover:opacity-60"
@@ -50,11 +45,12 @@ const DisplayPost = ({
               <div className="flex gap-4 text-sm">
                 <span>{postDataState.Date}</span>
                 <div className="flex gap-1 italic text-primary">
-                  {postDataState.Categories.split(",").map((tag) => (
-                    <span key={postDataState.Id + tag} className="mr-1">
-                      #{tag}
-                    </span>
-                  ))}
+                  {postDataState.Categories.length != 0 &&
+                    postDataState.Categories.split(",").map((tag) => (
+                      <span key={postDataState.Id + tag} className="mr-1">
+                        #{tag}
+                      </span>
+                    ))}
                 </div>
               </div>
               <p className="title_post  break-words w-[100%] md:max-w-[300px] max-w-[300px] lg:max-w-[600px]">
@@ -64,7 +60,7 @@ const DisplayPost = ({
           </div>
         </div>
         {postDataState.Media != "NULL" && (
-          <Image
+          <img
             src={postDataState.Media}
             alt="Post image"
             className="img_post max-w-full hover:shadow-xl overflow-hidden cursor-pointer transition duration-300 ease-linear scale-95 hover:scale-100"
@@ -79,7 +75,7 @@ const DisplayPost = ({
           onClick={() => {
             setIsVisibleComment(true);
           }}>
-          <Image
+          <img
             src="/assets/icons/comment.png"
             alt="Comment icon"
             width={30}
@@ -91,9 +87,9 @@ const DisplayPost = ({
       <DisplayComments
         isVisible={isVisibleComment}
         key={postDataState.ID}
-        postId={postDataState.ID + postDataState.Content}
+        postId={postDataState.ID}
         onClose={() => setIsVisibleComment(false)}
-        increment={() => setCommentCounter(prevCount => prevCount + 1)}
+        increment={() => setCommentCounter((prevCount) => prevCount + 1)}
       />
     </div>
   );

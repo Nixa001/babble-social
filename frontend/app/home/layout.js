@@ -1,13 +1,13 @@
-'use client'
+"use client";
 import { useEffect } from "react";
 import { useState } from "react";
 import { Header } from "../ui/components/header/header";
 import Navbar from "../ui/components/navbar/navbar";
 import Sidebar from "../ui/components/sidebarRight/sidebar";
 import { displayFollowers } from "./utils";
+import { ToastContainer } from "react-toastify";
 
 export default function Layout({ children }) {
-
   const { userData, followers, isLoading, error } = useFetchData();
 
   return (
@@ -15,11 +15,12 @@ export default function Layout({ children }) {
       <div className="fixed">
         <Header />
       </div>
-      <div className="md:flex md:flex-row flex flex-col-reverse 
+      <div
+        className="md:flex md:flex-row flex flex-col-reverse 
       justify-between h-[99%] md:justify-between md:h-full  overflow-hidden">
-
         <div className="md:mt-20">
           <Navbar userData={userData} />
+          <ToastContainer />
         </div>
 
         <div className="mt-20 overflow-x-hidden overflow-y-scroll chrome pl-3 mr-3">
@@ -29,12 +30,10 @@ export default function Layout({ children }) {
         <div className="md:mt-20 hidden md:block">
           <Sidebar followers={followers} />
         </div>
-
       </div>
     </div>
   );
 }
-
 
 function useFetchData() {
   const [userData, setUserData] = useState({});
@@ -49,7 +48,7 @@ function useFetchData() {
 
       try {
         const url = `http://localhost:8080/userInfo`;
-        const response = await fetch(url, { method: 'GET' });
+        const response = await fetch(url, { method: "GET" });
         const data = await response.json();
 
         setUserData(data.user);

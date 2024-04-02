@@ -83,7 +83,7 @@ const Group = () => {
                         flex flex-col gap-2'>
             <div className="w-full h-60 mb-3" >
                 {groupInfo.image ? (
-                    <Image
+                    <img
                         src={`${groupInfo.image}`}
                         alt='cover'
                         width={1000} height={1000}
