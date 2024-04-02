@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 func PostGroupHandler(w http.ResponseWriter, r *http.Request) {
@@ -15,15 +16,17 @@ func PostGroupHandler(w http.ResponseWriter, r *http.Request) {
 
 	switch r.Method {
 	case "POST":
+		userID, errconv := strconv.Atoi(r.FormValue("userID"))
+		if errconv != nil {
+			log.Println("❌ Error at converting string to int in userID in postGroupHandler. ", errconv)
+			return
+		}
 		content := r.FormValue("content")
 		groupID, err := GetGroupIDFromRequest(w, r)
 		if err != nil {
 			return
 		}
-		
 		categories := getCategoriesFromForm(r)
-		privacy := r.FormValue("privacy")
-		viewers := fmt.Sprintf("%s, %s", "1", r.FormValue("viewers"))
 		imageLink, err := utils.Uploader(w, r, 20, "image", "")
 		if err != nil {
 			fmt.Println("Upload img")
@@ -34,17 +37,17 @@ func PostGroupHandler(w http.ResponseWriter, r *http.Request) {
 			ToIns: models.InsPost{
 				Content:  content,
 				Media:    utils.FormatImgLink(imageLink),
-				User_id:  1,
+				User_id:  userID,
 				Group_id: groupID,
-				Privacy:  privacy,
+				Privacy:  "public",
 			},
 			Categories: categories,
-			Viewers:    viewers,
+			Viewers:    "",
 		}
 
 		notOk, err1 := service.PostServ.CreatePost(post)
 		if notOk {
-			log.Println("problem after create service ", err)
+			log.Println("problem after post creation in group handler ", err)
 			utils.Alert(w, err1)
 			return
 		} else {

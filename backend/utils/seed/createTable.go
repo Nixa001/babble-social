@@ -39,7 +39,6 @@ func CreateTable(db *sql.DB) {
 		log.Fatal("Users_followers table", err.Error())
 	}
 
-
 	//? Creation de la table posts
 	_, err = db.Exec(`
 		CREATE TABLE IF NOT EXISTS posts (
@@ -56,20 +55,20 @@ func CreateTable(db *sql.DB) {
 		 )
 		`)
 	if err != nil {
-		log.Fatal("Posts table", err.Error())
+		log.Fatal("Posts table ", err.Error())
 	}
 
 	//? Creation de la table viewers
 	_, err = db.Exec(`
 		CREATE TABLE IF NOT EXISTS viewers (
-			post_id TEXT NOT NULL",
+			post_id TEXT NOT NULL,
 			user_id INTEGER NOT NULL,
 			FOREIGN KEY("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE
 			FOREIGN KEY("post_id") REFERENCES "posts"("id") ON DELETE CASCADE ON UPDATE CASCADE
 		 )
 		`)
 	if err != nil {
-		log.Fatal("Viewers table", err.Error())
+		log.Fatal("Viewers table ", err.Error())
 	}
 
 	// Création tavle belong
@@ -77,26 +76,11 @@ func CreateTable(db *sql.DB) {
 		CREATE TABLE IF NOT EXISTS categories (
 			post_id TEXT NOT NULL,
 			category TEXT NOT NULL,
-			FOREIGN KEY(post_id) REFERENCES posts(id) ON DELETE CASCADE ON UPDATE CASCADE,
+			FOREIGN KEY(post_id) REFERENCES posts(id) ON DELETE CASCADE ON UPDATE CASCADE
 		)
 		`)
 	if err != nil {
-		log.Fatal("PostCategory table", err.Error())
-	}
-
-	//? Création de la table postReacts
-	_, err = db.Exec(`
-		CREATE TABLE IF NOT EXISTS postReact (
-			id INTEGER UNIQUE PRIMARY KEY AUTOINCREMENT NOT NULL,
-			post_id INTEGER NOT NULL,
-			user_id INTEGER NOT NULL,
-			reaction BOOLEAN NOT NULL,
-			FOREIGN KEY(post_id) REFERENCES "posts"("id") ON DELETE CASCADE,
-			FOREIGN KEY("user_id") REFERENCES "users"("id") ON DELETE CASCADE
-		)
-		`)
-	if err != nil {
-		log.Fatal("postReact table", err.Error())
+		log.Fatal("PostCategory table ", err.Error())
 	}
 
 	//? Créate de la table comment
@@ -116,23 +100,6 @@ func CreateTable(db *sql.DB) {
 		log.Fatal("Comment table", err.Error())
 	}
 
-	//? Creation de le table commentReact
-	_, err = db.Exec(
-		`
-		CREATE TABLE IF NOT EXISTS commentReacts (
-			id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
-			comment_id INTEGER NOT NULL,
-			post_id INTEGER NOT NULL,
-			user_id INTEGER NOT NULL,
-			reaction BOOLEAN NOT NULL,
-			FOREIGN KEY("comment_id") REFERENCES "comment"("id") ON DELETE CASCADE ON UPDATE CASCADE,
-			FOREIGN KEY("post_id") REFERENCES "posts"("id") ON DELETE CASCADE ON UPDATE CASCADE,
-			FOREIGN KEY("user_id") REFERENCES "users"("id") ON DELETE CASCADE ON UPDATE CASCADE
-		)
-	`)
-	if err != nil {
-		log.Fatal("commentReacts table", err.Error())
-	}
 	// Creation de la table session
 	_, err = db.Exec(`
 	CREATE TABLE IF NOT EXISTS sessions (
