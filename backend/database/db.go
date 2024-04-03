@@ -37,7 +37,6 @@ func NewDatabase() *sql.DB {
 	return db
 }
 
-
 func (d *Database) Insert(table string, data any) error {
 	query, err := q.InsertQuery(table, data)
 	if err != nil {

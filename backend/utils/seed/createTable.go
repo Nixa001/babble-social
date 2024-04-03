@@ -42,9 +42,9 @@ func CreateTable(db *sql.DB) {
 	//? Creation de la table posts
 	_, err = db.Exec(`
 		CREATE TABLE IF NOT EXISTS posts (
-			id TEXT UNIQUE PRIMARY KEY  NOT NULL,
+			id TEXT UNIQUE PRIMARY KEY NOT NULL,
 			content TEXT DEFAULT "NULL",
-			media TEXT DEFAULT "NULL",
+			media TEXT DEFAULT "",
 			date TEXT NOT NULL,
 			timestamp CURRENT_TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
 			user_id INTEGER NOT NULL,
@@ -88,7 +88,7 @@ func CreateTable(db *sql.DB) {
 		CREATE TABLE IF NOT EXISTS comment (
 			id INTEGER UNIQUE PRIMARY KEY AUTOINCREMENT NOT NULL,
 			content TEXT DEFAULT "NULL",
-			date TEXT  NOT NULL,
+			date TEXT NOT NULL,
 			media TEXT DEFAULT NULL,
 			post_id INTEGER NOT NULL,
 			user_id INTEGER NOT NULL,
