@@ -1,7 +1,7 @@
 import React from 'react'
 import Image from 'next/image';
 
-export const Suggest = ({ followers, isVisible, onClose }) => {
+export const Suggest = ({ followers, isVisible, onClose, id_group, sendMessage }) => {
     if (!isVisible) return null;
     return (
         <div className='fixed inset-0 bg-bg bg-opacity-10 backdrop-blur-sm 
@@ -27,7 +27,7 @@ export const Suggest = ({ followers, isVisible, onClose }) => {
                     <div className="flex flex-col lg:w-[100%] 2xl-[80%] xl:w-[75%] w-[80%]  gap-1 ">
                         <input placeholder='search friend ...' className='h-8 bg-transparent border border-gray-700 rounded-md text-center focus:outline-none focus:border-primary' />
                         <div className="flex flex-col h-[400px] overflow-scroll">
-                            {displaySuggestFriend(followers)}
+                            {displaySuggestFriend(followers, id_group, sendMessage)}
                         </div>
                     </div>
                 </div>
@@ -46,7 +46,7 @@ export const Suggest = ({ followers, isVisible, onClose }) => {
 //     { name: 'dickss', src: "/assets/profilibg.jpg", alt: "profil", },
 // ];
 
-export const displaySuggestFriend = (data) => {
+export const displaySuggestFriend = (data, id_group, sendMessage) => {
     return data.map((follower) => {
         return (
             <div key={follower.name} className=" hover:opacity-90 w-[95%] flex items-center cursor-pointer justify-between gap-2 mt-1 mb-3 p-2  ">
@@ -62,7 +62,7 @@ export const displaySuggestFriend = (data) => {
                     <h4 className="font-bold ">{follower.first_name + " " + follower.last_name}</h4>
                 </div>
                 <button 
-                onClick={()=>suggest(follower.id)}
+                onClick={()=>suggest(follower.id, id_group, sendMessage)}
                 type="submit" className="bg-second h-7 text-lg font-bold px-2 rounded-md cursor-pointer hover:bg-primary">
                     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
                         <path d="M5.25 6.375a4.125 4.125 0 1 1 8.25 0 4.125 4.125 0 0 1-8.25 0ZM2.25 19.125a7.125 7.125 0 0 1 14.25 0v.003l-.001.119a.75.75 0 0 1-.363.63 13.067 13.067 0 0 1-6.761 1.873c-2.472 0-4.786-.684-6.76-1.873a.75.75 0 0 1-.364-.63l-.001-.122ZM18.75 7.5a.75.75 0 0 0-1.5 0v2.25H15a.75.75 0 0 0 0 1.5h2.25v2.25a.75.75 0 0 0 1.5 0v-2.25H21a.75.75 0 0 0 0-1.5h-2.25V7.5Z" />
@@ -73,6 +73,7 @@ export const displaySuggestFriend = (data) => {
     })
 }
 
-function suggest(id) {
-    alert(id)
+function suggest(id, id_group, sendMessage) {
+    // alert(id)
+    sendMessage({ type: "SuggestFriend", userId: id, id_group: id_group});
 }

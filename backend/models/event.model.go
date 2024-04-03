@@ -6,6 +6,7 @@ type Event struct {
 	UserID      int    `json:"user_id"`
 	Description string `json:"description"`
 	Date        string `json:"date"`
+	Is_joined   int    `json:"is_joined"`
 }
 
 type EventJoined struct {

@@ -1,8 +1,27 @@
-2024/04/02 04:52:46 Hi big dev !
-let's debug session started at : 2024/04/02 04:52:46
-2024/04/02 04:52:52 Client mail@a.com connected
-2024/04/02 04:54:40 Client mail@a.com disconnected
-2024/04/02 04:54:43 Client mail@a.com connected
-2024/04/02 04:54:47 Client mail@a.com disconnected
-2024/04/02 04:54:47 Client mail@a.com connected
-2024/04/02 04:55:07 Client mail@a.com disconnected
+2024/04/02 23:38:39 Hi big dev !
+let's debug session started at : 2024/04/02 23:38:39
+2024/04/02 23:38:49 Client mail@a.com connected
+2024/04/02 23:45:24 --------------------------------------------
+2024/04/02 23:45:24           COMMENT Form values                 
+2024/04/02 23:45:24 --------------------------------------------
+2024/04/02 23:45:24 request type  loadComments
+2024/04/02 23:45:24 [FETCHING COMMENT DATA ◼◼◼]
+2024/04/02 23:45:24 debug get id:  8d9f32a0-3545-419e-a521-63879f80c9catest empty
+2024/04/02 23:45:25 --------------------------------------------
+2024/04/02 23:45:25           COMMENT Form values                 
+2024/04/02 23:45:25 --------------------------------------------
+2024/04/02 23:45:25 request type  loadComments
+2024/04/02 23:45:25 [FETCHING COMMENT DATA ◼◼◼]
+2024/04/02 23:45:25 debug get id:  8d9f32a0-3545-419e-a521-63879f80c9catest empty
+2024/04/02 23:45:26 --------------------------------------------
+2024/04/02 23:45:26           COMMENT Form values                 
+2024/04/02 23:45:26 --------------------------------------------
+2024/04/02 23:45:26 request type  loadComments
+2024/04/02 23:45:26 [FETCHING COMMENT DATA ◼◼◼]
+2024/04/02 23:45:26 debug get id:  8d9f32a0-3545-419e-a521-63879f80c9catest empty
+2024/04/02 23:45:27 --------------------------------------------
+2024/04/02 23:45:27           COMMENT Form values                 
+2024/04/02 23:45:27 --------------------------------------------
+2024/04/02 23:45:27 request type  loadComments
+2024/04/02 23:45:27 [FETCHING COMMENT DATA ◼◼◼]
+2024/04/02 23:45:27 debug get id:  8d9f32a0-3545-419e-a521-63879f80c9catest empty

@@ -164,8 +164,16 @@ func GetEvent(db *sql.DB, groupID, userID int) ([]models.Event, []models.EventJo
 	if err != nil {
 		fmt.Println("error on GetEventJoined", err)
 	}
-	
-	query := "SELECT * FROM event WHERE group_id =?"
+
+	query := `
+	SELECT *
+	FROM event
+	WHERE event.id = ? AND event.id NOT IN (
+    SELECT event_notjoined.event_id
+    FROM event_notjoined
+);
+	`
+	// # SELECT * FROM event WHERE group_id =?
 	rows, err := db.Query(query, groupID)
 	if err != nil {
 		return events, nil, fmt.Errorf("err execute user query: %w", err)
@@ -174,7 +182,7 @@ func GetEvent(db *sql.DB, groupID, userID int) ([]models.Event, []models.EventJo
 
 	for rows.Next() {
 		var event models.Event
-		err := rows.Scan(&event.ID, &event.GroupID, &event.UserID, &event.Description, &event.Date)
+		err := rows.Scan(&event.ID, &event.GroupID, &event.UserID, &event.Description, &event.Date, &event.Is_joined)
 		if err != nil {
 			return events, nil, fmt.Errorf("err scan group data: %w", err)
 		}
@@ -184,6 +192,7 @@ func GetEvent(db *sql.DB, groupID, userID int) ([]models.Event, []models.EventJo
 		} else {
 			events = append(events, event)
 		}
+		// fmt.Println("event ", events)
 	}
 
 	if err := rows.Err(); err != nil {
@@ -208,7 +217,7 @@ func GetEvent(db *sql.DB, groupID, userID int) ([]models.Event, []models.EventJo
 			log.Fatal(err.Error())
 		}
 		dataEventJoint = append(dataEventJoint, event)
-		
+
 		// fmt.Println("dataEventJoint ", event)
 	}
 

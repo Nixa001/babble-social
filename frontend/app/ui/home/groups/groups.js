@@ -7,6 +7,7 @@ import { useQuery } from "react-query";
 import { useApi } from "@/app/_lib/utils";
 import { JoinGroup } from "./group.utils/joinGroup";
 
+export const { sendMessage, readMessages, messages } = useApi();
 const Groups = () => {
   const [formCreateGr, setFormCreateGr] = useState(false);
   const [groupData, setGroupData] = useState([]);
@@ -101,7 +102,6 @@ const GroupCard = ({ isMember, id, image, name, description, href, state }) => {
     description = description.slice(0, 50) + " ...";
   }
 
-  const { sendMessage, readMessages, messages } = useApi();
   const handleLoginJoinMessage = () => {
     // console.log("handleLoginJoinMessage ", id);
     const joinMessage = messages.find(
