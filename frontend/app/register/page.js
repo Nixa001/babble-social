@@ -1,5 +1,4 @@
-import React from "react";
-import Register from "../ui/register/register";
+import Register from "../ui/components/register/register.js";
 
 const Page = () => {
   return (
