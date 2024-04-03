@@ -168,7 +168,7 @@ func GetEvent(db *sql.DB, groupID, userID int) ([]models.Event, []models.EventJo
 	query := `
 	SELECT *
 	FROM event
-	WHERE event.id = ? AND event.id NOT IN (
+	WHERE event.group_id = ? AND event.id NOT IN (
     SELECT event_notjoined.event_id
     FROM event_notjoined
 );

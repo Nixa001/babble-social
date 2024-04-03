@@ -75,5 +75,5 @@ export const displaySuggestFriend = (data, id_group, sendMessage) => {
 
 function suggest(id, id_group, sendMessage) {
     // alert(id)
-    sendMessage({ type: "SuggestFriend", userId: id, id_group: id_group});
+    sendMessage({ type: "SuggestFriend", userId: id, id_group: id_group });
 }

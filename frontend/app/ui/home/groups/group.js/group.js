@@ -16,6 +16,7 @@ import {
   Avatar,
 } from "@mui/material";
 import { useApi } from "@/app/_lib/utils";
+
 const CardEvent = ({ description, date }) => {
   return (
     <Card sx={{ maxWidth: 400, mb: 2 }}>
@@ -25,7 +26,7 @@ const CardEvent = ({ description, date }) => {
         }
         title={creatorName}
         subheader={`${date} à ${time}`}
-        />
+      />
       <CardContent>
         <Typography variant="body2" color="textSecondary">
           {description}
@@ -36,6 +37,7 @@ const CardEvent = ({ description, date }) => {
 };
 
 const Group = () => {
+  // Instantiate ws
   const { sendMessage } = useApi();
   const [formCreateEv, setFormCreateEv] = useState(false);
   const [formCreateP, setFormCreateP] = useState(false);
@@ -279,7 +281,7 @@ const Group = () => {
             </svg>
             New Events
           </h1>
-          {events ? displayEventToJoin(events) : ""}
+          {events ? displayEventToJoin(events, sendMessage) : ""}
         </div>
         <div className="w-[75%] ">
           {groupPosts
@@ -364,10 +366,9 @@ export const displayEvents = (events) => {
     );
   });
 };
-export const displayEventToJoin = (events) => {
+export const displayEventToJoin = (events, sendMessage) => {
   // const { sendMessage } = useApi();
   return events.map((event) => {
-    // if (event.is_joined === 1) {
       return (
         <div
           key={event.id}
