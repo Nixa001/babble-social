@@ -12,10 +12,10 @@ SELECT
     COUNT(DISTINCT c.id) AS comment_count,
     GROUP_CONCAT(DISTINCT cat.category) AS categories
 FROM
-    posts AS p,
-    users AS u
+    posts AS p
     LEFT JOIN comment AS c ON p.id = c.post_id,
-    categories AS cat ON p.id = cat.post_id
+    categories AS cat ON p.id = cat.post_id,
+    users AS u ON  p.user_id=u.id
 WHERE
     (
         p.privacy = 'public'
