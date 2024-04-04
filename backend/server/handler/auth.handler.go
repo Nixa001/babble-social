@@ -104,7 +104,7 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func SignInHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Sign in handler")
+	// fmt.Println("Sign in handler")
 	cors.SetCors(&w)
 	if r.Method == http.MethodOptions {
 		w.WriteHeader(http.StatusOK)

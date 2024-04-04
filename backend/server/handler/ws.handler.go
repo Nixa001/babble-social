@@ -9,11 +9,6 @@ import (
 	"github.com/gorilla/websocket"
 )
 
-type Message struct {
-	Type string      `json:"type"`
-	Data interface{} `json:"data"`
-}
-
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,
@@ -31,6 +26,7 @@ func WSHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	userSession := UserInSession(w, r)
+	token := r.URL.Query().Get("token")
 
 	conn, err := upgrader.Upgrade(w, r, nil) // Utilisez l'Upgrader configuré
 	if err != nil {
@@ -38,6 +34,8 @@ func WSHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// defer conn.Close()
-	ws.WSHub.AddClient(conn, userSession.Email)
+	// fmt.Println("userSession: ", userSession)
+
+	ws.WSHub.AddClient(conn, userSession.Email, token)
 
 }

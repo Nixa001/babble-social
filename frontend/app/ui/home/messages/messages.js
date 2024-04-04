@@ -1,47 +1,79 @@
 'use client'
 import Image from 'next/image';
-import { IoSend } from "react-icons/io5";
 import { displayFollowers, followerHearder } from '../../components/sidebarRight/sidebar';
 import { useContext, useEffect, useState } from 'react';
-import { postData } from '@/app/lib/utils';
 import useSocket, { WebSocketContext } from '@/app/_lib/websocket';
 import { getSessionUser } from '@/app/_lib/utils';
 
+let idreceiver;
+let idgroupreceiver;
 const Messages = () => {
+    const { sendMessageToServer, allMessages,resetAllMessages } = useContext(WebSocketContext)
+    const [idUserReceiver, setIdUserReceiver] = useState(0);
+    const [idGroupReceiver, setIdGroupReceiver] = useState(0);
+    const [nameUser, setNameUser] = useState("");
+    const [nameGroup, setNameGroup] = useState("");
     const [activeTab, setActiveTab] = useState("users");
-    const { sendMessageToServer, allMessages } = useContext(WebSocketContext)
-    // const {sendMessage} = useSocket('ws://localhost:8080/ws');
 
     const handleTabClick = (tab) => {
         setActiveTab(tab);
     };
-
-
-    //Traitement des message entre user
+    const reset = () => {
+        setIdUserReceiver(0);
+        setIdGroupReceiver(0);
+        setNameUser("");
+        setNameGroup("");
+    };
+    useEffect(()=>{
+        return ()=>{
+            reset();
+        }
+    },[activeTab])
     useEffect(() => {
-        console.log("all messages", allMessages);
+        return () => {
+            resetAllMessages();
+        };
+    }, [activeTab]);
+    useEffect(() => {
+        // console.log("all messages", allMessages);
     }, [allMessages])
+    useEffect(() => {
+        idreceiver = idUserReceiver
+    }, [idUserReceiver]);
+    useEffect(() => {
+        idgroupreceiver = idGroupReceiver
+    }, [idGroupReceiver]);
+    useEffect(()=>{
+        // console.log(nameUser);
+    },[nameUser]);
+    useEffect(()=>{
+        // console.log(nameGroup);
+    },[nameGroup]);
 
-    const handleUserClick = async (userId) => {
+    const handleUserClick = async (userId, name) => {
         console.log("User clicked:", userId);
+        setIdUserReceiver(userId);
+        setNameUser(name);
         // Récupérer l'ID de l'utilisateur en session
         const sessionUser = await getSessionUser();
         const sessionUserId = sessionUser.id; // A
+        console.log("idreceiver", idreceiver);
         console.log("Session user", sessionUserId);
         sendMessageToServer({ type: 'id-receiver-event', data: { clickedUserId: userId, sessionUserId: sessionUserId } });
-
 
     };
 
     //Traitement de message entre user et Groups
 
-    const handleGroupClick = async (GroupId) => {
+    const handleGroupClick = async (GroupId, nameGroup) => {
         console.log("Group clicked:", GroupId);
+        setIdGroupReceiver(GroupId);
+        setNameGroup(nameGroup)
         const sessionUser = await getSessionUser();
         const sessionUserId = sessionUser.id; // A
         console.log("Session user", sessionUserId);
         const token = localStorage.getItem('token');
-        sendMessageToServer({ type: 'idGroup-receiver-event', data: { idgroud : GroupId, token : token}  });
+        sendMessageToServer({ type: 'idGroup-receiver-event', data: { idgroup: GroupId, userID: sessionUserId } });
         // Ici, vous pouvez ajouter la logique pour gérer l'ID de l'utilisateur cliqué
     };
 
@@ -55,12 +87,21 @@ const Messages = () => {
         });
         console.log(obj.message);
         if (obj.message.trim() !== "") {
+            console.log("idreceiver in message", idreceiver);
+            console.log("idgroupreceiver in message", idgroupreceiver);
             // Détermine le type de message en fonction de activeTab
             const messageType = activeTab === "group" ? "message-group-event" : "message-user-event";
+            const receiverId = messageType === "message-group-event" ? idgroupreceiver : idreceiver;
             // Prépare les données du message
+            const sessionUser = await getSessionUser();
+            const sessionUserId = sessionUser.id; // A
             const messageData = {
                 type: messageType,
-                data: obj.message
+                data: {
+                    message: obj.message,
+                    sendId: sessionUserId,
+                    receiverId: receiverId,
+                }
             };
             // Envoie le message au serveur
             sendMessageToServer(messageData);
@@ -113,8 +154,8 @@ const Messages = () => {
                             height={50}
                         />
                         <div className='flex gap-2 items-center'>
-                            <h3 className="user_name_post break-words max-w-[600px] w-[80%] font-bold">
-                                Mamour Drame
+                            <h3 className="user_name_post break-words max-w-[600px] w-[80%] font-bold"> 
+                              {activeTab === "group" ? nameGroup : nameUser}
                             </h3>
                             <span className="username_post italic text-primary">
                                 @Darze
@@ -122,7 +163,7 @@ const Messages = () => {
                         </div>
                     </div>
                     <div className="h-full overflow-y-auto">
-                        {displayMessages(allMessages.length > 0 ? allMessages[0] : messages)}
+                        {displayMessages(allMessages)}
                     </div>
                 </div>
 
@@ -146,6 +187,11 @@ const Messages = () => {
 
 
 const displayMessages = (messages) => {
+    // Vérifie si messages est null ou non un tableau
+    if (!Array.isArray(messages) || messages.length === 0) {
+        return <p>Aucun message à afficher.</p>;
+    }
+    // Si messages n'est pas vide, mappe sur les messages comme avant
     return messages.map((message) => (
         <div key={message.id} className="message-container flex items-end mb-4">
             <div className="flex flex-col">

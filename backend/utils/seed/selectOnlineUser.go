@@ -176,39 +176,35 @@ func InsertMessage(db *sql.DB, userSender, userReceiver int, messageContent, dat
 	return nil
 }
 
-// getGroupMessage récupère les messages pour un groupe spécifique
-func GetGroupMessage(db *sql.DB, groupIDReceiver int) ([]models.Chat, error) {
-	// Préparation de la requête SQL
-	query := `SELECT * FROM messages WHERE group_id_receiver = ?`
-	rows, err := db.Query(query, groupIDReceiver)
+func GetLastMessage(db *sql.DB, msg string) (models.Chat, error) {
+	query := `SELECT * FROM messages WHERE message_content = ?`
+	row, err := db.Query(query, msg)
 	if err != nil {
-		log.Printf("Erreur lors de la récupération des messages du groupe: %v", err)
-		return nil, err
+		return models.Chat{}, err
 	}
-	defer rows.Close()
-
-	// Préparation du slice pour stocker les messages
-	var messages []models.Chat
-
-	// Parcours des résultats et remplissage du slice
-	for rows.Next() {
-		var message models.Chat
-		var userReceiver, groupIDReceiver *int
-		err := rows.Scan(&message.ID, &message.UserSender, &userReceiver, &message.MessageContent, &groupIDReceiver, &message.Date)
+	var message models.Chat
+	for row.Next() {
+		var groupIDReceiver *int
+		err = row.Scan(&message.ID, &message.UserSender, &message.UserReceiver, &message.MessageContent, &groupIDReceiver, &message.Date)
 		if err != nil {
-			log.Printf("Erreur lors de la lecture des messages du groupe: %v", err)
-			return nil, err
+			log.Println("Erreur lors de recuperer du message:", err)
+			return models.Chat{}, err
 		}
-		message.UserReceiver = userReceiver
-		message.GroupIDReceiver = groupIDReceiver
-		messages = append(messages, message)
+		// Récupérer le first_name de l'utilisateur qui a envoyé le message
+		queryUser := `SELECT first_name FROM users WHERE id = ?`
+		userRow, err := db.Query(queryUser, message.UserSender)
+		if err != nil {
+			log.Println("Erreur lors de la récupération du first_name:", err)
+			return models.Chat{}, err
+		}
+		defer userRow.Close()
+		if userRow.Next() {
+			err = userRow.Scan(&message.FirstName)
+			if err != nil {
+				log.Println("Erreur lors de la récupération du first_name:", err)
+				return models.Chat{}, err
+			}
+		}
 	}
-
-	// Vérification d'une éventuelle erreur lors de la récupération des résultats
-	if err = rows.Err(); err != nil {
-		log.Printf("Erreur lors de la récupération des messages du groupe: %v", err)
-		return nil, err
-	}
-
-	return messages, nil
+	return message, err
 }
