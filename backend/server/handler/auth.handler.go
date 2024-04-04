@@ -217,6 +217,6 @@ func VerifySessionHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusOK)
-	json.NewEncoder(w).Encode(map[string]any{"message": "success", "token": session.Token})
+	json.NewEncoder(w).Encode(map[string]any{"message": "success", "session": session})
 
 }
