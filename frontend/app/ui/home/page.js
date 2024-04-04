@@ -45,7 +45,7 @@ const HomePage = () => {
     <div className=" md:w-[400px] lg:w-[650px] xl:w-[800px] 2xl:w-[1000px] w-screen">
       <div className="flex justify-center mb-4">{PostForm()}</div>
       <div className="post_div_top flex flex-col items-center">
-        {posts.length != 0 &&
+        {posts != null &&
           posts.map((e) => (
             <AddPost
               key={e.ID}
