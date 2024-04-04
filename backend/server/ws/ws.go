@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"log"
+	"strconv"
 	"sync"
 
 	"github.com/gorilla/websocket"
@@ -170,9 +171,9 @@ func (h *Hub) HandleEvent(eventPayload WSPaylaod) {
 	case "Welcome":
 		h.Clients.Range(func(key, value interface{}) bool {
 			client := value.(*WSClient)
-			// if client.Mail == eventPayload.To {
-			client.OutgoingMsg <- eventPayload
-			// }
+			if client.Mail == eventPayload.To {
+				client.OutgoingMsg <- eventPayload
+			}
 			return true
 		})
 	case "JoinGroup":
@@ -253,6 +254,7 @@ associée au client.
 */
 func (client *WSClient) messageReader() {
 	Db := database.NewDatabase()
+	defer Db.Close()
 	for {
 		_, message, err := client.WSCoon.ReadMessage()
 		if err != nil {
@@ -300,7 +302,13 @@ func (client *WSClient) messageReader() {
 				return
 			}
 
-			err = joingroup.InsertNotification(int(groupeId), Db)
+			typeNotification, ok := parseData["type"].(string)
+			if !ok {
+				fmt.Println("Erreur de recuperation de donnee")
+				return
+			}
+			idUserConnect := 1
+			err = joingroup.InsertNotification(int(groupeId), typeNotification, idUserConnect, Db)
 			if err != nil {
 				fmt.Println("Error inserting", err.Error())
 			}
@@ -419,12 +427,30 @@ func (client *WSClient) messageReader() {
 			}
 			fmt.Println("userId", userId)
 
-			groupeID, ok := parseData["id_group"]
+			groupeID, ok := parseData["id_group"].(string)
 			if !ok {
 				fmt.Println("Erreur de recuperation de donnee")
 				return
 			}
 			fmt.Println("idgroup", groupeID)
+			typeNotification, ok := parseData["type"].(string)
+			if !ok {
+				fmt.Println("Erreur de recuperation de donnee")
+				return
+			}
+			fmt.Println("typeNotification ", typeNotification)
+			idUserConnect := 4
+			group_id, err := strconv.Atoi(groupeID)
+			if err != nil {
+				log.Fatal(err.Error())
+
+			}
+			fmt.Println(group_id, typeNotification, idUserConnect)
+			err = joingroup.InsertNotification(group_id, typeNotification, idUserConnect, Db)
+			if err != nil {
+				fmt.Println("Error inserting notification ", err.Error())
+				return
+			}
 		}
 
 	}
