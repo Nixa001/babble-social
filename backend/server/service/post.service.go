@@ -3,6 +3,7 @@ package service
 import (
 	"backend/models"
 	r "backend/server/repositories"
+	"log"
 )
 
 type PostService struct {
@@ -14,6 +15,7 @@ func (p *PostService) init() {
 }
 
 func (p *PostService) CreatePost(post models.Post) (bool, models.Errormessage) {
+	log.Println("creating with => ", post.ToIns.User_id)
 	Not_ok, err := p.PostRepo.CreatePost(post)
 	if Not_ok {
 		return true, err
@@ -22,6 +24,7 @@ func (p *PostService) CreatePost(post models.Post) (bool, models.Errormessage) {
 }
 
 func (p *PostService) GetPost(Id int) ([]models.DataPost, error) {
+	log.Println("getting post with ", Id)
 	posts, err := p.PostRepo.LoadPost(Id)
 	if posts == nil {
 		return nil, err

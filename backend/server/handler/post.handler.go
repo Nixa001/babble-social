@@ -17,7 +17,14 @@ func POSTHandler(w http.ResponseWriter, r *http.Request) {
 	log.Println("gotten userID => ", r.FormValue("userID"))
 	userID, errconv := strconv.Atoi(r.FormValue("userID"))
 	if errconv != nil {
-		log.Println("❌ Error at converting string to int in userID. ", errconv)
+		log.Println("❌ Error at converting string to int in userID in post. ", errconv)
+		msg := models.Errormessage{
+			Type:       "Bad request",
+			Msg:        "wrong id!",
+			StatusCode: 400,
+			Display:    true,
+		}
+		utils.Alert(w, msg)
 		return
 	}
 	if r.Method != "POST" {
@@ -38,6 +45,7 @@ func POSTHandler(w http.ResponseWriter, r *http.Request) {
 			log.Println("          Post Form values                 ")
 			log.Println("--------------------------------------------")
 			PostContent := r.FormValue("content")
+			log.Println("[INFO] userID: ", userID) //debug
 			log.Println("[INFO] post content: ", PostContent) //debug
 			Sport := r.FormValue("Sport")
 			Health := r.FormValue("Health")
@@ -92,7 +100,7 @@ func POSTHandler(w http.ResponseWriter, r *http.Request) {
 				utils.Alert(w, msg)
 			}
 		case "loadPosts":
-			//log.Println("[FETCHING POST DATA ◼◼◼]")
+			log.Println("[FETCHING POST DATA ◼◼◼] with ", userID)
 			postTab, err := service.PostServ.GetPost(userID)
 			if err != nil {
 				log.Println("problem after get service ", err)

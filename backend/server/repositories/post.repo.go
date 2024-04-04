@@ -29,11 +29,11 @@ SELECT
     COUNT(DISTINCT c.id) AS comment_count,
 	GROUP_CONCAT(DISTINCT cat.category) AS categories
 FROM 
-    posts AS p,
-	users AS u
+    posts AS p
 LEFT JOIN 
     comment AS c ON p.id = c.post_id,
-	categories AS cat ON p.id = cat.post_id
+	categories AS cat ON p.id = cat.post_id,
+	users AS u ON p.user_id = u.id
 WHERE 
     (
         p.privacy = 'public'
@@ -78,46 +78,13 @@ SELECT
     concat (u.first_name, " ", u.last_name) as full_name,
     COUNT(DISTINCT c.id) AS comment_count
 FROM 
-    posts AS p,
-	users AS u
+    posts AS p
 LEFT JOIN 
-    comment AS c ON p.id = c.post_id
+    comment AS c ON p.id = c.post_id,
+	users AS u ON p.user_id = u.id
 WHERE group_id = ?
 	GROUP BY p.id, p.content, p.media, p.date, p.user_id
 	ORDER BY p.timestamp DESC;
-`
-	GetOnePostQuery = `
-SELECT
-    p.id,
-    p.content,
-    p.media,
-    p.date,
-    p.user_id,
-    u.avatar,
-    u.user_name,
-    concat (u.first_name, " ", u.last_name),
-    COUNT(DISTINCT c.id),
-    GROUP_CONCAT(DISTINCT cat.category),
-    CASE
-    WHEN p.privacy ="public" THEN "public"
-    WHEN p.privacy ="private" THEN (
-         SELECT GROUP_CONCAT(user_id_follower) 
-            FROM users_followers 
-            WHERE user_id_followed = p.user_id 
-    )
-    WHEN p.privacy ="almost" THEN (
-        SELECT GROUP_CONCAT(user_id)
-            FROM viewers
-            WHERE post_id = p.id
-        )
-        ELSE NULL
-    END AS isPublic
-FROM
-    posts AS p
-LEFT JOIN comment AS c ON p.id = c.post_id,
-    categories AS cat ON p.id = cat.post_id,
-    users AS u ON u.id =  p.user_id
-WHERE p.id = ?;
 `
 )
 
