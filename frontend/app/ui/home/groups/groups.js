@@ -69,13 +69,13 @@ const Groups = () => {
             New Group
           </button>
         </div>
-        <div className="w-full flex gap-3 flex-wrap">
+        <div className="w-full flex gap-3 overflow-x-scroll">
           {groupJoined.map((group) => (
             <GroupCard key={group.id} isMember={true} {...group} />
           ))}
         </div>
         <h1 className="text-xl font-bold my-5">Discover new communities</h1>
-        <div className="w-full flex gap-3 flex-wrap pb-10">
+        <div className="w-full flex gap-3 overflow-x-scroll pb-10">
           {groupData
             ? groupData.map((group) => (
               <GroupCard key={group.id} isMember={false} {...group} />

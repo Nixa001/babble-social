@@ -131,7 +131,7 @@ export const PostForm = () => {
         <input type="file" name="image" id="image_post" />
         <button
           type="submit"
-          className="bg-second h-full text-lg font-bold pl-3 pr-3 rounded-lg cursor-pointer hover:bg-primary">
+          className="bg-second h-10 text-lg font-bold pl-3 pr-3 rounded-lg cursor-pointer hover:bg-primary">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
