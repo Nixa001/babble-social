@@ -6,7 +6,7 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-export const CreatePost = ({ isVisible, onClose, id }) => {
+export const CreatePost = ({ isVisible, onClose, id, user }) => {
   const [textarea, setTextarea] = useState("");
   const [tech, setTech] = useState(false);
   const [sport, setSport] = useState(false);
@@ -19,7 +19,7 @@ export const CreatePost = ({ isVisible, onClose, id }) => {
 
   const handlePost = (e) => {
     e.preventDefault();
-    const sessionID = 1; //TODO: get the user ID from local
+    const sessionID = user; //TODO: get the user ID from local
     const data = new FormData(e.target);
     data.append("userID", sessionID);
     console.log("my data => ", data);
