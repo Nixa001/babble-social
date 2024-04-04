@@ -45,7 +45,7 @@ func POSTHandler(w http.ResponseWriter, r *http.Request) {
 			log.Println("          Post Form values                 ")
 			log.Println("--------------------------------------------")
 			PostContent := r.FormValue("content")
-			log.Println("[INFO] userID: ", userID) //debug
+			log.Println("[INFO] userID: ", userID)            //debug
 			log.Println("[INFO] post content: ", PostContent) //debug
 			Sport := r.FormValue("Sport")
 			Health := r.FormValue("Health")
@@ -70,7 +70,17 @@ func POSTHandler(w http.ResponseWriter, r *http.Request) {
 			Viewers := fmt.Sprintf("%v, %s", userID, r.FormValue("viewers"))
 			log.Println("[INFO] viewers: ", Viewers) //debug
 
-			Image, _ := utils.Uploader(w, r, 20, "image", "")
+			Image, errimg := utils.Uploader(w, r, 20, "image", "")
+			if errimg != nil {
+				msg := models.Errormessage{
+					Type:       "Bad request",
+					Msg:        errimg.Error(),
+					StatusCode: 400,
+					Display:    false,
+				}
+				utils.Alert(w, msg)
+				return
+			}
 			log.Println("[INFO] imagelink: ", Image) //debug
 			PostToCreate := models.Post{
 				ToIns: models.InsPost{
