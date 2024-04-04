@@ -1,6 +1,5 @@
 "use client";
 import { loginUser, logoutUser } from "@/app/api/api.js";
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -46,7 +45,7 @@ export default function Login() {
     <div className="w-screen h-screen flex">
       <div className="flex flex-col items-center w-full sm:w-6/12">
         <div className="flex items-center justify-around w-full">
-          <Image
+          <img
             src="/assets/icons/comment.png"
             alt="logo"
             width={40}
@@ -66,13 +65,13 @@ export default function Login() {
           <div className="text-center login_other">
             <h4 className="font-bold text-xl mb-2">Login in to account</h4>
             <div className="flex items-center justify-center gap-4">
-              <Image
+              <img
                 src="/assets/login/google.svg"
                 alt="google"
                 width={40}
                 height={40}
               />
-              <Image
+              <img
                 src="/assets/login/githubb.svg"
                 alt="google"
                 width={40}

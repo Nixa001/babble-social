@@ -1,6 +1,5 @@
 "use client"
 import { useSession } from "@/app/api/api.js";
-import Image from "next/image";
 import Link from "next/link.js";
 import { useRouter } from "next/navigation.js";
 import { useEffect} from "react";
@@ -20,7 +19,7 @@ export function Landing() {
         <div className="px-4 mx-auto sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 lg:h-20">
             <div className="flex-shrink-0">
-              <Image
+              <img
                 width={100}
                 height={100}
                 className="w-full"
@@ -84,7 +83,7 @@ export function Landing() {
               </p>
             </div>
             <div>
-              <Image
+              <img
                 width={1000}
                 height={1000}
                 className="w-full"

@@ -1,6 +1,5 @@
 "use client";
 import { registerUser } from "@/app/api/api.js";
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -31,7 +30,7 @@ function Register() {
     <div className="w-screen h-screen flex">
       <div className="flex flex-col items-center w-full sm:w-6/12">
         <div className="flex items-center justify-around w-full">
-          <Image
+          <img
             src="/assets/icons/comment.png"
             alt="logo"
             width={40}

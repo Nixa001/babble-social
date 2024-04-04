@@ -1,6 +1,4 @@
 'use client'
-import Image from 'next/image';
-import { IoSend } from "react-icons/io5";
 import { displayFollowers, followerHearder } from '../../components/sidebarRight/sidebar';
 import { useState } from 'react';
 
@@ -66,7 +64,7 @@ const Messages = () => {
                 <div>
 
                     <div className="info_post flex items-center gap-2 md:mb-5">
-                        <Image
+                        <img
                             src='/assets/profilibg.jpg'
                             alt="Profile picture"
                             //   onClick={handleProfileClick}

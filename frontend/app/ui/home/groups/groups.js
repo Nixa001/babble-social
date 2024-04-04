@@ -1,6 +1,5 @@
 "use client";
 import React, { useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { CreateGroup } from "../../components/modals/createGroup";
 import { useQuery } from "react-query";
@@ -133,7 +132,7 @@ const GroupCard = ({ isMember, id, image, name, description, href, state }) => {
         >
           <div className="w-[200px] border rounded-lg shadow-xl min-h-[206px] bg-bg bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-5 border-gray-800 hover:bg-opacity-5 hover:bg-primary cursor-pointer">
             <div className="flex flex-col items-center py-3">
-              <Image
+              <img
                 src={image}
                 alt={name}
                 width={500}
@@ -153,7 +152,7 @@ const GroupCard = ({ isMember, id, image, name, description, href, state }) => {
         <div className="w-[200px] border rounded-lg shadow-xl bg-primary bg-opacity-0 bg-clip-padding backdrop-filter backdrop-blur-md hover:bg-opacity-5 hover:bg-primary border-gray-800 cursor-pointer">
           <div className="flex flex-col items-center h-[100%]  justify-between py-3">
             {image ? (
-              <Image
+              <img
                 src={`${image}`}
                 alt={name}
                 width={200}

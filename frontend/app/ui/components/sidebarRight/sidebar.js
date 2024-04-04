@@ -1,6 +1,5 @@
 'use client'
 import React from 'react'
-import Image from 'next/image'
 import { useState } from 'react';
 
 
@@ -69,9 +68,9 @@ export const displayFollowers = (data) => {
             <div key={follower.id} className=" hover:opacity-60 flex items-center cursor-pointer justify-start gap-2 mt-1 mb-3 p-2 ">
                 {/* <FaUserGroup className='border rounded-full p-2 w-10 h-10' /> */}
 
-                <Image
+                <img
                     className="rounded-full "
-                    src={`/assets/${follower.avatar}`}
+                    src={`${follower.avatar}`}
                     alt={follower.user_name}
                     width={35}
                     height={35}

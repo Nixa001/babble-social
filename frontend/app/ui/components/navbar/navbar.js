@@ -10,7 +10,6 @@ import { IoNotifications } from "react-icons/io5";
 import { FaUserGroup } from "react-icons/fa6";
 import { IoPersonCircleSharp } from "react-icons/io5";
 import { IoLogOut } from "react-icons/io5";
-import Image from 'next/image';
 
 // import { GoHomeFill, AiFillMessage, FaUserGroup, IoNotifications, IoPersonCircleSharp, IoLogOut } from 'react-icons/all';
 // import clsx from 'clsx';
@@ -34,8 +33,8 @@ function Navbar({ userData }) {
         <div className='shadowL  md:navbar xl:before:w-72 before:w-48 z-0 xl:w-60 md:block md:h-[700px] flex-col'>
             <div className='md:flex hidden relative z-0 flex-col w-full h-52 items-center justify-center'>
                 {userData.avatar ?
-                    <Image
-                        src={`/assets/${userData.avatar}`}
+                    <img
+                        src={`${userData.avatar}`}
                         alt="logo"
                         width={80} height={80}
                         className='rounded-full z-10'
