@@ -1,16 +1,22 @@
 "use client";
-import Image from "next/image";
+import { TRACE_OUTPUT_VERSION } from "next/dist/shared/lib/constants";
 import React from "react";
 import { useState } from "react";
 import { useQuery } from "react-query";
 import { toast } from "react-toastify";
 
-export const DisplayComments = ({ isVisible, postId, onClose, increment }) => {
+export const DisplayComments = ({
+  isVisible,
+  postId,
+  idUser,
+  onClose,
+  increment,
+}) => {
   // const Comments = comments
-  const [fetcherState, setFetcherState] = useState(isVisible);
   const fetchComments = async () => {
     const dataID = new FormData();
     dataID.append("postID", postId);
+    dataID.append("userID", idUser);
     dataID.append("type", "loadComments");
     const options = {
       method: "POST",
@@ -30,12 +36,11 @@ export const DisplayComments = ({ isVisible, postId, onClose, increment }) => {
   const [comments, setComments] = useState([]),
     [value, setValue] = useState("");
   useQuery("comments", fetchComments, {
-    enabled: fetcherState,
+    enabled: isVisible,
     refetchInterval: 1000,
     staleTime: 500,
     onSuccess: (newData) => {
       setComments(newData.comments);
-      //  console.log("fetched comms => ", comments);
     },
     onError: (error) => {
       console.error("Query error in comments:", error);
@@ -50,6 +55,7 @@ export const DisplayComments = ({ isVisible, postId, onClose, increment }) => {
     e.preventDefault();
     const data = new FormData(e.target);
     data.append("postID", postId);
+    data.append("userID", idUser);
     data.append("type", "addComment");
     let obj = {};
     data.forEach((key, value) => {

@@ -8,8 +8,9 @@ import { useEffect} from "react";
 export function Landing() {
   const router = useRouter();
   const { session, error } = useSession();
+  console.log("error in landing => ", error, "with session => ", session);
   useEffect(() => {
-    if (session !== null) {
+    if (session) {
       router.push("/home");
     }
   }, [session]);

@@ -6,7 +6,7 @@ import { BiWorld } from "react-icons/bi";
 import { SiGnuprivacyguard } from "react-icons/si";
 import { DisplayComments } from "../components/modals/displayComment";
 
-const DisplayPost = ({ postData, onCommentClick, onProfileClick }) => {
+const DisplayPost = ({ postData, idUser, onCommentClick, onProfileClick }) => {
   const [postDataState, setPostDataState] = useState(postData),
     [isVisibleComment, setIsVisibleComment] = useState(false),
     [commentCounter, setCommentCounter] = useState(postDataState.Comments);
@@ -88,6 +88,7 @@ const DisplayPost = ({ postData, onCommentClick, onProfileClick }) => {
         isVisible={isVisibleComment}
         key={postDataState.ID}
         postId={postDataState.ID}
+        idUser={idUser}
         onClose={() => setIsVisibleComment(false)}
         increment={() => setCommentCounter((prevCount) => prevCount + 1)}
       />

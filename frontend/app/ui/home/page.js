@@ -5,13 +5,11 @@ import AddPost from "./displayPost";
 import { useQuery } from "react-query";
 import { useSession } from "@/app/api/api";
 
-const HomePage = () => {
+const HomePage = ({ id }) => {
   const [posts, setPosts] = useState([]),
-  [fetchState, setFetchState] = useState(true),
-    sessionId = "1"; //TODO: get user id from api.
-  console.log("i got session => ", sessionId);
-  const userID = new FormData();
-  userID.append("userID", sessionId);
+    [fetchState, setFetchState] = useState(true),
+    userID = new FormData();
+  userID.append("userID", id);
   userID.append("type", "loadPosts");
   const options = {
     method: "POST",
@@ -21,7 +19,7 @@ const HomePage = () => {
     try {
       const response = await fetch("http://localhost:8080/post", options);
       const data = await response.json();
-      return { posts: data.data };
+      return { posts: data.data, errType: data.status };
     } catch (error) {
       console.error("Error while querying posts ", error);
       return Promise.reject(error);
@@ -33,29 +31,30 @@ const HomePage = () => {
     refetchInterval: 1000,
     staleTime: 500,
     onSuccess: (newData) => {
+    //  if (newData.errType == 400) setFetchState(false);
       setPosts(newData.posts);
-      // console.log("debug => ", posts);
+      console.log("debug => ", newData);
     },
     onError: (error) => {
       console.error("Query error in posts:", error);
-      setFetchState(false)
+      setFetchState(false);
     },
   });
   return (
     <div className=" md:w-[400px] lg:w-[650px] xl:w-[800px] 2xl:w-[1000px] w-screen">
-      <div className="flex justify-center mb-4">{PostForm()}</div>
+      <div className="flex justify-center mb-4">{PostForm(id)}</div>
       <div className="post_div_top flex flex-col items-center">
-        {posts != null &&
-          posts.map((e) => (
-            <AddPost
-              key={e.ID}
-              postData={e}
-              onLikeClick={onLikeClick}
-              onDislikeClick={onDislikeClick}
-              onCommentClick={onCommentClick}
-              onProfileClick={onProfileClick}
-            />
-          ))}
+        {posts?.map((e) => (
+          <AddPost
+            key={e.ID}
+            postData={e}
+            idUser={id}
+            onLikeClick={onLikeClick}
+            onDislikeClick={onDislikeClick}
+            onCommentClick={onCommentClick}
+            onProfileClick={onProfileClick}
+          />
+        ))}
       </div>
     </div>
   );
