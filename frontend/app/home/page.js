@@ -6,10 +6,11 @@ import HomePage from "../ui/home/page";
 import { useSession } from "../api/api";
 
 const Page = () => {
-  const { session, errSess } = useSession(),
-    sessionId = session?.session["user_id"];
-  // console.log("sess is here => ", session, "with err >", errSess);
-   console.log("i got session => ", sessionId);
+ // const router = useRouter(),
+  const  { session, errSess } = useSession();
+
+  const sessionId = session?.session["user_id"];
+  console.log("i got session => ", sessionId);
   return (
     <div className="">
       <QueryClientProvider client={queryClient}>

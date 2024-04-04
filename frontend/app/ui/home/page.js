@@ -22,8 +22,9 @@ const HomePage = ({ id }) => {
       return { posts: data.data, errType: data.status };
     } catch (error) {
       console.error("Error while querying posts ", error);
+      setFetchState(false);
       return Promise.reject(error);
-    }
+    } 
   };
 
   useQuery("posts", fetchPosts, {
