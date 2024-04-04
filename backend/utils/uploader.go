@@ -33,7 +33,7 @@ func Uploader(w http.ResponseWriter, r *http.Request, size int, formFileName str
 		//!--checking extension validity
 		if !IsValidImageType(header.Filename) {
 			log.Println("⚠ Wrong image extension")
-			return "", errors.New("invalid extension")
+			return "", errors.New("Could not create post due to invalid img extension")
 		}
 
 		if imageName == "" {
