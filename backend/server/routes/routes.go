@@ -25,6 +25,8 @@ const (
 	GETGROUP_ENDPOINT         = "/groups/group"
 	WS_ENDPOINT               = "/ws"
 	SERVE_ASSETS              = "/uploads/"
+	PROFILE_ENDPOINT          = "/profile"
+	FOLLOW_ENDPOINT           = "/follow"
 )
 
 func Route() *http.ServeMux {
@@ -47,6 +49,8 @@ func Route() *http.ServeMux {
 	mux.HandleFunc(SERVE_ASSETS, func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, r.URL.Path[1:])
 	})
+	mux.HandleFunc(PROFILE_ENDPOINT, handler.ProfileHandler)
+	mux.HandleFunc(FOLLOW_ENDPOINT, handler.FollowHandler)
 
 	return mux
 }
