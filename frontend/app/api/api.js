@@ -44,24 +44,10 @@ export async function logoutUser() {
     });
 }
 
-export async function registerUser(state, formData) {
-  let data = {
-    first_name: formData.get("firstname"),
-    last_name: formData.get("lastname"),
-    birth_date: formData.get("dateofbirth"),
-    avatar: formData.get("avatar"),
-    user_name: formData.get("username"),
-    email: formData.get("email"),
-    password: formData.get("password"),
-    about_me: formData.get("aboutme"),
-  };
-
+export async function registerUser(formData) {
   return fetch(`${NEXT_PUBLIC_API_URL}/auth/signup`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
+    body: formData,
   })
     .then((response) => {
       if (response.status === 401) {
