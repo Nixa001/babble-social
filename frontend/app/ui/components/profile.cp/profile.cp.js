@@ -1,6 +1,7 @@
 "use client";
 
 import { getProfileById } from "@/app/api/api.js";
+import { usePathname } from "next/navigation.js";
 import { useState } from "react";
 import { useQuery } from "react-query";
 import { ShowFollowers } from "../modals/showfollowers.js";
@@ -9,8 +10,11 @@ import { ShowFollowings } from "../modals/showfollowing.js";
 export default function Profile({ sessionId }) {
   const [IsVisibleFollowers, setIsVisibleFollowers] = useState(false);
   const [IsVisibleFollowing, setIsVisibleFollowing] = useState(false);
-  // const pathname = usePathname();
-  // const id = pathname.split("id=")[1];
+  const pathname = usePathname();
+  const userid = pathname.split("id=")[1];
+  userid ? userid : sessionId;
+  console.log("sessionId=>", sessionId);
+  console.log("userID=>", userid);
   const id = 1;
   useQuery("profile", () => getProfileById(id), {
     enabled: true,
