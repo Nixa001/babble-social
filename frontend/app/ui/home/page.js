@@ -19,12 +19,12 @@ const HomePage = ({ id }) => {
     try {
       const response = await fetch("http://localhost:8080/post", options);
       const data = await response.json();
-      return { posts: data.data, errType: data.status };
+      return { posts: data.data, errType: data.status, errMess: data.msg };
     } catch (error) {
       console.error("Error while querying posts ", error);
       setFetchState(false);
       return Promise.reject(error);
-    } 
+    }
   };
 
   useQuery("posts", fetchPosts, {
@@ -32,13 +32,13 @@ const HomePage = ({ id }) => {
     refetchInterval: 1000,
     staleTime: 500,
     onSuccess: (newData) => {
-    //  if (newData.errType == 400) setFetchState(false);
+      if (newData.errMess == "wrong id!") setFetchState(false);
       setPosts(newData.posts);
-      console.log("debug => ", newData);
+      //console.log("debug => ", newData);
     },
     onError: (error) => {
-      console.error("Query error in posts:", error);
       setFetchState(false);
+      console.error("Query error in posts:", error);
     },
   });
   return (
