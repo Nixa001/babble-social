@@ -24,40 +24,44 @@ func ProfileHandler(w http.ResponseWriter, r *http.Request) {
 		userID, err := strconv.Atoi(userIDStr)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
-			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid request"})
+			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid user ID"})
 			return
 		}
+		log.Println("User ID:", userID)
 		// get user by id
 		user, err := service.AuthServ.UserRepo.GetUserById(userID)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
-			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid request"})
+			log.Println("Failed to get user:", err)
+			json.NewEncoder(w).Encode(map[string]string{"error": "Failed to get user"})
 			return
 		}
-		// get user's posts
-		posts, err := service.PostServ.FetchPostGroupByUserID(userID)
-		if err != nil {
-			w.WriteHeader(http.StatusBadRequest)
-			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid request"})
-			return
-		}
+		// // get user's posts
+		// posts, err := service.PostServ.FetchPostGroupByUserID(userID)
+		// if err != nil {
+		// 	w.WriteHeader(http.StatusBadRequest)
+		// 	json.NewEncoder(w).Encode(map[string]string{"error": "Failed to fetch user's posts"})
+		// 	return
+		// }
 		// get user's followers
-		followers, err := service.FollowServ.GetFollowersByID(userID)
+		followers, err := service.AuthServ.GetFollowersByID(userID)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
-			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid request"})
+			log.Println("Failed to get user's followers:", err)
+			json.NewEncoder(w).Encode(map[string]string{"error": "Failed to get user's followers"})
 			return
 		}
 		// get user's followings
-		followings, err := service.FollowServ.GetFollowingsByID(userID)
+		followings, err := service.AuthServ.GetFollowingsByID(userID)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
-			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid request"})
+			json.NewEncoder(w).Encode(map[string]string{"error": "Failed to get user's followings"})
 			return
 		}
 		// return user info, posts, followers, followings
 		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(map[string]any{"user": user, "posts": posts, "followers": followers, "followings": followings})
+		w.Header().Set("Content-Type", "application/json")
+		json.NewEncoder(w).Encode(map[string]any{"user": user, "followers": followers, "followings": followings})
 		return
 	default:
 		w.WriteHeader(http.StatusMethodNotAllowed)
@@ -95,7 +99,7 @@ func FollowHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		id := session.User_id
-		err = service.FollowServ.FollowUser(id, idtofollow)
+		err = service.AuthServ.FollowUser(id, idtofollow)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid request"})

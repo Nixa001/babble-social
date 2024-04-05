@@ -15,13 +15,15 @@ import (
 )
 
 type AuthService struct {
-	UserRepo r.UserRepository
-	SessRepo r.SessionRepository
+	UserRepo   r.UserRepository
+	SessRepo   r.SessionRepository
+	FollowRepo r.FollowRepository
 }
 
 func (a *AuthService) init() {
 	a.UserRepo = *r.UserRepo
 	a.SessRepo = *r.SessionRepo
+	a.FollowRepo = *r.FollowRepo
 }
 
 func (a *AuthService) CreateUser(user models.FormatedUser) error {
@@ -112,4 +114,44 @@ func (a *AuthService) GetUserById(id int) (models.User, error) {
 		return models.User{}, err
 	}
 	return user, nil
+}
+
+func (a *AuthService) GetFollowersByID(id int) ([]models.User, error) {
+	IdUsers, err := a.FollowRepo.Getfollower(id)
+	if err != nil {
+		return nil, err
+	}
+	followers := make([]models.User, 0)
+	for _, idUser := range IdUsers {
+		user, err := a.UserRepo.GetUserById(idUser.User_id_follower)
+		if err != nil {
+			return nil, err
+		}
+		followers = append(followers, user)
+	}
+	return followers, nil
+}
+
+func (a *AuthService) GetFollowingsByID(id int) ([]models.User, error) {
+	IdUsers, err := a.FollowRepo.Getfollowing(id)
+	if err != nil {
+		return nil, err
+	}
+	followings := make([]models.User, 0)
+	for _, idUser := range IdUsers {
+		user, err := a.UserRepo.GetUserById(idUser.User_id_followed)
+		if err != nil {
+			return nil, err
+		}
+		followings = append(followings, user)
+	}
+	return followings, nil
+}
+
+func (a *AuthService) FollowUser(id int, idToFollow int) error {
+	err := a.FollowRepo.FollowUser(id, idToFollow)
+	if err != nil {
+		return err
+	}
+	return nil
 }

@@ -25,7 +25,7 @@ const (
 	GETGROUP_ENDPOINT         = "/groups/group"
 	WS_ENDPOINT               = "/ws"
 	SERVE_ASSETS              = "/uploads/"
-	PROFILE_ENDPOINT          = "/profile"
+	PROFILE_ENDPOINT          = "/profile/user"
 	FOLLOW_ENDPOINT           = "/follow"
 )
 

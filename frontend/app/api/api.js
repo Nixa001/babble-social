@@ -116,12 +116,15 @@ export function useSession() {
 export async function getProfileById(id) {
   let token = localStorage.getItem("token") || "none";
   try {
-    const response = await fetch(`${NEXT_PUBLIC_API_URL}/profile/${id}`, {
-      method: "GET",
-      headers: {
-        Authorization: JSON.stringify({ token }),
-      },
-    });
+    const response = await fetch(
+      `${NEXT_PUBLIC_API_URL}/profile/user?id=${id}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: JSON.stringify({ token }),
+        },
+      }
+    );
     const data = await response.json();
     return data;
   } catch (error) {

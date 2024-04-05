@@ -17,7 +17,7 @@ export default function Profile({ sessionId }) {
     refetchInterval: 2000,
     staleTime: 1000,
     onSuccess: (data) => console.log(data),
-    onError: (error) => console.error("Query Profile error:", error),
+    onError: (error) => console.log("Query Profile error:", error),
   });
 
   const followers = [

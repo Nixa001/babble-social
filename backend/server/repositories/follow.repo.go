@@ -17,7 +17,7 @@ func (f *FollowRepository) init() {
 }
 
 func (f *FollowRepository) Getfollower(id int) ([]models.UserFollower, error) {
-	rows, err := f.DB.GetAllFrom(f.TableName, q.WhereOption{"user_id_followed": opt.Equals(id)}, "email", nil)
+	rows, err := f.DB.GetAllFrom(f.TableName, q.WhereOption{"user_id_followed": opt.Equals(id)}, "", nil)
 	if err != nil {
 		return nil, err
 	}
@@ -34,7 +34,7 @@ func (f *FollowRepository) Getfollower(id int) ([]models.UserFollower, error) {
 }
 
 func (f *FollowRepository) Getfollowing(id int) ([]models.UserFollower, error) {
-	rows, err := f.DB.GetAllFrom(f.TableName, q.WhereOption{"user_id_follower": opt.Equals(id)}, "email", nil)
+	rows, err := f.DB.GetAllFrom(f.TableName, q.WhereOption{"user_id_follower": opt.Equals(id)}, "", nil)
 	if err != nil {
 		return nil, err
 	}
