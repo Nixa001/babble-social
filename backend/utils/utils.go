@@ -90,7 +90,7 @@ func VerifyUsername(username string) error {
 	if username == "" {
 		return nil
 	}
-	pattern := `^[a-zA-Z][a-zA-Z0-9_]{6,15}$`
+	pattern := `^[a-zA-Z][a-zA-Z0-9_]{5,15}$`
 	regex := regexp.MustCompile(pattern)
 	ok := regex.MatchString(username)
 	if !ok {
@@ -153,6 +153,10 @@ func GenerateToken() string {
 
 }
 
-func GenerateExpirationTime() string {
-	return time.Now().Add((time.Hour * 24)).String()
+func CompareTime(stringTime string) bool {
+	t, err := time.Parse(time.RFC3339, stringTime)
+	if err != nil {
+		fmt.Println(err)
+	}
+	return t.Before(time.Now())
 }

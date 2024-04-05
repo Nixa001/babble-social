@@ -8,20 +8,20 @@ import (
 func InsertData(db *sql.DB) {
 	_, err := db.Exec(`
 	INSERT INTO users (first_name, last_name, user_name, gender, email, password, user_type, birth_date, avatar, about_me)
-	VALUES ('Madike', 'Yade', 'dickss', 'Male', 'dickss@gmail.com', '1234', 'private', '2000-01-01', '/avatars/john.jpg', 'about me...');
+	VALUES ('Madike', 'Yade', 'dickss', 'Male', 'dickss@gmail.com', '$2a$10$rai5Jgvt7myDh.rltd.oseytjrOp3QRi9BDf7r0s133SW0HoOqewG', 'private', '2000-01-01', '/avatars/john.jpg', 'about me...');
 
 	INSERT INTO users (first_name, last_name, user_name, gender, email, password, user_type, birth_date, avatar, about_me)
-	VALUES ('IBG', 'Gueye', 'ibg', 'Male', 'ibg@gmail.com', '1234', 'public', '2000-01-01', '/avatars/john.jpg', 'about me...');
+	VALUES ('IBG', 'Gueye', 'ibg', 'Male', 'ibg@gmail.com', '$2a$10$rai5Jgvt7myDh.rltd.oseytjrOp3QRi9BDf7r0s133SW0HoOqewG', 'public', '2000-01-01', '/avatars/john.jpg', 'about me...');
 
 	INSERT INTO users (first_name, last_name, user_name, gender, email, password, user_type, birth_date, avatar, about_me)
-	VALUES ( 'Vincent', 'Ndour','vindour', 'Male', 'vindour@gmail.com', '1234', 'public', '2000-01-01', '/avatars/john.jpg', 'about me...');
+	VALUES ( 'Vincent', 'Ndour','vindour', 'Male', 'vindour@gmail.com', '$2a$10$rai5Jgvt7myDh.rltd.oseytjrOp3QRi9BDf7r0s133SW0HoOqewG', 'public', '2000-01-01', '/avatars/john.jpg', 'about me...');
 
 
 	INSERT INTO users (first_name, last_name, user_name, gender, email, password, user_type, birth_date, avatar, about_me)
-	VALUES ( 'Nikola', 'Faye', 'nixa','Male', 'nixa@gmail.com', '1234', 'private', '2000-01-01', '/avatars/john.jpg', 'about me...');
+	VALUES ( 'Nikola', 'Faye', 'nixa','Male', 'nixa@gmail.com', '$2a$10$rai5Jgvt7myDh.rltd.oseytjrOp3QRi9BDf7r0s133SW0HoOqewG', 'private', '2000-01-01', '/avatars/john.jpg', 'about me...');
 
 	INSERT INTO users (first_name, last_name, user_name, gender, email, password, user_type, birth_date, avatar, about_me)
-	VALUES ( 'Daniella', 'Gueye', 'daniella', 'Female', 'dani@gmail.com', '1234', 'public', '2000-01-01', '/avatars/john.jpg', 'about me...');
+	VALUES ( 'Daniella', 'Gueye', 'daniella', 'Female', 'dani@gmail.com', '$2a$10$rai5Jgvt7myDh.rltd.oseytjrOp3QRi9BDf7r0s133SW0HoOqewG', 'public', '2000-01-01', '/avatars/john.jpg', 'about me...');
 	`)
 	if err != nil {
 		log.Fatal("Insert into users", err.Error())
@@ -153,7 +153,7 @@ func InsertData(db *sql.DB) {
 
 	_, err = db.Exec(`
         INSERT INTO sessions (token, user_id, expiration)
-        VALUES ('NULL', 'NULL', 'NULL')  
+        VALUES ('NULL', 'NULL', 'NULL')
 		`)
 	if err != nil {
 		log.Fatal("Insert into sessions", err.Error())

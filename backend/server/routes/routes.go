@@ -24,6 +24,9 @@ const (
 	GETGROUP_ENDPOINT      = "/groups/group"
 	WS_ENDPOINT            = "/ws"
 	SERVE_ASSETS           = "/uploads/"
+	MESSAGE_ENDPOINT = "/message"
+	VERIF_SESS_ENDPOINT = "/auth/session"
+	GET_USER_SESS_ENDPOINT = "/auth/usersessions"
 )
 
 func Route() *http.ServeMux {
@@ -46,6 +49,9 @@ func Route() *http.ServeMux {
 	mux.HandleFunc(SERVE_ASSETS, func(w http.ResponseWriter, r *http.Request) {
 		http.ServeFile(w, r, r.URL.Path[1:])
 	})
+	mux.HandleFunc(MESSAGE_ENDPOINT, handler.MessageHandler)
+	mux.HandleFunc(VERIF_SESS_ENDPOINT, (handler.VerifySessionHandler))
+	mux.HandleFunc(GET_USER_SESS_ENDPOINT, (handler.GetUserSession))
 
 	return mux
 }

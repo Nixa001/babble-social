@@ -2,6 +2,7 @@ package database
 
 import (
 	q "backend/database/query"
+	"backend/utils/seed"
 	"database/sql"
 	"fmt"
 	"log"
@@ -23,6 +24,8 @@ func init() {
 		fmt.Println(err)
 		os.Exit(1)
 	}
+	seed.CreateTable(db)
+	// seed.InsertData(db)
 	log.Println("Database opened")
 	DB = &Database{db}
 }
@@ -94,7 +97,6 @@ func (d *Database) GetAllFrom(table string, where q.WhereOption, orderby string,
 	} else {
 		query = q.SelectAllWhere(table, where, orderby, limit)
 	}
-
 	stmt, err := d.Prepare(query)
 	if err != nil {
 		return nil, fmt.Errorf("error preparing select query: %v", err)

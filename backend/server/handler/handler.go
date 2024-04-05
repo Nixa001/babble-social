@@ -9,7 +9,6 @@ func IndexHandler(w http.ResponseWriter, r *http.Request) {
 	cors.SetCors(&w)
 	// ...
 }
-
 func AuthorizeMiddleware(next http.HandlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		cors.SetCors(&w)

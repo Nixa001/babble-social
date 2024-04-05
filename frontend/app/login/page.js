@@ -2,12 +2,12 @@ import React from "react";
 import Login from "../ui/login/login";
 
 const Page = () => {
+
   return (
-    <>
-      <Login />{" "}
-    </>
+      <>
+        <Login />{" "}
+      </>
   );
 };
-
 
 export default Page;

@@ -2,10 +2,11 @@ package main
 
 import (
 	"backend/server"
-	utils "backend/utils"
+	"backend/utils"
 )
 
 func main() {
+	// seed.InsertData(seed.DB)
 	utils.ClearScreen()
 	server := server.NewServer()
 	server.Run()

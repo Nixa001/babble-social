@@ -1,6 +1,6 @@
-"use client";
-import React from "react";
-import Groups from "@/app/ui/home/groups/groups";
+'use client'
+import { WebSocketProvider } from '@/app/_lib/websocket'
+import React from 'react'
 
 import { QueryClient } from "react-query";
 import { QueryClientProvider } from "react-query";

@@ -1,32 +1,127 @@
 'use client'
 import Image from 'next/image';
-import { IoSend } from "react-icons/io5";
 import { displayFollowers, followerHearder } from '../../components/sidebarRight/sidebar';
-import { useState } from 'react';
+import { useContext, useEffect, useState } from 'react';
+import useSocket, { WebSocketContext } from '@/app/_lib/websocket';
+import { getSessionUser } from '@/app/_lib/utils';
 
+let idreceiver;
+let idgroupreceiver;
 const Messages = () => {
+    const { sendMessageToServer, allMessages,resetAllMessages } = useContext(WebSocketContext)
+    const [idUserReceiver, setIdUserReceiver] = useState(0);
+    const [idGroupReceiver, setIdGroupReceiver] = useState(0);
+    const [nameUser, setNameUser] = useState("");
+    const [nameGroup, setNameGroup] = useState("");
     const [activeTab, setActiveTab] = useState("users");
+
     const handleTabClick = (tab) => {
         setActiveTab(tab);
     };
-
-    const handleSendMessage = (e) => {
-        e.preventDefault()
+    const reset = () => {
+        setIdUserReceiver(0);
+        setIdGroupReceiver(0);
+        setNameUser("");
+        setNameGroup("");
     };
+    useEffect(()=>{
+        return ()=>{
+            reset();
+        }
+    },[activeTab])
+    useEffect(() => {
+        return () => {
+            resetAllMessages();
+        };
+    }, [activeTab]);
+    useEffect(() => {
+        // console.log("all messages", allMessages);
+    }, [allMessages])
+    useEffect(() => {
+        idreceiver = idUserReceiver
+    }, [idUserReceiver]);
+    useEffect(() => {
+        idgroupreceiver = idGroupReceiver
+    }, [idGroupReceiver]);
+    useEffect(()=>{
+        // console.log(nameUser);
+    },[nameUser]);
+    useEffect(()=>{
+        // console.log(nameGroup);
+    },[nameGroup]);
+
+    const handleUserClick = async (userId, name) => {
+        console.log("User clicked:", userId);
+        setIdUserReceiver(userId);
+        setNameUser(name);
+        // Récupérer l'ID de l'utilisateur en session
+        const sessionUser = await getSessionUser();
+        const sessionUserId = sessionUser.id; // A
+        console.log("idreceiver", idreceiver);
+        console.log("Session user", sessionUserId);
+        sendMessageToServer({ type: 'id-receiver-event', data: { clickedUserId: userId, sessionUserId: sessionUserId } });
+
+    };
+
+    //Traitement de message entre user et Groups
+
+    const handleGroupClick = async (GroupId, nameGroup) => {
+        console.log("Group clicked:", GroupId);
+        setIdGroupReceiver(GroupId);
+        setNameGroup(nameGroup)
+        const sessionUser = await getSessionUser();
+        const sessionUserId = sessionUser.id; // A
+        console.log("Session user", sessionUserId);
+        const token = localStorage.getItem('token');
+        sendMessageToServer({ type: 'idGroup-receiver-event', data: { idgroup: GroupId, userID: sessionUserId } });
+        // Ici, vous pouvez ajouter la logique pour gérer l'ID de l'utilisateur cliqué
+    };
+
+    //Traitement lors de l'envoie de messages
+    const handleSendMessage = async (e) => {
+        e.preventDefault();
+        let data = new FormData(e.target);
+        let obj = {};
+        data.forEach((value, key) => {
+            obj[key] = value;
+        });
+        console.log(obj.message);
+        if (obj.message.trim() !== "") {
+            console.log("idreceiver in message", idreceiver);
+            console.log("idgroupreceiver in message", idgroupreceiver);
+            // Détermine le type de message en fonction de activeTab
+            const messageType = activeTab === "group" ? "message-group-event" : "message-user-event";
+            const receiverId = messageType === "message-group-event" ? idgroupreceiver : idreceiver;
+            // Prépare les données du message
+            const sessionUser = await getSessionUser();
+            const sessionUserId = sessionUser.id; // A
+            const messageData = {
+                type: messageType,
+                data: {
+                    message: obj.message,
+                    sendId: sessionUserId,
+                    receiverId: receiverId,
+                }
+            };
+            // Envoie le message au serveur
+            sendMessageToServer(messageData);
+            e.target.reset();
+        }
+    };
+
     const displayTable = () => {
         if (activeTab === "users") {
-            return displayFollowers(users)
-                ;
+            return displayFollowers(users, handleUserClick);
         } else if (activeTab === "group") {
-            return displayFollowers(groups);
+            return displayFollowers(groups, handleGroupClick);
         }
         return null;
     };
 
+
     return (
         <div className="md:w-[400px] lg:w-[650px] xl:w-[800px] 2xl:w-[1200px] w-screen 
-     
-      flex flex-col sm:flex-row pr-5">
+         flex flex-col sm:flex-row pr-5">
             {/* Left sidebar */}
             <div className="w-[100%] sm:w-[30%] h-[100%]  ">
                 <div className="flex flex-col items-start justify-start border border-gray-700 h-full sm:h-[700px] overflow-hidden overflow-y-scroll">
@@ -40,25 +135,11 @@ const Messages = () => {
                         <h2 className="text-xl font-semibold cursor-pointer hover:underline mb-4">Groups</h2> */}
                     </div>
                     {/* </div> */}
+
                     <ul className="list-none w-[100%] lg:px-5 md:px-0 px-5 sm:block flex overflow-y-scroll">
-                        {/* {users.map((user) => (
-                            <li key={user.id} className="mb-2 hover:opacity-70 cursor-pointer ">
-                                <div className="flex flex-col flex-nowrap w-full items-center sm:flex-row ">
-                                    <Image
-                                        src={user.profilePicture}
-                                        alt={user.username}
-                                        width={40}
-                                        height={40}
-                                        className="rounded-full"
-                                    />
-                                    <span className="font-medium ml-2 text-sm lg:text-md w-full nowrap">{user.username}</span>
-                                </div>
-                            </li>
-                        ))} */}
-
-
                         {displayTable()}
                     </ul>
+
                 </div>
             </div>
             {/* Main content area */}
@@ -69,14 +150,13 @@ const Messages = () => {
                         <Image
                             src='/assets/profilibg.jpg'
                             alt="Profile picture"
-                            //   onClick={handleProfileClick}
                             className="profile_pic rounded-full cursor-pointer hover:opacity-60"
                             width={50}
                             height={50}
                         />
                         <div className='flex gap-2 items-center'>
-                            <h3 className="user_name_post break-words max-w-[600px] w-[80%] font-bold">
-                                Mamour Drame
+                            <h3 className="user_name_post break-words max-w-[600px] w-[80%] font-bold"> 
+                              {activeTab === "group" ? nameGroup : nameUser}
                             </h3>
                             <span className="username_post italic text-primary">
                                 @Darze
@@ -84,43 +164,46 @@ const Messages = () => {
                         </div>
                     </div>
                     <div className="h-full overflow-y-auto">
-                        {messages.map((message) => (
-                            <div key={message.id} className="message-container flex items-end mb-4">
-                                <div className="flex flex-col">
-                                    <p className="text-sm font-semibold mb-1">{message.sender}</p>
-                                    <div className=" font-semibold bg-primary p-4 rounded-lg">
-                                        {message.content}
-                                    </div>
-                                </div>
-                            </div>
-                        ))}
+                        {displayMessages(allMessages)}
                     </div>
                 </div>
 
                 <form className="flex justify-end mt-4 gap-2" onSubmit={handleSendMessage}>
                     <input
                         type="text"
+                        name="message"
                         className=" p-4 border border-gray-700 bg-transparent h-11 rounded-lg w-[90%] outline-none focus:ring-1 bg-primary focus:ring-primary"
                         placeholder="Your message..."
-                    // value={message.content}
-                    // onChange={(e) => setMessage(e.target.value)}
                     />
                     <button type="submit" className="bg-primary  hover:bg-second font-bold px-4 rounded-lg">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
                             <path d="M3.478 2.404a.75.75 0 0 0-.926.941l2.432 7.905H13.5a.75.75 0 0 1 0 1.5H4.984l-2.432 7.905a.75.75 0 0 0 .926.94 60.519 60.519 0 0 0 18.445-8.986.75.75 0 0 0 0-1.218A60.517 60.517 0 0 0 3.478 2.404Z" />
                         </svg>
-
-                        {/* <IoSend className='text-2xl text-center' /> */}
                     </button>
-
-
-
                 </form>
             </div>
         </div>
     );
 };
 
+
+const displayMessages = (messages) => {
+    // Vérifie si messages est null ou non un tableau
+    if (!Array.isArray(messages) || messages.length === 0) {
+        return <p>Aucun message à afficher.</p>;
+    }
+    // Si messages n'est pas vide, mappe sur les messages comme avant
+    return messages.map((message) => (
+        <div key={message.id} className="message-container flex items-end mb-4">
+            <div className="flex flex-col">
+                <p className="text-sm font-semibold mb-1">{message.first_name}</p>
+                <div className="font-semibold bg-primary p-4 rounded-lg">
+                    {message.message_content}
+                </div>
+            </div>
+        </div>
+    ));
+};
 export default Messages;
 const users = [
     { id: 1, first_name: 'Mamour', last_name: 'Drame', avatar: 'profilibg.jpg', alt: "profil" },
@@ -136,10 +219,10 @@ const groups = [
 
 const messages = [
     {
-        id: 1, sender: 'Mamou Drame', content: 'Hello everyone!', timestamp: '2023-11-16T12:00:00.000Z',
+        id: 1, first_name: 'Mamou Drame', message_content: 'Hello everyone!', timestamp: '2023-11-16T12:00:00.000Z',
     },
     {
-        id: 2, sender: 'Nicolas Faye', content: 'How are you all doing today?', timestamp: '2023-11-16T12:01:00.000Z',
+        id: 2, first_name: 'Nicolas Faye', message_content: 'How are you all doing today?', timestamp: '2023-11-16T12:01:00.000Z',
     },
 ];
 
