@@ -23,21 +23,34 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 
 	switch r.Method {
 	case http.MethodPost:
-		body := r.Body
-		content, err := io.ReadAll(body)
-		if err != nil {
+		formatedUser := models.FormatedUser{
+			First_name: r.FormValue("firstname"),
+			Last_name:  r.FormValue("lastname"),
+			User_name:  r.FormValue("username"),
+			Birth_date: r.FormValue("dateofbirth"),
+			About_me:   r.FormValue("aboutme"),
+			Password:   r.FormValue("password"),
+			Email:      r.FormValue("email"),
+		}
+		log.Printf("in register...")
+		log.Printf("[debug]  firstName: %v\n", formatedUser.First_name)
+		log.Printf("[debug]  lastName: %v\n", formatedUser.Last_name)
+		log.Printf("[debug]  userName: %v\n", formatedUser.User_name)
+		log.Printf("[debug]  birth date: %v\n", formatedUser.Birth_date)
+		log.Printf("[debug]  about me: %v\n", formatedUser.About_me)
+		log.Printf("[debug] password: %v\n", formatedUser.Password)
+		log.Printf("[debug]  email: %v\n", formatedUser.Email)
+		log.Println("checking img...")
+		Avatar, errAvatar := utils.Uploader(w, r, 2, "avatar", "avatar_"+formatedUser.First_name)
+		if errAvatar != nil {
+			log.Printf("Error uploading avatar: %v\n", errAvatar)
 			w.WriteHeader(http.StatusBadRequest)
-			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid request"})
+			json.NewEncoder(w).Encode(map[string]string{"error": errAvatar.Error()})
 			return
 		}
-		var formatedUser models.FormatedUser
-		err = json.Unmarshal(content, &formatedUser)
-		if err != nil {
-			log.Println("Invalid request", err)
-			w.WriteHeader(http.StatusBadRequest)
-			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid request"})
-			return
-		} else if err := utils.IsValidEmail(strings.TrimSpace(formatedUser.Email)); err != nil {
+		log.Printf("[debug]  avatar: %v\n", Avatar)
+		formatedUser.Avatar = utils.FormatImgLink(Avatar)
+		if err := utils.IsValidEmail(strings.TrimSpace(formatedUser.Email)); err != nil {
 			log.Println("Invalid email", err)
 			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid email"})
@@ -57,13 +70,18 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid username"})
 			return
+		} else if err := utils.VerifyAboutMe(formatedUser.About_me); err != nil {
+			log.Println("Invalid about me", err)
+			w.WriteHeader(http.StatusBadRequest)
+			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid about me"})
+			return
 		}
 		formatedUser.User_type = "public"
-		err = service.AuthServ.CreateUser(formatedUser)
+		err := service.AuthServ.CreateUser(formatedUser)
 		if err != nil {
 			log.Println("Error creating user", err)
-			w.WriteHeader(http.StatusInternalServerError)
-			json.NewEncoder(w).Encode(map[string]string{"error": "Internal server error"})
+			w.WriteHeader(http.StatusBadRequest)
+			json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
 			return
 		}
 		user, err := service.AuthServ.UserRepo.GetUserByEmail(formatedUser.Email)
@@ -92,7 +110,7 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 		// ws.WSHub.HandleEvent(newEvent)
 		w.WriteHeader(http.StatusOK)
 		log.Printf("User %s created successfully", user.Email)
-		json.NewEncoder(w).Encode(map[string]any{"message": "success", "token": session.Token, "user": user})
+		json.NewEncoder(w).Encode(map[string]any{"message": "success", "token": session.Token, "user": user, "error": "ok"})
 	default:
 		w.WriteHeader(http.StatusMethodNotAllowed)
 		json.NewEncoder(w).Encode(map[string]string{"error": "Method not allowed"})
