@@ -60,17 +60,17 @@ func InsertData(db *sql.DB) {
 
 	//post user
 
-	_, err = db.Exec(`
-		INSERT INTO posts (content, media, date, user_id, group_id, privacy)
-		VALUES ('This is the content of the first post.', '/media/first_post.jpg', '2024-03-05', 1, 0, 'private');
-		INSERT INTO posts (content, media, date, user_id, group_id, privacy)
-		VALUES ('This is the content of the second post.', '/media/second_post.jpg', '2024-03-05',1 , 0, 'public');
-		INSERT INTO posts (content, media, date, user_id, group_id, privacy)
-		VALUES ('This is the content of the third post.', '/media/third_post.jpg', '2024-03-05', 1, 0, 'almost');
-	`)
-	if err != nil {
-		log.Fatal("Insert into posts", err.Error())
-	}
+	// _, err = db.Exec(`
+	// 	INSERT INTO posts (content, media, date, user_id, group_id, privacy)
+	// 	VALUES ('This is the content of the first post.', '/media/first_post.jpg', '2024-03-05', 1, 0, 'private');
+	// 	INSERT INTO posts (content, media, date, user_id, group_id, privacy)
+	// 	VALUES ('This is the content of the second post.', '/media/second_post.jpg', '2024-03-05',1 , 0, 'public');
+	// 	INSERT INTO posts (content, media, date, user_id, group_id, privacy)
+	// 	VALUES ('This is the content of the third post.', '/media/third_post.jpg', '2024-03-05', 1, 0, 'almost');
+	// `)
+	// if err != nil {
+	// 	log.Fatal("Insert into posts", err.Error())
+	// }
 	// categories
 	_, err = db.Exec(`
 		INSERT INTO categories (post_id, category)

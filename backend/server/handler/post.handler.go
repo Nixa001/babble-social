@@ -8,6 +8,7 @@ import (
 	"fmt"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 func POSTHandler(w http.ResponseWriter, r *http.Request) {
@@ -40,6 +41,9 @@ func POSTHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println("[INFO] categories: ", categorie) //debug
 
 		Privacy := r.FormValue("privacy")
+
+		userIDStr := r.FormValue("userID")
+		userID, _ := strconv.Atoi(userIDStr)
 		log.Println("[INFO] privacy: ", Privacy) //debug
 
 		Viewers := fmt.Sprintf("%s, %s", idPost, r.FormValue("viewers"))
@@ -51,7 +55,7 @@ func POSTHandler(w http.ResponseWriter, r *http.Request) {
 			ToIns: models.InsPost{
 				Content:  PostContent,
 				Media:    utils.FormatImgLink(Image),
-				User_id:  1,
+				User_id:  userID,
 				Group_id: 0,
 				Privacy:  Privacy,
 			},
@@ -75,7 +79,11 @@ func POSTHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	case "GET":
 		//log.Println("[FETCHING POST DATA ◼◼◼]")
-		postTab, err := service.PostServ.GetPost(1)
+
+		userIDStr := r.FormValue("userID")
+		fmt.Println(userIDStr)
+		userID, _ := strconv.Atoi(userIDStr)
+		postTab, err := service.PostServ.GetPost(userID)
 		if err != nil {
 			log.Println("problem after get service ", err)
 			msg := models.Errormessage{

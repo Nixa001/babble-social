@@ -1,11 +1,12 @@
 "use client";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { CreateGroup } from "../../components/modals/createGroup";
 import { useQuery } from "react-query";
 import { useApi } from "@/app/_lib/utils";
 import { JoinGroup } from "./group.utils/joinGroup";
+import { WebSocketContext } from "@/app/_lib/websocket";
 
 const Groups = () => {
   const [formCreateGr, setFormCreateGr] = useState(false);
@@ -70,7 +71,7 @@ const Groups = () => {
           </button>
         </div>
         <div className="w-full flex gap-3 overflow-x-scroll">
-          {groupJoined.map((group) => (
+          {groupJoined?.map((group) => (
             <GroupCard key={group.id} isMember={true} {...group} />
           ))}
         </div>
@@ -101,7 +102,10 @@ const GroupCard = ({ isMember, id, image, name, description, href, state }) => {
     description = description.slice(0, 50) + " ...";
   }
 
-  const { sendMessage, readMessages, messages } = useApi();
+  // const { sendMessage, readMessages, messages } = useApi();
+
+  const {sendMessage ,readMessages, messages} = useContext(WebSocketContext)
+
   const handleLoginJoinMessage = () => {
     // console.log("handleLoginJoinMessage ", id);
     const joinMessage = messages.find(

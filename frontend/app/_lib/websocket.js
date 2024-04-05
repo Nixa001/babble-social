@@ -3,8 +3,44 @@ import React, { createContext, useState, useEffect } from 'react';
 export const WebSocketContext = createContext(null);
 
 export const WebSocketProvider = ({ children }) => {
+  //===========
+  const [messages, setMessages] = useState([]); // Pour stocker les messages
+//===============================
   const [socket, setSocket] = useState(null);
   const [allMessages, setAllMessages] = useState([])
+
+  //==========================================
+
+  const sendMessage = (message) => {
+    if (socket && socket.readyState === WebSocket.OPEN) {
+      console.log("Envoie du message");
+      console.log("Hello ", String(message));
+      socket.send(JSON.stringify(message));
+    } else {
+      console.error("WebSocket is not open");
+    }
+  };
+
+  // Fonction pour récupérer les messages via l'API
+  const readMessages = () => {
+    if (socket && socket.readyState === WebSocket.OPEN) {
+      // console.log("WebSocket is ready");
+
+      // Écoute des messages entrants
+      socket.onmessage = (event) => {
+        const message = JSON.parse(event.data);
+        // console.log("Message received:", message);
+
+        // Exécuter des actions en fonction du message reçu
+        // Par exemple, mettre à jour l'état des messages dans le contexte
+        setMessages((prevMessages) => [...prevMessages, message]);
+      };
+    } else {
+      console.log("WebSocket is not ready");
+    }
+  };
+
+  //======================================================
 
 
   const sendMessageToServer = (message) => {
@@ -78,7 +114,7 @@ export const WebSocketProvider = ({ children }) => {
 
 
   return (
-    <WebSocketContext.Provider value={{ socket, readMessage, sendMessageToServer, allMessages, resetAllMessages }}>
+    <WebSocketContext.Provider value={{sendMessage, readMessages, messages, socket, readMessage, sendMessageToServer, allMessages, resetAllMessages }}>
       {children}
     </WebSocketContext.Provider>
   );

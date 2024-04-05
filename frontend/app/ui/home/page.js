@@ -3,12 +3,17 @@ import React, { useState } from "react";
 import { PostForm } from "./postForm";
 import AddPost from "./displayPost";
 import { useQuery } from "react-query";
+import { getSessionUser } from "@/app/_lib/utils";
 
 const HomePage = () => {
   const [posts, setPosts] = useState([]);
   const fetchPosts = async () => {
+    const datas = new FormData();
+    const user = await getSessionUser();
+    datas["userID"] = user.id;
     try {
-      const response = await fetch("http://localhost:8080/post");
+      const response = await fetch("http://localhost:8080/post",datas);
+
       const data = await response.json();
       return { posts: data.data };
     } catch (error) {
@@ -16,6 +21,7 @@ const HomePage = () => {
       return Promise.reject(error);
     }
   };
+  
 
   useQuery("posts", fetchPosts, {
     enabled: true,
@@ -33,7 +39,7 @@ const HomePage = () => {
     <div className=" md:w-[400px] lg:w-[650px] xl:w-[800px] 2xl:w-[1000px] w-screen">
       <div className="flex justify-center mb-4">{PostForm()}</div>
       <div className="post_div_top flex flex-col items-center">
-        {posts.map((e) => (
+        {posts?.map((e) => (
           <AddPost
             key={e.ID}
             postData={e}

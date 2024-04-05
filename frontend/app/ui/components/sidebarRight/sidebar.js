@@ -70,7 +70,7 @@ export const followerHearder = (text, state, activeTab, handleTabClick) => {
 };
 
 export const displayFollowers = (data, handleUserClick) => {
-  return data.map((follower) => {
+  return data?.map((follower) => {
     return (
       <div
         key={follower.name}
