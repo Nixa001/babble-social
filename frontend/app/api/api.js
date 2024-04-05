@@ -77,21 +77,6 @@ export async function registerUser(state, formData) {
       return { error: "An error occurred. Please try again." };
     });
 }
-
-export async function getProfile() {
-  return fetch(`${NEXT_PUBLIC_API_URL}/profile`, {
-    method: "GET",
-    headers: {
-      Authorization: localStorage.getItem("token"),
-    },
-  })
-    .then((response) => response.json())
-    .catch((error) => {
-      console.error(error);
-      throw new Error("An error occurred while fetching profile data.");
-    });
-}
-
 export function useSession() {
   const [session, setSession] = useState(null);
   const [error, setError] = useState(null);
@@ -126,4 +111,38 @@ export function useSession() {
   }, []);
 
   return { session, error };
+}
+
+export async function getProfileById(id) {
+  let token = localStorage.getItem("token") || "none";
+  try {
+    const response = await fetch(`${NEXT_PUBLIC_API_URL}/profile/${id}`, {
+      method: "GET",
+      headers: {
+        Authorization: JSON.stringify({ token }),
+      },
+    });
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Erreur ", error);
+    return Promise.reject(error);
+  }
+}
+
+export async function followUser(id) {
+  let token = localStorage.getItem("token") || "none";
+  try {
+    const response = await fetch(`${NEXT_PUBLIC_API_URL}/follow/${id}`, {
+      method: "POST",
+      headers: {
+        Authorization: JSON.stringify({ token }),
+      },
+    });
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Erreur ", error);
+    return Promise.reject(error);
+  }
 }
