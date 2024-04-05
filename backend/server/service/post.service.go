@@ -39,3 +39,11 @@ func (p *PostService) FetchPostGroup(Id int) ([]models.DataPost, error) {
 	}
 	return post, nil
 }
+
+func (p *PostService) FetchPostGroupByUserID(Id int) ([]models.DataPost, error) {
+	post, err := p.PostRepo.LoadPostGroupByUserID(Id)
+	if err != nil {
+		return nil, err
+	}
+	return post, nil
+}

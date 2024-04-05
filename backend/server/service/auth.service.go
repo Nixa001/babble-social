@@ -104,3 +104,12 @@ func (a *AuthService) CreateSession(user models.User) (models.Session, error) {
 	return models.Session{Token: token, User_id: user.Id, Expiration: expiration}, nil
 
 }
+
+func (a *AuthService) GetUserById(id int) (models.User, error) {
+	user, err := a.UserRepo.GetUserById(id)
+	if err != nil {
+		log.Println("Error getting user by id", err)
+		return models.User{}, err
+	}
+	return user, nil
+}
