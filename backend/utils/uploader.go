@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 )
 
 func Uploader(w http.ResponseWriter, r *http.Request, size int, formFileName string, imageName string) (string, error) {
@@ -43,6 +44,8 @@ func Uploader(w http.ResponseWriter, r *http.Request, size int, formFileName str
 				log.Println("🚫 empty image")
 				return "", errImg
 			}
+		} else {
+			imageName += "." + strings.Split(header.Filename, ".")[len(strings.Split(header.Filename, "."))-1]
 		}
 
 		uploaded, err := os.Create("uploads/" + imageName)
