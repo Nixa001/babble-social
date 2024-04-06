@@ -24,7 +24,7 @@ func CreateTable(db *sql.DB) {
 			)
 			 `)
 	if err != nil {
-		log.Fatal("User table", err.Error())
+		log.Fatal("User table ", err.Error())
 	}
 
 	_, err = db.Exec(`
