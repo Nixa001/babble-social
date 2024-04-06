@@ -2,6 +2,8 @@ package handler
 
 import (
 	"backend/server/cors"
+	"backend/server/ws"
+	"fmt"
 	"net/http"
 
 	"github.com/gorilla/websocket"
@@ -23,17 +25,18 @@ func WSHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// userSession := UserInSession(w, r)
-	// token := r.URL.Query().Get("token")
+	userSession := UserInSession(w, r)
+	token := r.URL.Query().Get("token")
 
-	// conn, err := upgrader.Upgrade(w, r, nil) // Utilisez l'Upgrader configuré
-	// if err != nil {
-	// 	fmt.Println(err)
-	// 	return
-	// }
+	conn, err := upgrader.Upgrade(w, r, nil) // Utilisez l'Upgrader configuré
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
 	// defer conn.Close()
 	// fmt.Println("userSession: ", userSession)
 
-	// ws.WSHub.AddClient(conn, userSession.Email, token)
+	ws.WSHub.AddClient(conn, userSession.Email, token)
+	fmt.Println("aksina")
 
 }

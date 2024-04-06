@@ -20,6 +20,6 @@ func JoinEvent(id_user int, id_group int, id_event int, db *sql.DB) error {
 		fmt.Println("Error executing event: ", err)
 		return err
 	}
-	fmt.Println("Event inserted successfully")
+	fmt.Println("Event joined successfully")
 	return nil
 }

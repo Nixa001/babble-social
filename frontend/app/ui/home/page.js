@@ -3,16 +3,16 @@ import React, { useState } from "react";
 import { PostForm } from "./postForm";
 import AddPost from "./displayPost";
 import { useQuery } from "react-query";
-import { getSessionUser } from "@/app/_lib/utils";
+// import { getSessionUser } from "@/app/_lib/utils";
 
 const HomePage = () => {
   const [posts, setPosts] = useState([]);
   const fetchPosts = async () => {
     const datas = new FormData();
-    const user = await getSessionUser();
-    datas["userID"] = user.id;
+    // const user = await getSessionUser();
+    // datas["userID"] = user.id;
     try {
-      const response = await fetch("http://localhost:8080/post",datas);
+      const response = await fetch("http://localhost:8080/post");
 
       const data = await response.json();
       return { posts: data.data };

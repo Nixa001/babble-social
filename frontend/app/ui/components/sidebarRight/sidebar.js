@@ -70,24 +70,43 @@ export const followerHearder = (text, state, activeTab, handleTabClick) => {
 };
 
 export const displayFollowers = (data, handleUserClick) => {
-  return data?.map((follower) => {
-    return (
-      <div
-        key={follower.name}
-        className=" hover:opacity-60 flex items-center cursor-pointer justify-start gap-2 mt-1 mb-3 p-2 "
-        onClick={() => handleUserClick(follower.id, follower.name)}
-      >
-        <Image
-          className="rounded-full "
-          src={`/assets/${follower.avatar}`}
-          alt={follower.user_name}
-          width={35}
-          height={35}
-        />
-        <h4 className="font-bold">{follower.name}</h4>
-      </div>
-    );
+  return data.map((follower) => {
+     return (
+       <div
+         key={follower.id} // Utilisez l'ID comme clé unique
+         className=" hover:opacity-60 flex items-center cursor-pointer justify-start gap-2 mt-1 mb-3 p-2 "
+         onClick={() => handleUserClick(follower.id, follower.name)}
+       >
+         <Image
+           className="rounded-full "
+           src={`/assets/${follower.avatar}`}
+           alt={follower.user_name}
+           width={35}
+           height={35}
+         />
+         <h4 className="font-bold">{follower.name}</h4>
+       </div>
+     );
   });
-};
-
+ };
+ export const display = (data, handleUserClick) => {
+  return data.map((follower) => {
+      return (
+        <div
+          key={follower.id} // Utilisez l'ID comme clé unique
+          className=" hover:opacity-60 flex items-center cursor-pointer justify-start gap-2 mt-1 mb-3 p-2 "
+          onClick={() => handleUserClick(follower.id, follower.name)}
+        >
+          <Image
+            className="rounded-full "
+            src={follower.src}
+            alt={follower.alt}
+            width={35}
+            height={35}
+          />
+          <h4 className="font-bold">{follower.name}</h4>
+        </div>
+      );
+   });
+}
 export default Sidebar;

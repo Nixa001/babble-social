@@ -1,6 +1,6 @@
 'use client'
 import Image from 'next/image';
-import { displayFollowers, followerHearder } from '../../components/sidebarRight/sidebar';
+import { display, displayFollowers, followerHearder } from '../../components/sidebarRight/sidebar';
 import { useContext, useEffect, useState } from 'react';
 import useSocket, { WebSocketContext } from '@/app/_lib/websocket';
 import { getSessionUser } from '@/app/_lib/utils';
@@ -111,9 +111,9 @@ const Messages = () => {
 
     const displayTable = () => {
         if (activeTab === "users") {
-            return displayFollowers(users, handleUserClick);
+            return display(users, handleUserClick);
         } else if (activeTab === "group") {
-            return displayFollowers(groups, handleGroupClick);
+            return display(groups, handleGroupClick);
         }
         return null;
     };
@@ -205,17 +205,17 @@ const displayMessages = (messages) => {
     ));
 };
 export default Messages;
-const users = [
-    { id: 1, first_name: 'Mamour', last_name: 'Drame', avatar: 'profilibg.jpg', alt: "profil" },
-    { id: 2, first_name: 'Edouard', last_name: 'Mendy', avatar: 'profilibg.jpg', alt: "profil" },
-    { id: 3, first_name: 'Vincent', last_name: 'Ndour', avatar: "profilibg.jpg", alt: "profil" },
-];
+// const users = [
+//     { id: 1, first_name: 'Mamour', last_name: 'Drame', avatar: 'profilibg.jpg', alt: "profil" },
+//     { id: 2, first_name: 'Edouard', last_name: 'Mendy', avatar: 'profilibg.jpg', alt: "profil" },
+//     { id: 3, first_name: 'Vincent', last_name: 'Ndour', avatar: "profilibg.jpg", alt: "profil" },
+// ];
 
-const groups = [
-    { id: 1, first_name: 'Call of duty', last_name: '', avatar: 'profilibg.jpg', alt: "profil" },
-    { id: 2, first_name: 'Farcry 6 Team', last_name: '', avatar: 'profilibg.jpg', alt: "profil" },
-    { id: 3, first_name: 'EA Fooball 24', last_name: '', avatar: "profilibg.jpg", alt: "profil" },
-];
+// const groups = [
+//     { id: 1, first_name: 'Call of duty', last_name: '', avatar: 'profilibg.jpg', alt: "profil" },
+//     { id: 2, first_name: 'Farcry 6 Team', last_name: '', avatar: 'profilibg.jpg', alt: "profil" },
+//     { id: 3, first_name: 'EA Fooball 24', last_name: '', avatar: "profilibg.jpg", alt: "profil" },
+// ];
 
 const messages = [
     {
@@ -227,3 +227,26 @@ const messages = [
 ];
 
 
+const users = [
+    { id: 1, name: 'Mamour Drame', src: '/assets/profilibg.jpg', alt: "profil" },
+    { id: 2, name: 'Edouard Mendy', src: '/assets/profilibg.jpg', alt: "profil" },
+    { id: 3, name: 'Vincent Ndour', src: "/assets/profilibg.jpg", alt: "profil" },
+    { id: 4, name: 'Ibrahima Gueye', src: "/assets/profilibg.jpg", alt: "profil", },
+    { id: 5, name: 'Madike Yade', src: "/assets/profilibg.jpg", alt: "profil", },
+];
+
+// const messages = [
+//     {
+//         id: 1, first_name: 'Mamou Drame', message_content: 'Hello everyone!', timestamp: '2023-11-16T12:00:00.000Z',
+//     },
+//     {
+//         id: 2, first_name: 'Nicolas Faye', message_content: 'How are you all doing today?', timestamp: '2023-11-16T12:01:00.000Z',
+//     },
+// ];
+
+
+const groups = [
+    { id: 1, name: 'Call of duty', src: "/assets/profilibg.jpg", alt: "profil", },
+    { id: 2, name: 'Farcry 6 Team', src: "/assets/profilibg.jpg", alt: "profil" },
+    { id: 3, name: 'EA Fooball 24', src: "/assets/profilibg.jpg", alt: "profil", },
+];

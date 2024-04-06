@@ -44,7 +44,7 @@ export const WebSocketProvider = ({ children }) => {
 
 
   const sendMessageToServer = (message) => {
-    if (socket) {
+    if (socket && socket.readyState === WebSocket.OPEN) {
       socket.send(JSON.stringify(message));
     } else {
       console.error("La connection Websocket n'est pas etablie");
@@ -61,7 +61,7 @@ export const WebSocketProvider = ({ children }) => {
   const readMessage = (message) => {
     const data = JSON.parse(message);
     // console.log(data.Data);
-    if (data.Type === "id-receiver-event" && data.Data !== null) {
+    if (data.Type === "id-receiver-event") {
       // console.log("===", data.Data);
       setAllMessages(data.Data);
     }

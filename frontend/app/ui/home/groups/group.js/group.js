@@ -15,7 +15,7 @@ import {
   CardHeader,
   Avatar,
 } from "@mui/material";
-import { useApi } from "@/app/_lib/utils";
+// import { useApi } from "@/app/_lib/utils";
 import { WebSocketContext } from "@/app/_lib/websocket";
 
 const CardEvent = ({ description, date }) => {

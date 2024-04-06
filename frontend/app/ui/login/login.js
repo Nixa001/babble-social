@@ -1,11 +1,11 @@
 "use client";
-import { getSessionUser } from "@/app/_lib/utils";
 import { WebSocketContext } from "@/app/_lib/websocket";
-import { loginUser, logoutUser } from "@/app/api/api.js";
+import { loginUser } from "@/app/api/api.js";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useContext, useState } from "react";
+
 export default function Login() {
   const [errorMessage, setErrorMessage] = useState(null);
   const [email, setEmail] = useState("");
@@ -18,7 +18,7 @@ export default function Login() {
       const response = await loginUser(email, password);
       if (response.error === null && response.data) {
         
-       sendMessageToServer({type : "join-event", data : response.data})
+        sendMessageToServer({type : "join-event", data : response.data})
         router.push("/home");
       } else {
         setErrorMessage(response.error);
@@ -27,6 +27,7 @@ export default function Login() {
       console.log(error);
     }
   };
+
   const handleLogout = async () => {
     try {
       const response = await logoutUser();
@@ -40,18 +41,19 @@ export default function Login() {
       console.log(error);
     }
   };
+
   return (
     <div className="w-screen h-screen flex">
       <div className="flex flex-col items-center w-full sm:w-6/12">
-        <div className="flex items-center justify-around w-full">
+        <div className="header_login flex items-center justify-around w-full">
           <Image
-            src="/assets/logo.png"
+            src="/assets/icons/comment.png"
             alt="logo"
-            width={100}
-            height={100}
+            width={40}
+            height={40}
           />
           <div>
-            Don&apos;t have an account ?
+            Don't have an account ?
             <Link
               href="/register"
               className="text-primary hover:text-second cursor-pointer"
@@ -65,24 +67,20 @@ export default function Login() {
           <div className="text-center login_other">
             <h4 className="font-bold text-xl mb-2">Login in to account</h4>
             <div className="flex items-center justify-center gap-4">
-              <Image
-                src="/assets/login/google.svg" alt="google"
-                width={40}
-                height={40}
-              />
-              <Image
-                src="/assets/login/githubb.svg" alt="google"
-                width={40}
-                height={40}
-              />
+              <img src="/assets/login/google.svg" alt="google" />
+              <img src="/assets/login/githubb.svg" alt="github" />
             </div>
           </div>
+          <p className="error_login_msg" />
+
           <form
             onSubmit={handleLogin}
             className="form_login flex flex-col gap-3"
+            data-form="login"
           >
             <input
               type="email"
+              id="email"
               name="email"
               placeholder="Email"
               required
@@ -90,8 +88,10 @@ export default function Login() {
               value={email}
               onChange={(e) => setEmail(e.target.value)}
             />
+
             <input
               type="password"
+              id="password"
               name="password"
               placeholder="Password"
               required
