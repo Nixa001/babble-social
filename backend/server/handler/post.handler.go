@@ -18,14 +18,6 @@ func POSTHandler(w http.ResponseWriter, r *http.Request) {
 	userID, errconv := strconv.Atoi(r.FormValue("userID"))
 	if errconv != nil {
 		log.Println("❌ Error at converting string to int in userID in post. ", errconv)
-		msg := models.Errormessage{
-			Type:       "Bad request",
-			Msg:        "wrong id!",
-			StatusCode: 400,
-			Display:    true,
-		}
-		utils.Alert(w, msg)
-		return
 	}
 	if r.Method != "POST" {
 		msg := models.Errormessage{
