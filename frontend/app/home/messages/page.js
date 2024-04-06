@@ -17,7 +17,7 @@ export const displayFollowers = (data, handleUserClick) => {
       <div key={follower.name} className=" hover:opacity-60 flex items-center cursor-pointer justify-start gap-2 mt-1 mb-3 p-2 "
         onClick={() => handleUserClick(follower.id)}
       >
-        <Image
+        <img
           className="rounded-full "
           src={follower.src}
           alt={follower.alt}
