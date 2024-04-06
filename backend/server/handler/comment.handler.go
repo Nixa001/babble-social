@@ -7,13 +7,27 @@ import (
 	"backend/utils"
 	"log"
 	"net/http"
+	"strconv"
 )
 
 func COMMENTHandler(w http.ResponseWriter, r *http.Request) {
 	// --------retrieving form values ----------
-	idUser := 1
 	//postID := "b01af696-f879-41a1-bfb0-70fa01852138" //?default value for testing purposes
 	cors.SetCors(&w)
+	log.Println("gotten userID in comment handler => ", r.FormValue("userID"))
+	idUser, errconv := strconv.Atoi(r.FormValue("userID"))
+	if errconv != nil {
+		log.Println("❌ Error at converting string to int in userID of comment handler. ", errconv)
+		msg := models.Errormessage{
+			Type:       "Bad request",
+			Msg:        "wrong id!",
+			StatusCode: 400,
+			Display:    true,
+		}
+		utils.Alert(w, msg)
+		return
+	}
+
 	log.Println("--------------------------------------------")
 	log.Println("          COMMENT Form values                 ")
 	log.Println("--------------------------------------------")

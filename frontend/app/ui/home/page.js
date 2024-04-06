@@ -3,46 +3,56 @@ import React, { useState } from "react";
 import { PostForm } from "./postForm";
 import AddPost from "./displayPost";
 import { useQuery } from "react-query";
-// import { getSessionUser } from "@/app/_lib/utils";
+import { useSession } from "@/app/api/api";
 
-const HomePage = () => {
-  const [posts, setPosts] = useState([]);
+const HomePage = ({ id }) => {
+  const [posts, setPosts] = useState([]),
+    [fetchState, setFetchState] = useState(true),
+    userID = new FormData();
+  userID.append("userID", id);
+  userID.append("type", "loadPosts");
+  const options = {
+    method: "POST",
+    body: userID,
+  };
   const fetchPosts = async () => {
     const datas = new FormData();
     // const user = await getSessionUser();
     // datas["userID"] = user.id;
     try {
-      const response = await fetch("http://localhost:8080/post");
-
+      const response = await fetch("http://localhost:8080/post", options);
       const data = await response.json();
-      return { posts: data.data };
+      return { posts: data.data, errType: data.status, errMess: data.msg };
     } catch (error) {
       console.error("Error while querying posts ", error);
+      setFetchState(false);
       return Promise.reject(error);
     }
   };
   
 
   useQuery("posts", fetchPosts, {
-    enabled: true,
+    enabled: fetchState,
     refetchInterval: 1000,
     staleTime: 500,
     onSuccess: (newData) => {
       setPosts(newData.posts);
-      // console.log("debug => ", posts);
+      //console.log("debug => ", newData);
     },
     onError: (error) => {
+      setFetchState(false);
       console.error("Query error in posts:", error);
     },
   });
   return (
     <div className=" md:w-[400px] lg:w-[650px] xl:w-[800px] 2xl:w-[1000px] w-screen">
-      <div className="flex justify-center mb-4">{PostForm()}</div>
+      <div className="flex justify-center mb-4">{PostForm(id)}</div>
       <div className="post_div_top flex flex-col items-center">
         {posts?.map((e) => (
           <AddPost
             key={e.ID}
             postData={e}
+            idUser={id}
             onLikeClick={onLikeClick}
             onDislikeClick={onDislikeClick}
             onCommentClick={onCommentClick}

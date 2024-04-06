@@ -48,7 +48,6 @@ func (a *AuthService) CheckCredentials(email, password string) (models.User, err
 }
 
 func (a *AuthService) VerifyToken(r *http.Request) (session models.Session, err error) {
-	fmt.Println("VerifyToken")
 	token := r.Header.Get("Authorization")
 	if token == "" {
 		token, _ = url.QueryUnescape(r.URL.Query().Get("token"))
@@ -60,11 +59,11 @@ func (a *AuthService) VerifyToken(r *http.Request) (session models.Session, err 
 	}
 	session, err = a.SessRepo.GetSession(token)
 	if err != nil {
-		fmt.Println("Error getting session", err)
+		log.Println("Error getting session", err)
 		return models.Session{}, err
 	}
 	if session.Expiration.Before(time.Now()) {
-		fmt.Println("token expired")
+		log.Println("token expired")
 		return models.Session{}, fmt.Errorf("token expired")
 	}
 	return session, nil
@@ -97,10 +96,11 @@ func (a *AuthService) CreateSession(user models.User) (models.Session, error) {
 	}
 	token := utils.GenerateToken()
 	expiration := time.Now().Add(3 * time.Hour)
-	err = a.SessRepo.SaveSession(models.Session{User_id: user.Id, Token: token, Expiration: expiration})
+	err = a.SessRepo.SaveSession(models.Session{Token: token, User_id: user.Id, Expiration: expiration})
 	if err != nil {
+		log.Println("Error saving session", err)
 		return models.Session{}, err
 	}
-	return models.Session{User_id: user.Id, Token: token, Expiration: expiration}, nil
+	return models.Session{Token: token, User_id: user.Id, Expiration: expiration}, nil
 
 }

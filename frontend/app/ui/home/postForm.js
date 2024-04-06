@@ -5,7 +5,7 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-export const PostForm = () => {
+export const PostForm = (idUser) => {
   const [textarea, setTextarea] = useState(""),
     [tech, setTech] = useState(false),
     [sport, setSport] = useState(false),
@@ -19,10 +19,8 @@ export const PostForm = () => {
   const handlePost =async (e) => {
     e.preventDefault();
     const data = new FormData(e.target);
-    const user = await getSessionUser();
-    data["userID"] = user.id;
-    // data.append("userID", user.id)
-    console.log("user => ", user);
+    data.append("userID", idUser);
+    data.append("type", "createPost");
     console.log("my data => ", data);
     const options = {
       method: "POST",

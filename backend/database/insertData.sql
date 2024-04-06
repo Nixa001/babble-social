@@ -1,19 +1,19 @@
 -- database: social_networki.db
 INSERT INTO users ("first_name", "last_name", "user_name", "gender", "email", "password", "user_type", "birth_date", "avatar", "about_me")
-	VALUES ('Madike', 'Yade', 'dickss', 'Male', 'dickss@gmail.com', '1234', 'private', '2000-01-01', '/avatars/john.jpg', 'about me...');
+	VALUES ('Madike', 'Yade', 'dickss', 'Male', 'dickss@gmail.com', '$2a$10$rai5Jgvt7myDh.rltd.oseytjrOp3QRi9BDf7r0s133SW0HoOqewG', 'private', '2000-01-01', '/avatars/john.jpg', 'about me...');
 
 	INSERT INTO users ("first_name", "last_name", "user_name", "gender", "email", "password", "user_type", "birth_date", "avatar", "about_me")
-	VALUES ('IBG', 'Gueye', 'ibg', 'Male', 'ibg@gmail.com', '1234', 'public', '2000-01-01', '/avatars/john.jpg', 'about me...');
+	VALUES ('IBG', 'Gueye', 'ibg', 'Male', 'ibg@gmail.com', '$2a$10$rai5Jgvt7myDh.rltd.oseytjrOp3QRi9BDf7r0s133SW0HoOqewG', 'public', '2000-01-01', '/avatars/john.jpg', 'about me...');
 
 	INSERT INTO users ("first_name", "last_name", "user_name", "gender", "email", "password", "user_type", "birth_date", "avatar", "about_me")
-	VALUES ( 'Vincent', 'Ndour','vindour', 'Male', 'vindour@gmail.com', '1234', 'public', '2000-01-01', '/avatars/john.jpg', 'about me...');
+	VALUES ( 'Vincent', 'Ndour','vindour', 'Male', 'vindour@gmail.com', '$2a$10$rai5Jgvt7myDh.rltd.oseytjrOp3QRi9BDf7r0s133SW0HoOqewG', 'public', '2000-01-01', '/avatars/john.jpg', 'about me...');
 
 
 	INSERT INTO users ("first_name", "last_name", "user_name", "gender", "email", "password", "user_type", "birth_date", "avatar", "about_me")
-	VALUES ( 'Nikola', 'Faye', 'nixa','Male', 'nixa@gmail.com', '1234', 'private', '2000-01-01', '/avatars/john.jpg', 'about me...');
+	VALUES ( 'Nikola', 'Faye', 'nixa','Male', 'nixa@gmail.com', '$2a$10$rai5Jgvt7myDh.rltd.oseytjrOp3QRi9BDf7r0s133SW0HoOqewG', 'private', '2000-01-01', '/avatars/john.jpg', 'about me...');
 
 	INSERT INTO users ("first_name", "last_name", "user_name", "gender", "email", "password", "user_type", "birth_date", "avatar", "about_me")
-	VALUES ( 'Daniella', 'Gueye', 'daniella', 'Female', 'dani@gmail.com', '1234', 'public', '2000-01-01', '/avatars/john.jpg', 'about me...');
+	VALUES ( 'Daniella', 'Gueye', 'daniella', 'Female', 'dani@gmail.com', '$2a$10$rai5Jgvt7myDh.rltd.oseytjrOp3QRi9BDf7r0s133SW0HoOqewG', 'public', '2000-01-01', '/avatars/john.jpg', 'about me...');
 	---------------------------------------------------------------------------
 	---------------------------------------------------------------------------
     INSERT INTO users_followers (user_id_followed, user_id_follower)
@@ -51,7 +51,7 @@ INSERT INTO users ("first_name", "last_name", "user_name", "gender", "email", "p
 		VALUES (3, "other" );
 		INSERT INTO categories (post_id, category)
 		VALUES (3, "news" );
-	
+
 
     INSERT INTO viewers (post_id, user_id)
 		VALUES (1, 1);
@@ -88,9 +88,6 @@ INSERT INTO users ("first_name", "last_name", "user_name", "gender", "email", "p
         INSERT INTO commentReacts (comment_id, post_id, user_id, reaction)
         VALUES (2, 2,1, true);
 
-         INSERT INTO sessions (token, user_id, expiration)
-        VALUES ('NULL', 'NULL', 'NULL'); 
-		
 
           INSERT INTO messages (user_id_sender, user_id_receiver,  message_content, date)
             VALUES (1, 2, 'This is the first message', '2024-03-05');
@@ -98,13 +95,13 @@ INSERT INTO users ("first_name", "last_name", "user_name", "gender", "email", "p
             VALUES (2, 1, 'This is the second message', '2024-03-06');
 			INSERT INTO messages (user_id_sender, user_id_receiver,  message_content, date)
             VALUES (1, 2, 'This is the third message', '2024-03-06');
-			
+
 
               INSERT INTO group_followers (group_id, user_id)
             VALUES (1, 1);
             INSERT INTO group_followers (group_id, user_id)
             VALUES (1, 2);
-			
+
 
             INSERT INTO notifications (notification_type, status, user_id_sender, user_id_receiver)
 		VALUES ("message", false, 1, 3);
@@ -112,10 +109,9 @@ INSERT INTO users ("first_name", "last_name", "user_name", "gender", "email", "p
 		VALUES ("message", false, 1, 2 );
 		INSERT INTO notifications (notification_type, status, user_id_sender, user_id_receiver)
 		VALUES ("message", true, 1, 3);
-		
+
         INSERT INTO confirm (user_id_asker, user_id_asked, group_id)
         VALUES (1, 2, NULL);
 
 		INSERT INTO confirm (user_id_asker, user_id_asked, group_id)
         VALUES (2, NULL, 1);
-        

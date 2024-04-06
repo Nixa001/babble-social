@@ -1,11 +1,11 @@
-'use client'
+"use client";
 import { useEffect } from "react";
 import { useState } from "react";
 import { Header } from "../ui/components/header/header";
 import Navbar from "../ui/components/navbar/navbar";
 import Sidebar from "../ui/components/sidebarRight/sidebar";
 import { displayFollowers } from "./utils";
-// import { WebSocketProvider } from "../_lib/websocket";
+import { ToastContainer } from "react-toastify";
 
 export default function Layout({ children }) {
   const { userData, followers, isLoading, error } = useFetchData();
@@ -17,10 +17,10 @@ export default function Layout({ children }) {
       </div>
       <div
         className="md:flex md:flex-row flex flex-col-reverse 
-      justify-between h-[99%] md:justify-between md:h-full  overflow-hidden"
-      >
+      justify-between h-[99%] md:justify-between md:h-full  overflow-hidden">
         <div className="md:mt-20">
           <Navbar userData={userData} />
+          <ToastContainer />
         </div>
           {" "}
           {/* Enveloppez le contenu avec WebSocketProvider */}

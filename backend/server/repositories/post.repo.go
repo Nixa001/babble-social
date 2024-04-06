@@ -29,11 +29,11 @@ SELECT
     COUNT(DISTINCT c.id) AS comment_count,
 	GROUP_CONCAT(DISTINCT cat.category) AS categories
 FROM 
-    posts AS p,
-	users AS u
+    posts AS p
 LEFT JOIN 
     comment AS c ON p.id = c.post_id,
-	categories AS cat ON p.id = cat.post_id
+	categories AS cat ON p.id = cat.post_id,
+	users AS u ON p.user_id = u.id
 WHERE 
     (
         p.privacy = 'public'
@@ -63,6 +63,7 @@ WHERE
             )
         )
     )
+	AND p.group_id = 0
 	GROUP BY p.id, p.content, p.media, p.date, p.user_id
 	ORDER BY p.timestamp DESC;
 `
@@ -72,52 +73,18 @@ SELECT
     p.content AS post_content,
     p.media AS post_media,
     p.date AS post_date,
-    p.user_id AS post_user_id,
 	u.avatar as avatar,
     u.user_name as username,
     concat (u.first_name, " ", u.last_name) as full_name,
     COUNT(DISTINCT c.id) AS comment_count
 FROM 
-    posts AS p,
-	users AS u
+    posts AS p
 LEFT JOIN 
-    comment AS c ON p.id = c.post_id
+    comment AS c ON p.id = c.post_id,
+	users AS u ON p.user_id = u.id
 WHERE group_id = ?
 	GROUP BY p.id, p.content, p.media, p.date, p.user_id
 	ORDER BY p.timestamp DESC;
-`
-	GetOnePostQuery = `
-SELECT
-    p.id,
-    p.content,
-    p.media,
-    p.date,
-    p.user_id,
-    u.avatar,
-    u.user_name,
-    concat (u.first_name, " ", u.last_name),
-    COUNT(DISTINCT c.id),
-    GROUP_CONCAT(DISTINCT cat.category),
-    CASE
-    WHEN p.privacy ="public" THEN "public"
-    WHEN p.privacy ="private" THEN (
-         SELECT GROUP_CONCAT(user_id_follower) 
-            FROM users_followers 
-            WHERE user_id_followed = p.user_id 
-    )
-    WHEN p.privacy ="almost" THEN (
-        SELECT GROUP_CONCAT(user_id)
-            FROM viewers
-            WHERE post_id = p.id
-        )
-        ELSE NULL
-    END AS isPublic
-FROM
-    posts AS p
-LEFT JOIN comment AS c ON p.id = c.post_id,
-    categories AS cat ON p.id = cat.post_id,
-    users AS u ON u.id =  p.user_id
-WHERE p.id = ?;
 `
 )
 
@@ -248,11 +215,12 @@ func (P *PostRepository) LoadPost(IdUser int) ([]models.DataPost, error) {
 	return postTab, nil
 }
 
-func (p *PostRepository) LoadPostGroup(GroupID int) (models.DataPost, error) {
+func (p *PostRepository) LoadPostGroup(GroupID int) ([]models.DataPost, error) {
+	var postTab []models.DataPost
 	rows, err := p.DB.Query(GetPostGroupQuery, GroupID)
 	if err != nil {
 		log.Println("❌ Error while retrieving in GroupPost => ", err)
-		return models.DataPost{}, errors.New("error while retrieving onepost from the database")
+		return nil, errors.New("error while retrieving onepost from the database")
 	}
 	defer rows.Close()
 
@@ -262,9 +230,10 @@ func (p *PostRepository) LoadPostGroup(GroupID int) (models.DataPost, error) {
 		errScan := rows.Scan(&data.ID, &data.Content, &data.Media, &data.Date, &data.Avatar, &data.UserName, &data.FullName, &data.Comments)
 		if errScan != nil {
 			log.Println("⚠ loadPostGroup scan err ⚠ :", errScan)
-			return models.DataPost{}, errors.New("error while scanning")
+			return nil, errors.New("error while scanning")
 		}
 		data.Content = utils.DecodeValue(data.Content)
+		postTab = append(postTab, data)
 	}
-	return data, nil
+	return postTab, nil
 }

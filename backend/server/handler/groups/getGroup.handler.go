@@ -48,7 +48,7 @@ func GetGroup(w http.ResponseWriter, r *http.Request) {
 
 	groupId, err := GetGroupIDFromRequest(w, r)
 
-	allPosts, err := service.PostServ.GetPost(groupId)
+	allPosts, err := service.PostServ.FetchPostGroup(groupId)
 	if err != nil {
 		fmt.Println(err)
 		return

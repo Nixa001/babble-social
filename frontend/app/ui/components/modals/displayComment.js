@@ -1,15 +1,21 @@
 "use client";
-import Image from "next/image";
 import React from "react";
 import { useState } from "react";
 import { useQuery } from "react-query";
 import { toast } from "react-toastify";
 
-export const DisplayComments = ({ isVisible, postId, onClose, increment }) => {
+export const DisplayComments = ({
+  isVisible,
+  postId,
+  idUser,
+  onClose,
+  increment,
+}) => {
   // const Comments = comments
   const fetchComments = async () => {
     const dataID = new FormData();
     dataID.append("postID", postId);
+    dataID.append("userID", idUser);
     dataID.append("type", "loadComments");
     const options = {
       method: "POST",
@@ -21,6 +27,7 @@ export const DisplayComments = ({ isVisible, postId, onClose, increment }) => {
       return { comments: data.data };
     } catch (error) {
       console.error("Error while querying comments ", error);
+      setFetcherState(false);
       return Promise.reject(error);
     }
   };
@@ -33,7 +40,6 @@ export const DisplayComments = ({ isVisible, postId, onClose, increment }) => {
     staleTime: 500,
     onSuccess: (newData) => {
       setComments(newData.comments);
-      //  console.log("fetched comms => ", comments);
     },
     onError: (error) => {
       console.error("Query error in comments:", error);
@@ -48,6 +54,7 @@ export const DisplayComments = ({ isVisible, postId, onClose, increment }) => {
     e.preventDefault();
     const data = new FormData(e.target);
     data.append("postID", postId);
+    data.append("userID", idUser);
     data.append("type", "addComment");
     let obj = {};
     data.forEach((key, value) => {
@@ -182,7 +189,7 @@ const printComment = (comments) => {
         className="flex flex-col border border-gray-700 mx-5  gap-2 mb-9">
         {/* <FaUserGroup className='border rounded-full p-2 w-10 h-10' /> */}
         <div className=" flex items-center h-fit cursor-pointer justify-start gap-2 mt-1">
-          <Image
+          <img
             className="rounded-full "
             src={comment.Avatar || "/assets/profilibg.jpg"}
             alt="img user"
@@ -193,7 +200,7 @@ const printComment = (comments) => {
         </div>
         {comment.Content != "NULL" && <p className="">{comment.Content}</p>}
         {comment.Media != "NULL" && (
-          <Image
+          <img
             className=" "
             src={comment.Media}
             alt="img comment"

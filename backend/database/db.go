@@ -20,8 +20,7 @@ var DB *Database
 func init() {
 	db, err := sql.Open("sqlite3", "../backend/database/social_network.db")
 	if err != nil {
-		log.Println("Error opening database")
-		fmt.Println(err)
+		log.Println("Error opening database:", err)
 		os.Exit(1)
 	}
 	seed.CreateTable(db)
@@ -37,7 +36,6 @@ func NewDatabase() *sql.DB {
 	}
 	return db
 }
-
 
 func (d *Database) Insert(table string, data any) error {
 	query, err := q.InsertQuery(table, data)

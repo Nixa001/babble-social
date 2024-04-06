@@ -8,38 +8,14 @@ import { CreateEvent } from "@/app/ui/components/modals/createEvent";
 import { CreatePost } from "@/app/ui/components/modals/createPost";
 import { Suggest } from "@/app/ui/components/modals/suggest";
 import { DisplayMembers } from "@/app/ui/components/modals/displayMembers";
-import {
-  Typography,
-  Card,
-  CardContent,
-  CardHeader,
-  Avatar,
-} from "@mui/material";
+
 // import { useApi } from "@/app/_lib/utils";
 import { WebSocketContext } from "@/app/_lib/websocket";
 
-const CardEvent = ({ description, date }) => {
-  return (
-    <Card sx={{ maxWidth: 400, mb: 2 }}>
-      <CardHeader
-        avatar={
-          <Avatar sx={{ bgcolor: "teal" }}>{creatorName.charAt(0)}</Avatar>
-        }
-        title={creatorName}
-        subheader={`${date} à ${time}`}
-      />
-      <CardContent>
-        <Typography variant="body2" color="textSecondary">
-          {description}
-        </Typography>
-      </CardContent>
-    </Card>
-  );
-};
-
-const Group = () => {
+const Group = ({sessionID}) => {
   // Instantiate ws
   // const { sendMessage } = useApi();
+
   const { sendMessage, readMessages, messages } = useContext(WebSocketContext);
 
   const [formCreateEv, setFormCreateEv] = useState(false);
@@ -95,7 +71,7 @@ const Group = () => {
     >
       <div className="w-full h-60 mb-3">
         {groupInfo.image ? (
-          <Image
+          <img
             src={`${groupInfo.image}`}
             alt="cover"
             width={1000}
@@ -293,6 +269,7 @@ const Group = () => {
                   <DisplayPost
                     key={post.ID}
                     postData={post}
+                    idUser={sessionID}
                     onCommentClick={onCommentClick}
                     onProfileClick={onProfileClick}
                   />
@@ -305,11 +282,13 @@ const Group = () => {
         isVisible={formCreateEv}
         onClose={() => setFormCreateEv(false)}
         id={id}
+        user={sessionID}
       />
       <CreatePost
         isVisible={formCreateP}
         onClose={() => setFormCreateP(false)}
         id={id}
+        user={sessionID}
       />
       <Suggest
         followers={followers}
@@ -439,27 +418,6 @@ export const displayEventToJoin = (events, sendMessage) => {
     // }
   });
 };
-
-const events = [
-  {
-    id: 1,
-    description: "Description event 1",
-    src: "/assets/profilibg.jpg",
-    alt: "profil",
-  },
-  {
-    id: 2,
-    description: "Description event 2",
-    src: "/assets/profilibg.jpg",
-    alt: "profil",
-  },
-  {
-    id: 3,
-    description: "Description event 3",
-    src: "/assets/profilibg.jpg",
-    alt: "profil",
-  },
-];
 
 function notGoing(id_event, sendMessage, id_group) {
   sendMessage({ type: "NotGoingEvent", groupId: id_group, event_id: id_event });

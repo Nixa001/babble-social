@@ -1,5 +1,4 @@
 import React from 'react'
-import Image from 'next/image';
 
 export const Suggest = ({ followers, isVisible, onClose, id_group, sendMessage }) => {
     if (!isVisible) return null;
@@ -52,7 +51,7 @@ export const displaySuggestFriend = (data, id_group, sendMessage) => {
             <div key={follower.name} className=" hover:opacity-90 w-[95%] flex items-center cursor-pointer justify-between gap-2 mt-1 mb-3 p-2  ">
                 {/* <FaUserGroup className='border rounded-full p-2 w-10 h-10' /> */}
                 <div className='flex items-center gap-2'>
-                    <Image
+                    <img
                         className="rounded-full "
                         src={`/assets/${follower.avatar}`}
                         alt={follower.alt}

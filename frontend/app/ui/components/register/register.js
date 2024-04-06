@@ -1,9 +1,8 @@
 "use client";
 import { registerUser } from "@/app/api/api.js";
-import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 function Register() {
   const [errorMessage, setErrorMessage] = useState(null);
@@ -14,8 +13,11 @@ function Register() {
     e.preventDefault();
     setPending(true);
     try {
-      const response = await registerUser(e.target);
-      if (response.error === "ok") {
+      let data = new FormData(e.target);
+      const response = await registerUser(data);
+      console.log("response: ", response);
+      if (response.data.error === "ok") {
+        console.log("in ok");
         router.push("/home");
       } else {
         setErrorMessage(response.error);
@@ -30,8 +32,8 @@ function Register() {
   return (
     <div className="w-screen h-screen flex">
       <div className="flex flex-col items-center w-full sm:w-6/12">
-        <div className="header_login flex items-center justify-around w-full">
-          <Image
+        <div className="flex items-center justify-around w-full">
+          <img
             src="/assets/icons/comment.png"
             alt="logo"
             width={40}
@@ -62,7 +64,6 @@ function Register() {
           >
             <input
               type="text"
-              id="firstname"
               name="firstname"
               placeholder="Firstname"
               required
@@ -70,7 +71,6 @@ function Register() {
             />
             <input
               type="text"
-              id="lastname"
               name="lastname"
               placeholder="Lastname"
               required
@@ -78,7 +78,6 @@ function Register() {
             />
             <input
               type="date"
-              id="dateofbirth"
               name="dateofbirth"
               placeholder="Date of birth"
               required
@@ -86,21 +85,18 @@ function Register() {
             />
             <input
               type="file"
-              id="avatar"
               name="avatar"
               placeholder="Avatar"
               className="rounded border border-border_color text-bg"
             />
             <input
               type="text"
-              id="username"
               name="username"
               placeholder="Username"
               className="h-10 rounded pl-2 border border-border_color text-bg"
             />
             <input
               type="email"
-              id="email"
               name="email"
               placeholder="E-mail"
               required
@@ -108,7 +104,6 @@ function Register() {
             />
             <input
               type="password"
-              id="password"
               name="password"
               placeholder="Password"
               required
@@ -116,7 +111,6 @@ function Register() {
             />
             <textarea
               type="text"
-              id="aboutme"
               name="aboutme"
               placeholder="About me"
               className="h-20 pt-6 rounded pl-2 border border-border_color text-bg resize-none"
