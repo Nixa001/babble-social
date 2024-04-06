@@ -32,7 +32,6 @@ const HomePage = ({ id }) => {
     refetchInterval: 1000,
     staleTime: 500,
     onSuccess: (newData) => {
-      if (newData.errMess == "wrong id!") setFetchState(false);
       setPosts(newData.posts);
       //console.log("debug => ", newData);
     },
