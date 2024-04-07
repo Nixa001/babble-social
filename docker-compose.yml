@@ -6,6 +6,9 @@ services:
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
+    container_name: frontend
+    networks:
+      - babble_net
     depends_on:
       - backend
   backend:
@@ -13,4 +16,11 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     ports:
-      - "8080:8080"
+      - "8080:8080"       
+    container_name: backend
+    networks:
+      - babble_net
+
+networks:
+  babble_net:
+    driver: bridge
