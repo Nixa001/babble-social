@@ -27,6 +27,8 @@ const (
 	SERVE_ASSETS              = "/uploads/"
 	PROFILE_ENDPOINT          = "/profile/user"
 	FOLLOW_ENDPOINT           = "/follow"
+	UNFOLLOW_ENDPOINT         = "/unfollow"
+	SWITCH_PROFILE_TYPE       = "/switchProfileType"
 )
 
 func Route() *http.ServeMux {
@@ -51,6 +53,8 @@ func Route() *http.ServeMux {
 	})
 	mux.HandleFunc(PROFILE_ENDPOINT, handler.ProfileHandler)
 	mux.HandleFunc(FOLLOW_ENDPOINT, handler.FollowHandler)
+	mux.HandleFunc(UNFOLLOW_ENDPOINT, handler.UnfollowHandler)
+	mux.HandleFunc(SWITCH_PROFILE_TYPE, handler.SwitchProfileType)
 
 	return mux
 }
