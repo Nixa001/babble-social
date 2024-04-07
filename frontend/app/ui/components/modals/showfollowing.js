@@ -46,7 +46,7 @@ export const followingCard = (following) => {
         <div class="flex-shrink-0">
           <img
             class="h-12 w-12 rounded-full"
-            src={`/assests/${following.avatar}`}
+            src={following.avatar}
             alt={`${following.first_name} image`}
           />
         </div>

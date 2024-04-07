@@ -46,7 +46,7 @@ export const followerCard = (follower) => {
         <div class="flex-shrink-0">
           <img
             class="h-12 w-12 rounded-full"
-            src={`/assests/${follower.avatar}`}
+            src={follower.avatar}
             alt={`${follower.first_name} image`}
           />
         </div>
