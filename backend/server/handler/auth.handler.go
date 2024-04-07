@@ -7,6 +7,7 @@ import (
 	"backend/server/ws"
 	"backend/utils"
 	"encoding/json"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -119,7 +120,7 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func SignInHandler(w http.ResponseWriter, r *http.Request) {
-	log.Println("Sign in handler")
+	fmt.Println("Sign in handler")
 	cors.SetCors(&w)
 	if r.Method == http.MethodOptions {
 		w.WriteHeader(http.StatusOK)
@@ -131,7 +132,7 @@ func SignInHandler(w http.ResponseWriter, r *http.Request) {
 		credentials := make(map[string]string, 2)
 		content, err := io.ReadAll(r.Body)
 		if err != nil {
-			log.Println("Invalid credentials 0 :", err)
+			fmt.Println("Invalid credentials 0 :", err)
 			w.WriteHeader(http.StatusUnauthorized)
 			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid credentials"})
 			return
@@ -146,14 +147,14 @@ func SignInHandler(w http.ResponseWriter, r *http.Request) {
 		email, password := credentials["email"], credentials["password"]
 
 		if utils.IsValidEmail(strings.TrimSpace(email)) != nil || utils.IsValidPassword(strings.TrimSpace(password)) != nil {
-			log.Println("Invalid credentials 1", err)
+			fmt.Println("Invalid credentials 1", err)
 			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid credentials 1"})
 			return
 		}
 		user, err := service.AuthServ.CheckCredentials(email, password)
 		if err != nil {
-			log.Println("Invalid credentials 2", err)
+			fmt.Println("Invalid credentials 2", err)
 			w.WriteHeader(http.StatusUnauthorized)
 			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid credentials 2"})
 			return
@@ -166,7 +167,7 @@ func SignInHandler(w http.ResponseWriter, r *http.Request) {
 			json.NewEncoder(w).Encode(map[string]string{"error": "Internal server error"})
 			return
 		}
-		log.Println("User Connected", user.Email)
+		fmt.Println("User Connected", user.Email)
 		json.NewEncoder(w).Encode(map[string]any{"message": "success", "token": session.Token, "user": user})
 	default:
 		w.WriteHeader(http.StatusMethodNotAllowed)
