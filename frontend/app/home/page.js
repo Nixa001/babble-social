@@ -8,6 +8,7 @@ import { useSession } from "../api/api";
 const Page = () => {
  // const router = useRouter(),
   const  { session, errSess } = useSession();
+  if (errSess) alert(errSess);
 
   const sessionId = session?.session["user_id"];
   console.log("i got session => ", sessionId);
