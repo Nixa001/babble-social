@@ -92,11 +92,8 @@ func (h *Hub) HandleEvent(eventPayload WSPaylaod) {
 		h.Clients.Range(func(key, value interface{}) bool {
 			client := value.(*WSClient)
 			fmt.Println("2", client)
-			// for _, name := range eventPayload.To {
-			if client.Email == eventPayload.From {
+			if client.Email != eventPayload.From {
 				client.OutgoingMsg <- eventPayload
-				// 	break // Exit the loop once a match is found
-				// }
 			}
 			return true
 		})
@@ -113,12 +110,9 @@ func (h *Hub) HandleEvent(eventPayload WSPaylaod) {
 	case WS_IDRECEIVER_EVENT:
 		h.Clients.Range(func(key, value interface{}) bool {
 			client := value.(*WSClient)
-			// for _, name := range eventPayload.To {
 			if client.Email == eventPayload.From {
 				client.OutgoingMsg <- eventPayload
-				// break // Exit the loop once a match is found
 			}
-			// }
 			return true
 		})
 	case WS_IDGROUP_RECEIVER_EVENT:
@@ -132,9 +126,9 @@ func (h *Hub) HandleEvent(eventPayload WSPaylaod) {
 	case WS_MESSAGEUSER_EVENT:
 		h.Clients.Range(func(key, value interface{}) bool {
 			client := value.(*WSClient)
-			// if client.Email == eventPayload.From {
-			client.OutgoingMsg <- eventPayload
-			// }
+			if client.Email == eventPayload.From || client.Email == eventPayload.To {
+				client.OutgoingMsg <- eventPayload
+			}
 			return true
 		})
 	case WS_MESSAGEGROUP_EVENT:
@@ -266,15 +260,17 @@ func (client *WSClient) messageReader() {
 			if err != nil {
 				fmt.Println("error:", err)
 				// panic(err)
+			} else if len(list) == 0 {
+				fmt.Println("La liste des utilisateurs est vide")
+				// Gérer le cas où la liste est vide, par exemple en ne faisant rien ou en envoyant un événement différent
+			} else {
+				var newEvent = WSPaylaod{
+					From: client.Email,
+					Type: eventType,
+					Data: list[0],
+				}
+				WSHub.HandleEvent(newEvent)
 			}
-			fmt.Println("players:", payload)
-			var newEvent = WSPaylaod{
-				From: client.Email,
-				Type: eventType,
-				Data: list[0],
-			}
-			WSHub.HandleEvent(newEvent)
-
 		case WS_IDRECEIVER_EVENT:
 
 			clickedUserId, ok := payload["data"].(map[string]interface{})["clickedUserId"].(float64)
@@ -342,10 +338,12 @@ func (client *WSClient) messageReader() {
 			if errr != nil {
 				fmt.Println(errr)
 			}
+			clientTo, err := seed.GetUserById(seed.DB, int(receiverID))
 			msEvent := WSPaylaod{
 				From: client.Email,
 				Type: eventType,
 				Data: mes,
+				To:   clientTo.Email,
 			}
 			WSHub.HandleEvent(msEvent)
 

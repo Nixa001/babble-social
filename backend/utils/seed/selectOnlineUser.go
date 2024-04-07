@@ -125,7 +125,6 @@ func ListeUsers(db *sql.DB, userID int) ([][]models.User, error) {
 	// Si des messages ont été trouvés, trier les utilisateurs par ordre des derniers messages.
 	if len(messages) > 0 {
 		sort.Slice(followersAndFollowing, func(i, j int) bool {
-			// Trouver le dernier message de chaque utilisateur.
 			lastMessageI := findLastMessage(messages, followersAndFollowing[i].Id)
 			lastMessageJ := findLastMessage(messages, followersAndFollowing[j].Id)
 
@@ -139,11 +138,9 @@ func ListeUsers(db *sql.DB, userID int) ([][]models.User, error) {
 	groupSize := 10 // Taille du groupe, ajustez selon vos besoins.
 	for i := 0; i < len(followersAndFollowing); i += groupSize {
 		end := i + groupSize
-
 		if end > len(followersAndFollowing) {
 			end = len(followersAndFollowing)
 		}
-
 		groupedUsers = append(groupedUsers, followersAndFollowing[i:end])
 	}
 	return groupedUsers, nil
@@ -164,9 +161,7 @@ func findLastMessage(messages []models.Chat, userID int) models.Chat {
 
 // InsertMessage insère un nouveau message dans la base de données.
 func InsertMessage(db *sql.DB, userSender, userReceiver int, messageContent, date string) error {
-	// Préparation de la requête SQL pour insérer un nouveau message.
 	query := `INSERT INTO messages (user_id_sender, user_id_receiver, message_content, date) VALUES (?, ?, ?, ?);`
-	// Exécution de la requête avec les valeurs fournies.
 	_, err := db.Exec(query, userSender, userReceiver, messageContent, date)
 	if err != nil {
 		fmt.Println("Erreur lors de l'insertion du message:", err)
@@ -207,4 +202,21 @@ func GetLastMessage(db *sql.DB, msg string) (models.Chat, error) {
 		}
 	}
 	return message, err
+}
+
+func GetUserById(db *sql.DB, id int)(models.User, error){
+	query := `SELECT * FROM users WHERE id =?`
+    row, err := db.Query(query, id)
+    if err!= nil {
+        return models.User{}, nil
+    }
+    var user models.User
+    for row.Next() {
+        err = row.Scan(&user.Id, &user.First_name, &user.Last_name, &user.User_name, &user.Gender, &user.Email, &user.Password, &user.User_type, &user.Birth_date, &user.Avatar, &user.About_me)
+        if err!= nil {
+            log.Println("Erreur lors de la récupération des informations de l'utilisateur:", err)
+            return models.User{}, nil
+        }
+    }
+    return user, err
 }

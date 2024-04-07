@@ -1,6 +1,6 @@
 'use client'
 import Image from 'next/image';
-import { display, displayFollowers, followerHearder } from '../../components/sidebarRight/sidebar';
+import { display, displayFollowers, displayGroups, followerHearder } from '../../components/sidebarRight/sidebar';
 import { useContext, useEffect, useState } from 'react';
 import useSocket, { WebSocketContext } from '@/app/_lib/websocket';
 import { getSessionUser } from '@/app/_lib/utils';
@@ -8,7 +8,7 @@ import { getSessionUser } from '@/app/_lib/utils';
 let idreceiver;
 let idgroupreceiver;
 const Messages = () => {
-    const { sendMessageToServer, allMessages,resetAllMessages } = useContext(WebSocketContext)
+    const { sendMessageToServer, allMessages,resetAllMessages, onlineUser } = useContext(WebSocketContext)
     const [idUserReceiver, setIdUserReceiver] = useState(0);
     const [idGroupReceiver, setIdGroupReceiver] = useState(0);
     const [nameUser, setNameUser] = useState("");
@@ -111,9 +111,9 @@ const Messages = () => {
 
     const displayTable = () => {
         if (activeTab === "users") {
-            return display(users, handleUserClick);
+            return displayFollowers(onlineUser, handleUserClick);
         } else if (activeTab === "group") {
-            return display(groups, handleGroupClick);
+            return displayGroups(groups, handleGroupClick);
         }
         return null;
     };
@@ -194,10 +194,10 @@ const displayMessages = (messages) => {
     }
     // Si messages n'est pas vide, mappe sur les messages comme avant
     return messages.map((message) => (
-        <div key={message.id} className="message-container flex items-end mb-4">
-            <div className="flex flex-col">
-                <p className="text-sm font-semibold mb-1">{message.first_name}</p>
-                <div className="font-semibold bg-primary p-4 rounded-lg">
+        <div key={message.id} className="message-container flex items-end mb-4 ">
+            <div className="flex flex-col w-[70%]">
+                <p className="text-sm w-fit bg-black font-semibold mb-1">{message.first_name}</p>
+                <div className="font-semibold bg-primary p-4 rounded-lg break-words text-wrap w-fit max-w-[40%]">
                     {message.message_content}
                 </div>
             </div>
