@@ -133,14 +133,48 @@ export async function getProfileById(id) {
   }
 }
 
-export async function followUser(id) {
-  let token = localStorage.getItem("token") || "none";
+export async function followUser(id, sessionId) {
   try {
-    const response = await fetch(`${NEXT_PUBLIC_API_URL}/follow/${id}`, {
+    const response = await fetch(`${NEXT_PUBLIC_API_URL}/follow?id=${id}`, {
       method: "POST",
       headers: {
         Authorization: JSON.stringify({ token }),
       },
+      body: JSON.stringify({ id, sessionId }),
+    });
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Erreur ", error);
+    return Promise.reject(error);
+  }
+}
+
+export async function unfollowUser(id, sessionId) {
+  try {
+    const response = await fetch(`${NEXT_PUBLIC_API_URL}/unfollow?id=${id}`, {
+      method: "POST",
+      headers: {
+        Authorization: JSON.stringify({ token }),
+      },
+      body: JSON.stringify({ id, sessionId }),
+    });
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Erreur ", error);
+    return Promise.reject(error);
+  }
+}
+
+export async function profileTypeUser(id, sessionId) {
+  try {
+    const response = await fetch(`${NEXT_PUBLIC_API_URL}/profile/type`, {
+      method: "POST",
+      headers: {
+        Authorization: JSON.stringify({ token }),
+      },
+      body: JSON.stringify({ id, sessionId }),
     });
     const data = await response.json();
     return data;
