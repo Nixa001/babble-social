@@ -30,7 +30,6 @@ func ProfileHandler(w http.ResponseWriter, r *http.Request) {
 		log.Println("User ID:", userID)
 		// get user by id
 		user, err := service.AuthServ.UserRepo.GetUserById(userID)
-		fmt.Println("USER =>", user)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			log.Println("Failed to get user:", err)
@@ -46,7 +45,6 @@ func ProfileHandler(w http.ResponseWriter, r *http.Request) {
 		// }
 		// get user's followers
 		followers, err := service.AuthServ.GetFollowersByID(userID)
-		fmt.Println("FOLLOWERS =>", followers)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			log.Println("Failed to get user's followers:", err)
@@ -55,7 +53,6 @@ func ProfileHandler(w http.ResponseWriter, r *http.Request) {
 		}
 		// get user's followings
 		followings, err := service.AuthServ.GetFollowingsByID(userID)
-		fmt.Println("FOLLOWINGS =>", followings)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(map[string]string{"error": "Failed to get user's followings"})
