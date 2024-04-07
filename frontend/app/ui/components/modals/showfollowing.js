@@ -31,7 +31,7 @@ export const ShowFollowings = ({ followings, isVisible, onClose }) => {
           >
             {followings
               ? followings.map((following) => followingCard(following))
-              : ""}
+              : "No followings found."}
           </ul>
         </div>
       </div>

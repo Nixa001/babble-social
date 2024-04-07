@@ -10,135 +10,26 @@ import { ShowFollowings } from "../modals/showfollowing.js";
 export default function Profile({ sessionId }) {
   const [IsVisibleFollowers, setIsVisibleFollowers] = useState(false);
   const [IsVisibleFollowing, setIsVisibleFollowing] = useState(false);
+  const [user, setUser] = useState({});
+  const [followers, setFollowers] = useState([]);
+  const [followings, setFollowings] = useState([]);
   const pathname = usePathname();
   const userid = pathname.split("id=")[1];
-  userid ? userid : sessionId;
   console.log("sessionId=>", sessionId);
-  console.log("userID=>", userid);
-  const id = 1;
+  const id = userid ? userid : sessionId;
   useQuery("profile", () => getProfileById(id), {
     enabled: true,
     refetchInterval: 2000,
     staleTime: 1000,
-    onSuccess: (data) => console.log(data),
+    onSuccess: (data) => {
+      console.log(data);
+      console.log(typeof data?.followers.length);
+      setUser(data?.user);
+      setFollowers(data?.followers);
+      setFollowings(data?.following);
+    },
     onError: (error) => console.log("Query Profile error:", error),
   });
-
-  const followers = [
-    {
-      first_name: "Vincent",
-      last_name: "Mbour",
-      email: "test.gmail.com",
-      avatar: "/assets/profilibg.jpg",
-      alt: "profil",
-    },
-    {
-      first_name: "ibg",
-      last_name: "Gueye",
-      email: "test.gmail.com",
-      avatar: "/assets/profilibg.jpg",
-      alt: "profil",
-    },
-    {
-      first_name: "dicks",
-      last_name: "Made",
-      email: "test.gmail.com",
-      avatar: "/assets/profilibg.jpg",
-      alt: "profil",
-    },
-    {
-      first_name: "Vindcour",
-      last_name: "Ndour",
-      email: "test.gmail.com",
-      avatar: "/assets/profilibg.jpg",
-      alt: "profil",
-    },
-    {
-      first_name: "ibgs",
-      last_name: "Gaye",
-      email: "test.gmail.com",
-      avatar: "/assets/profilibg.jpg",
-      alt: "profil",
-    },
-    {
-      first_name: "dickss",
-      last_name: "Yade",
-      email: "test.gmail.com",
-      avatar: "/assets/profilibg.jpg",
-      alt: "profil",
-    },
-  ];
-  const followings = [
-    {
-      first_name: "Vincent",
-      last_name: "Mbour",
-      avatar: "",
-      email: "test.gmail.com",
-      alt: "profil",
-    },
-    {
-      first_name: "Vincent",
-      last_name: "Mbour",
-      avatar: "",
-      email: "test.gmail.com",
-      alt: "profil",
-    },
-    {
-      first_name: "Vincent",
-      last_name: "Mbour",
-      avatar: "",
-      email: "test.gmail.com",
-      alt: "profil",
-    },
-    {
-      first_name: "ibg",
-      last_name: "Gaye",
-      avatar: "",
-      email: "test.gmail.com",
-      alt: "profil",
-    },
-    {
-      first_name: "dicks",
-      last_name: "Yade",
-      avatar: "",
-      email: "test.gmail.com",
-      alt: "profil",
-    },
-    {
-      first_name: "Vindcour",
-      last_name: "Ndour",
-      avatar: "",
-      email: "test.gmail.com",
-      alt: "profil",
-    },
-    {
-      first_name: "ibgs",
-      last_name: "Gueye",
-      avatar: "",
-      email: "test.gmail.com",
-      alt: "profil",
-    },
-    {
-      first_name: "Mamour",
-      last_name: "Dramé",
-      avatar: "",
-      email: "test.gmail.com",
-      alt: "profil",
-    },
-  ];
-  const user = {
-    first_name: "Madické",
-    last_name: "Yade",
-    user_name: "ymadické",
-    email: "dickss@gmail.com",
-    avatar: "",
-    user_type: "private",
-    about_me: "Software Engineer / Designer / Entrepreneur",
-    date_of_birth: "December 27, 2019",
-    gender: "Male",
-    following: 520,
-    followers: "23.4m",
-  };
 
   return (
     <div
@@ -154,14 +45,14 @@ export default function Profile({ sessionId }) {
                 <img
                   className="h-36 w-36 rounded-full border-4 border-gray-900"
                   src="https://pbs.twimg.com/profile_images/1254779846615420930/7I4kP65u_400x400.jpg"
-                  alt={user.first_name + " " + user.last_name}
+                  alt={user?.first_name + " " + user?.last_name}
                 />
               </div>
             </div>
             {/* Follow Button */}
             <div className="flex flex-col text-right">
               <button className="ml-auto mr-0 flex max-h-max max-w-max items-center justify-center whitespace-nowrap rounded-full border border-blue-500 bg-transparent px-4 py-2 font-bold text-blue-500 hover:border-blue-800 hover:shadow-lg focus:outline-none focus:ring">
-                {user.user_type === "private"
+                {user?.user_type === "private"
                   ? "Switch to Public"
                   : "Switch to Private"}
               </button>
@@ -172,15 +63,15 @@ export default function Profile({ sessionId }) {
             {/* User basic*/}
             <div>
               <h2 className="text-xl font-bold leading-6 text-white">
-                {user.first_name} {user.last_name}
+                {user?.first_name} {user?.last_name}
               </h2>
               <p className="text-sm font-medium leading-5 text-gray-600">
-                {user.user_name ? "@" + user.user_name : ""}
+                {user?.user_name ? "@" + user?.user_name : ""}
               </p>
             </div>
             {/* Description and others */}
             <div className="pt-1">
-              <p className="mb-2 leading-tight text-white">{user.about_me}</p>
+              <p className="mb-2 leading-tight text-white">{user?.about_me}</p>
               <div className="flex text-gray-600">
                 <span className="mr-2 flex">
                   <svg viewBox="0 0 24 24" className="paint-icon h-5 w-5">
@@ -194,7 +85,7 @@ export default function Profile({ sessionId }) {
                     target="#"
                     className="ml-1 leading-5 text-blue-400"
                   >
-                    {user.email}
+                    {user?.email}
                   </a>
                 </span>
                 <span className="mr-2 flex">
@@ -212,7 +103,7 @@ export default function Profile({ sessionId }) {
                     </g>
                   </svg>
                   <span className="ml-1 leading-5">
-                    Born {user.date_of_birth}
+                    Born {formatDate(user?.birth_date)}
                   </span>
                 </span>
               </div>
@@ -247,9 +138,11 @@ export default function Profile({ sessionId }) {
                   />
                 </span>
                 <span className="font-bold text-white">
-                  {user.following ? user.following : 0}
+                  {followings ? followings.length : 0}
                 </span>
-                <span className="text-gray-600"> Following</span>
+                <span className="text-gray-600">
+                  Following{followings?.length ? "s" : ""}
+                </span>
               </div>
               <div
                 className="flex flex-rows gap-x-1 px-3 text-center cursor-pointer"
@@ -280,9 +173,11 @@ export default function Profile({ sessionId }) {
                   />
                 </span>
                 <span className="font-bold text-white">
-                  {user.followers ? user.followers : 0}
+                  {followers ? followers.length : 0}
                 </span>
-                <span className="text-gray-600"> Followers</span>
+                <span className="text-gray-600">
+                  Follower{followers?.length ? "s" : ""}
+                </span>
               </div>
             </div>
           </div>
@@ -306,4 +201,10 @@ export default function Profile({ sessionId }) {
       />
     </div>
   );
+}
+
+function formatDate(dateString) {
+  const options = { year: "numeric", month: "long", day: "numeric" };
+  const date = new Date(dateString);
+  return date.toLocaleDateString("fr-FR", options);
 }
