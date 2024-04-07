@@ -4,7 +4,6 @@ import (
 	"backend/server/cors"
 	"backend/server/service"
 	"encoding/json"
-	"fmt"
 	"io"
 	"log"
 	"net/http"
