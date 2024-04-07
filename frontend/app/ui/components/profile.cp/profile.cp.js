@@ -122,6 +122,9 @@ export default function Profile({ sessionId }) {
               <p className="text-sm font-medium leading-5 text-gray-600">
                 {user?.user_name ? "@" + user?.user_name : ""}
               </p>
+              <p className="text-sm pt-1 leading-tight text-white">
+                {user?.gender ? user?.gender : ""}
+              </p>
             </div>
             {/* Description and others */}
             {isPublic || isOwner || isFollowing ? (
