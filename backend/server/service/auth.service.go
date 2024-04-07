@@ -148,8 +148,28 @@ func (a *AuthService) GetFollowingsByID(id int) ([]models.User, error) {
 	return followings, nil
 }
 
-func (a *AuthService) FollowUser(id int, idToFollow int) error {
-	err := a.FollowRepo.FollowUser(id, idToFollow)
+func (a *AuthService) FollowUser(followerID, followingID int) error {
+	err := a.FollowRepo.FollowUser(followerID, followingID)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (a *AuthService) UnfollowUser(followerID, followingID int) error {
+	err := a.FollowRepo.UnfollowUser(followerID, followingID)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (a *AuthService) UpdateProfileType(id int, profileType string) error {
+	user, err := a.GetUserById(id)
+	if err != nil {
+		return err
+	}
+	err = a.UserRepo.UpdateProfileType(user)
 	if err != nil {
 		return err
 	}
