@@ -19,7 +19,7 @@ type Server struct {
 
 func NewServer() *Server {
 	return &Server{
-		Host: "localhost",
+		Host: "0.0.0.0",
 		Port: 8080,
 	}
 }
