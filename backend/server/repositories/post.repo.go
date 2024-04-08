@@ -86,7 +86,7 @@ WHERE group_id = ?
 	GROUP BY p.id, p.content, p.media, p.date, p.user_id
 	ORDER BY p.timestamp DESC;
 `
-GetProfilePost = `
+	GetProfilePost = `
 SELECT
     p.id AS post_id,
     p.content AS post_content,
@@ -145,8 +145,8 @@ AND
                     AND post_id = p.id
             )
         )
-        
-    ) 
+
+    )
     AND p.group_id =0
 GROUP BY
     p.id,
@@ -308,7 +308,7 @@ func (p *PostRepository) LoadPostGroup(GroupID int) ([]models.DataPost, error) {
 
 func (p *PostRepository) LoadPostGroupByUserID(IdUser int, IdProfil int) ([]models.DataPost, error) {
 	var postTab []models.DataPost
-	rows, err := p.DB.Query(GetProfilePost, IdProfil,IdProfil, IdUser, IdUser, IdUser)
+	rows, err := p.DB.Query(GetProfilePost, IdProfil, IdProfil, IdUser, IdUser, IdUser)
 	if err != nil {
 		log.Println("❌ Error while retrieving posts => ", err)
 		return nil, errors.New("error while retrieving posts from the database")
@@ -317,9 +317,9 @@ func (p *PostRepository) LoadPostGroupByUserID(IdUser int, IdProfil int) ([]mode
 
 	for rows.Next() {
 		var temp models.DataPost
-		errScan := rows.Scan(&temp.ID, &temp.Content, &temp.Media, &temp.Date, &temp.User_id, &temp.Avatar, &temp.UserName, &temp.FullName, &temp.Comments, &temp.Categories)
+		errScan := rows.Scan(&temp.ID, &temp.Content, &temp.Media, &temp.Date, &temp.User_id, &temp.Privacy, &temp.Avatar, &temp.UserName, &temp.FullName, &temp.Comments, &temp.Categories)
 		if errScan != nil {
-			log.Println("⚠ GetPost scan err ⚠ :", errScan)
+			log.Println("⚠ GetPost scan err profile ⚠ :", errScan)
 			return nil, errors.New("error while scanning")
 		}
 

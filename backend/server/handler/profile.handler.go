@@ -4,6 +4,7 @@ import (
 	"backend/server/cors"
 	"backend/server/service"
 	"encoding/json"
+	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -19,11 +20,19 @@ func ProfileHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		return
 	case http.MethodGet:
-		sessionIdStr := r.URL.Query().Get("sessionId") //todo: must retrieve session id it from url
-		sessonID, err := strconv.Atoi(sessionIdStr)    //todo: must retrieve session id it from url
+		fmt.Println(r.URL.Query())
+		sessionIdStr := r.URL.Query().Get("sessionId")
+		sessonID, err := strconv.Atoi(sessionIdStr)
+		if err != nil {
+			fmt.Println("Invalid session ID")
+			w.WriteHeader(http.StatusBadRequest)
+			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid session ID"})
+			return
+		}
 		userIDStr := r.URL.Query().Get("id")
 		userID, err := strconv.Atoi(userIDStr)
 		if err != nil {
+			fmt.Println("Invalid user ID")
 			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid user ID"})
 			return
@@ -40,6 +49,7 @@ func ProfileHandler(w http.ResponseWriter, r *http.Request) {
 		// // get user's posts
 		posts, err := service.PostServ.FetchPostGroupByUserID(sessonID, userID)
 		if err != nil {
+			fmt.Println("Failed to fetch user's posts:", err)
 			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(map[string]string{"error": "Failed to fetch user's posts"})
 			return
