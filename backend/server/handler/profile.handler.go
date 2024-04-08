@@ -69,7 +69,7 @@ func ProfileHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func FollowHandler(w http.ResponseWriter, r *http.Request) {
-	log.Println("Sign up handler")
+	log.Println("Follow handler")
 	cors.SetCors(&w)
 	if r.Method == http.MethodOptions {
 		w.WriteHeader(http.StatusOK)

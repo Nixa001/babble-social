@@ -133,7 +133,7 @@ export async function getProfileById(id) {
   }
 }
 
-export async function followUser(id, sessionId) {
+export async function followUser(id, sessionId, token) {
   try {
     const response = await fetch(`${NEXT_PUBLIC_API_URL}/follow?id=${id}`, {
       method: "POST",
@@ -150,7 +150,7 @@ export async function followUser(id, sessionId) {
   }
 }
 
-export async function unfollowUser(id, sessionId) {
+export async function unfollowUser(id, sessionId, token) {
   try {
     const response = await fetch(`${NEXT_PUBLIC_API_URL}/unfollow?id=${id}`, {
       method: "POST",

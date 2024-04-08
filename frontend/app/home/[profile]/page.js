@@ -8,10 +8,11 @@ const page = () => {
   console.log("session => ", session);
   console.log("errSess => ", errSess);
   const sessionId = session?.session["user_id"];
+  const sessionToken = session?.session["token"];
   console.log("i got session in group => ", sessionId);
   return (
     <QueryClientProvider client={queryClient}>
-      <Profile sessionId={sessionId} />
+      <Profile sessionId={sessionId} sessionToken={sessionToken} />
     </QueryClientProvider>
   );
 };

@@ -28,7 +28,7 @@ const (
 	PROFILE_ENDPOINT          = "/profile/user"
 	FOLLOW_ENDPOINT           = "/follow"
 	UNFOLLOW_ENDPOINT         = "/unfollow"
-	SWITCH_PROFILE_TYPE       = "/switchProfileType"
+	SWITCH_PROFILE_TYPE       = "/profile/type"
 )
 
 func Route() *http.ServeMux {

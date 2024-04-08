@@ -1,13 +1,18 @@
 "use client";
 
-import { getProfileById } from "@/app/api/api.js";
+import {
+  followUser,
+  getProfileById,
+  profileTypeUser,
+  unfollowUser,
+} from "@/app/api/api.js";
 import { usePathname } from "next/navigation.js";
 import { useState } from "react";
 import { useQuery } from "react-query";
 import { ShowFollowers } from "../modals/showfollowers.js";
 import { ShowFollowings } from "../modals/showfollowing.js";
 
-export default function Profile({ sessionId }) {
+export default function Profile({ sessionId, sessionToken }) {
   const [IsVisibleFollowers, setIsVisibleFollowers] = useState(false);
   const [IsVisibleFollowing, setIsVisibleFollowing] = useState(false);
   const [user, setUser] = useState({});
@@ -31,38 +36,68 @@ export default function Profile({ sessionId }) {
     },
     onError: (error) => console.log("Query Profile error:", error),
   });
-
+  const followersId = followers?.map((follower) => follower.id);
   const HandleFollow = (id, sessionId, followers) => {
-    if (sessionId && followers?.includes(sessionId)) {
+    if (sessionId && followersId?.includes(sessionId)) {
       console.log("unfollow");
-      if (user?.user_type === "public") {
-        //unfollow
-      } else {
-        //unfollow
+      // if (user?.user_type === "public") {
+      //   //unfollow
+      // } else {
+      //   //unfollow
+      // }
+      try {
+        const response = unfollowUser(id, sessionId);
+        if (response.error === null) {
+          console.log("unfollowed");
+        } else {
+          console.log("error unfollowing");
+        }
+      } catch (error) {
+        console.log("error unfollowing", error);
       }
     } else {
       console.log("follow");
-      if (user?.user_type === "public") {
-        //follow
-      } else {
-        //follow
+      try {
+        const response = followUser(id, sessionId, sessionToken);
+        if (response.error === null) {
+          console.log("followed");
+        } else {
+          console.log("error following");
+        }
+      } catch (error) {
+        console.log("error following", error);
       }
-      //follow
+      // if (user?.user_type === "public") {
+      //   //follow
+      // } else {
+      //   //follow
+      // }
     }
   };
 
   const SwitchTypeProfile = (sessionId, user_type) => {
     console.log("SwitchTypeProfile");
-    //SwitchTypeProfile
+    try {
+      const response = profileTypeUser(sessionId, user_type);
+      if (response.error === null) {
+        console.log("Switched");
+      } else {
+        console.log("error switching");
+      }
+    } catch (error) {
+      console.log("error switching", error);
+    }
   };
+
+  // map followers to recup id in a array
 
   const isPublic = user?.user_type === "public";
   const isOwner = sessionId === id;
-  const isFollowing = sessionId && followers?.includes(sessionId);
+  const isFollower = sessionId && followersId?.includes(sessionId);
 
   console.log("isPublic=>", isPublic);
   console.log("isOwner=>", isOwner);
-  console.log("isFollowing=>", isFollowing);
+  console.log("isFollower=>", isFollower);
   return (
     <div
       className="md:w-[300px] lg:w-[500px] xl:w-[700px] 2xl:w-[1000px] w-screen h-full
@@ -81,7 +116,7 @@ export default function Profile({ sessionId }) {
                 />
               </div>
             </div>
-            {isPublic || isOwner || isFollowing ? (
+            {isPublic || isOwner || isFollower ? (
               <div className="flex flex-col text-right">
                 {isOwner && (
                   <button
@@ -98,7 +133,7 @@ export default function Profile({ sessionId }) {
                     className="ml-auto mr-0 flex max-h-max max-w-max items-center justify-center whitespace-nowrap rounded-full border border-blue-500 bg-transparent px-4 py-2 font-bold text-blue-500 hover:border-blue-800 hover:shadow-lg focus:outline-none focus:ring"
                     onClick={() => HandleFollow(id, sessionId, followers)}
                   >
-                    {isFollowing ? "Unfollow" : "Follow"}
+                    {isFollower ? "Unfollow" : "Follow"}
                   </button>
                 )}
               </div>
@@ -127,7 +162,7 @@ export default function Profile({ sessionId }) {
               </p>
             </div>
             {/* Description and others */}
-            {isPublic || isOwner || isFollowing ? (
+            {isPublic || isOwner || isFollower ? (
               <>
                 <div className="pt-1">
                   <p className="mb-2 leading-tight text-white">
@@ -228,7 +263,7 @@ export default function Profile({ sessionId }) {
         </div>
         <hr />
       </div>
-      {isPublic || isOwner || isFollowing ? (
+      {isPublic || isOwner || isFollower ? (
         <div className="w-full flex justify-between"></div>
       ) : (
         ""
