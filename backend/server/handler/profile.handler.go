@@ -19,6 +19,8 @@ func ProfileHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		return
 	case http.MethodGet:
+		sessionIdStr := r.URL.Query().Get("sessionId") //todo: must retrieve session id it from url
+		sessonID, err := strconv.Atoi(sessionIdStr)    //todo: must retrieve session id it from url
 		userIDStr := r.URL.Query().Get("id")
 		userID, err := strconv.Atoi(userIDStr)
 		if err != nil {
@@ -36,12 +38,12 @@ func ProfileHandler(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 		// // get user's posts
-		// posts, err := service.PostServ.FetchPostGroupByUserID(userID)
-		// if err != nil {
-		// 	w.WriteHeader(http.StatusBadRequest)
-		// 	json.NewEncoder(w).Encode(map[string]string{"error": "Failed to fetch user's posts"})
-		// 	return
-		// }
+		posts, err := service.PostServ.FetchPostGroupByUserID(sessonID, userID)
+		if err != nil {
+			w.WriteHeader(http.StatusBadRequest)
+			json.NewEncoder(w).Encode(map[string]string{"error": "Failed to fetch user's posts"})
+			return
+		}
 		// get user's followers
 		followers, err := service.AuthServ.GetFollowersByID(userID)
 		if err != nil {
@@ -60,7 +62,7 @@ func ProfileHandler(w http.ResponseWriter, r *http.Request) {
 		// return user info, posts, followers, followings
 		w.WriteHeader(http.StatusOK)
 		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(map[string]any{"user": user, "followers": followers, "followings": followings})
+		json.NewEncoder(w).Encode(map[string]any{"user": user, "posts": posts, "followers": followers, "followings": followings})
 		return
 	default:
 		w.WriteHeader(http.StatusMethodNotAllowed)

@@ -86,6 +86,74 @@ WHERE group_id = ?
 	GROUP BY p.id, p.content, p.media, p.date, p.user_id
 	ORDER BY p.timestamp DESC;
 `
+GetProfilePost = `
+SELECT
+    p.id AS post_id,
+    p.content AS post_content,
+    p.media AS post_media,
+    p.date AS post_date,
+    p.user_id AS post_user_id,
+    p.privacy,
+    u.avatar as avatar,
+    u.user_name as username,
+    concat (u.first_name, " ", u.last_name) as full_name,
+    COUNT(DISTINCT c.id) AS comment_count,
+    GROUP_CONCAT(DISTINCT cat.category) AS categories
+FROM
+    posts AS p
+    LEFT JOIN comment AS c ON p.id = c.post_id,
+    categories AS cat ON p.id = cat.post_id,
+    users AS u ON  p.user_id=u.id
+WHERE
+p.user_id = ?
+AND
+    (
+        p.privacy = 'public'
+        OR (
+            p.privacy = 'private'
+            AND (
+                p.user_id = ? --? Post creator
+                OR EXISTS (
+                    SELECT
+                        1
+                    FROM
+                        users_followers
+                    WHERE
+                        user_id_followed = p.user_id
+                        AND user_id_follower = ? --?
+                )
+                OR EXISTS (
+                    SELECT
+                        1
+                    FROM
+                        users_followers
+                    WHERE
+                        user_id_follower = p.user_id
+                        AND user_id_followed = ? --?
+                )
+            )
+        )
+        OR (
+            p.privacy = 'almost'
+            AND EXISTS (
+                SELECT
+                    1
+                FROM
+                    viewers
+                WHERE
+                    user_id = ? --?
+                    AND post_id = p.id
+            )
+        )
+        
+    ) 
+    AND p.group_id =0
+GROUP BY
+    p.id,
+    p.content,
+    p.media,
+    p.date,
+    p.user_id;`
 )
 
 func (p *PostRepository) init() {
@@ -238,9 +306,9 @@ func (p *PostRepository) LoadPostGroup(GroupID int) ([]models.DataPost, error) {
 	return postTab, nil
 }
 
-func (p *PostRepository) LoadPostGroupByUserID(IdUser int) ([]models.DataPost, error) {
+func (p *PostRepository) LoadPostGroupByUserID(IdUser int, IdProfil int) ([]models.DataPost, error) {
 	var postTab []models.DataPost
-	rows, err := p.DB.Query(GetPostQuery, IdUser)
+	rows, err := p.DB.Query(GetProfilePost, IdProfil,IdProfil, IdUser, IdUser, IdUser)
 	if err != nil {
 		log.Println("❌ Error while retrieving posts => ", err)
 		return nil, errors.New("error while retrieving posts from the database")

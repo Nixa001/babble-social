@@ -113,11 +113,11 @@ export function useSession() {
   return { session, error };
 }
 
-export async function getProfileById(id) {
+export async function getProfileById(id, sessionId) {
   let token = localStorage.getItem("token") || "none";
   try {
     const response = await fetch(
-      `${NEXT_PUBLIC_API_URL}/profile/user?id=${id}`,
+      `${NEXT_PUBLIC_API_URL}/profile/user?id=${id}?sessionId=${sessionId}`,
       {
         method: "GET",
         headers: {

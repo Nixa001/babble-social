@@ -24,7 +24,7 @@ export default function Profile({ sessionId, sessionToken }) {
   console.log("userid=>", userid);
   console.log("sessionId=>", sessionId);
   const id = userid ? userid : sessionId;
-  useQuery("profile", () => getProfileById(id), {
+  useQuery("profile", () => getProfileById(id, sessionId), {
     enabled: true,
     refetchInterval: 2500,
     staleTime: 1000,
