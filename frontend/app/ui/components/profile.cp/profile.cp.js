@@ -6,9 +6,10 @@ import {
   profileTypeUser,
   unfollowUser,
 } from "@/app/api/api.js";
-import { usePathname } from "next/navigation.js";
+import { useSearchParams } from "next/navigation.js";
 import { useState } from "react";
 import { useQuery } from "react-query";
+import DisplayPost from "../../home/displayPost.js";
 import { ShowFollowers } from "../modals/showfollowers.js";
 import { ShowFollowings } from "../modals/showfollowing.js";
 
@@ -18,13 +19,14 @@ export default function Profile({ sessionId, sessionToken }) {
   const [user, setUser] = useState({});
   const [followers, setFollowers] = useState([]);
   const [followings, setFollowings] = useState([]);
-  const pathname = usePathname();
-  const userid = pathname.split("=")[1];
-  console.log("pathname=>", pathname);
+  const [posts, setPosts] = useState([]);
+  //recup id from url
+  const searchParams = useSearchParams();
+  const userid = searchParams.get("id");
   console.log("userid=>", userid);
   console.log("sessionId=>", sessionId);
   const id = userid ? userid : sessionId;
-  useQuery("profile", () => getProfileById(id, sessionId), {
+  useQuery("profile", () => getProfileById(id, sessionId, sessionToken), {
     enabled: true,
     refetchInterval: 2500,
     staleTime: 1000,
@@ -33,6 +35,7 @@ export default function Profile({ sessionId, sessionToken }) {
       setUser(data?.user);
       setFollowers(data?.followers);
       setFollowings(data?.following);
+      setPosts(data?.posts);
     },
     onError: (error) => console.log("Query Profile error:", error),
   });
@@ -92,7 +95,7 @@ export default function Profile({ sessionId, sessionToken }) {
   // map followers to recup id in a array
 
   const isPublic = user?.user_type === "public";
-  const isOwner = sessionId === id;
+  const isOwner = sessionId == id;
   const isFollower = sessionId && followersId?.includes(sessionId);
 
   console.log("isPublic=>", isPublic);
@@ -264,7 +267,11 @@ export default function Profile({ sessionId, sessionToken }) {
         <hr />
       </div>
       {isPublic || isOwner || isFollower ? (
-        <div className="w-full flex justify-between"></div>
+        <div className="post_div_top flex flex-col items-center">
+          {posts?.map((post) => (
+            <DisplayPost key={post.ID} postData={post} />
+          ))}
+        </div>
       ) : (
         ""
       )}
