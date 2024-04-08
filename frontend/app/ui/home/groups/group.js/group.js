@@ -288,7 +288,6 @@ const Group = ({ sessionID }) => {
                     key={post.ID}
                     postData={post}
                     onCommentClick={onCommentClick}
-                    onProfileClick={onProfileClick}
                   />
                 );
               })
@@ -325,10 +324,6 @@ export default Group;
 
 const onCommentClick = () => {
   alert("Comment disp");
-};
-
-const onProfileClick = () => {
-  alert("profile disp");
 };
 
 export const displayEvents = (events) => {
