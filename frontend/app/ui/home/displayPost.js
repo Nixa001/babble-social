@@ -62,7 +62,7 @@ const DisplayPost = ({ postData, idUser, onCommentClick, onProfileClick }) => {
           <img
             src={postDataState.Media}
             alt="Post image"
-            className="img_post max-w-full hover:shadow-xl overflow-hidden cursor-pointer transition duration-300 ease-linear scale-95 hover:scale-100"
+            className="img_post max-w-full z-0 hover:shadow-xl overflow-hidden cursor-pointer transition duration-300 ease-linear scale-95 hover:scale-100"
             width={700}
             height={200}
           />

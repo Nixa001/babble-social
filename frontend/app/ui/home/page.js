@@ -6,6 +6,8 @@ import { useQuery } from "react-query";
 import { useSession } from "@/app/api/api";
 
 const HomePage = ({ id }) => {
+  const [formCreatePost, setFormCreatePost] = useState(false);
+
   const [posts, setPosts] = useState([]),
     [fetchState, setFetchState] = useState(true),
     userID = new FormData();
@@ -29,7 +31,6 @@ const HomePage = ({ id }) => {
       return Promise.reject(error);
     }
   };
-  
 
   useQuery("posts", fetchPosts, {
     enabled: fetchState,
@@ -45,8 +46,35 @@ const HomePage = ({ id }) => {
     },
   });
   return (
-    <div className=" md:w-[400px] lg:w-[650px] xl:w-[800px] 2xl:w-[1000px] w-screen">
-      <div className="flex justify-center mb-4">{PostForm(id)}</div>
+    <div className=" md:w-[400px] lg:w-[650px] xl:w-[800px] 2xl:w-[1000px] w-screen ">
+       
+      <div className="flex justify-center mb-4">{PostForm(id,formCreatePost,() => setFormCreatePost(false) )}</div>
+
+      <button
+        className="inline-flex items-center px-4 py-4 z-10 text-m font-semibold absolute lg:end-72 md:end-52 end-4 md:bottom-2 bottom-20 text-center text-white bg-primary rounded-lg hover:bg-second"
+        onClick={() => {
+          setFormCreatePost(!formCreatePost);
+        }}
+      >
+        <svg
+          xmlns="http://www.w3.org/2000/svg"
+          fill="none"
+          viewBox="0 0 24 24"
+          strokeWidth={2}
+          stroke="currentColor"
+          className="w-6 h-6"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            d="M12 4.5v15m7.5-7.5h-15"
+          />
+        </svg>
+        <p className="lg:block hidden">
+        NEW POST
+        </p>
+      </button>
+
       <div className="post_div_top flex flex-col items-center">
         {posts?.map((e) => (
           <AddPost
