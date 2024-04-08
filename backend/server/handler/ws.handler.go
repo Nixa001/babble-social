@@ -4,7 +4,6 @@ import (
 	"backend/server/cors"
 	"backend/server/ws"
 	"fmt"
-	"log"
 	"net/http"
 
 	"github.com/gorilla/websocket"
@@ -13,35 +12,31 @@ import (
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
 	WriteBufferSize: 1024,
-
+	// Autoriser toutes les origines pour le développement
 	CheckOrigin: func(r *http.Request) bool {
 		return true
 	},
 }
 
 func WSHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Hello, world!")
-	cors.SetCors(&w)
-
-	conn, err := upgrader.Upgrade(w, r, nil)
-	if err != nil {
-		log.Println("Erreur de mise a niveau de la connexion", err)
+	cors.SetCors(&w) // Configurez les en-têtes CORS pour les réponses HTTP
+	if r.Method == http.MethodOptions {
+		w.WriteHeader(http.StatusOK)
 		return
 	}
-	ws.Init()
-	ws.WSHub.AddClient(conn, "mail@a.com")
 
-	// go func() {
-	// 	for {
-	// 		_, message, err := conn.ReadMessage()
-	// 		if err != nil {
-	// 			log.Println("Erreur lors de la lecture du message:", err)
-	// 			return
-	// 		}
-	// 		log.Println("Message reçu:", string(message))
-	// 	}
-	// }()
+	userSession := UserInSession(w, r)
+	token := r.URL.Query().Get("token")
 
-	fmt.Println("Ws is running")
-	// _ = conn.Close()
+	conn, err := upgrader.Upgrade(w, r, nil) // Utilisez l'Upgrader configuré
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	// defer conn.Close()
+	// fmt.Println("userSession: ", userSession)
+
+	ws.WSHub.AddClient(conn, userSession.Email, token)
+	fmt.Println("aksina")
+
 }

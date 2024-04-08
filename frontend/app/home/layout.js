@@ -22,10 +22,11 @@ export default function Layout({ children }) {
           <Navbar userData={userData} />
           <ToastContainer />
         </div>
-
-        <div className="mt-20 overflow-x-hidden overflow-y-scroll chrome pl-3 mr-3">
-          {children}
-        </div>
+          {" "}
+          {/* Enveloppez le contenu avec WebSocketProvider */}
+          <div className="mt-20 overflow-x-hidden overflow-y-scroll chrome pl-3 mr-3">
+            {children}
+          </div>
 
         <div className="md:mt-20 hidden md:block">
           <Sidebar followers={followers} />

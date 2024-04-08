@@ -43,7 +43,8 @@ function Register() {
             You already have an account?{" "}
             <Link
               href="/login"
-              className="text-primary hover:text-second cursor-pointer">
+              className="text-primary hover:text-second cursor-pointer"
+            >
               Sign In.
             </Link>
           </div>
@@ -59,7 +60,8 @@ function Register() {
           <form
             className="w-full flex flex-col gap-3"
             onSubmit={handleSubmit}
-            data-form="login">
+            data-form="login"
+          >
             <input
               type="text"
               name="firstname"
@@ -125,7 +127,8 @@ function Register() {
             </div>
             <button
               className="hover:bg-second bg-primary cursor-pointer border-none w-full h-10 rounded font-bold text-text text-center"
-              disabled={pending}>
+              disabled={pending}
+            >
               Create account
             </button>
           </form>

@@ -1,22 +1,22 @@
-"use client";
-import React from "react";
-import Groups from "@/app/ui/home/groups/groups";
+'use client'
+// import { WebSocketProvider } from '@/app/_lib/websocket'
+import React from 'react'
 
 import { QueryClient } from "react-query";
 import { QueryClientProvider } from "react-query";
-import { ApiProvider } from "@/app/_lib/utils";
-import { ToastContainer } from "react-toastify";
+// import { ApiProvider } from "@/app/_lib/utils";
+import Groups from '@/app/ui/home/groups/groups';
 
 export const queryClient = new QueryClient();
 
 const page = () => {
   return (
     <>
-      <ApiProvider>
+      {/* <ApiProvider> */}
         <QueryClientProvider client={queryClient}>
           <Groups />
         </QueryClientProvider>
-      </ApiProvider>
+      {/* </ApiProvider> */}
     </>
   );
 };

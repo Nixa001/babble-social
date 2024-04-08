@@ -17,6 +17,7 @@ export async function loginUser(email, password) {
       if (response.ok) {
         return response.json().then((json) => {
           console.log(json);
+          localStorage.setItem("token", json.token);
           return { error: null, data: json };
         });
       }

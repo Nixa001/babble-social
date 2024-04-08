@@ -95,5 +95,5 @@ export function Landing() {
         </div>
       </section>
     </div>
-  );
+  )
 }

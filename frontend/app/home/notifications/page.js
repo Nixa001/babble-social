@@ -1,5 +1,5 @@
 'use client'
-import Notification from '@/app/ui/notification/page'
+import Notification from '@/app/ui/home/notification/page'
 import React from 'react'
 
 const Page = () => {

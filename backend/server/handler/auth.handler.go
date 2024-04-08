@@ -206,7 +206,8 @@ func SignOutHandler(w http.ResponseWriter, r *http.Request) {
 			client := c.(*ws.WSClient)
 			ws.WSHub.UnRegisterChannel <- client
 			var newEvent = ws.WSPaylaod{
-				From: client.Mail,
+				// From: client.Mail,
+				// From: client.Email,
 				Type: ws.WS_DISCONNECT_EVENT,
 				Data: nil,
 			}

@@ -23,7 +23,6 @@ func NewServer() *Server {
 		Port: 8080,
 	}
 }
-
 func (s *Server) Run() {
 	fmt.Printf("Server running on port %v\nhttp://%v:%v\n", s.Port, s.Host, s.Port)
 	routes := routes.Route()

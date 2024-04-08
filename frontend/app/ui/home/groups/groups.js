@@ -1,15 +1,16 @@
 "use client";
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import Link from "next/link";
 import { CreateGroup } from "../../components/modals/createGroup";
 import { useQuery } from "react-query";
 import { useApi } from "@/app/_lib/utils";
 import { JoinGroup } from "./group.utils/joinGroup";
+import { WebSocketContext } from "@/app/_lib/websocket";
 
 const Groups = () => {
   const [formCreateGr, setFormCreateGr] = useState(false);
   const [groupData, setGroupData] = useState([]);
-  const [fetcherState, setFetcherState] = useState(true)
+  const [fetcherState, setFetcherState] = useState(true);
   const [groupJoined, setGroupJoined] = useState([]);
 
   const fetchGroups = async () => {
@@ -19,7 +20,7 @@ const Groups = () => {
       return { groupJoined: data[0], groupData: data[1] };
     } catch (error) {
       console.error("Erreur ", error);
-      setFetcherState(false)
+      setFetcherState(false);
       return Promise.reject(error);
     }
   };
@@ -70,17 +71,17 @@ const Groups = () => {
             New Group
           </button>
         </div>
-        <div className="w-full flex gap-3 flex-wrap">
-          {groupJoined.map((group) => (
+        <div className="w-full flex gap-3 overflow-x-scroll">
+          {groupJoined?.map((group) => (
             <GroupCard key={group.id} isMember={true} {...group} />
           ))}
         </div>
         <h1 className="text-xl font-bold my-5">Discover new communities</h1>
-        <div className="w-full flex gap-3 flex-wrap pb-10">
+        <div className="w-full flex gap-3 overflow-x-scroll pb-10">
           {groupData
             ? groupData.map((group) => (
-              <GroupCard key={group.id} isMember={false} {...group} />
-            ))
+                <GroupCard key={group.id} isMember={false} {...group} />
+              ))
             : ""}
         </div>
         <CreateGroup
@@ -102,8 +103,10 @@ const GroupCard = ({ isMember, id, image, name, description, href, state }) => {
     description = description.slice(0, 50) + " ...";
   }
 
-  const { sendMessage, readMessages, messages } = useApi();
-  console.log(messages);
+  // const { sendMessage, readMessages, messages } = useApi();
+
+  const { sendMessage, readMessages, messages } = useContext(WebSocketContext);
+
   const handleLoginJoinMessage = () => {
     // console.log("handleLoginJoinMessage ", id);
     const joinMessage = messages.find(
@@ -112,7 +115,7 @@ const GroupCard = ({ isMember, id, image, name, description, href, state }) => {
     if (joinMessage) {
       messages.map((message) => {
         if (message.Data.id_group === id) {
-          // console.log("Message ", message);
+          console.log("Message ", message);
           return;
         }
       });
@@ -170,8 +173,7 @@ const GroupCard = ({ isMember, id, image, name, description, href, state }) => {
             </span>
 
             <div className="flex mt-4 md:mt-6">
-              {state !== 'disable' ? (
-
+              {state !== "disable" ? (
                 <button
                   onClick={() => {
                     JoinGroup(id, sendMessage, readMessages);
@@ -180,7 +182,9 @@ const GroupCard = ({ isMember, id, image, name, description, href, state }) => {
                 >
                   Join
                 </button>
-              ) : ('')}
+              ) : (
+                ""
+              )}
             </div>
           </div>
         </div>

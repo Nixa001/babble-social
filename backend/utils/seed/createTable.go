@@ -150,7 +150,7 @@ func CreateTable(db *sql.DB) {
             FOREIGN KEY(group_id) REFERENCES groups(id) ON DELETE CASCADE ON UPDATE CASCADE
 			)`)
 	if err != nil {
-		log.Fatal("Notifications table", err.Error())
+		log.Fatal("group_followers table", err.Error())
 	}
 
 	_, err = db.Exec(
@@ -181,6 +181,44 @@ func CreateTable(db *sql.DB) {
 		)`)
 	if err != nil {
 		log.Fatal("Confirm table", err.Error())
+	}
+
+	_, err = db.Exec(
+		`CREATE TABLE IF NOT EXISTS "event" (
+			"id" INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+			"group_id" INTEGER NOT NULL,
+			"user_id" INTEGER NOT NULL,
+			description TEXT NOT NULL,
+			event_date DATETIME NOT NULL, "is_joined" INTEGER DEFAULT 1,
+			FOREIGN KEY("group_id") REFERENCES groups(id) ON DELETE CASCADE ON UPDATE CASCADE,
+			FOREIGN KEY("user_id") REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE
+		)`)
+	if err != nil {
+		log.Fatal("event table", err.Error())
+	}
+	_, err = db.Exec(
+		`CREATE TABLE IF NOT EXISTS  event_joined (
+			id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+			event_id INTEGER NOT NULL,
+			user_id INTEGER NOT NULL, group_id INTEGER REFERENCES groups("id") ON DELETE CASCADE ON UPDATE CASCADE,
+			FOREIGN KEY(event_id) REFERENCES event("id") ON DELETE CASCADE ON UPDATE CASCADE,
+			FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE
+		)`)
+	if err != nil {
+		log.Fatal("event_joined table", err.Error())
+	}
+	_, err = db.Exec(
+		`CREATE TABLE IF NOT EXISTS event_notjoined (
+			id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+			event_id INTEGER NOT NULL,
+			user_id INTEGER NOT NULL,
+			group_id INTEGER NOT NULL,
+			FOREIGN KEY(event_id) REFERENCES event(id) ON DELETE CASCADE ON UPDATE CASCADE,
+			FOREIGN KEY(user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE,
+			FOREIGN KEY(group_id) REFERENCES groups(id) ON DELETE CASCADE ON UPDATE CASCADE
+		)`)
+	if err != nil {
+		log.Fatal("event_joined table", err.Error())
 	}
 
 }

@@ -1,7 +1,5 @@
 "use client"
-import React from 'react'
-import { useState } from "react";
-import { useEffect } from 'react';
+import React, { useEffect, useState } from 'react'
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { GoHomeFill } from "react-icons/go";
@@ -10,6 +8,8 @@ import { IoNotifications } from "react-icons/io5";
 import { FaUserGroup } from "react-icons/fa6";
 import { IoPersonCircleSharp } from "react-icons/io5";
 import { IoLogOut } from "react-icons/io5";
+import Image from 'next/image';
+import { getSessionUser } from '@/app/_lib/utils';
 
 // import { GoHomeFill, AiFillMessage, FaUserGroup, IoNotifications, IoPersonCircleSharp, IoLogOut } from 'react-icons/all';
 // import clsx from 'clsx';
@@ -23,30 +23,35 @@ const links = [
     { name: 'Logout', href: '/home/logout', icon: IoLogOut },
 ];
 
-function Navbar({ userData }) {
-    // const location = useLocation();
+function Navbar() {
     const pathname = usePathname();
+    const [user, setUser] = useState(null);
 
-    // const { userData, followers, isLoading, error } = useFetchData();
-
+    useEffect(() => {
+        const fetchUser = async () => {
+            try {
+                const userData = await getSessionUser();
+                setUser(userData);
+            } catch (error) {
+                console.error('Failed to fetch user session:', error);
+            }
+        };
+        fetchUser();
+    }, []);
     return (
         <div className='shadowL  md:navbar xl:before:w-72 before:w-48 z-0 xl:w-60 md:block md:h-[700px] flex-col'>
             <div className='md:flex hidden relative z-0 flex-col w-full h-52 items-center justify-center'>
-                {userData.avatar ?
-                    <img
-                        src={`${userData.avatar}`}
-                        alt="logo"
-                        width={80} height={80}
-                        className='rounded-full z-10'
-                    />
-                    : ("")}
-
-                <h2 className='font-semibold text-xl text-center'>
-                    {userData.first_name ? userData.first_name + " " + userData.last_name : ('')}
-                </h2>
-                <span className='text-md italic text-primary'>
-                    {userData.user_name ? "@" + userData.user_name : ("")}
-                </span>
+                <img
+                    src="/assets/profil.jpg" alt="logo"
+                    width={80} height={80}
+                    className='rounded-full z-10'
+                />
+                 {user && (
+                    <>
+                        <h2 className='font-bold text-2xl text-center'>{user.first_name}  {user.last_name}</h2>
+                        <span className='text-xl italic text-primary'>@{user.user_name}</span>
+                    </>
+                )}
             </div>
 
             <div className=" absolute content w-18 h-80 z-0 bg-other border-l-0 border-t-0 border-b-10 border-r-0 rounded-bl-0 rounded-tr-10 rounded-br-0 rounded-tl-0"></div>

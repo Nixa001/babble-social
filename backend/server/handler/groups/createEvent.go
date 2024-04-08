@@ -86,14 +86,14 @@ func insertEvent(groupID, userID int, description string, eventDate string) (int
 	}
 
 	stmt, err = db.Prepare(`
-    INSERT INTO event_joined (event_id,user_id)
-    VALUES (?, ?)`)
+    INSERT INTO event_joined (event_id, user_id, group_id)
+    VALUES (?, ?, ?)`)
 	if err != nil {
 		return 0, err
 	}
 	defer stmt.Close()
 
-	_, err = stmt.Exec(id, userID)
+	_, err = stmt.Exec(id, userID, groupID)
 	if err != nil {
 		return 0, err
 	}

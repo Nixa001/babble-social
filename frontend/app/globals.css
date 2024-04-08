@@ -24,7 +24,7 @@
 }
 
 @media (prefers-color-scheme: dark) {
-  :root {
+  /* :root {
     --primary_color: #00bd97;
     --second_color: #1bc4f2;
     --bg_color: #24232d;
@@ -32,7 +32,7 @@
     --text_color: #fff;
     --shadow_color: rgba(0, 0, 0, 0.69);
     --navbar_color: #fff;
-  }
+  } */
 }
 
 * {

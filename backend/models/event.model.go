@@ -6,4 +6,14 @@ type Event struct {
 	UserID      int    `json:"user_id"`
 	Description string `json:"description"`
 	Date        string `json:"date"`
+	Is_joined   int    `json:"is_joined"`
+}
+
+type EventJoined struct {
+	ID          int    `json:"id"`
+	Event_id    int    `json:"event_id"`
+	User_id     int    `json:"user"`
+	Group_id    int    `json:"group"`
+	Description string `json:"description"`
+	Date        string `json:"date"`
 }
