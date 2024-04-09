@@ -11,7 +11,7 @@ LABEL version="1.0.0"
 LABEL License="BABBLE team"
 
 # working directory 
-WORKDIR /app
+WORKDIR /backend
 # Copy oproject file into container's working dir
 COPY . .
 
