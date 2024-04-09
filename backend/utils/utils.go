@@ -109,7 +109,7 @@ func VerifyName(s string) error {
 
 func VerifyAboutMe(s string) error {
 	var maxChars = 1500
-	if len(s) > maxChars || !IsAlpha(s) {
+	if len(s) > maxChars {
 		return fmt.Errorf("%v: invalid about me", s)
 	}
 	return nil
