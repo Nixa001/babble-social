@@ -20,7 +20,6 @@ func ProfileHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		return
 	case http.MethodGet:
-		fmt.Println(r.URL.Query())
 		sessionIdStr := r.URL.Query().Get("sessionId")
 		sessonID, err := strconv.Atoi(sessionIdStr)
 		if err != nil {
@@ -193,7 +192,6 @@ func SwitchProfileType(w http.ResponseWriter, r *http.Request) {
 	}
 	switch r.Method {
 	case http.MethodPost:
-		credentials := make(map[string]string, 2)
 		content, err := io.ReadAll(r.Body)
 		if err != nil {
 			log.Println("Invalid credentials 0 :", err)
@@ -201,21 +199,24 @@ func SwitchProfileType(w http.ResponseWriter, r *http.Request) {
 			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid credentials"})
 			return
 		}
-
+		fmt.Println("Content:", string(content))
+		credentials := make(map[string]string, 2)
 		err = json.Unmarshal(content, &credentials)
 		if err != nil {
+			fmt.Println("Invalid credentials:", err)
 			w.WriteHeader(http.StatusUnauthorized)
 			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid credentials 0"})
 			return
 		}
-		userIDStr, profileType := credentials["user_id"], credentials["profile_type"]
-		userID, err := strconv.Atoi(userIDStr)
+		fmt.Println(credentials)
+		userID, profileType := credentials["sessionId"], credentials["user_type"]
+		userIDInt, err := strconv.Atoi(userID)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid user ID"})
 			return
 		}
-		err = service.AuthServ.UpdateProfileType(userID, profileType)
+		err = service.AuthServ.UpdateProfileType(userIDInt, profileType)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(map[string]string{"error": "Failed to update profile type"})

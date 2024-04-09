@@ -43,11 +43,6 @@ export default function Profile({ sessionId, sessionToken }) {
   const HandleFollow = (id, sessionId, followers) => {
     if (sessionId && followersId?.includes(sessionId)) {
       console.log("unfollow");
-      // if (user?.user_type === "public") {
-      //   //unfollow
-      // } else {
-      //   //unfollow
-      // }
       try {
         const response = unfollowUser(id, sessionId);
         if (response.error === null) {
@@ -59,29 +54,28 @@ export default function Profile({ sessionId, sessionToken }) {
         console.log("error unfollowing", error);
       }
     } else {
-      console.log("follow");
-      try {
-        const response = followUser(id, sessionId, sessionToken);
-        if (response.error === null) {
-          console.log("followed");
-        } else {
-          console.log("error following");
+      if (user?.user_type == "public") {
+        console.log("follow");
+        try {
+          const response = followUser(id, sessionId);
+          if (response.error === null) {
+            console.log("followed");
+          } else {
+            console.log("error following");
+          }
+        } catch (error) {
+          console.log("error following", error);
         }
-      } catch (error) {
-        console.log("error following", error);
+      } else {
+        console.log("error following");
       }
-      // if (user?.user_type === "public") {
-      //   //follow
-      // } else {
-      //   //follow
-      // }
     }
   };
 
   const SwitchTypeProfile = (sessionId, user_type) => {
     console.log("SwitchTypeProfile");
     try {
-      const response = profileTypeUser(sessionId, user_type);
+      const response = profileTypeUser(sessionId, user_type, sessionToken);
       if (response.error === null) {
         console.log("Switched");
       } else {

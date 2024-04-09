@@ -169,6 +169,12 @@ func (a *AuthService) UpdateProfileType(id int, profileType string) error {
 	if err != nil {
 		return err
 	}
+	if profileType == "public" {
+		user.User_type = "private"
+	} else {
+		user.User_type = "public"
+	}
+	fmt.Println("User:", user)
 	err = a.UserRepo.UpdateProfileType(user)
 	if err != nil {
 		return err
