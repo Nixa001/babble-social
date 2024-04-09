@@ -18,7 +18,7 @@ function Register() {
       console.log("response: ", response);
       if (response.data.error === "ok") {
         console.log("in ok");
-        router.push("/home");
+        router.push("/login");
       } else {
         setErrorMessage(response.error);
       }
