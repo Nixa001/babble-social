@@ -13,7 +13,7 @@ import (
 
 // var group models.Group
 
-var UserId int = 1
+// var UserId int = 1
 
 func CreateGroupHandler(w http.ResponseWriter, r *http.Request) {
 	cors.SetCors(&w)
@@ -25,7 +25,7 @@ func CreateGroupHandler(w http.ResponseWriter, r *http.Request) {
 	groupNameTrim := strings.TrimSpace(group.Name)
 
 	if len(groupNameTrim) == 0 {
-		http.Error(w, "Le champ 'Name' est obligatoire", http.StatusBadRequest)
+		// http.Error(w, "Le champ 'Name' est obligatoire", http.StatusBadRequest)
 
 		fmt.Println("Empty name")
 		msg := models.Errormessage{
