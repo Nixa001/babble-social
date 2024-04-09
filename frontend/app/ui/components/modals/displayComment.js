@@ -191,7 +191,11 @@ const printComment = (comments) => {
         <div className=" flex items-center h-fit cursor-pointer justify-start gap-2 mt-1">
           <img
             className="rounded-full "
-            src={comment.Avatar || "/assets/profilibg.jpg"}
+            src={
+              comment.Avatar != "NULL"
+                ? `${comment.Avatar}`
+                : "/assets/profilibg.jpg"
+            }
             alt="img user"
             width={35}
             height={35}

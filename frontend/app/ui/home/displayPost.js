@@ -20,7 +20,11 @@ const DisplayPost = ({ postData, idUser, onCommentClick, onProfileClick }) => {
         <div className="header_pos w-fit">
           <div className="info_post flex items-start gap-2">
             <img
-              src={`${postDataState.Avatar}` || "/assets/profilibg.jpg"}
+              src={
+                postDataState.Avatar != "NULL"
+                  ? `${postDataState.Avatar}`
+                  : "/assets/profilibg.jpg"
+              }
               alt="Profile picture"
               onClick={handleProfileClick}
               className="profile_pic rounded-full cursor-pointer hover:opacity-60"
@@ -73,8 +77,7 @@ const DisplayPost = ({ postData, idUser, onCommentClick, onProfileClick }) => {
           className="comment_post flex gap-1 items-center"
           onClick={() => {
             setIsVisibleComment(true);
-          }}
-        >
+          }}>
           <img
             src="/assets/icons/comment.png"
             alt="Comment icon"
