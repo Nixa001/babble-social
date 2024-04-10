@@ -13,7 +13,7 @@ import (
 
 // var group models.Group
 
-// var UserId int = 1
+var UserId int = 1
 
 func CreateGroupHandler(w http.ResponseWriter, r *http.Request) {
 	cors.SetCors(&w)
