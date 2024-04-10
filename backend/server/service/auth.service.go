@@ -15,13 +15,15 @@ import (
 )
 
 type AuthService struct {
-	UserRepo r.UserRepository
-	SessRepo r.SessionRepository
+	UserRepo   r.UserRepository
+	SessRepo   r.SessionRepository
+	FollowRepo r.FollowRepository
 }
 
 func (a *AuthService) init() {
 	a.UserRepo = *r.UserRepo
 	a.SessRepo = *r.SessionRepo
+	a.FollowRepo = *r.FollowRepo
 }
 
 func (a *AuthService) CreateUser(user models.FormatedUser) error {
@@ -103,4 +105,73 @@ func (a *AuthService) CreateSession(user models.User) (models.Session, error) {
 	}
 	return models.Session{Token: token, User_id: user.Id, Expiration: expiration}, nil
 
+}
+
+func (a *AuthService) GetUserById(id int) (models.User, error) {
+	user, err := a.UserRepo.GetUserById(id)
+	if err != nil {
+		log.Println("Error getting user by id", err)
+		return models.User{}, err
+	}
+	return user, nil
+}
+
+func (a *AuthService) GetFollowersByID(id int) ([]models.User, error) {
+	IdUsers, err := a.FollowRepo.Getfollower(id)
+	if err != nil {
+		return nil, err
+	}
+	followers := make([]models.User, 0)
+	for _, idUser := range IdUsers {
+		user, err := a.UserRepo.GetUserById(idUser.User_id_follower)
+		if err != nil {
+			return nil, err
+		}
+		followers = append(followers, user)
+	}
+	return followers, nil
+}
+
+func (a *AuthService) GetFollowingsByID(id int) ([]models.User, error) {
+	IdUsers, err := a.FollowRepo.Getfollowing(id)
+	if err != nil {
+		return nil, err
+	}
+	followings := make([]models.User, 0)
+	for _, idUser := range IdUsers {
+		user, err := a.UserRepo.GetUserById(idUser.User_id_followed)
+		if err != nil {
+			return nil, err
+		}
+		followings = append(followings, user)
+	}
+	return followings, nil
+}
+
+func (a *AuthService) FollowUser(followerID, followingID int) error {
+	err := a.FollowRepo.FollowUser(followerID, followingID)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (a *AuthService) UnfollowUser(followerID, followingID int) error {
+	err := a.FollowRepo.UnfollowUser(followerID, followingID)
+	if err != nil {
+		return err
+	}
+	return nil
+}
+
+func (a *AuthService) UpdateProfileType(id int, profileType string) error {
+	user, err := a.GetUserById(id)
+	if err != nil {
+		return err
+	}
+	err = a.UserRepo.UpdateProfileType(user)
+	if err != nil {
+		return err
+	}
+	return nil
 }

@@ -45,7 +45,7 @@ const Group = ({sessionID}) => {
       console.error("Erreur ", error);
       return Promise.reject(error);
     }
-  };
+  }
 
   useQuery("groups", fetchGroups, {
     enabled: true,
@@ -271,7 +271,6 @@ const Group = ({sessionID}) => {
                     postData={post}
                     idUser={sessionID}
                     onCommentClick={onCommentClick}
-                    onProfileClick={onProfileClick}
                   />
                 );
               })
@@ -310,10 +309,6 @@ export default Group;
 
 const onCommentClick = () => {
   alert("Comment disp");
-};
-
-const onProfileClick = () => {
-  alert("profile disp");
 };
 
 export const displayEvents = (events) => {

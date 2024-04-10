@@ -1,9 +1,8 @@
 "use client";
-import React, { useState } from "react";
-import { PostForm } from "./postForm";
-import AddPost from "./displayPost";
+import { useState } from "react";
 import { useQuery } from "react-query";
-import { useSession } from "@/app/api/api";
+import { PostForm } from "./postForm";
+import DisplayPost from "./displayPost";
 
 const HomePage = ({ id }) => {
   const [formCreatePost, setFormCreatePost] = useState(false);
@@ -37,6 +36,7 @@ const HomePage = ({ id }) => {
     refetchInterval: 1000,
     staleTime: 500,
     onSuccess: (newData) => {
+      //  if (newData.errType == 400) setFetchState(false);
       setPosts(newData.posts);
       //console.log("debug => ", newData);
     },
@@ -77,14 +77,13 @@ const HomePage = ({ id }) => {
 
       <div className="post_div_top flex flex-col items-center">
         {posts?.map((e) => (
-          <AddPost
+          <DisplayPost
             key={e.ID}
             postData={e}
             idUser={id}
             onLikeClick={onLikeClick}
             onDislikeClick={onDislikeClick}
             onCommentClick={onCommentClick}
-            onProfileClick={onProfileClick}
           />
         ))}
       </div>
@@ -104,10 +103,6 @@ const onDislikeClick = () => {
 
 const onCommentClick = () => {
   alert("Comment disp");
-};
-
-const onProfileClick = () => {
-  alert("profile disp");
 };
 
 let postData = {

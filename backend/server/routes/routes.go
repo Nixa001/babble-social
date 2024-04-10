@@ -28,6 +28,10 @@ const (
 	MESSAGE_ENDPOINT          = "/message"
 	// VERIF_SESS_ENDPOINT       = "/auth/session"
 	GET_USER_SESS_ENDPOINT = "/auth/usersessions"
+	PROFILE_ENDPOINT          = "/profile/user"
+	FOLLOW_ENDPOINT           = "/follow"
+	UNFOLLOW_ENDPOINT         = "/unfollow"
+	SWITCH_PROFILE_TYPE       = "/profile/type"
 )
 
 func Route() *http.ServeMux {
@@ -53,6 +57,10 @@ func Route() *http.ServeMux {
 	mux.HandleFunc(MESSAGE_ENDPOINT, handler.MessageHandler)
 	// mux.HandleFunc(VERIF_SESS_ENDPOINT, (handler.VerifySessionHandler))
 	mux.HandleFunc(GET_USER_SESS_ENDPOINT, (handler.GetUserSession))
+	mux.HandleFunc(PROFILE_ENDPOINT, handler.ProfileHandler)
+	mux.HandleFunc(FOLLOW_ENDPOINT, handler.FollowHandler)
+	mux.HandleFunc(UNFOLLOW_ENDPOINT, handler.UnfollowHandler)
+	mux.HandleFunc(SWITCH_PROFILE_TYPE, handler.SwitchProfileType)
 
 	return mux
 }

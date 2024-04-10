@@ -1,17 +1,18 @@
 "use client";
-import React, { useState } from "react";
-import { MdPrivacyTip } from "react-icons/md";
+import { useRouter } from "next/navigation.js";
+import { useState } from "react";
 import { BiWorld } from "react-icons/bi";
+import { MdPrivacyTip } from "react-icons/md";
 import { SiGnuprivacyguard } from "react-icons/si";
 import { DisplayComments } from "../components/modals/displayComment";
 
-const DisplayPost = ({ postData, idUser, onCommentClick, onProfileClick }) => {
+const DisplayPost = ({ postData, idUser, onCommentClick }) => {
   const [postDataState, setPostDataState] = useState(postData),
     [isVisibleComment, setIsVisibleComment] = useState(false),
     [commentCounter, setCommentCounter] = useState(postDataState.Comments);
-
+  const router = useRouter();
   const handleProfileClick = () => {
-    onProfileClick();
+    router.push(`/home/profile?id=${postDataState.User_id}`);
   };
   //console.log("in display 🔔", postData);
   return (
