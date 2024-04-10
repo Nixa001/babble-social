@@ -12,8 +12,7 @@ import Image from 'next/image';
 import { getSessionUser } from '@/app/_lib/utils';
 import { WebSocketContext } from '@/app/_lib/websocket';
 
-// import { GoHomeFill, AiFillMessage, FaUserGroup, IoNotifications, IoPersonCircleSharp, IoLogOut } from 'react-icons/all';
-// import clsx from 'clsx';
+
 
 const links = [
     { name: 'Home', href: '/home', icon: GoHomeFill },
@@ -23,23 +22,34 @@ const links = [
     { name: 'Profile', href: '/home/profile', icon: IoPersonCircleSharp },
     { name: 'Logout', href: '/home/logout', icon: IoLogOut },
 ];
-
+export let userID = 0
 function Navbar() {
     const pathname = usePathname();
     const [user, setUser] = useState(null);
     const {sendMessageToServer} = useContext(WebSocketContext)
+    
 
     useEffect(() => {
         const fetchUser = async () => {
             try {
                 const userData = await getSessionUser();
                 setUser(userData);
+                userID = userData.id
+                console.log("userID: ", userData.id);
             } catch (error) {
                 console.error('Failed to fetch user session:', error);
             }
         };
         fetchUser();
     }, []);
+
+    useEffect(() => {
+        if (( pathname == '/home/messages')) {
+            sendMessageToServer({ type: "message-navbar", data: userID });
+        }
+    }, [pathname, userID]);
+
+
     return (
         <div className='shadowL  md:navbar xl:before:w-72 before:w-48 z-0 xl:w-60 md:block md:h-[700px] flex-col'>
             <div className='md:flex hidden relative z-0 flex-col w-full h-52 items-center justify-center'>
@@ -88,7 +98,8 @@ function Navbar() {
                             </Link >
                         );
                     }
-                })}
+                })
+                }
             </div>
         </div>
 

@@ -20,7 +20,6 @@ func InsertGroupMessage(db *sql.DB, userSender, groupReceiver int, messageConten
 
 	return nil
 }
-
 // getGroupMessage récupère les messages pour un groupe spécifique
 func GetGroupMessage(db *sql.DB, groupIDReceiver int) ([]models.Chat, error) {
 	query := `SELECT * FROM messages WHERE group_id_receiver = ?`
@@ -57,7 +56,7 @@ func GetGroupMessage(db *sql.DB, groupIDReceiver int) ([]models.Chat, error) {
 				log.Println("Erreur lors de la récupération du first_name:", err)
 				return nil, err
 			}
-		}
+		} 
 		messages = append(messages, message)
 	}
 
@@ -105,11 +104,13 @@ func GetLastGroupMessage(db *sql.DB, msg string) (models.Chat, error) {
 // GetGroup récupère les groupes liés à un utilisateur spécifique.
 func GetGroup(db *sql.DB, userID int) ([]models.Group, error) {
 	query := `
-        SELECT groups. * FROM groups
-        INNER JOIN group_followers ON groups.id = group_followers.group_id
-        WHERE group_followers.user_id = ?
+        SELECT groups.* FROM groups
+        WHERE groups.id_user_create = ?
+        OR groups.id IN (
+            SELECT group_id FROM group_followers WHERE user_id = ?
+        )
     `
-	rows, err := db.Query(query, userID)
+	rows, err := db.Query(query, userID, userID)
 	if err != nil {
 		log.Printf("Erreur lors de la récupération des groupes: %v", err)
 		return nil, err
@@ -131,4 +132,41 @@ func GetGroup(db *sql.DB, userID int) ([]models.Group, error) {
 	}
 
 	return groups, err
+}
+
+
+
+// UserEmail représente une structure contenant l'ID et l'email d'un utilisateur.
+type UserEmail struct {
+	UserID int
+	Email   string
+}
+
+// GetFollowerGroup prend un ID de groupe et retourne un tableau d'IDs et emails d'utilisateurs qui suivent ce groupe.
+func GetFollowerGroup(db *sql.DB, groupID int) ([]UserEmail, error) {
+	query := `SELECT users.id, users.email FROM group_followers 
+	          INNER JOIN users ON group_followers.user_id = users.id 
+	          WHERE group_followers.group_id = ?`
+	rows, err := db.Query(query, groupID)
+	if err != nil {
+		log.Fatal(err)
+		return nil, err
+	}
+	defer rows.Close()
+
+	var userEmails []UserEmail
+	for rows.Next() {
+		var userEmail UserEmail
+		if err := rows.Scan(&userEmail.UserID, &userEmail.Email); err != nil {
+			log.Fatal(err)
+			return nil, err
+		}
+		userEmails = append(userEmails, userEmail)
+	}
+	if err := rows.Err(); err != nil {
+		log.Fatal(err)
+		return nil, err
+	}
+
+	return userEmails, nil
 }

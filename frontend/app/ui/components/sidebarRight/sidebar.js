@@ -2,6 +2,7 @@
 import React from 'react'
 import Image from 'next/image'
 import { useState } from 'react';
+import { userID } from '../navbar/navbar';
 
 
 
@@ -56,7 +57,6 @@ function Sidebar() {
 
 
 export const followerHearder = (text, state, activeTab, handleTabClick) => {
-
     return <h3
         className={`font-bold cursor-pointer  hover:text-primary  p-2 rounded-sm 
     ${activeTab === state ? "text-primary underline underline-offset-4" : "opacity-70"}`}
@@ -71,61 +71,72 @@ export const followerHearder = (text, state, activeTab, handleTabClick) => {
 
 export const displayFollowers = (data, handleUserClick) => {
     return data.map((follower) => {
-        return (
-            <div key={follower.id} className=" hover:opacity-60 flex items-center cursor-pointer justify-start gap-2 mt-1 mb-3 p-2 "
-                onClick={() => handleUserClick(follower.id, follower.first_name +' '+follower.last_name)}
-            >
-                <Image
-                    className="rounded-full "
-                    // src={follower.src}
-                    src='/assets/profilibg.jpg'
-                    alt= "missing"
-                    width={40}
-                    height={40}
-                />
-                <h4 className="font-bold" >{follower.first_name +' '+follower.last_name}</h4>
-            </div>
-        );
-    })
+        if (!data || data.length === 0) {
+            return <div>Vous n'avez encore de follower</div>;
+        }
+        if (follower.id != userID) {
+            return (
+                <div key={follower.id} className=" hover:opacity-60 flex items-center cursor-pointer justify-start gap-2 mt-1 mb-3 p-2 "
+                    onClick={() => handleUserClick(follower.id, follower.first_name + ' ' + follower.last_name)}
+                >
+                    <Image
+                        className="rounded-full "
+                        // src={follower.src}
+                        src='/assets/profilibg.jpg'
+                        alt="missing"
+                        width={40}
+                        height={40}
+                    />
+                    <h4 className="font-bold" >{follower.first_name + ' ' + follower.last_name}</h4>
+                </div>
+            );
+        }
+        return null;
+    }).filter(Boolean); // Filtre les éléments null pour ne garder que ceux qui doivent être affichés
 }
 export const displayGroups = (data, handleUserClick) => {
+    if (!data || data.length === 0) {
+        return <div>Vous n'avez encore de groupe</div>;
+    }
     return data.map((follower) => {
         return (
-            <div key={follower.name} className=" hover:opacity-60 flex items-center cursor-pointer justify-start gap-2 mt-1 mb-3 p-2 "
+            <div
+                key={follower.id}
+                className=" hover:opacity-60 flex items-center cursor-pointer justify-start gap-2 mt-1 mb-3 p-2 "
                 onClick={() => handleUserClick(follower.id, follower.name)}
             >
                 <Image
                     className="rounded-full "
-                    src={follower.src}
-                    alt="missig"
-                    width={40}
-                    height={40}
+                    src='/assets/profilibg.jpg'
+                    alt="missing"
+                    width={35}
+                    height={35}
                 />
-                <h4 className="font-bold" >{follower.name}</h4>
+                <h4 className="font-bold">{follower.name}</h4>
             </div>
         );
-    })
+    });
 }
 
 export const display = (data, handleUserClick) => {
     return data.map((follower) => {
         return (
-          <div
-            key={follower.id} // Utilisez l'ID comme clé unique
-            className=" hover:opacity-60 flex items-center cursor-pointer justify-start gap-2 mt-1 mb-3 p-2 "
-            onClick={() => handleUserClick(follower.id, follower.name)}
-          >
-            <Image
-              className="rounded-full "
-              src={follower.src}
-              alt={follower.alt}
-              width={35}
-              height={35}
-            />
-            <h4 className="font-bold">{follower.name}</h4>
-          </div>
+            <div
+                key={follower.id} 
+                className=" hover:opacity-60 flex items-center cursor-pointer justify-start gap-2 mt-1 mb-3 p-2 "
+                onClick={() => handleUserClick(follower.id, follower.name)}
+            >
+                <Image
+                    className="rounded-full "
+                    src={follower.src}
+                    alt={follower.alt}
+                    width={35}
+                    height={35}
+                />
+                <h4 className="font-bold">{follower.name}</h4>
+            </div>
         );
-     });
+    });
 }
 
 

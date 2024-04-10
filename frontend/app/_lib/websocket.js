@@ -1,18 +1,20 @@
+import { useSearchParams } from 'next/navigation';
 import React, { createContext, useState, useEffect } from 'react';
+import { userID } from '../ui/components/navbar/navbar';
 
 export const WebSocketContext = createContext(null);
 
 export const WebSocketProvider = ({ children }) => {
-  //===========
+  //=================================================
   const [messages, setMessages] = useState([]); // Pour stocker les messages
-  //===============================
+  //=================================================
   const [socket, setSocket] = useState(null);
   const [allMessages, setAllMessages] = useState([])
   const [onlineUser, setOnlineUser] = useState([]);
+  const [groups, setGroups] = useState([]);
 
 
-  //==========================================
-
+  //===========================================================
   const sendMessage = (message) => {
     if (socket && socket.readyState === WebSocket.OPEN) {
       console.log("Envoie du message");
@@ -22,27 +24,18 @@ export const WebSocketProvider = ({ children }) => {
       console.error("WebSocket is not open");
     }
   };
-
   // Fonction pour récupérer les messages via l'API
   const readMessages = () => {
     if (socket && socket.readyState === WebSocket.OPEN) {
-      // console.log("WebSocket is ready");
-
-      // Écoute des messages entrants
       socket.onmessage = (event) => {
         const message = JSON.parse(event.data);
-        // console.log("Message received:", message);
-
-        // Exécuter des actions en fonction du message reçu
-        // Par exemple, mettre à jour l'état des messages dans le contexte
         setMessages((prevMessages) => [...prevMessages, message]);
       };
     } else {
       console.log("WebSocket is not ready");
     }
   };
-
-  //======================================================
+  //============================================================
 
 
   const sendMessageToServer = (message) => {
@@ -62,24 +55,39 @@ export const WebSocketProvider = ({ children }) => {
   useEffect(() => {
     // console.log(onlineUser);
   }, [onlineUser])
-  const readMessage = (message) => {
+  const search = useSearchParams()
+  let idUserUrl = search.get('id')
+  // console.log("idUserUrl: " + idUserUrl);
+  let idGroupUrl = search.get('idGroup')
+  // console.log("idGroupUrl: " + idGroupUrl);
 
+  //Read message from server and send it 
+
+  const readMessage = (message) => {
     const data = JSON.parse(message);
+    if (data.Type === 'join-event') {
+       console.log("new client joined");
+    }
     if (data.Type === "id-receiver-event") {
       setAllMessages(data.Data);
     }
     if (data.Type === "idGroup-receiver-event") {
       setAllMessages(data.Data);
     }
+    
+    // cette partie permet de broadcaster le nouveau message au client conserner (message entre user)
+
     if (data.Type === "message-user-event") {
-      setAllMessages(prevMessages => Array.isArray(prevMessages) ? [...prevMessages, data.Data] : [data.Data]);
+      if ((idUserUrl == data.Data.user_id_receiver || idUserUrl == data.Data.user_id_sender)) {
+        setAllMessages(prevMessages => Array.isArray(prevMessages) ? [...prevMessages, data.Data] : [data.Data]);
+        }
     }
     if (data.Type === "message-group-event") {
       setAllMessages(prevMessages => Array.isArray(prevMessages) ? [...prevMessages, data.Data] : [data.Data]);
     }
     if (data.Type === "message-navbar") {
-      setOnlineUser(data.Data);
-      console.log(data.Data);
+      setOnlineUser(data.Data[0]);
+      setGroups(data.Data[1])
     }
   }
 
@@ -89,7 +97,6 @@ export const WebSocketProvider = ({ children }) => {
     const checkTokenAndConnect = () => {
       const token = localStorage.getItem("token");
       if (token && !socket) {
-        // console.log("token", token);
         const ws = new WebSocket(`ws://localhost:8080/ws?token=${token}`);
 
         ws.onopen = (event) => {
@@ -112,16 +119,14 @@ export const WebSocketProvider = ({ children }) => {
         setSocket(ws);
       }
     };
-
     // Vérifie toutes les secondes si le token est disponible et établit la connexion si nécessaire
     const intervalId = setInterval(checkTokenAndConnect, 1000);
-
     return () => clearInterval(intervalId);
   }, [socket]);
 
 
   return (
-    <WebSocketContext.Provider value={{ sendMessage, readMessages, messages, socket, readMessage, sendMessageToServer, allMessages, onlineUser, resetAllMessages }}>
+    <WebSocketContext.Provider value={{ sendMessage, readMessages, messages, socket, readMessage, sendMessageToServer, allMessages, onlineUser, groups, resetAllMessages }}>
       {children}
     </WebSocketContext.Provider>
   );

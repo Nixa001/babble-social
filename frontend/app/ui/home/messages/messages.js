@@ -4,16 +4,20 @@ import { display, displayFollowers, displayGroups, followerHearder } from '../..
 import { useContext, useEffect, useState } from 'react';
 import useSocket, { WebSocketContext } from '@/app/_lib/websocket';
 import { getSessionUser } from '@/app/_lib/utils';
+import { useRouter } from 'next/navigation';
+import { userID } from '../../components/navbar/navbar';
 
 let idreceiver;
 let idgroupreceiver;
 const Messages = () => {
-    const { sendMessageToServer, allMessages,resetAllMessages, onlineUser } = useContext(WebSocketContext)
+    const { sendMessageToServer, allMessages, resetAllMessages, onlineUser, groups } = useContext(WebSocketContext)
     const [idUserReceiver, setIdUserReceiver] = useState(0);
     const [idGroupReceiver, setIdGroupReceiver] = useState(0);
     const [nameUser, setNameUser] = useState("");
     const [nameGroup, setNameGroup] = useState("");
     const [activeTab, setActiveTab] = useState("users");
+    const route = useRouter();
+
 
     const handleTabClick = (tab) => {
         setActiveTab(tab);
@@ -24,11 +28,11 @@ const Messages = () => {
         setNameUser("");
         setNameGroup("");
     };
-    useEffect(()=>{
-        return ()=>{
+    useEffect(() => {
+        return () => {
             reset();
         }
-    },[activeTab])
+    }, [activeTab])
     useEffect(() => {
         return () => {
             resetAllMessages();
@@ -43,30 +47,25 @@ const Messages = () => {
     useEffect(() => {
         idgroupreceiver = idGroupReceiver
     }, [idGroupReceiver]);
-    useEffect(()=>{
+    useEffect(() => {
         // console.log(nameUser);
-    },[nameUser]);
-    useEffect(()=>{
+    }, [nameUser]);
+    useEffect(() => {
         // console.log(nameGroup);
-    },[nameGroup]);
+    }, [nameGroup]);
 
     const handleUserClick = async (userId, name) => {
-        console.log("User clicked:", userId);
         setIdUserReceiver(userId);
         setNameUser(name);
-        // Récupérer l'ID de l'utilisateur en session
         const sessionUser = await getSessionUser();
         const sessionUserId = sessionUser.id; // A
-        console.log("idreceiver", idreceiver);
-        console.log("Session user", sessionUserId);
         sendMessageToServer({ type: 'id-receiver-event', data: { clickedUserId: userId, sessionUserId: sessionUserId } });
-
+        route.push("/home/messages?id=" + userId)
     };
 
     //Traitement de message entre user et Groups
 
     const handleGroupClick = async (GroupId, nameGroup) => {
-        console.log("Group clicked:", GroupId);
         setIdGroupReceiver(GroupId);
         setNameGroup(nameGroup)
         const sessionUser = await getSessionUser();
@@ -74,7 +73,7 @@ const Messages = () => {
         console.log("Session user", sessionUserId);
         const token = localStorage.getItem('token');
         sendMessageToServer({ type: 'idGroup-receiver-event', data: { idgroup: GroupId, userID: sessionUserId } });
-        // Ici, vous pouvez ajouter la logique pour gérer l'ID de l'utilisateur cliqué
+        route.push("/home/messages?idgroup=" + GroupId)
     };
 
     //Traitement lors de l'envoie de messages
@@ -103,7 +102,6 @@ const Messages = () => {
                     receiverId: receiverId,
                 }
             };
-            // Envoie le message au serveur
             sendMessageToServer(messageData);
             e.target.reset();
         }
@@ -155,16 +153,16 @@ const Messages = () => {
                             height={50}
                         />
                         <div className='flex gap-2 items-center'>
-                            <h3 className="user_name_post break-words max-w-[600px] w-[80%] font-bold"> 
-                              {activeTab === "group" ? nameGroup : nameUser}
+                            <h3 className="user_name_post break-words max-w-[600px] w-[80%] font-bold">
+                                {activeTab === "group" ? nameGroup : nameUser}
                             </h3>
                             <span className="username_post italic text-primary">
-                                @Darze
+
                             </span>
                         </div>
                     </div>
                     <div className="h-full overflow-y-auto">
-                        {displayMessages(allMessages)}
+                        <DisplayMessages messages={allMessages} />
                     </div>
                 </div>
 
@@ -187,7 +185,7 @@ const Messages = () => {
 };
 
 
-const displayMessages = (messages) => {
+export const DisplayMessages = ({ messages }) => {
     // Vérifie si messages est null ou non un tableau
     if (!Array.isArray(messages) || messages.length === 0) {
         return <p>Aucun message à afficher.</p>;
@@ -204,48 +202,13 @@ const displayMessages = (messages) => {
         </div>
     ));
 };
+
 export default Messages;
-// const users = [
-//     { id: 1, first_name: 'Mamour', last_name: 'Drame', avatar: 'profilibg.jpg', alt: "profil" },
-//     { id: 2, first_name: 'Edouard', last_name: 'Mendy', avatar: 'profilibg.jpg', alt: "profil" },
-//     { id: 3, first_name: 'Vincent', last_name: 'Ndour', avatar: "profilibg.jpg", alt: "profil" },
-// ];
-
-// const groups = [
-//     { id: 1, first_name: 'Call of duty', last_name: '', avatar: 'profilibg.jpg', alt: "profil" },
-//     { id: 2, first_name: 'Farcry 6 Team', last_name: '', avatar: 'profilibg.jpg', alt: "profil" },
-//     { id: 3, first_name: 'EA Fooball 24', last_name: '', avatar: "profilibg.jpg", alt: "profil" },
-// ];
-
-const messages = [
-    {
-        id: 1, first_name: 'Mamou Drame', message_content: 'Hello everyone!', timestamp: '2023-11-16T12:00:00.000Z',
-    },
-    {
-        id: 2, first_name: 'Nicolas Faye', message_content: 'How are you all doing today?', timestamp: '2023-11-16T12:01:00.000Z',
-    },
-];
 
 
-const users = [
-    { id: 1, name: 'Mamour Drame', src: '/assets/profilibg.jpg', alt: "profil" },
-    { id: 2, name: 'Edouard Mendy', src: '/assets/profilibg.jpg', alt: "profil" },
-    { id: 3, name: 'Vincent Ndour', src: "/assets/profilibg.jpg", alt: "profil" },
-    { id: 4, name: 'Ibrahima Gueye', src: "/assets/profilibg.jpg", alt: "profil", },
-    { id: 5, name: 'Madike Yade', src: "/assets/profilibg.jpg", alt: "profil", },
-];
-
-// const messages = [
-//     {
-//         id: 1, first_name: 'Mamou Drame', message_content: 'Hello everyone!', timestamp: '2023-11-16T12:00:00.000Z',
-//     },
-//     {
-//         id: 2, first_name: 'Nicolas Faye', message_content: 'How are you all doing today?', timestamp: '2023-11-16T12:01:00.000Z',
-//     },
-// ];
 
 
-const groups = [
+const group = [
     { id: 1, name: 'Call of duty', src: "/assets/profilibg.jpg", alt: "profil", },
     { id: 2, name: 'Farcry 6 Team', src: "/assets/profilibg.jpg", alt: "profil" },
     { id: 3, name: 'EA Fooball 24', src: "/assets/profilibg.jpg", alt: "profil", },

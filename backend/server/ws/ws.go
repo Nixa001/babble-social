@@ -64,8 +64,6 @@ func (h *Hub) listen() {
 		select {
 		case client := <-h.RegisterChannel:
 			h.Clients.Store(client.Email, client)
-			fmt.Println("poule", client)
-			fmt.Println("client registered", h.Clients)
 			log.Printf("Client %s connected\n", client.Email)
 		case client := <-h.UnRegisterChannel:
 			// if _, ok := h.Clients.Load(client.Email); ok {
@@ -78,6 +76,9 @@ func (h *Hub) listen() {
 		}
 	}
 }
+
+var groupid int
+
 func (h *Hub) HandleEvent(eventPayload WSPaylaod) {
 	switch eventPayload.Type {
 	case WS_JOIN_EVENT:
@@ -91,7 +92,6 @@ func (h *Hub) HandleEvent(eventPayload WSPaylaod) {
 	case WS_DISCONNECT_EVENT:
 		h.Clients.Range(func(key, value interface{}) bool {
 			client := value.(*WSClient)
-			fmt.Println("2", client)
 			if client.Email != eventPayload.From {
 				client.OutgoingMsg <- eventPayload
 			}
@@ -132,14 +132,20 @@ func (h *Hub) HandleEvent(eventPayload WSPaylaod) {
 			return true
 		})
 	case WS_MESSAGEGROUP_EVENT:
+		clientFollowers, err := seed.GetFollowerGroup(seed.DB, groupid)
+		if err != nil {
+			fmt.Println("error", err)
+		}
+		fmt.Println("clientFollowers", clientFollowers)
 		h.Clients.Range(func(key, value interface{}) bool {
 			client := value.(*WSClient)
-			// for _, name := range eventPayload.To {
-			// 	if client.Email == name {
-			client.OutgoingMsg <- eventPayload
-			// break // Exit the loop once a match is found
-			// 	}
-			// }
+			// Vérification si le client suit le groupe
+			for _, follower := range clientFollowers {
+				if client.Email == follower.Email {
+					client.OutgoingMsg <- eventPayload
+					break
+				}
+			}
 			return true
 		})
 
@@ -206,13 +212,12 @@ func (wsHub *Hub) AddClient(coon *websocket.Conn, Email string, sessionToken str
 	go client.messageReader()
 	go client.messageWriter()
 	wsHub.RegisterChannel <- client
-	// var newEvent = WSPaylaod{
-	// 	From: client.Email,
-	// 	Type: WS_JOIN_EVENT,
-	// 	Data: nil,
-	// }
-	// wsHub.HandleEvent(newEvent)
-	// return
+	var newEvent = WSPaylaod{
+		From: client.Email,
+		Type: WS_JOIN_EVENT,
+		Data: "New client joined",
+	}
+	wsHub.HandleEvent(newEvent)
 }
 func (client *WSClient) messageReader() {
 	date := time.Now().Format("2006-01-02T15:04:05")
@@ -245,46 +250,36 @@ func (client *WSClient) messageReader() {
 		// EvenType le type d'evenement socket
 		switch eventType {
 
-		case WS_JOIN_EVENT:
-
-			var newEvent = WSPaylaod{
-				From: client.Email,
-				Type: eventType,
-				Data: "New client joined",
-			}
-			WSHub.HandleEvent(newEvent)
-
 		case WS_NAVBAR_MESSAGE:
-
-			list, err := seed.ListeUsers(seed.DB, int(payload["data"].(float64)))
+			listGroup, _ := seed.GetGroup(seed.DB, int(payload["data"].(float64)))
+			listUser, err := seed.ListeUsers(seed.DB, int(payload["data"].(float64)))
 			if err != nil {
 				fmt.Println("error:", err)
-				// panic(err)
-			} else if len(list) == 0 {
+			} else if len(listUser) == 0 {
 				fmt.Println("La liste des utilisateurs est vide")
-				// Gérer le cas où la liste est vide, par exemple en ne faisant rien ou en envoyant un événement différent
 			} else {
+
+				data := []interface{}{listUser[0], listGroup}
+
 				var newEvent = WSPaylaod{
 					From: client.Email,
 					Type: eventType,
-					Data: list[0],
+					Data: data, // Assigner le tableau à Data
 				}
 				WSHub.HandleEvent(newEvent)
 			}
-		case WS_IDRECEIVER_EVENT:
 
+		case WS_IDRECEIVER_EVENT:
 			clickedUserId, ok := payload["data"].(map[string]interface{})["clickedUserId"].(float64)
 			if !ok {
 				fmt.Println("Erreur lors de l'accès à la clé 'clickedUserId'")
 				return
 			}
-			// fmt.Println("clickedUserId", clickedUserId)
 			sessionUserId, ok := payload["data"].(map[string]interface{})["sessionUserId"].(float64)
 			if !ok {
 				fmt.Println("Erreur lors de l'accès à la clé 'sendId'")
 				return
 			}
-			// fmt.Println("sessionUserId", sessionUserId)
 
 			data, _ := seed.SelectMsgBetweenUsers(seed.DB, int(sessionUserId), int(clickedUserId))
 			wsEvent := WSPaylaod{
@@ -296,7 +291,6 @@ func (client *WSClient) messageReader() {
 
 		case WS_IDGROUP_RECEIVER_EVENT:
 
-			// fmt.Println("payloadGroup", payload)
 			groupId, ok := payload["data"].(map[string]interface{})["idgroup"].(float64)
 			if !ok {
 				fmt.Println("Erreur lors de l'accès à la clé 'clickedUserId'")
@@ -328,7 +322,6 @@ func (client *WSClient) messageReader() {
 				fmt.Println("Erreur lors de l'accès à la clé 'sendId'")
 				return
 			}
-			// fmt.Println("receiverid : ", receiverID)
 
 			err := seed.InsertMessage(seed.DB, int(sendId), int(receiverID), message, date)
 			if err != nil {
@@ -338,7 +331,7 @@ func (client *WSClient) messageReader() {
 			if errr != nil {
 				fmt.Println(errr)
 			}
-			clientTo, err := seed.GetUserById(seed.DB, int(receiverID))
+			clientTo, _ := seed.GetUserById(seed.DB, int(receiverID))
 			msEvent := WSPaylaod{
 				From: client.Email,
 				Type: eventType,
@@ -354,19 +347,17 @@ func (client *WSClient) messageReader() {
 				fmt.Println("Erreur lors de l'accès à la clé 'message'")
 				return
 			}
-			// fmt.Println("message :", message)
 			sendId, ok := payload["data"].(map[string]interface{})["sendId"].(float64)
 			if !ok {
 				fmt.Println("Erreur lors de l'accès à la clé 'sendId'")
 				return
 			}
-			// fmt.Println("sendId: ", sendId)
 			groupReceiverID, ok := payload["data"].(map[string]interface{})["receiverId"].(float64)
 			if !ok {
 				fmt.Println("Erreur lors de l'accès à la clé 'sendId'")
 				return
 			}
-			// fmt.Println("groupReceiver: ", groupReceiverID)
+			groupid = int(groupReceiverID)
 			err := seed.InsertGroupMessage(seed.DB, int(sendId), int(groupReceiverID), message, date)
 			if err != nil {
 				fmt.Println("error", err)
@@ -376,8 +367,6 @@ func (client *WSClient) messageReader() {
 				fmt.Println("error", err)
 
 			}
-
-			// data := "communication between Group"
 			GPEvent := WSPaylaod{
 				From: client.Email,
 				Type: eventType,
