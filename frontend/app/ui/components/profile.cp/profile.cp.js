@@ -215,6 +215,7 @@ export default function Profile({ sessionId, sessionToken }) {
                       <span className="flex -space-x-1 mr-1">
                         {followings?.map((following) => (
                           <img
+                            key={following.first_name + following.last_name}
                             className="inline-block h-6 w-6 rounded-full ring-2 ring-white"
                             src={following.avatar}
                             alt={following.first_name}

@@ -1,0 +1,116 @@
+2024/04/10 13:05:52 Hi big dev !
+let's debug session started at : 2024/04/10 13:05:52
+2024/04/10 13:05:52 gotten userID =>  1
+2024/04/10 13:05:52 in post
+2024/04/10 13:05:52 [FETCHING POST DATA ◼◼◼] with  1
+2024/04/10 13:05:52 getting post with  1
+2024/04/10 13:05:53 gotten userID =>  4
+2024/04/10 13:05:53 in post
+2024/04/10 13:05:53 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/10 13:05:53 getting post with  4
+2024/04/10 13:05:53 gotten userID =>  1
+2024/04/10 13:05:53 in post
+2024/04/10 13:05:53 [FETCHING POST DATA ◼◼◼] with  1
+2024/04/10 13:05:53 getting post with  1
+2024/04/10 13:05:54 gotten userID =>  4
+2024/04/10 13:05:54 in post
+2024/04/10 13:05:54 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/10 13:05:54 getting post with  4
+2024/04/10 13:05:55 gotten userID =>  1
+2024/04/10 13:05:55 in post
+2024/04/10 13:05:55 [FETCHING POST DATA ◼◼◼] with  1
+2024/04/10 13:05:55 getting post with  1
+2024/04/10 13:05:55 gotten userID =>  1
+2024/04/10 13:05:55 in post
+2024/04/10 13:05:55 [FETCHING POST DATA ◼◼◼] with  1
+2024/04/10 13:05:55 getting post with  1
+2024/04/10 13:05:57 gotten userID =>  undefined
+2024/04/10 13:05:57 ❌ Error at converting string to int in userID in post.  strconv.Atoi: parsing "undefined": invalid syntax
+2024/04/10 13:05:57 in post
+2024/04/10 13:05:57 [FETCHING POST DATA ◼◼◼] with  0
+2024/04/10 13:05:57 getting post with  0
+2024/04/10 13:05:57 Verify session handler
+2024/04/10 13:05:57 Verify session handler
+2024/04/10 13:05:58 gotten userID =>  undefined
+2024/04/10 13:05:58 ❌ Error at converting string to int in userID in post.  strconv.Atoi: parsing "undefined": invalid syntax
+2024/04/10 13:05:58 in post
+2024/04/10 13:05:58 [FETCHING POST DATA ◼◼◼] with  0
+2024/04/10 13:05:58 getting post with  0
+2024/04/10 13:05:58 Verify session handler
+2024/04/10 13:05:58 Verify session handler
+2024/04/10 13:05:58 Client nixa@gmail.com connected
+2024/04/10 13:05:58 gotten userID =>  4
+2024/04/10 13:05:58 in post
+2024/04/10 13:05:58 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/10 13:05:58 getting post with  4
+2024/04/10 13:05:59 Client dickss@gmail.com connected
+2024/04/10 13:05:59 gotten userID =>  1
+2024/04/10 13:05:59 in post
+2024/04/10 13:05:59 [FETCHING POST DATA ◼◼◼] with  1
+2024/04/10 13:05:59 getting post with  1
+2024/04/10 13:06:00 gotten userID =>  4
+2024/04/10 13:06:00 in post
+2024/04/10 13:06:00 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/10 13:06:00 getting post with  4
+2024/04/10 13:06:00 gotten userID =>  1
+2024/04/10 13:06:00 in post
+2024/04/10 13:06:00 [FETCHING POST DATA ◼◼◼] with  1
+2024/04/10 13:06:00 getting post with  1
+2024/04/10 13:06:01 gotten userID =>  4
+2024/04/10 13:06:01 in post
+2024/04/10 13:06:01 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/10 13:06:01 getting post with  4
+2024/04/10 13:06:01 gotten userID =>  1
+2024/04/10 13:06:01 in post
+2024/04/10 13:06:01 [FETCHING POST DATA ◼◼◼] with  1
+2024/04/10 13:06:01 getting post with  1
+2024/04/10 13:06:01 gotten userID =>  4
+2024/04/10 13:06:01 in post
+2024/04/10 13:06:01 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/10 13:06:01 getting post with  4
+2024/04/10 13:06:02 gotten userID =>  1
+2024/04/10 13:06:02 in post
+2024/04/10 13:06:02 [FETCHING POST DATA ◼◼◼] with  1
+2024/04/10 13:06:02 getting post with  1
+2024/04/10 13:06:03 gotten userID =>  1
+2024/04/10 13:06:03 in post
+2024/04/10 13:06:03 [FETCHING POST DATA ◼◼◼] with  1
+2024/04/10 13:06:03 getting post with  1
+2024/04/10 13:06:03 Verify session handler
+2024/04/10 13:06:03 Verify session handler
+2024/04/10 13:06:03 Verify session handler
+2024/04/10 13:06:03 Verify session handler
+2024/04/10 13:06:04 gotten userID =>  1
+2024/04/10 13:06:04 in post
+2024/04/10 13:06:04 [FETCHING POST DATA ◼◼◼] with  1
+2024/04/10 13:06:04 getting post with  1
+2024/04/10 13:06:05 gotten userID =>  1
+2024/04/10 13:06:05 in post
+2024/04/10 13:06:05 [FETCHING POST DATA ◼◼◼] with  1
+2024/04/10 13:06:05 getting post with  1
+2024/04/10 13:06:06 gotten userID =>  1
+2024/04/10 13:06:06 in post
+2024/04/10 13:06:06 [FETCHING POST DATA ◼◼◼] with  1
+2024/04/10 13:06:06 getting post with  1
+2024/04/10 13:06:07 gotten userID =>  1
+2024/04/10 13:06:07 in post
+2024/04/10 13:06:07 [FETCHING POST DATA ◼◼◼] with  1
+2024/04/10 13:06:07 getting post with  1
+2024/04/10 13:06:08 gotten userID =>  1
+2024/04/10 13:06:08 in post
+2024/04/10 13:06:08 [FETCHING POST DATA ◼◼◼] with  1
+2024/04/10 13:06:08 getting post with  1
+2024/04/10 13:06:09 gotten userID =>  1
+2024/04/10 13:06:09 in post
+2024/04/10 13:06:09 [FETCHING POST DATA ◼◼◼] with  1
+2024/04/10 13:06:09 getting post with  1
+2024/04/10 13:06:09 Verify session handler
+2024/04/10 13:06:09 Verify session handler
+2024/04/10 13:06:09 Verify session handler
+2024/04/10 13:06:10 Verify session handler
+2024/04/10 13:06:46 Verify session handler
+2024/04/10 13:06:46 Verify session handler
+2024/04/10 13:06:51 Verify session handler
+2024/04/10 13:06:51 Verify session handler
+2024/04/10 13:06:51 Verify session handler
+2024/04/10 13:06:51 Verify session handler

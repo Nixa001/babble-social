@@ -12,13 +12,20 @@ import (
 	"strconv"
 )
 
-const userID int = 1
+// const userID int = 1
 
 func GetGroups(w http.ResponseWriter, r *http.Request) {
 
 	cors.SetCors(&w)
 	var db = seed.CreateDB()
 	defer db.Close()
+
+	idUserStr := r.URL.Query().Get("user_id")
+	userID, err := strconv.Atoi(idUserStr)
+	if err != nil {
+		fmt.Println("Cannot convert idUser to int on getGroups")
+		return
+	}
 	joinedGroups, err := getJoinedGroups(db, userID)
 	if err != nil {
 		return
@@ -29,7 +36,7 @@ func GetGroups(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	filteredGroups, groups := filterGroups(db, joinedGroups, allGroups)
+	filteredGroups, groups := filterGroups(db, userID, joinedGroups, allGroups)
 	var Groups [][]models.Group
 	Groups = append(Groups, groups)
 	Groups = append(Groups, filteredGroups)
@@ -90,7 +97,7 @@ func getAllGroups(db *sql.DB) ([]models.Group, error) {
 	return allGroups, nil
 }
 
-func filterGroups(db *sql.DB, joined []int, all []models.Group) ([]models.Group, []models.Group) {
+func filterGroups(db *sql.DB, userID int, joined []int, all []models.Group) ([]models.Group, []models.Group) {
 	var filteredGroups []models.Group
 	var Groups []models.Group
 	for _, group := range all {
