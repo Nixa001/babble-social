@@ -6,17 +6,54 @@ import useSocket, { WebSocketContext } from '@/app/_lib/websocket';
 import { getSessionUser } from '@/app/_lib/utils';
 import { useRouter } from 'next/navigation';
 import { userID } from '../../components/navbar/navbar';
+import { loginUser } from '@/app/api/api';
+import InputEmoji from "react-input-emoji"
 
 let idreceiver;
 let idgroupreceiver;
+const fetchUserGroup = async () => {
+    const token = localStorage.getItem("token") || null;
+    const url = `http://localhost:8080/messages?token=${encodeURIComponent(
+        token
+    )}`;
+    try {
+        const response = await fetch(url, {
+
+            method: "GET",
+        });
+        const data = response.json();
+        // console.log(data);
+        return data;
+    } catch (error) {
+        console.error("Erreur ", error);
+    }
+}
+
+
+
 const Messages = () => {
-    const { sendMessageToServer, allMessages, resetAllMessages, onlineUser, groups } = useContext(WebSocketContext)
+    const { sendMessageToServer, allMessages, resetAllMessages } = useContext(WebSocketContext)
     const [idUserReceiver, setIdUserReceiver] = useState(0);
     const [idGroupReceiver, setIdGroupReceiver] = useState(0);
     const [nameUser, setNameUser] = useState("");
     const [nameGroup, setNameGroup] = useState("");
     const [activeTab, setActiveTab] = useState("users");
     const route = useRouter();
+    const [text, setText] = useState('')
+    const [selectedEmoji, setSelectedEmoji] = useState(null)
+
+    const [data, setData] = useState([]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const result = await fetchUserGroup();
+            setData(result); // Mettre à jour l'état avec les données récupérées
+        };
+
+        fetchData();
+    }, []);
+    let OnlineUser = data[0]
+    let Groups = data[1]
 
 
     const handleTabClick = (tab) => {
@@ -84,8 +121,13 @@ const Messages = () => {
         data.forEach((value, key) => {
             obj[key] = value;
         });
-        console.log(obj.message);
-        if (obj.message.trim() !== "") {
+
+
+        obj.message = text;
+        if (selectedEmoji) {
+            obj.message = selectedEmoji.native + " " + obj.message;
+        }
+        if (obj.message?.trim() !== "") {
             console.log("idreceiver in message", idreceiver);
             console.log("idgroupreceiver in message", idgroupreceiver);
             // Détermine le type de message en fonction de activeTab
@@ -104,14 +146,15 @@ const Messages = () => {
             };
             sendMessageToServer(messageData);
             e.target.reset();
+            setText("");
         }
     };
 
     const displayTable = () => {
         if (activeTab === "users") {
-            return displayFollowers(onlineUser, handleUserClick);
+            return displayFollowers(OnlineUser, handleUserClick);
         } else if (activeTab === "group") {
-            return displayGroups(groups, handleGroupClick);
+            return displayGroups(Groups, handleGroupClick);
         }
         return null;
     };
@@ -167,12 +210,13 @@ const Messages = () => {
                 </div>
 
                 <form className="flex justify-end mt-4 gap-2" onSubmit={handleSendMessage}>
-                    <input
-                        type="text"
-                        name="message"
-                        className=" p-4 border border-gray-700 bg-transparent h-11 rounded-lg w-[90%] outline-none focus:ring-1 bg-primary focus:ring-primary"
-                        placeholder="Your message..."
+                    <InputEmoji
+                        value={text}
+                        onChange={(event) => setText(event)}
+                        cleanOnEnter
+                        placeholder='Your message...'
                     />
+
                     <button type="submit" className="bg-primary  hover:bg-second font-bold px-4 rounded-lg">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
                             <path d="M3.478 2.404a.75.75 0 0 0-.926.941l2.432 7.905H13.5a.75.75 0 0 1 0 1.5H4.984l-2.432 7.905a.75.75 0 0 0 .926.94 60.519 60.519 0 0 0 18.445-8.986.75.75 0 0 0 0-1.218A60.517 60.517 0 0 0 3.478 2.404Z" />

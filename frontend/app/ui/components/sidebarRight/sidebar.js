@@ -70,7 +70,7 @@ export const followerHearder = (text, state, activeTab, handleTabClick) => {
 }
 
 export const displayFollowers = (data, handleUserClick) => {
-    return data.map((follower) => {
+    return data?.map((follower) => {
         if (!data || data.length === 0) {
             return <div>Vous n'avez encore de follower</div>;
         }
@@ -98,7 +98,7 @@ export const displayGroups = (data, handleUserClick) => {
     if (!data || data.length === 0) {
         return <div>Vous n'avez encore de groupe</div>;
     }
-    return data.map((follower) => {
+    return data?.map((follower) => {
         return (
             <div
                 key={follower.id}

@@ -78,9 +78,9 @@ export const WebSocketProvider = ({ children }) => {
     // cette partie permet de broadcaster le nouveau message au client conserner (message entre user)
 
     if (data.Type === "message-user-event") {
-      if ((idUserUrl == data.Data.user_id_receiver || idUserUrl == data.Data.user_id_sender)) {
+      // if ((idUserUrl == data.Data.user_id_receiver || idUserUrl == data.Data.user_id_sender)) {
         setAllMessages(prevMessages => Array.isArray(prevMessages) ? [...prevMessages, data.Data] : [data.Data]);
-        }
+        // }
     }
     if (data.Type === "message-group-event") {
       setAllMessages(prevMessages => Array.isArray(prevMessages) ? [...prevMessages, data.Data] : [data.Data]);
