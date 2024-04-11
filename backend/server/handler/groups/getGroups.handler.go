@@ -4,6 +4,7 @@ import (
 	"backend/models"
 	"backend/server/cors"
 	joingroup "backend/server/handler/groups/joinGroup"
+	"backend/server/service"
 	"backend/utils/seed"
 	"database/sql"
 	"encoding/json"
@@ -20,12 +21,15 @@ func GetGroups(w http.ResponseWriter, r *http.Request) {
 	var db = seed.CreateDB()
 	defer db.Close()
 
-	idUserStr := r.URL.Query().Get("user_id")
-	userID, err := strconv.Atoi(idUserStr)
+	session, err := service.AuthServ.VerifyToken(r)
 	if err != nil {
-		fmt.Println("Cannot convert idUser to int on getGroups")
+		fmt.Println("Invalid token")
+		w.WriteHeader(http.StatusUnauthorized)
+		json.NewEncoder(w).Encode(map[string]string{"error": "Invalid token"})
 		return
 	}
+
+	userID := session.User_id
 	joinedGroups, err := getJoinedGroups(db, userID)
 	if err != nil {
 		return
