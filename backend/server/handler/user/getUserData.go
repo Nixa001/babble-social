@@ -72,6 +72,28 @@ func GetFollowers(db *sql.DB, userID int) ([]models.User, error) {
 		followerIDs = append(followerIDs, id)
 	}
 
+	query = "SELECT user_id_followed FROM users_followers WHERE user_id_follower = ?"
+	rows, err = db.Query(query, userID)
+	if err != nil {
+		fmt.Println("err@ ici")
+		return nil, fmt.Errorf("err execute all groups query: %w", err)
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var id int
+		err := rows.Scan(&id)
+		if err != nil {
+			return nil, fmt.Errorf("err scan group data: %w", err)
+		}
+
+		if !contains(followerIDs, id) {
+
+			followerIDs = append(followerIDs, id)
+		}
+
+	}
+
 	for _, followerID := range followerIDs {
 		user, err := GetUserData(db, followerID)
 		if err != nil {
@@ -81,4 +103,13 @@ func GetFollowers(db *sql.DB, userID int) ([]models.User, error) {
 	}
 
 	return followers, nil
+}
+
+func contains(arr []int, value int) bool {
+	for _, element := range arr {
+		if element == value {
+			return true
+		}
+	}
+	return false
 }

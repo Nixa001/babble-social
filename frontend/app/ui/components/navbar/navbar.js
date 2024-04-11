@@ -1,5 +1,5 @@
 "use client"
-import React, { useContext, useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { GoHomeFill } from "react-icons/go";
@@ -11,6 +11,17 @@ import { IoLogOut } from "react-icons/io5";
 import Image from 'next/image';
 import { getSessionUser } from '@/app/_lib/utils';
 import { WebSocketContext } from '@/app/_lib/websocket';
+
+function ImageComponent({ src }) {
+ const [imageSrc, setImageSrc] = useState(src);
+
+ useEffect(() => {
+    // Perform side effects here, e.g., fetching data or updating state
+    setImageSrc(src);
+ }, [src]); // Dependency array ensures this runs only when `src` changes
+
+ return <img src={imageSrc} alt="description" />;
+}
 
 
 

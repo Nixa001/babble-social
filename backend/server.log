@@ -1,2 +1,95 @@
-2024/04/05 03:28:39 Hi big dev !
-let's debug session started at : 2024/04/05 03:28:39
+2024/04/11 18:58:05 Hi big dev !
+let's debug session started at : 2024/04/11 18:58:05
+2024/04/11 18:58:25 gotten userID =>  undefined
+2024/04/11 18:58:25 ❌ Error at converting string to int in userID in post.  strconv.Atoi: parsing "undefined": invalid syntax
+2024/04/11 18:58:25 in post
+2024/04/11 18:58:25 [FETCHING POST DATA ◼◼◼] with  0
+2024/04/11 18:58:25 getting post with  0
+2024/04/11 18:58:25 Verify session handler
+2024/04/11 18:58:25 Verify session handler
+2024/04/11 18:58:26 gotten userID =>  4
+2024/04/11 18:58:26 in post
+2024/04/11 18:58:26 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/11 18:58:26 getting post with  4
+2024/04/11 18:58:27 gotten userID =>  4
+2024/04/11 18:58:27 in post
+2024/04/11 18:58:27 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/11 18:58:27 getting post with  4
+2024/04/11 18:59:38 Client nixa@gmail.com connected
+2024/04/11 18:59:38 Verify session handler
+2024/04/11 18:59:38 Verify session handler
+2024/04/11 19:00:10 User Connected ibg@gmail.com
+2024/04/11 19:00:11 Client ibg@gmail.com connected
+2024/04/11 19:00:12 gotten userID =>  undefined
+2024/04/11 19:00:12 ❌ Error at converting string to int in userID in post.  strconv.Atoi: parsing "undefined": invalid syntax
+2024/04/11 19:00:12 in post
+2024/04/11 19:00:12 [FETCHING POST DATA ◼◼◼] with  0
+2024/04/11 19:00:12 getting post with  0
+2024/04/11 19:00:12 Verify session handler
+2024/04/11 19:00:12 Verify session handler
+2024/04/11 19:00:12 Verify session handler
+2024/04/11 19:00:12 Verify session handler
+2024/04/11 19:00:13 gotten userID =>  2
+2024/04/11 19:00:13 in post
+2024/04/11 19:00:13 [FETCHING POST DATA ◼◼◼] with  2
+2024/04/11 19:00:13 getting post with  2
+2024/04/11 19:00:14 gotten userID =>  2
+2024/04/11 19:00:14 in post
+2024/04/11 19:00:14 [FETCHING POST DATA ◼◼◼] with  2
+2024/04/11 19:00:14 getting post with  2
+2024/04/11 19:00:15 gotten userID =>  2
+2024/04/11 19:00:15 in post
+2024/04/11 19:00:15 [FETCHING POST DATA ◼◼◼] with  2
+2024/04/11 19:00:15 getting post with  2
+2024/04/11 19:01:34 Verify session handler
+2024/04/11 19:01:34 gotten userID =>  undefined
+2024/04/11 19:01:34 ❌ Error at converting string to int in userID in post.  strconv.Atoi: parsing "undefined": invalid syntax
+2024/04/11 19:01:34 in post
+2024/04/11 19:01:34 [FETCHING POST DATA ◼◼◼] with  0
+2024/04/11 19:01:34 getting post with  0
+2024/04/11 19:01:34 Verify session handler
+2024/04/11 19:01:34 Error getting session no session found with this userId
+2024/04/11 19:01:34 Verify session handler
+2024/04/11 19:01:34 http: superfluous response.WriteHeader call from backend/server/handler.GetUserSession (getUserSession.go:21)
+2024/04/11 19:01:34 Error getting session no session found with this userId
+2024/04/11 19:01:34 Verify session handler
+2024/04/11 19:01:34 Error getting session no session found with this userId
+2024/04/11 19:01:45 User Connected vindour@gmail.com
+2024/04/11 19:01:46 Client vindour@gmail.com connected
+2024/04/11 19:01:46 gotten userID =>  undefined
+2024/04/11 19:01:46 ❌ Error at converting string to int in userID in post.  strconv.Atoi: parsing "undefined": invalid syntax
+2024/04/11 19:01:46 in post
+2024/04/11 19:01:46 [FETCHING POST DATA ◼◼◼] with  0
+2024/04/11 19:01:46 getting post with  0
+2024/04/11 19:01:46 Verify session handler
+2024/04/11 19:01:46 Verify session handler
+2024/04/11 19:01:46 Verify session handler
+2024/04/11 19:01:46 Verify session handler
+2024/04/11 19:01:47 gotten userID =>  3
+2024/04/11 19:01:47 in post
+2024/04/11 19:01:47 [FETCHING POST DATA ◼◼◼] with  3
+2024/04/11 19:01:47 getting post with  3
+2024/04/11 19:01:48 gotten userID =>  3
+2024/04/11 19:01:48 in post
+2024/04/11 19:01:48 [FETCHING POST DATA ◼◼◼] with  3
+2024/04/11 19:01:48 getting post with  3
+2024/04/11 19:01:49 gotten userID =>  3
+2024/04/11 19:01:49 in post
+2024/04/11 19:01:49 [FETCHING POST DATA ◼◼◼] with  3
+2024/04/11 19:01:49 getting post with  3
+2024/04/11 19:01:50 gotten userID =>  3
+2024/04/11 19:01:50 in post
+2024/04/11 19:01:50 [FETCHING POST DATA ◼◼◼] with  3
+2024/04/11 19:01:50 getting post with  3
+2024/04/11 19:01:51 gotten userID =>  3
+2024/04/11 19:01:51 in post
+2024/04/11 19:01:51 [FETCHING POST DATA ◼◼◼] with  3
+2024/04/11 19:01:51 getting post with  3
+2024/04/11 19:01:52 gotten userID =>  3
+2024/04/11 19:01:52 in post
+2024/04/11 19:01:52 [FETCHING POST DATA ◼◼◼] with  3
+2024/04/11 19:01:52 getting post with  3
+2024/04/11 19:03:46 Client vindour@gmail.com disconnected
+2024/04/11 19:03:48 Verify session handler
+2024/04/11 19:03:48 Verify session handler
+2024/04/11 19:03:49 Client vindour@gmail.com connected
