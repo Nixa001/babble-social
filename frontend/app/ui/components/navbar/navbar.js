@@ -1,5 +1,5 @@
 "use client"
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { GoHomeFill } from "react-icons/go";
@@ -10,9 +10,9 @@ import { IoPersonCircleSharp } from "react-icons/io5";
 import { IoLogOut } from "react-icons/io5";
 import Image from 'next/image';
 import { getSessionUser } from '@/app/_lib/utils';
+import { WebSocketContext } from '@/app/_lib/websocket';
 
-// import { GoHomeFill, AiFillMessage, FaUserGroup, IoNotifications, IoPersonCircleSharp, IoLogOut } from 'react-icons/all';
-// import clsx from 'clsx';
+
 
 const links = [
     { name: 'Home', href: '/home', icon: GoHomeFill },
@@ -22,22 +22,34 @@ const links = [
     { name: 'Profile', href: '/home/profile', icon: IoPersonCircleSharp },
     { name: 'Logout', href: '/home/logout', icon: IoLogOut },
 ];
-
+export let userID = 0
 function Navbar() {
     const pathname = usePathname();
     const [user, setUser] = useState(null);
+    const {sendMessageToServer} = useContext(WebSocketContext)
+    
 
     useEffect(() => {
         const fetchUser = async () => {
             try {
                 const userData = await getSessionUser();
                 setUser(userData);
+                userID = userData.id
+                console.log("userID: ", userData.id);
             } catch (error) {
                 console.error('Failed to fetch user session:', error);
             }
         };
         fetchUser();
     }, []);
+
+    useEffect(() => {
+        if (( pathname == '/home/messages')) {
+            sendMessageToServer({ type: "message-navbar", data: userID });
+        }
+    }, [pathname, userID]);
+
+
     return (
         <div className='shadowL  md:navbar xl:before:w-72 before:w-48 z-0 xl:w-60 md:block md:h-[700px] flex-col'>
             <div className='md:flex hidden relative z-0 flex-col w-full h-52 items-center justify-center'>
@@ -46,7 +58,7 @@ function Navbar() {
                     width={80} height={80}
                     className='rounded-full z-10'
                 />
-                 {user && (
+                {user && (
                     <>
                         <h2 className='font-bold text-2xl text-center'>{user.first_name}  {user.last_name}</h2>
                         <span className='text-xl italic text-primary'>@{user.user_name}</span>
@@ -59,20 +71,35 @@ function Navbar() {
 
                 {links.map((link) => {
                     const LinkIcon = link.icon;
-                    const isActive = (pathname === link.href) || pathname.includes(link.href) && link.href.length > 10;
-                    // const isActive = pathname.includes(link.href)
-                    // alert(pathname)
+                    const isActive = (pathname === link.href);
 
-                    return (
-                        <Link key={link.name} href={link.href}
-                            className={` flex  h-[60px] items-center md:justify-start justify-center xl:w-72 md:w-48 gap-2 rounded-md mt-1
-                         font-bold  hover:text-primary md:p-2 w-16 md:px-3 ${isActive ? 'isActive' : ''}`}
-                        >
-                            <LinkIcon className="xl:text-3xl text-xl" />
-                            <p className="xl:text-md hidden md:block">{link.name}</p>
-                        </Link >
-                    );
-                })}
+                    // Vérifie si le nom du lien est "Messages"
+                    if (link.name === 'Messages') {
+                        // Ajoute un gestionnaire d'événements onClick pour afficher le message dans la console
+                        return (
+                            <Link key={link.name} href={link.href}
+                                className={` flex h-[60px] items-center md:justify-start justify-center xl:w-72 md:w-48 gap-2 rounded-md mt-1
+                 font-bold hover:text-primary md:p-2 w-16 md:px-3 ${isActive ? 'isActive' : ''}`}
+                                
+                                onClick={() => sendMessageToServer({type : "message-navbar", data : user.id})}// Ajoutez cette ligne
+                            >
+                                <LinkIcon className="xl:text-5xl text-2xl" />
+                                <p className="xl:text-lg hidden md:block">{link.name}</p>
+                            </Link >
+                        );
+                    } else {
+                        return (
+                            <Link key={link.name} href={link.href}
+                                className={` flex h-[60px] items-center md:justify-start justify-center xl:w-72 md:w-48 gap-2 rounded-md mt-1
+                 font-bold hover:text-primary md:p-2 w-16 md:px-3 ${isActive ? 'isActive' : ''}`}
+                            >
+                                <LinkIcon className="xl:text-5xl text-2xl" />
+                                <p className="xl:text-lg hidden md:block">{link.name}</p>
+                            </Link >
+                        );
+                    }
+                })
+                }
             </div>
         </div>
 
