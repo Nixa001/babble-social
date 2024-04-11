@@ -66,7 +66,7 @@ export const followerHearder = (text, state, activeTab, handleTabClick) => {
 };
 
 export const displayFollowers = (data) => {
-  return data.map((follower) => {
+  return data?.map((follower) => {
     return (
       <div
         key={follower.id}
@@ -91,7 +91,7 @@ export const displayFollowers = (data) => {
 
 export const displaycCommunities = (data) => {
   const router = useRouter();
-  return data.map((follower) => {
+  return data?.map((follower) => {
     return (
       <div
         key={follower.id}

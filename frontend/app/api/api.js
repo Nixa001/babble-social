@@ -16,7 +16,7 @@ export async function loginUser(email, password) {
       }
       if (response.ok) {
         return response.json().then((json) => {
-          console.log(json);
+          // console.log(json);
           localStorage.setItem("token", json.token);
           return { error: null, data: json };
         });
@@ -67,7 +67,7 @@ export function useSession() {
 
   useEffect(() => {
     const token = localStorage.getItem("token") || null;
-    console.log("Token in useSession", token);
+    // console.log("Token in useSession", token);
     async function fetchSessionData() {
       try {
         const response = await fetch(`${NEXT_PUBLIC_API_URL}/auth/session`, {
@@ -133,6 +133,7 @@ export async function followUser(id, sessionId, token) {
 }
 
 export async function unfollowUser(id, sessionId, token) {
+  alert("unfollow")
   try {
     const response = await fetch(`${NEXT_PUBLIC_API_URL}/unfollow?id=${id}`, {
       method: "POST",
