@@ -3,27 +3,29 @@ package routes
 import (
 	"backend/server/handler"
 	"backend/server/handler/groups"
+	"backend/server/handler/notification"
 	"backend/server/handler/user"
 	"net/http"
 )
 
 const (
-	HOME_ENDPOINT          = "/"
-	SIGNUP_ENDPOINT        = "/auth/signup"
-	SIGNIN_ENDPOINT        = "/auth/signin"
-	LOGOUT_ENDPOINT        = "/auth/signout"
-	POST_ENDPOINT          = "/post"
-	COMMENT_ENDPOINT       = "/comment"
-	CREATE_GROUP_ENDPOINT  = "/group/creategroup"
-	CREATE_EVENT_ENDPOINT  = "/group/createEvent"
-	CREATE_EVENT_REQ_ENDPOINT  = "/group/eventrequest"
-	POST_GROUP_ENDPOINT    = "/group/postgroup"
-	USER_ENDPOINT          = "/userInfo"
-	JOINED_GROUPS_ENDPOINT = "/groups_joined"
-	GETGROUPS_ENDPOINT     = "/groups"
-	GETGROUP_ENDPOINT      = "/groups/group"
-	WS_ENDPOINT            = "/ws"
-	SERVE_ASSETS           = "/uploads/"
+	HOME_ENDPOINT             = "/"
+	SIGNUP_ENDPOINT           = "/auth/signup"
+	SIGNIN_ENDPOINT           = "/auth/signin"
+	LOGOUT_ENDPOINT           = "/auth/signout"
+	POST_ENDPOINT             = "/post"
+	COMMENT_ENDPOINT          = "/comment"
+	CREATE_GROUP_ENDPOINT     = "/group/creategroup"
+	CREATE_EVENT_ENDPOINT     = "/group/createEvent"
+	CREATE_EVENT_REQ_ENDPOINT = "/group/eventrequest"
+	POST_GROUP_ENDPOINT       = "/group/postgroup"
+	USER_ENDPOINT             = "/userInfo"
+	JOINED_GROUPS_ENDPOINT    = "/groups_joined"
+	GETGROUPS_ENDPOINT        = "/groups"
+	GETGROUP_ENDPOINT         = "/groups/group"
+	WS_ENDPOINT               = "/ws"
+	SERVE_ASSETS              = "/uploads/"
+	NOTIFICATION_ENDPOINT     = "/notifications"
 )
 
 func Route() *http.ServeMux {
@@ -40,6 +42,7 @@ func Route() *http.ServeMux {
 	mux.HandleFunc(POST_GROUP_ENDPOINT, groups.PostGroupHandler)
 	mux.HandleFunc(GETGROUPS_ENDPOINT, groups.GetGroups)
 	mux.HandleFunc(WS_ENDPOINT, handler.WSHandler)
+	mux.HandleFunc(NOTIFICATION_ENDPOINT, notification.GetNotification)
 
 	mux.HandleFunc(GETGROUP_ENDPOINT, groups.GetGroup)
 	mux.HandleFunc(USER_ENDPOINT, user.GetUser)

@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
+	"time"
 )
 
 func recupeIdAdminGroup(idGroup int, db *sql.DB) (int, error) {
@@ -31,42 +32,21 @@ func recupeIdAdminGroup(idGroup int, db *sql.DB) (int, error) {
 }
 
 func InsertNotification(idGroup int, notification_type string, user_id_sender int, db *sql.DB) error {
-	fmt.Println("Mangi inserer")
-	// Insertion de la notification
-	/*
-		// Req pour supprimer les donnees de testes
-		query := "DELETE FROM notifications WHERE id = ?"
-		result, err := db.Exec(query, 2)
-		if err != nil {
-			// Gérer l'erreur ici, par exemple :
-			fmt.Println("Erreur lors de l'exécution de la requête DELETE:", err)
-			return err
-		}
-
-		rowsAffected, err := result.RowsAffected()
-		if err != nil {
-			// Gérer l'erreur ici, par exemple :
-			fmt.Println("Erreur lors de la récupération du nombre de lignes affectées:", err)
-			return err
-		}
-
-		fmt.Println("Nombre de lignes supprimées:", rowsAffected)
-	*/
-
 	id_user_created_group, err := recupeIdAdminGroup(idGroup, db)
 	if err != nil {
 		log.Fatal("Erreur lors de la recuperation de l'id de l'admin group ", err)
 	}
 	// a determiner au niveau de la session
 
+	fmt.Println("type = ", notification_type)
+	fmt.Println("idGroup = ", idGroup)
+	fmt.Println("user_id_sender =", user_id_sender)
 	checkNotif, _ := CheckNotifAndType(db, idGroup, user_id_sender, notification_type)
-	fmt.Println("Checking ", checkNotif)
-	fmt.Println("GroupId = ", idGroup)
-	// log.Fatal("err")
+	fmt.Println("checkNotif = ", checkNotif)
 	if !checkNotif {
 
 		req := `
-			INSERT INTO notifications (notification_type, status, user_id_sender, user_id_receiver, id_group) VALUES ($1, $2, $3, $4, $5)
+			INSERT INTO notifications (notification_type, status, user_id_sender, user_id_receiver, id_group, date) VALUES ($1, $2, $3, $4, $5, $6)
 		`
 		stm, err := db.Prepare(req)
 
@@ -81,9 +61,9 @@ func InsertNotification(idGroup int, notification_type string, user_id_sender in
 			return err
 		}
 
-		fmt.Printf("Notification type: %v , userId : %v, sender: %v, idGroup: %v\n", notification_type, user_id_sender, id_user_created_group, idGroup)
-		fmt.Println("Notification ", notification_type)
-		_, err = stm.Exec(notification_type, 0, user_id_sender, id_user_created_group, idGroup)
+		date := time.Now()
+		formattedDateTime := date.Format("2006-01-02 15:04:05")
+		_, err = stm.Exec(notification_type, 0, user_id_sender, id_user_created_group, idGroup, formattedDateTime)
 		if err != nil {
 			fmt.Println("Erreur lors de l'execution de la requete inserte dans la base ", err)
 			return err
@@ -123,22 +103,6 @@ func CheckJoinNotification(id_user_created_group int, id_user_connected int, idG
 	return id_notification, state
 }
 
-func CheckNotif(db *sql.DB, groupID, userID int) (bool, error) {
-	var exists bool
-	err := db.QueryRow("SELECT EXISTS(SELECT id FROM notifications WHERE user_id_sender = $1 AND id_group = $2)", userID, groupID).Scan(&exists)
-	if err != nil {
-		return false, err
-	}
-	return exists, nil
-}
-func CheckNotifType(db *sql.DB, groupID, userID int, notification_type string) (bool, error) {
-	var exists bool
-	err := db.QueryRow("SELECT EXISTS(SELECT notification_type FROM notifications WHERE user_id_sender = $1 AND id_group = $2)", userID, groupID).Scan(&exists)
-	if err != nil {
-		return false, err
-	}
-	return exists, nil
-}
 func CheckNotifAndType(db *sql.DB, groupID int, userID int, notificationType string) (bool, error) {
 	var count int
 	err := db.QueryRow("SELECT COUNT(*) FROM notifications WHERE notification_type = $1 AND user_id_sender = $2 AND id_group = $3", notificationType, userID, groupID).Scan(&count)

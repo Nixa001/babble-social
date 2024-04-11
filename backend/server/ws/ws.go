@@ -2,6 +2,7 @@ package ws
 
 import (
 	"backend/database"
+	"backend/models"
 	"backend/server/handler/groups/events"
 	joingroup "backend/server/handler/groups/joinGroup"
 	"encoding/json"
@@ -179,9 +180,9 @@ func (h *Hub) HandleEvent(eventPayload WSPaylaod) {
 	case "JoinGroup":
 		h.Clients.Range(func(key, value interface{}) bool {
 			client := value.(*WSClient)
-			if client.Mail == eventPayload.To {
-				client.OutgoingMsg <- eventPayload
-			}
+			// if client.Mail == eventPayload.To {
+			client.OutgoingMsg <- eventPayload
+			// }
 			return true
 		})
 	case "NotGoingEvent":
@@ -214,6 +215,22 @@ func (h *Hub) HandleEvent(eventPayload WSPaylaod) {
 			if client.Mail == eventPayload.To {
 				client.OutgoingMsg <- eventPayload
 			}
+			return true
+		})
+	case "notification":
+		h.Clients.Range(func(key, value interface{}) bool {
+			client := value.(*WSClient)
+			// if client.Mail == eventPayload.To {
+			client.OutgoingMsg <- eventPayload
+			// }
+			return true
+		})
+	case "ResponceNotification":
+		h.Clients.Range(func(key, value interface{}) bool {
+			client := value.(*WSClient)
+			// if client.Mail != eventPayload.To {
+				client.OutgoingMsg <- eventPayload
+			// }
 			return true
 		})
 	}
@@ -330,6 +347,33 @@ func (client *WSClient) messageReader() {
 			}
 			WSHub.HandleEvent(wsEvent)
 
+			// notification := joingroup.ListNotification(idUserConnect, Db)
+			// fmt.Println("notification ", notification)
+			// if notification != nil {
+			// 	dataSend := struct {
+			// 		IdGroup int                   `json:"id_group"`
+			// 		Message []models.Notification `json:"message"`
+			// 		Type    string                `json:"type"`
+			// 		To      int                   `json:"to"`
+			// 		Button  string                `json:"button"`
+			// 	}{
+			// 		IdGroup: int(groupeId),
+			// 		Message: notification,
+			// 		Type:    "Notification",
+			// 		To:      idUserConnect,
+			// 		Button:  "Desable",
+			// 	}
+
+			// 	wsEvent = WSPaylaod{
+			// 		From: "",
+			// 		Type: eventType,
+			// 		Data: dataSend,
+			// 		To:   "Adimine group",
+			// 	}
+			// 	fmt.Println("wsEvent: ", wsEvent)
+			// 	WSHub.HandleEvent(wsEvent)
+			// }
+
 		case "NotGoingEvent":
 			jsonData, err := json.Marshal(wsEvent.Data)
 			if err != nil {
@@ -356,7 +400,7 @@ func (client *WSClient) messageReader() {
 			if err != nil {
 				log.Fatal(err.Error())
 			}
-			fmt.Println("eventId: ", event_id)
+			// fmt.Println("eventId: ", event_id)
 			// dataSend := struct {
 			// 	Group_id int    `json:"id_group"`
 			// 	Event_id int    `json:"button"`
@@ -402,9 +446,6 @@ func (client *WSClient) messageReader() {
 			if err != nil {
 				log.Fatal(err.Error())
 			}
-			fmt.Println(groupeId)
-			fmt.Println(event_id)
-			// Db := database.NewDatabase()
 
 			// fmt.Println("aaa", Db.Ping())
 			// err = going.InsertNotification(int(groupeId), Db)
@@ -419,38 +460,62 @@ func (client *WSClient) messageReader() {
 				fmt.Println("Erreur de conversion en json", err)
 			}
 
-			fmt.Println("Parse json = ", parseData["id_group"])
-			userId, ok := parseData["userId"].(float64)
+			// fmt.Println("Parse json = ", parseData["id_group"])
+			_, ok := parseData["userId"].(float64)
 			if !ok {
 				fmt.Println("Erreur de recuperation de donnee")
 				return
 			}
-			fmt.Println("userId", userId)
 
 			groupeID, ok := parseData["id_group"].(string)
 			if !ok {
 				fmt.Println("Erreur de recuperation de donnee")
 				return
 			}
-			fmt.Println("idgroup", groupeID)
+			// fmt.Println("idgroup", groupeID)
 			typeNotification, ok := parseData["type"].(string)
 			if !ok {
 				fmt.Println("Erreur de recuperation de donnee")
 				return
 			}
-			fmt.Println("typeNotification ", typeNotification)
-			idUserConnect := 4
+			idUserConnect := 1
 			group_id, err := strconv.Atoi(groupeID)
 			if err != nil {
 				log.Fatal(err.Error())
 
 			}
-			fmt.Println(group_id, typeNotification, idUserConnect)
+			fmt.Println("WS -- ", group_id, typeNotification, idUserConnect)
 			err = joingroup.InsertNotification(group_id, typeNotification, idUserConnect, Db)
 			if err != nil {
 				fmt.Println("Error inserting notification ", err.Error())
 				return
 			}
+		case "notification":
+			idUserConnect := 1
+			notification := joingroup.ListNotification(idUserConnect, Db)
+			if notification != nil {
+				dataSend := struct {
+					Message []models.Notification `json:"message"`
+					Type    string                `json:"type"`
+					To      int                   `json:"to"`
+				}{
+					Message: notification,
+					Type:    "Notification",
+					To:      idUserConnect,
+				}
+
+				wsEvent = WSPaylaod{
+					From: "",
+					Type: eventType,
+					Data: dataSend,
+					To:   "Admin group",
+				}
+				fmt.Println("Notification ", wsEvent)
+				WSHub.HandleEvent(wsEvent)
+			}
+		case "ResponceNotification":
+			fmt.Println("--- Notification responce ---")
+
 		}
 
 	}
