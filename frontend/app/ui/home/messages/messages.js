@@ -51,14 +51,14 @@ const Messages = () => {
   }, [nameGroup]);
 
   const handleUserClick = async (userId, name) => {
-    console.log("User clicked:", userId);
+    // console.log("User clicked:", userId);
     setIdUserReceiver(userId);
     setNameUser(name);
     // Récupérer l'ID de l'utilisateur en session
     const sessionUser = await getSessionUser();
     const sessionUserId = sessionUser.id; // A
-    console.log("idreceiver", idreceiver);
-    console.log("Session user", sessionUserId);
+    // console.log("idreceiver", idreceiver);
+    // console.log("Session user", sessionUserId);
     sendMessageToServer({
       type: "id-receiver-event",
       data: { clickedUserId: userId, sessionUserId: sessionUserId },
@@ -68,12 +68,12 @@ const Messages = () => {
   //Traitement de message entre user et Groups
 
   const handleGroupClick = async (GroupId, nameGroup) => {
-    console.log("Group clicked:", GroupId);
+    // console.log("Group clicked:", GroupId);
     setIdGroupReceiver(GroupId);
     setNameGroup(nameGroup);
     const sessionUser = await getSessionUser();
     const sessionUserId = sessionUser.id; // A
-    console.log("Session user", sessionUserId);
+    // console.log("Session user", sessionUserId);
     const token = localStorage.getItem("token");
     sendMessageToServer({
       type: "idGroup-receiver-event",
@@ -90,10 +90,10 @@ const Messages = () => {
     data.forEach((value, key) => {
       obj[key] = value;
     });
-    console.log(obj.message);
+    // console.log(obj.message);
     if (obj.message.trim() !== "") {
-      console.log("idreceiver in message", idreceiver);
-      console.log("idgroupreceiver in message", idgroupreceiver);
+      // console.log("idreceiver in message", idreceiver);
+      // console.log("idgroupreceiver in message", idgroupreceiver);
       // Détermine le type de message en fonction de activeTab
       const messageType =
         activeTab === "group" ? "message-group-event" : "message-user-event";

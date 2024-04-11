@@ -13,8 +13,8 @@ export const WebSocketProvider = ({ children }) => {
 
   const sendMessage = (message) => {
     if (socket && socket.readyState === WebSocket.OPEN) {
-      console.log("Envoie du message");
-      console.log("Hello ", String(message));
+      // console.log("Envoie du message");
+      // console.log("Hello ", String(message));
       socket.send(JSON.stringify(message));
     } else {
       console.error("WebSocket is not open");

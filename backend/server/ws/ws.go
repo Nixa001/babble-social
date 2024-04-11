@@ -11,6 +11,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"log"
+	"strconv"
 	"sync"
 	"time"
 
@@ -507,7 +508,7 @@ func (client *WSClient) messageReader() {
 				fmt.Println("Erreur de conversion en json", err)
 			}
 
-			fmt.Println("Parse json = ", parseData["id_group"])
+			// fmt.Println("Parse json = ", parseData["id_group"])
 			userId, ok := parseData["userId"].(float64)
 			if !ok {
 				fmt.Println("Erreur de recuperation de donnee")
@@ -515,12 +516,17 @@ func (client *WSClient) messageReader() {
 			}
 			fmt.Println("userId", userId)
 
-			groupeID, ok := parseData["id_group"]
+			groupIDSTr, ok := parseData["idGroup"].(string)
+			groupeID, err := strconv.Atoi(groupIDSTr)
+			fmt.Println("idgroup", groupeID)
 			if !ok {
 				fmt.Println("Erreur de recuperation de donnee")
 				return
 			}
-			fmt.Println("idgroup", groupeID)
+			if err != nil {
+				fmt.Println("cannot convert id group to int")
+				return
+			}
 
 		}
 

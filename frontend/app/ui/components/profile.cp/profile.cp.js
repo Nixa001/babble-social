@@ -23,13 +23,14 @@ export default function Profile({ sessionId, sessionToken }) {
   //recup id from url
   const searchParams = useSearchParams();
   const userid = searchParams.get("id");
-  console.log("userid=>", userid);
-  console.log("sessionId=>", sessionId);
+  // console.log("userid=>", userid);
+  // console.log("sessionId=>", sessionId);
   const id = userid ? userid : sessionId;
+  // getProfileById(id, sessionId, sessionToken)
   useQuery("profile", () => getProfileById(id, sessionId, sessionToken), {
     enabled: true,
-    refetchInterval: 2500,
-    staleTime: 1000,
+    refetchInterval: 5000,
+    staleTime: 5000,
     onSuccess: (data) => {
       console.log(data);
       setUser(data?.user);
@@ -42,7 +43,7 @@ export default function Profile({ sessionId, sessionToken }) {
   const followersId = followers?.map((follower) => follower.id);
   const HandleFollow = (id, sessionId, followers) => {
     if (sessionId && followersId?.includes(sessionId)) {
-      console.log("unfollow");
+      alert("unfollow");
       // if (user?.user_type === "public") {
       //   //unfollow
       // } else {
@@ -213,12 +214,12 @@ export default function Profile({ sessionId, sessionToken }) {
                   >
                     {followings ? (
                       <span className="flex -space-x-1 mr-1">
-                        {followings?.map((following) => (
+                        {followings.map((following) => (
                           <img
                             key={following.first_name + following.last_name}
                             className="inline-block h-6 w-6 rounded-full ring-2 ring-white"
                             src={following.avatar}
-                            alt={following.first_name}
+                            alt={`${following.first_name} ${following.last_name}`}
                           />
                         ))}
                       </span>
@@ -240,11 +241,12 @@ export default function Profile({ sessionId, sessionToken }) {
                   >
                     {followers ? (
                       <span className="flex -space-x-1 mr-1">
-                        {followers?.map((follower) => (
+                        {followers.map((follower) => (
                           <img
+                            key={follower.id}
                             className="inline-block h-6 w-6 rounded-full ring-2 ring-white"
                             src={follower.avatar}
-                            alt={follower.first_name}
+                            alt={`${follower.first_name} ${follower.last_name}`}
                           />
                         ))}
                       </span>

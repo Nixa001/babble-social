@@ -37,9 +37,10 @@ const DisplayPost = ({ postData, idUser, onCommentClick }) => {
                   @{postDataState.UserName}
                 </span>
                 <div className="flex">
-                  <MdPrivacyTip className="text-2xl" />
-                  <SiGnuprivacyguard className="text-2xl" />
+                  {/* <MdPrivacyTip className="text-2xl" />
                   <BiWorld className="text-2xl" />
+                  <SiGnuprivacyguard className="text-2xl" />
+                */}
                 </div>
               </div>
               <div className="flex gap-4 text-sm">

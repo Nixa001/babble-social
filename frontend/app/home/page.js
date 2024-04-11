@@ -10,7 +10,7 @@ const Page = () => {
   const  { session, errSess } = useSession();
 
   const sessionId = session?.session["user_id"];
-  console.log("i got session => ", sessionId);
+  // console.log("i got session => ", sessionId);
   return (
     <div className="">
       <QueryClientProvider client={queryClient}>

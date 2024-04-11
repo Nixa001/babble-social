@@ -16,7 +16,7 @@ export default function Login() {
     try {
       const response = await loginUser(email, password);
       if (response.error === null && response.data) {
-        console.log("trying to set item with => ", response.data.token);
+        // console.log("trying to set item with => ", response.data.token);
         localStorage.setItem("token", response.data.token);
         router.push("/home");
       } else {

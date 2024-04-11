@@ -37,6 +37,6 @@ func WSHandler(w http.ResponseWriter, r *http.Request) {
 	// fmt.Println("userSession: ", userSession)
 
 	ws.WSHub.AddClient(conn, userSession.Email, token)
-	fmt.Println("aksina")
+	// fmt.Println("aksina")
 
 }
