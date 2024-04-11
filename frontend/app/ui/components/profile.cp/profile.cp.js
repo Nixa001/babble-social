@@ -42,26 +42,24 @@ export default function Profile({ sessionId, sessionToken }) {
   const HandleFollow = (id, sessionId) => {
     console.log("HandleFollow");
     if (sessionId && followersId?.includes(sessionId)) {
-      console.log("unfollow");
       try {
         const response = unfollowUser(id, sessionId, sessionToken);
-        if (response.error === null) {
-          console.log("unfollowed");
-        } else {
+        if (response.error) {
           console.log("error unfollowing");
+        } else {
+          console.log("unfollowed");
         }
       } catch (error) {
         console.log("error unfollowing", error);
       }
     } else {
       if (user?.user_type == "public") {
-        console.log("follow");
         try {
           const response = followUser(id, sessionId, sessionToken);
-          if (response.error === null) {
-            console.log("followed");
-          } else {
+          if (response.error) {
             console.log("error following");
+          } else {
+            console.log("followed");
           }
         } catch (error) {
           console.log("error following", error);
@@ -69,10 +67,10 @@ export default function Profile({ sessionId, sessionToken }) {
       } else {
         try {
           const response = followUser(id, sessionId, sessionToken);
-          if (response.error === null) {
-            console.log("followed");
-          } else {
+          if (response.error) {
             console.log("error following");
+          } else {
+            console.log("followed");
           }
         } catch (error) {
           console.log("error following", error);

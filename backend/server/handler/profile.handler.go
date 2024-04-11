@@ -127,7 +127,7 @@ func FollowHandler(w http.ResponseWriter, r *http.Request) {
 		}
 
 		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(map[string]string{"message": "Followed"})
+		json.NewEncoder(w).Encode(map[string]string{"message": "success"})
 		return
 	default:
 		w.WriteHeader(http.StatusMethodNotAllowed)
@@ -158,30 +158,31 @@ func UnfollowHandler(w http.ResponseWriter, r *http.Request) {
 			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid credentials 0"})
 			return
 		}
-		followerIDStr, followingIDStr := credentials["follower_id"], credentials["following_id"]
-		followerID, err := strconv.Atoi(followerIDStr)
+		followedIDStr, followerIDStr := credentials["followed_id"], credentials["follower_id"]
+		followedID, err := strconv.Atoi(followedIDStr)
 		if err != nil {
 			fmt.Println("Invalid credentials 2 :", err)
 			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid follower ID"})
 			return
 		}
-		followingID, err := strconv.Atoi(followingIDStr)
+		followerID, err := strconv.Atoi(followerIDStr)
 		if err != nil {
 			fmt.Println("Invalid credentials 3 :", err)
 			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid following ID"})
 			return
 		}
-		err = service.AuthServ.UnfollowUser(followerID, followingID)
+		err = service.AuthServ.UnfollowUser(followedID, followerID)
 		if err != nil {
+			fmt.Println("Failed to unfollow:", err)
 			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(map[string]string{"error": "Failed to unfollow"})
 			return
 		}
 
 		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(map[string]string{"message": "Unfollowed"})
+		json.NewEncoder(w).Encode(map[string]string{"message": "success"})
 		return
 	default:
 		w.WriteHeader(http.StatusMethodNotAllowed)

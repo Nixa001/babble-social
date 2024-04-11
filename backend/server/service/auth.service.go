@@ -156,8 +156,8 @@ func (a *AuthService) FollowUser(followerID, followingID int) error {
 	return nil
 }
 
-func (a *AuthService) UnfollowUser(followerID, followingID int) error {
-	err := a.FollowRepo.UnfollowUser(followerID, followingID)
+func (a *AuthService) UnfollowUser(followedID, followerID int) error {
+	err := a.FollowRepo.UnfollowUser(followedID, followerID)
 	if err != nil {
 		return err
 	}

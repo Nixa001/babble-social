@@ -155,7 +155,10 @@ export async function unfollowUser(id, sessionId, token) {
       headers: {
         Authorization: token,
       },
-      body: JSON.stringify({ id, sessionId }),
+      body: JSON.stringify({
+        followed_id: String(id),
+        follower_id: String(sessionId),
+      }),
     });
     const data = await response.json();
     return data;
