@@ -229,7 +229,7 @@ func (h *Hub) HandleEvent(eventPayload WSPaylaod) {
 		h.Clients.Range(func(key, value interface{}) bool {
 			client := value.(*WSClient)
 			// if client.Mail != eventPayload.To {
-				client.OutgoingMsg <- eventPayload
+			client.OutgoingMsg <- eventPayload
 			// }
 			return true
 		})
@@ -515,6 +515,50 @@ func (client *WSClient) messageReader() {
 			}
 		case "ResponceNotification":
 			fmt.Println("--- Notification responce ---")
+			jsonData, err := json.Marshal(wsEvent.Data)
+			if err != nil {
+				fmt.Println("Erreur de conversion en json", err)
+				return
+			}
+			var parseData map[string]interface{}
+			if err := json.Unmarshal(jsonData, &parseData); err != nil {
+				fmt.Println("Erreur de conversion en json", err)
+			}
+
+			// fmt.Println("Parse json = ", parseData["id_group"])
+			id_user_sender, ok := parseData["id_user_sender"].(float64)
+			if !ok {
+				fmt.Println("Erreur de recuperation de donnee")
+				return
+			}
+
+			groupeID, ok := parseData["groupeId"].(float64)
+			if !ok {
+				fmt.Println("Erreur de recuperation de donnee ==")
+				return
+			}
+			response, ok := parseData["response"].(string)
+			if !ok {
+				fmt.Println("Erreur de recuperation de donnee")
+				return
+			}
+
+			if response == "going" {
+				fmt.Println("id_group = ", groupeID)
+				check := joingroup.AcceptOrNo(Db, int(id_user_sender), 1, int(groupeID), "1")
+				if check != true {
+					fmt.Println("Erreur lors de la requette update")
+					return
+				} else {
+					fmt.Println("Accepted")
+				}
+			} else if response == "notGoing" {
+				check := joingroup.AcceptOrNo(Db, int(id_user_sender), 1, int(groupeID), "-1")
+				if check != true {
+					fmt.Println("Erreur lors de la requette update")
+					return
+				}
+			}
 
 		}
 

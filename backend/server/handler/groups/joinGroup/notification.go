@@ -111,3 +111,25 @@ func CheckNotifAndType(db *sql.DB, groupID int, userID int, notificationType str
 	}
 	return count > 0, nil
 }
+
+func AcceptOrNo(db *sql.DB, user_id_sender, user_id_receiver, id_group int, val string) bool {
+	stm := `
+		UPDATE notifications SET status = ? WHERE user_id_sender = ? AND user_id_receiver = ? AND id_group = ? 
+	`
+	// Prépare la requête à partir de la connexion à la base de données
+	query, err := db.Prepare(stm)
+	if err != nil {
+		fmt.Println("Erreur lors de la préparation de la requête: ", err)
+		return false
+	}
+	defer query.Close() // Assurez-vous de fermer la requête préparée après son utilisation
+
+	// Exécute la requête préparée avec les paramètres spécifiques
+	_, err = query.Exec(val, user_id_sender, user_id_receiver, id_group) // '1' est la nouvelle valeur de 'status'
+	if err != nil {
+		fmt.Println("Erreur lors de l'exécution de la requête: ", err)
+		return false
+	}
+
+	return true
+}
