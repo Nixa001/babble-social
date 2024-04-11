@@ -6,6 +6,7 @@ import (
 	"backend/database"
 	"backend/server/handler/groups/events"
 	joingroup "backend/server/handler/groups/joinGroup"
+	"backend/server/service"
 	"backend/utils/seed"
 	"encoding/json"
 	"fmt"
@@ -64,8 +65,8 @@ func (h *Hub) listen() {
 		select {
 		case client := <-h.RegisterChannel:
 			h.Clients.Store(client.Email, client)
-			fmt.Println("poule", client)
-			fmt.Println("client registered", h.Clients)
+			// fmt.Println("poule", client)
+			// fmt.Println("client registered", h.Clients)
 			log.Printf("Client %s connected\n", client.Email)
 		case client := <-h.UnRegisterChannel:
 			// if _, ok := h.Clients.Load(client.Email); ok {
@@ -91,7 +92,7 @@ func (h *Hub) HandleEvent(eventPayload WSPaylaod) {
 	case WS_DISCONNECT_EVENT:
 		h.Clients.Range(func(key, value interface{}) bool {
 			client := value.(*WSClient)
-			fmt.Println("2", client)
+			// fmt.Println("2", client)
 			// for _, name := range eventPayload.To {
 			if client.Email == eventPayload.From {
 				client.OutgoingMsg <- eventPayload
@@ -472,12 +473,24 @@ func (client *WSClient) messageReader() {
 				fmt.Println("Erreur de recuperation de donnee")
 				return
 			}
+
+			token, ok := parseData["token"].(string)
+			if !ok {
+				fmt.Println("Erreur de recuperation du token join event")
+				return
+			}
+			userID, err := service.AuthServ.VerifyTokenStr(token)
+			if err != nil {
+				fmt.Println("Erreur de recuperation de donnee VerifyTokenStr")
+				return
+			}
+
 			event_id, ok := parseData["event_id"].(float64)
 			if !ok {
 				fmt.Println("Erreur de recuperation de donnee")
 				return
 			}
-			err = events.JoinEvent(1, int(groupeId), int(event_id), Db)
+			err = events.JoinEvent(userID, int(groupeId), int(event_id), Db)
 			if err != nil {
 				log.Fatal(err.Error())
 			}

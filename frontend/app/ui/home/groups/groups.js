@@ -16,11 +16,12 @@ const Groups = () => {
   const [groupJoined, setGroupJoined] = useState([]);
 
   const fetchGroups = async () => {
+    const token = localStorage.getItem("token") || null;
     const sessionId = session?.session["user_id"];
-    const url = `http://localhost:8080/groups?user_id=${encodeURIComponent(
-      sessionId
+    const url = `http://localhost:8080/groups?token=${encodeURIComponent(
+      token
     )}`;
-    if (sessionId) {
+    // if (sessionId) {
       try {
         const response = await fetch(url, {
           method: "GET",
@@ -32,7 +33,7 @@ const Groups = () => {
         setFetcherState(false);
         return Promise.reject(error);
       }
-    }
+    // }
   };
 
   useQuery("groups", fetchGroups, {
@@ -125,7 +126,7 @@ const GroupCard = ({ isMember, id, image, name, description, href, state }) => {
     if (joinMessage) {
       messages.map((message) => {
         if (message.Data.id_group === id) {
-          console.log("Message ", message);
+          // console.log("Message ", message);
           return;
         }
       });

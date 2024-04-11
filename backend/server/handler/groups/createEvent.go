@@ -4,6 +4,7 @@ import (
 	"backend/database"
 	"backend/models"
 	"backend/server/cors"
+	"backend/server/service"
 	utils "backend/utils"
 	"fmt"
 	"log"
@@ -14,7 +15,7 @@ import (
 // func (w http.ResponseWriter, r *http.Request) {}
 
 func CreateEventHandler(w http.ResponseWriter, r *http.Request) {
-	userID := 1
+	// userID := 1
 	cors.SetCors(&w)
 
 	switch r.Method {
@@ -33,6 +34,19 @@ func CreateEventHandler(w http.ResponseWriter, r *http.Request) {
 			fmt.Println("Error on formatDateTime", err)
 			return
 		}
+
+		session, err := service.AuthServ.VerifyToken(r)
+		if err != nil {
+			log.Println("Invalid Token ", err)
+			utils.Alert(w, models.Errormessage{
+				Type:       "Create Event",
+				Msg:        "Invalid Token",
+				StatusCode: http.StatusBadRequest,
+			})
+			return
+		}
+
+		userID := session.User_id
 
 		fmt.Println(date, " "+heure)
 		groupID, err := GetGroupIDFromRequest(w, r)

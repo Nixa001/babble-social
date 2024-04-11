@@ -49,6 +49,25 @@ func (a *AuthService) CheckCredentials(email, password string) (models.User, err
 	return user, nil
 }
 
+func (a *AuthService) VerifyTokenStr(token string) (userID int, err error) {
+	if token == "" {
+		return 0, fmt.Errorf("missing token")
+	}
+
+	session, err := a.SessRepo.GetSession(token)
+	if err != nil {
+		log.Println("Error getting session", err)
+		return 0, err
+	}
+
+	if session.Expiration.Before(time.Now()) {
+		log.Println("token expired")
+		return 0, fmt.Errorf("token expired")
+	}
+
+	return session.User_id, nil
+}
+
 func (a *AuthService) VerifyToken(r *http.Request) (session models.Session, err error) {
 	token := r.Header.Get("Authorization")
 	if token == "" {

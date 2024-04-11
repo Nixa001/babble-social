@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { toast } from "react-toastify";
 
 export const CreateEvent = ({ isVisible, onClose, id, user }) => {
-  console.log("[debug]: creating event with => ", user);
+  // console.log("[debug]: creating event with => ", user);
   const [textarea, setTextarea] = useState("");
   const [date, setDate] = useState("");
 
@@ -33,12 +33,13 @@ export const CreateEvent = ({ isVisible, onClose, id, user }) => {
   const handlePost = (e) => {
     e.preventDefault();
     const data = new FormData(e.target);
-    console.log("my data => ", data);
+    const token = localStorage.getItem("token") || null;
+    // console.log("my data => ", data);
     const options = {
       method: "POST",
       body: data,
     };
-    fetch(`http://localhost:8080/group/createEvent?id=${id}`, options).then(
+    fetch(`http://localhost:8080/group/createEvent?id=${id}&token=${token}`, options).then(
       async (x) => {
         const retrieved = await x.json();
         console.log("response", retrieved);
