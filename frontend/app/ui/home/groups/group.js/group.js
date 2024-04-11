@@ -12,7 +12,7 @@ import { DisplayMembers } from "@/app/ui/components/modals/displayMembers";
 // import { useApi } from "@/app/_lib/utils";
 import { WebSocketContext } from "@/app/_lib/websocket";
 
-const Group = ({sessionID}) => {
+const Group = ({ sessionID }) => {
   // Instantiate ws
   // const { sendMessage } = useApi();
 
@@ -33,8 +33,10 @@ const Group = ({sessionID}) => {
   const id = pathname.split("id=")[1];
 
   const fetchGroups = async () => {
+    const token = localStorage.getItem("token") || null;
+
     try {
-      const url = `http://localhost:8080/groups/group?id=${id}`;
+      const url = `http://localhost:8080/groups/group?id=${id}&token=${token}`;
 
       const response = await fetch(url, {
         method: "GET",
@@ -70,7 +72,7 @@ const Group = ({sessionID}) => {
                         flex flex-col gap-2"
     >
       <div className="w-full h-60 mb-3">
-        {groupInfo.image ? (
+        {groupInfo?.image ? (
           <img
             src={`${groupInfo.image}`}
             alt="cover"
@@ -97,7 +99,7 @@ const Group = ({sessionID}) => {
                 clipRule="evenodd"
               />
             </svg>
-            {groupInfo.name}
+            {groupInfo?.name}
           </h1>
           <p className="text-lg flex items-center gap-2">
             <svg
@@ -112,7 +114,7 @@ const Group = ({sessionID}) => {
                 clipRule="evenodd"
               />
             </svg>
-            {groupInfo.description}
+            {groupInfo?.description}
           </p>
         </div>
         <div className="flex gap-2 lg:flex-row flex-col">
@@ -192,8 +194,8 @@ const Group = ({sessionID}) => {
           </svg>
 
           <span className="italic">Created by: </span>
-          {groupInfo.creator
-            ? groupInfo.creator.first_name + " " + groupInfo.creator.last_name
+          {groupInfo?.creator
+            ? groupInfo?.creator.first_name + " " + groupInfo?.creator.last_name
             : ""}
         </p>
         <p
@@ -264,14 +266,13 @@ const Group = ({sessionID}) => {
         </div>
         <div className="w-[75%] ">
           {groupPosts
-            ? groupPosts.map((post) => {
+            ? groupPosts?.map((post) => {
                 return (
                   <DisplayPost
                     key={post.ID}
                     postData={post}
                     idUser={sessionID}
                     onCommentClick={onCommentClick}
-                    onProfileClick={onProfileClick}
                   />
                 );
               })
@@ -310,10 +311,6 @@ export default Group;
 
 const onCommentClick = () => {
   alert("Comment disp");
-};
-
-const onProfileClick = () => {
-  alert("profile disp");
 };
 
 export const displayEvents = (events) => {
@@ -420,8 +417,20 @@ export const displayEventToJoin = (events, sendMessage) => {
 };
 
 function notGoing(id_event, sendMessage, id_group) {
-  sendMessage({ type: "NotGoingEvent", groupId: id_group, event_id: id_event });
+  const token = localStorage.getItem("token") || null;
+  sendMessage({
+    type: "NotGoingEvent",
+    groupId: id_group,
+    event_id: id_event,
+    token: token,
+  });
 }
 function going(id_event, sendMessage, id_group) {
-  sendMessage({ type: "GoingEvent", groupId: id_group, event_id: id_event });
+  const token = localStorage.getItem("token") || null;
+  sendMessage({
+    type: "GoingEvent",
+    groupId: id_group,
+    event_id: id_event,
+    token: token,
+  });
 }

@@ -1,18 +1,60 @@
 'use client'
-import { display, displayFollowers, followerHearder } from '../../components/sidebarRight/sidebar';
+import Image from 'next/image';
+import { display, displayFollowers, displayGroups, followerHearder } from '../../components/sidebarRight/sidebar';
 import { useContext, useEffect, useState } from 'react';
 import useSocket, { WebSocketContext } from '@/app/_lib/websocket';
 import { getSessionUser } from '@/app/_lib/utils';
+import { useRouter } from 'next/navigation';
+import { userID } from '../../components/navbar/navbar';
+import { loginUser } from '@/app/api/api';
+import InputEmoji from "react-input-emoji"
 
 let idreceiver;
 let idgroupreceiver;
+const fetchUserGroup = async () => {
+    const token = localStorage.getItem("token") || null;
+    const url = `http://localhost:8080/messages?token=${encodeURIComponent(
+        token
+    )}`;
+    try {
+        const response = await fetch(url, {
+
+            method: "GET",
+        });
+        const data = response.json();
+        // console.log(data);
+        return data;
+    } catch (error) {
+        console.error("Erreur ", error);
+    }
+}
+
+
+
 const Messages = () => {
-    const { sendMessageToServer, allMessages,resetAllMessages } = useContext(WebSocketContext)
+    const { sendMessageToServer, allMessages, resetAllMessages } = useContext(WebSocketContext)
     const [idUserReceiver, setIdUserReceiver] = useState(0);
     const [idGroupReceiver, setIdGroupReceiver] = useState(0);
     const [nameUser, setNameUser] = useState("");
     const [nameGroup, setNameGroup] = useState("");
     const [activeTab, setActiveTab] = useState("users");
+    const route = useRouter();
+    const [text, setText] = useState('')
+    const [selectedEmoji, setSelectedEmoji] = useState(null)
+
+    const [data, setData] = useState([]);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const result = await fetchUserGroup();
+            setData(result); // Mettre à jour l'état avec les données récupérées
+        };
+
+        fetchData();
+    }, []);
+    let OnlineUser = data[0]
+    let Groups = data[1]
+
 
     const handleTabClick = (tab) => {
         setActiveTab(tab);
@@ -23,11 +65,11 @@ const Messages = () => {
         setNameUser("");
         setNameGroup("");
     };
-    useEffect(()=>{
-        return ()=>{
+    useEffect(() => {
+        return () => {
             reset();
         }
-    },[activeTab])
+    }, [activeTab])
     useEffect(() => {
         return () => {
             resetAllMessages();
@@ -42,30 +84,25 @@ const Messages = () => {
     useEffect(() => {
         idgroupreceiver = idGroupReceiver
     }, [idGroupReceiver]);
-    useEffect(()=>{
+    useEffect(() => {
         // console.log(nameUser);
-    },[nameUser]);
-    useEffect(()=>{
+    }, [nameUser]);
+    useEffect(() => {
         // console.log(nameGroup);
-    },[nameGroup]);
+    }, [nameGroup]);
 
     const handleUserClick = async (userId, name) => {
-        console.log("User clicked:", userId);
         setIdUserReceiver(userId);
         setNameUser(name);
-        // Récupérer l'ID de l'utilisateur en session
         const sessionUser = await getSessionUser();
         const sessionUserId = sessionUser.id; // A
-        console.log("idreceiver", idreceiver);
-        console.log("Session user", sessionUserId);
         sendMessageToServer({ type: 'id-receiver-event', data: { clickedUserId: userId, sessionUserId: sessionUserId } });
-
+        route.push("/home/messages?id=" + userId)
     };
 
     //Traitement de message entre user et Groups
 
     const handleGroupClick = async (GroupId, nameGroup) => {
-        console.log("Group clicked:", GroupId);
         setIdGroupReceiver(GroupId);
         setNameGroup(nameGroup)
         const sessionUser = await getSessionUser();
@@ -73,7 +110,7 @@ const Messages = () => {
         console.log("Session user", sessionUserId);
         const token = localStorage.getItem('token');
         sendMessageToServer({ type: 'idGroup-receiver-event', data: { idgroup: GroupId, userID: sessionUserId } });
-        // Ici, vous pouvez ajouter la logique pour gérer l'ID de l'utilisateur cliqué
+        route.push("/home/messages?idgroup=" + GroupId)
     };
 
     //Traitement lors de l'envoie de messages
@@ -84,8 +121,13 @@ const Messages = () => {
         data.forEach((value, key) => {
             obj[key] = value;
         });
-        console.log(obj.message);
-        if (obj.message.trim() !== "") {
+
+
+        obj.message = text;
+        if (selectedEmoji) {
+            obj.message = selectedEmoji.native + " " + obj.message;
+        }
+        if (obj.message?.trim() !== "") {
             console.log("idreceiver in message", idreceiver);
             console.log("idgroupreceiver in message", idgroupreceiver);
             // Détermine le type de message en fonction de activeTab
@@ -102,17 +144,17 @@ const Messages = () => {
                     receiverId: receiverId,
                 }
             };
-            // Envoie le message au serveur
             sendMessageToServer(messageData);
             e.target.reset();
+            setText("");
         }
     };
 
     const displayTable = () => {
         if (activeTab === "users") {
-            return display(users, handleUserClick);
+            return displayFollowers(OnlineUser, handleUserClick);
         } else if (activeTab === "group") {
-            return display(groups, handleGroupClick);
+            return displayGroups(Groups, handleGroupClick);
         }
         return null;
     };
@@ -154,26 +196,27 @@ const Messages = () => {
                             height={50}
                         />
                         <div className='flex gap-2 items-center'>
-                            <h3 className="user_name_post break-words max-w-[600px] w-[80%] font-bold"> 
-                              {activeTab === "group" ? nameGroup : nameUser}
+                            <h3 className="user_name_post break-words max-w-[600px] w-[80%] font-bold">
+                                {activeTab === "group" ? nameGroup : nameUser}
                             </h3>
                             <span className="username_post italic text-primary">
-                                @Darze
+
                             </span>
                         </div>
                     </div>
                     <div className="h-full overflow-y-auto">
-                        {displayMessages(allMessages)}
+                        <DisplayMessages messages={allMessages} />
                     </div>
                 </div>
 
                 <form className="flex justify-end mt-4 gap-2" onSubmit={handleSendMessage}>
-                    <input
-                        type="text"
-                        name="message"
-                        className=" p-4 border border-gray-700 bg-transparent h-11 rounded-lg w-[90%] outline-none focus:ring-1 bg-primary focus:ring-primary"
-                        placeholder="Your message..."
+                    <InputEmoji
+                        value={text}
+                        onChange={(event) => setText(event)}
+                        cleanOnEnter
+                        placeholder='Your message...'
                     />
+
                     <button type="submit" className="bg-primary  hover:bg-second font-bold px-4 rounded-lg">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" className="w-6 h-6">
                             <path d="M3.478 2.404a.75.75 0 0 0-.926.941l2.432 7.905H13.5a.75.75 0 0 1 0 1.5H4.984l-2.432 7.905a.75.75 0 0 0 .926.94 60.519 60.519 0 0 0 18.445-8.986.75.75 0 0 0 0-1.218A60.517 60.517 0 0 0 3.478 2.404Z" />
@@ -186,66 +229,22 @@ const Messages = () => {
 };
 
 
-const displayMessages = (messages) => {
+export const DisplayMessages = ({ messages }) => {
     // Vérifie si messages est null ou non un tableau
     if (!Array.isArray(messages) || messages.length === 0) {
         return <p>Aucun message à afficher.</p>;
     }
     // Si messages n'est pas vide, mappe sur les messages comme avant
     return messages.map((message) => (
-        <div key={message.id} className="message-container flex items-end mb-4">
-            <div className="flex flex-col">
-                <p className="text-sm font-semibold mb-1">{message.first_name}</p>
-                <div className="font-semibold bg-primary p-4 rounded-lg">
+        <div key={message.id} className="message-container flex items-end mb-4 ">
+            <div className="flex flex-col w-[70%]">
+                <p className="text-sm w-fit bg-black font-semibold mb-1">{message.first_name}</p>
+                <div className="font-semibold bg-primary p-4 rounded-lg break-words text-wrap w-fit max-w-[40%]">
                     {message.message_content}
                 </div>
             </div>
         </div>
     ));
 };
+
 export default Messages;
-// const users = [
-//     { id: 1, first_name: 'Mamour', last_name: 'Drame', avatar: 'profilibg.jpg', alt: "profil" },
-//     { id: 2, first_name: 'Edouard', last_name: 'Mendy', avatar: 'profilibg.jpg', alt: "profil" },
-//     { id: 3, first_name: 'Vincent', last_name: 'Ndour', avatar: "profilibg.jpg", alt: "profil" },
-// ];
-
-// const groups = [
-//     { id: 1, first_name: 'Call of duty', last_name: '', avatar: 'profilibg.jpg', alt: "profil" },
-//     { id: 2, first_name: 'Farcry 6 Team', last_name: '', avatar: 'profilibg.jpg', alt: "profil" },
-//     { id: 3, first_name: 'EA Fooball 24', last_name: '', avatar: "profilibg.jpg", alt: "profil" },
-// ];
-
-const messages = [
-    {
-        id: 1, first_name: 'Mamou Drame', message_content: 'Hello everyone!', timestamp: '2023-11-16T12:00:00.000Z',
-    },
-    {
-        id: 2, first_name: 'Nicolas Faye', message_content: 'How are you all doing today?', timestamp: '2023-11-16T12:01:00.000Z',
-    },
-];
-
-
-const users = [
-    { id: 1, name: 'Mamour Drame', src: '/assets/profilibg.jpg', alt: "profil" },
-    { id: 2, name: 'Edouard Mendy', src: '/assets/profilibg.jpg', alt: "profil" },
-    { id: 3, name: 'Vincent Ndour', src: "/assets/profilibg.jpg", alt: "profil" },
-    { id: 4, name: 'Ibrahima Gueye', src: "/assets/profilibg.jpg", alt: "profil", },
-    { id: 5, name: 'Madike Yade', src: "/assets/profilibg.jpg", alt: "profil", },
-];
-
-// const messages = [
-//     {
-//         id: 1, first_name: 'Mamou Drame', message_content: 'Hello everyone!', timestamp: '2023-11-16T12:00:00.000Z',
-//     },
-//     {
-//         id: 2, first_name: 'Nicolas Faye', message_content: 'How are you all doing today?', timestamp: '2023-11-16T12:01:00.000Z',
-//     },
-// ];
-
-
-const groups = [
-    { id: 1, name: 'Call of duty', src: "/assets/profilibg.jpg", alt: "profil", },
-    { id: 2, name: 'Farcry 6 Team', src: "/assets/profilibg.jpg", alt: "profil" },
-    { id: 3, name: 'EA Fooball 24', src: "/assets/profilibg.jpg", alt: "profil", },
-];

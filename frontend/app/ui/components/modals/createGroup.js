@@ -1,7 +1,8 @@
+import { useSession } from "@/app/api/api";
 import React, { useState } from "react";
-import { toast } from "react-toastify";
 
 export const CreateGroup = ({ isVisible, onClose }) => {
+  const { session, errSess } = useSession();
   const [groupName, setGroupName] = useState("");
   const [groupDescription, setGroupDescription] = useState("");
   const [groupImage, setGroupImage] = useState(null);
@@ -22,10 +23,14 @@ export const CreateGroup = ({ isVisible, onClose }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const sessionId = session?.session["user_id"];
+    console.log(sessionId);
+
     const formData = new FormData();
     formData.append("name", groupName);
     formData.append("description", groupDescription);
     formData.append("image", groupImage);
+    formData.append("user_id", sessionId);
 
     try {
       const response = await fetch("http://localhost:8080/group/creategroup", {
@@ -40,21 +45,6 @@ export const CreateGroup = ({ isVisible, onClose }) => {
         setGroupImage("");
         onClose();
       }
-
-      // if (response.type != "success") {
-      //     toast.error(retrieved.msg, {
-      //       position: "bottom-left",
-      //       autoClose: 4000,
-      //       hideProgressBar: false,
-      //       closeOnClick: true,
-      //       pauseOnHover: true,
-      //       draggable: true,
-      //       progress: undefined,
-      //       theme: "dark",
-      //       // transition: "bounce",
-      //     });
-      //     return;
-      //   }
       if (response.status == 409) {
         setErrorMsg("Groupe already exist");
         setTimeout(() => {

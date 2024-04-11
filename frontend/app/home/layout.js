@@ -6,6 +6,7 @@ import Navbar from "../ui/components/navbar/navbar";
 import Sidebar from "../ui/components/sidebarRight/sidebar";
 import { displayFollowers } from "./utils";
 import { ToastContainer } from "react-toastify";
+import { useSession } from "../api/api";
 
 export default function Layout({ children }) {
   const { userData, followers, isLoading, error } = useFetchData();
@@ -17,7 +18,8 @@ export default function Layout({ children }) {
       </div>
       <div
         className="md:flex md:flex-row flex flex-col-reverse 
-      justify-between h-[99%] md:justify-between md:h-full  overflow-hidden">
+      justify-between h-[99%] md:justify-between md:h-full  overflow-hidden"
+      >
         <div className="md:mt-20">
           <Navbar user={userData} />
           <ToastContainer />
@@ -40,13 +42,20 @@ function useFetchData() {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
+  const { session, errSess } = useSession();
+
   useEffect(() => {
+    const token = localStorage.getItem("token") || null;
     const fetchUserData = async () => {
+      // const sessionId = session?.session["user_id"];
       setIsLoading(true);
       setError(null);
-
+      // if (sessionId) {
       try {
-        const url = `http://localhost:8080/userInfo`;
+        const url = `http://localhost:8080/userInfo?token=${encodeURIComponent(
+          token
+        )}`;
+
         const response = await fetch(url, { method: "GET" });
         const data = await response.json();
 
@@ -58,8 +67,10 @@ function useFetchData() {
         setIsLoading(false);
       }
     };
-
     fetchUserData();
+    setInterval(() => {
+      fetchUserData();
+    }, 7000);
   }, []);
   return { userData, followers, isLoading, error };
 }

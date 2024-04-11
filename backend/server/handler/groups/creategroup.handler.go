@@ -8,12 +8,13 @@ import (
 	"database/sql"
 	"fmt"
 	"net/http"
+	"strconv"
 	"strings"
 )
 
 // var group models.Group
 
-var UserId int = 1
+// var UserId int = 1
 
 func CreateGroupHandler(w http.ResponseWriter, r *http.Request) {
 	cors.SetCors(&w)
@@ -126,10 +127,17 @@ func parseFormData(w http.ResponseWriter, r *http.Request) models.Group {
 		return models.Group{}
 	}
 
+	idUserStr := r.FormValue("user_id")
+	userId, err := strconv.Atoi(idUserStr)
+	if err != nil {
+		fmt.Println("Cannot convert idUser to int on Create group")
+		return models.Group{}
+	}
+
 	group := models.Group{
 		Name:           r.FormValue("name"),
 		Description:    r.FormValue("description"),
-		ID_User_Create: UserId,
+		ID_User_Create: userId,
 		Creation_Date:  utils.GetCurrentDateTime(),
 		Avatar:         avatarGroup,
 	}

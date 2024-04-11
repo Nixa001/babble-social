@@ -33,10 +33,7 @@ func (u *UserRepository) GetUserById(id int) (models.User, error) {
 	if err == sql.ErrNoRows {
 		return models.User{}, err
 	}
-	var user_name sql.NullString
-	var gender sql.NullString
-	var avatar sql.NullString
-	var about_me sql.NullString
+
 	err = row.Scan(&user.Id, &user.First_name, &user.Last_name, &user.User_name, &user.Gender, &user.Email, &user.Password, &user.User_type, &user.Birth_date, &user.Avatar, &user.About_me)
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -44,10 +41,6 @@ func (u *UserRepository) GetUserById(id int) (models.User, error) {
 		}
 		return models.User{}, err
 	}
-	user.User_name = getStringValue(user_name)
-	user.Gender = getStringValue(gender)
-	user.Avatar = getStringValue(avatar)
-	user.About_me = getStringValue(about_me)
 	return user, nil
 }
 func (u *UserRepository) GetUserByToken(token string) (models.User, error) {
@@ -86,27 +79,12 @@ func (u *UserRepository) GetUserByEmail(email string) (models.User, error) {
 		log.Println("Error getting user by email:", err)
 		return models.User{}, fmt.Errorf("error getting user by email: %v", err)
 	}
-
-	var user_name sql.NullString
-	var gender sql.NullString
-	var avatar sql.NullString
-	var about_me sql.NullString
-	err = row.Scan(&user.Id, &user.First_name, &user.Last_name, &user_name, &gender, &user.Email, &user.Password, &user.User_type, &user.Birth_date, &avatar, &about_me)
+	err = row.Scan(&user.Id, &user.First_name, &user.Last_name, &user.User_name, &user.Gender, &user.Email, &user.Password, &user.User_type, &user.Birth_date, &user.Avatar, &user.About_me)
 	if err != nil {
 		return models.User{}, err
 	}
-	user.User_name = getStringValue(user_name)
-	user.Gender = getStringValue(gender)
-	user.Avatar = getStringValue(avatar)
-	user.About_me = getStringValue(about_me)
 
 	return user, nil
-}
-func getStringValue(value sql.NullString) string {
-	if value.Valid {
-		return value.String
-	}
-	return ""
 }
 
 func (u *UserRepository) UpdateUser(user models.User) error {
@@ -133,4 +111,16 @@ func (u *UserRepository) GetAllUsers() (users []models.User, err error) {
 		users = append(users, user)
 	}
 	return users, nil
+}
+
+func (u *UserRepository) UpdateProfileType(user models.User) error {
+	err := u.DB.Update(u.TableName, user, q.WhereOption{"id": opt.Equals(user.Id)})
+	return err
+}
+
+func getStringValue(value sql.NullString) string {
+	if value.Valid {
+		return value.String
+	}
+	return ""
 }

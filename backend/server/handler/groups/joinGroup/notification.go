@@ -73,7 +73,7 @@ func InsertNotification(idGroup int, db *sql.DB) error {
 			if err != nil {
 				return err
 			}
-
+			
 			defer stm.Close()
 
 			if err != nil {
@@ -112,7 +112,7 @@ func CheckJoinNotification(id_user_created_group int, id_user_connected int, idG
 
 	err = stm.QueryRow(id_user_connected, id_user_created_group, idGroup).Scan(&id_notification, &state)
 	if err != nil {
-		fmt.Println("Error querying checkJoinNotification: ", err)
+		// fmt.Println("Error querying checkJoinNotification: ", err)
 		return 0, 0
 	}
 

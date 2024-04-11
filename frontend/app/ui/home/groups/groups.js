@@ -6,23 +6,34 @@ import { useQuery } from "react-query";
 import { useApi } from "@/app/_lib/utils";
 import { JoinGroup } from "./group.utils/joinGroup";
 import { WebSocketContext } from "@/app/_lib/websocket";
+import { useSession } from "@/app/api/api";
 
 const Groups = () => {
+  const { session, errSess } = useSession();
   const [formCreateGr, setFormCreateGr] = useState(false);
   const [groupData, setGroupData] = useState([]);
   const [fetcherState, setFetcherState] = useState(true);
   const [groupJoined, setGroupJoined] = useState([]);
 
   const fetchGroups = async () => {
-    try {
-      const response = await fetch("http://localhost:8080/groups");
-      const data = await response.json();
-      return { groupJoined: data[0], groupData: data[1] };
-    } catch (error) {
-      console.error("Erreur ", error);
-      setFetcherState(false);
-      return Promise.reject(error);
-    }
+    const token = localStorage.getItem("token") || null;
+    const sessionId = session?.session["user_id"];
+    const url = `http://localhost:8080/groups?token=${encodeURIComponent(
+      token
+    )}`;
+    // if (sessionId) {
+      try {
+        const response = await fetch(url, {
+          method: "GET",
+        });
+        const data = await response.json();
+        return { groupJoined: data[0], groupData: data[1] };
+      } catch (error) {
+        console.error("Erreur ", error);
+        setFetcherState(false);
+        return Promise.reject(error);
+      }
+    // }
   };
 
   useQuery("groups", fetchGroups, {
@@ -30,8 +41,8 @@ const Groups = () => {
     refetchInterval: 5000,
     staleTime: 1000,
     onSuccess: (newData) => {
-      setGroupJoined(newData.groupJoined);
-      setGroupData(newData.groupData);
+      setGroupJoined(newData?.groupJoined);
+      setGroupData(newData?.groupData);
     },
     onError: (error) => {
       console.error("Query error:", error);
@@ -115,7 +126,7 @@ const GroupCard = ({ isMember, id, image, name, description, href, state }) => {
     if (joinMessage) {
       messages.map((message) => {
         if (message.Data.id_group === id) {
-          console.log("Message ", message);
+          // console.log("Message ", message);
           return;
         }
       });

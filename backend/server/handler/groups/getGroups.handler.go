@@ -4,6 +4,7 @@ import (
 	"backend/models"
 	"backend/server/cors"
 	joingroup "backend/server/handler/groups/joinGroup"
+	"backend/server/service"
 	"backend/utils/seed"
 	"database/sql"
 	"encoding/json"
@@ -12,13 +13,23 @@ import (
 	"strconv"
 )
 
-const userID int = 1
+// const userID int = 1
 
 func GetGroups(w http.ResponseWriter, r *http.Request) {
 
 	cors.SetCors(&w)
 	var db = seed.CreateDB()
 	defer db.Close()
+
+	session, err := service.AuthServ.VerifyToken(r)
+	if err != nil {
+		fmt.Println("Invalid token")
+		w.WriteHeader(http.StatusUnauthorized)
+		json.NewEncoder(w).Encode(map[string]string{"error": "Invalid token"})
+		return
+	}
+
+	userID := session.User_id
 	joinedGroups, err := getJoinedGroups(db, userID)
 	if err != nil {
 		return
@@ -29,7 +40,7 @@ func GetGroups(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	filteredGroups, groups := filterGroups(db, joinedGroups, allGroups)
+	filteredGroups, groups := filterGroups(db, userID, joinedGroups, allGroups)
 	var Groups [][]models.Group
 	Groups = append(Groups, groups)
 	Groups = append(Groups, filteredGroups)
@@ -90,7 +101,7 @@ func getAllGroups(db *sql.DB) ([]models.Group, error) {
 	return allGroups, nil
 }
 
-func filterGroups(db *sql.DB, joined []int, all []models.Group) ([]models.Group, []models.Group) {
+func filterGroups(db *sql.DB, userID int, joined []int, all []models.Group) ([]models.Group, []models.Group) {
 	var filteredGroups []models.Group
 	var Groups []models.Group
 	for _, group := range all {
