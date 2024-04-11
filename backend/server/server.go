@@ -24,7 +24,7 @@ func NewServer() *Server {
 	}
 }
 func (s *Server) Run() {
-	fmt.Printf("Server running on port %v\nhttp://%v:%v\n", s.Port, s.Host, s.Port)
+	fmt.Printf("Server running on port %v\n", s.Port)
 	routes := routes.Route()
 	file, err := os.OpenFile("server.log", os.O_APPEND|os.O_TRUNC|os.O_CREATE|os.O_WRONLY, 0644)
 	if err != nil {
