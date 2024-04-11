@@ -22,11 +22,9 @@ export default function Profile({ sessionId, sessionToken }) {
   const [posts, setPosts] = useState([]);
   //recup id from url
   const searchParams = useSearchParams();
-  const userid = searchParams.get("id");
-  // console.log("userid=>", userid);
-  // console.log("sessionId=>", sessionId);
-  const id = userid ? userid : sessionId;
-  // getProfileById(id, sessionId, sessionToken)
+  let userid = searchParams.get("id");
+
+  const id = userid ? parseInt(userid) : sessionId;
   useQuery("profile", () => getProfileById(id, sessionId, sessionToken), {
     enabled: true,
     refetchInterval: 5000,
@@ -41,48 +39,50 @@ export default function Profile({ sessionId, sessionToken }) {
     onError: (error) => console.log("Query Profile error:", error),
   });
   const followersId = followers?.map((follower) => follower.id);
-  const HandleFollow = (id, sessionId, followers) => {
+  const HandleFollow = (id, sessionId) => {
+    console.log("HandleFollow");
     if (sessionId && followersId?.includes(sessionId)) {
-      alert("unfollow");
-      // if (user?.user_type === "public") {
-      //   //unfollow
-      // } else {
-      //   //unfollow
-      // }
       try {
-        const response = unfollowUser(id, sessionId);
-        if (response.error === null) {
-          console.log("unfollowed");
-        } else {
+        const response = unfollowUser(id, sessionId, sessionToken);
+        if (response.error) {
           console.log("error unfollowing");
+        } else {
+          console.log("unfollowed");
         }
       } catch (error) {
         console.log("error unfollowing", error);
       }
     } else {
-      console.log("follow");
-      try {
-        const response = followUser(id, sessionId, sessionToken);
-        if (response.error === null) {
-          console.log("followed");
-        } else {
-          console.log("error following");
+      if (user?.user_type == "public") {
+        try {
+          const response = followUser(id, sessionId, sessionToken);
+          if (response.error) {
+            console.log("error following");
+          } else {
+            console.log("followed");
+          }
+        } catch (error) {
+          console.log("error following", error);
         }
-      } catch (error) {
-        console.log("error following", error);
+      } else {
+        try {
+          const response = followUser(id, sessionId, sessionToken);
+          if (response.error) {
+            console.log("error following");
+          } else {
+            console.log("followed");
+          }
+        } catch (error) {
+          console.log("error following", error);
+        }
       }
-      // if (user?.user_type === "public") {
-      //   //follow
-      // } else {
-      //   //follow
-      // }
     }
   };
 
   const SwitchTypeProfile = (sessionId, user_type) => {
     console.log("SwitchTypeProfile");
     try {
-      const response = profileTypeUser(sessionId, user_type);
+      const response = profileTypeUser(sessionId, user_type, sessionToken);
       if (response.error === null) {
         console.log("Switched");
       } else {
@@ -99,14 +99,11 @@ export default function Profile({ sessionId, sessionToken }) {
   const isOwner = sessionId == id;
   const isFollower = sessionId && followersId?.includes(sessionId);
 
-  console.log("isPublic=>", isPublic);
-  console.log("isOwner=>", isOwner);
-  console.log("isFollower=>", isFollower);
+  if (!user) {
+    return <div>Loading...</div>;
+  }
   return (
-    <div
-      className="md:w-[300px] lg:w-[500px] xl:w-[700px] 2xl:w-[1000px] w-screen h-full
-                            flex flex-col gap-2"
-    >
+    <div className="md:w-[300px] lg:w-[500px] xl:w-[700px] 2xl:w-[1000px] w-screen h-full flex flex-col gap-2">
       <div>
         <div className="w-full h-24 bg-black bg-cover bg-center bg-no-repeat"></div>
         <div className="p-4">
@@ -120,37 +117,23 @@ export default function Profile({ sessionId, sessionToken }) {
                 />
               </div>
             </div>
-            {isPublic || isOwner || isFollower ? (
-              <div className="flex flex-col text-right">
-                {isOwner && (
-                  <button
-                    className="ml-auto mr-0 flex max-h-max max-w-max items-center justify-center whitespace-nowrap rounded-full border border-blue-500 bg-transparent px-4 py-2 font-bold text-blue-500 hover:border-blue-800 hover:shadow-lg focus:outline-none focus:ring"
-                    onClick={() =>
-                      SwitchTypeProfile(sessionId, user?.user_type)
-                    }
-                  >
-                    {!isPublic ? "Switch to Public" : "Switch to Private"}
-                  </button>
-                )}
-                {!isOwner && (
-                  <button
-                    className="ml-auto mr-0 flex max-h-max max-w-max items-center justify-center whitespace-nowrap rounded-full border border-blue-500 bg-transparent px-4 py-2 font-bold text-blue-500 hover:border-blue-800 hover:shadow-lg focus:outline-none focus:ring"
-                    onClick={() => HandleFollow(id, sessionId, followers)}
-                  >
-                    {isFollower ? "Unfollow" : "Follow"}
-                  </button>
-                )}
-              </div>
-            ) : (
-              <div className="flex flex-col text-right">
+            <div className="flex flex-col text-right">
+              {isOwner ? (
                 <button
                   className="ml-auto mr-0 flex max-h-max max-w-max items-center justify-center whitespace-nowrap rounded-full border border-blue-500 bg-transparent px-4 py-2 font-bold text-blue-500 hover:border-blue-800 hover:shadow-lg focus:outline-none focus:ring"
-                  onClick={() => HandleFollow(id, sessionId, followers)}
+                  onClick={() => SwitchTypeProfile(sessionId, user?.user_type)}
                 >
-                  {isPublic ? "Switch to Private" : "Switch to Public"}
+                  {!isPublic ? "Switch to Public" : "Switch to Private"}
                 </button>
-              </div>
-            )}
+              ) : (
+                <button
+                  className="ml-auto mr-0 flex max-h-max max-w-max items-center justify-center whitespace-nowrap rounded-full border border-blue-500 bg-transparent px-4 py-2 font-bold text-blue-500 hover:border-blue-800 hover:shadow-lg focus:outline-none focus:ring"
+                  onClick={() => HandleFollow(id, sessionId)}
+                >
+                  {isFollower ? "Unfollow" : "Follow"}
+                </button>
+              )}
+            </div>
           </div>
           <div className="ml-3 mt-3 w-full justify-center space-y-1">
             {/* User basic*/}

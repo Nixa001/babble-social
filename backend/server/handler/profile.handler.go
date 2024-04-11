@@ -20,11 +20,9 @@ func ProfileHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		return
 	case http.MethodGet:
-		fmt.Println(r.URL.Query())
 		sessionIdStr := r.URL.Query().Get("sessionId")
 		sessonID, err := strconv.Atoi(sessionIdStr)
 		if err != nil {
-			fmt.Println("Invalid session ID")
 			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid session ID"})
 			return
@@ -32,7 +30,6 @@ func ProfileHandler(w http.ResponseWriter, r *http.Request) {
 		userIDStr := r.URL.Query().Get("id")
 		userID, err := strconv.Atoi(userIDStr)
 		if err != nil {
-			fmt.Println("Invalid user ID")
 			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid user ID"})
 			return
@@ -49,7 +46,6 @@ func ProfileHandler(w http.ResponseWriter, r *http.Request) {
 		// // get user's posts
 		posts, err := service.PostServ.FetchPostGroupByUserID(sessonID, userID)
 		if err != nil {
-			fmt.Println("Failed to fetch user's posts:", err)
 			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(map[string]string{"error": "Failed to fetch user's posts"})
 			return
@@ -81,7 +77,7 @@ func ProfileHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func FollowHandler(w http.ResponseWriter, r *http.Request) {
-	log.Println("Follow handler")
+	fmt.Println("Follow handler")
 	cors.SetCors(&w)
 	if r.Method == http.MethodOptions {
 		w.WriteHeader(http.StatusOK)
@@ -97,35 +93,41 @@ func FollowHandler(w http.ResponseWriter, r *http.Request) {
 			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid credentials"})
 			return
 		}
+		fmt.Println("Content:", string(content))
 
 		err = json.Unmarshal(content, &credentials)
 		if err != nil {
+			log.Println("Invalid credentials 1 :", err)
 			w.WriteHeader(http.StatusUnauthorized)
 			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid credentials 0"})
 			return
 		}
-		followerIDStr, followingIDStr := credentials["follower_id"], credentials["following_id"]
+		fmt.Println("Credentials Follow:", credentials)
+		followerIDStr, followedIDStr := credentials["follower_id"], credentials["followed_id"]
 		followerID, err := strconv.Atoi(followerIDStr)
 		if err != nil {
+			log.Println("Invalid credentials 2 :", err)
 			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid follower ID"})
 			return
 		}
-		followingID, err := strconv.Atoi(followingIDStr)
+		followedID, err := strconv.Atoi(followedIDStr)
 		if err != nil {
+			log.Println("Invalid credentials 3 :", err)
 			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid following ID"})
 			return
 		}
-		err = service.AuthServ.FollowUser(followerID, followingID)
+		err = service.AuthServ.FollowUser(followerID, followedID)
 		if err != nil {
+			log.Println("Failed to follow:", err)
 			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(map[string]string{"error": "Failed to follow"})
 			return
 		}
 
 		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(map[string]string{"message": "Followed"})
+		json.NewEncoder(w).Encode(map[string]string{"message": "success"})
 		return
 	default:
 		w.WriteHeader(http.StatusMethodNotAllowed)
@@ -156,28 +158,31 @@ func UnfollowHandler(w http.ResponseWriter, r *http.Request) {
 			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid credentials 0"})
 			return
 		}
-		followerIDStr, followingIDStr := credentials["follower_id"], credentials["following_id"]
-		followerID, err := strconv.Atoi(followerIDStr)
+		followedIDStr, followerIDStr := credentials["followed_id"], credentials["follower_id"]
+		followedID, err := strconv.Atoi(followedIDStr)
 		if err != nil {
+			fmt.Println("Invalid credentials 2 :", err)
 			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid follower ID"})
 			return
 		}
-		followingID, err := strconv.Atoi(followingIDStr)
+		followerID, err := strconv.Atoi(followerIDStr)
 		if err != nil {
+			fmt.Println("Invalid credentials 3 :", err)
 			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid following ID"})
 			return
 		}
-		err = service.AuthServ.UnfollowUser(followerID, followingID)
+		err = service.AuthServ.UnfollowUser(followedID, followerID)
 		if err != nil {
+			fmt.Println("Failed to unfollow:", err)
 			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(map[string]string{"error": "Failed to unfollow"})
 			return
 		}
 
 		w.WriteHeader(http.StatusOK)
-		json.NewEncoder(w).Encode(map[string]string{"message": "Unfollowed"})
+		json.NewEncoder(w).Encode(map[string]string{"message": "success"})
 		return
 	default:
 		w.WriteHeader(http.StatusMethodNotAllowed)
@@ -193,7 +198,6 @@ func SwitchProfileType(w http.ResponseWriter, r *http.Request) {
 	}
 	switch r.Method {
 	case http.MethodPost:
-		credentials := make(map[string]string, 2)
 		content, err := io.ReadAll(r.Body)
 		if err != nil {
 			log.Println("Invalid credentials 0 :", err)
@@ -201,21 +205,21 @@ func SwitchProfileType(w http.ResponseWriter, r *http.Request) {
 			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid credentials"})
 			return
 		}
-
+		credentials := make(map[string]string, 2)
 		err = json.Unmarshal(content, &credentials)
 		if err != nil {
 			w.WriteHeader(http.StatusUnauthorized)
 			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid credentials 0"})
 			return
 		}
-		userIDStr, profileType := credentials["user_id"], credentials["profile_type"]
-		userID, err := strconv.Atoi(userIDStr)
+		userID, profileType := credentials["sessionId"], credentials["user_type"]
+		userIDInt, err := strconv.Atoi(userID)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid user ID"})
 			return
 		}
-		err = service.AuthServ.UpdateProfileType(userID, profileType)
+		err = service.AuthServ.UpdateProfileType(userIDInt, profileType)
 		if err != nil {
 			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(map[string]string{"error": "Failed to update profile type"})

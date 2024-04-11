@@ -122,7 +122,10 @@ export async function followUser(id, sessionId, token) {
       headers: {
         Authorization: token,
       },
-      body: JSON.stringify({ id, sessionId }),
+      body: JSON.stringify({
+        followed_id: String(id),
+        follower_id: String(sessionId),
+      }),
     });
     const data = await response.json();
     return data;
@@ -140,7 +143,10 @@ export async function unfollowUser(id, sessionId, token) {
       headers: {
         Authorization: token,
       },
-      body: JSON.stringify({ id, sessionId }),
+      body: JSON.stringify({
+        followed_id: String(id),
+        follower_id: String(sessionId),
+      }),
     });
     const data = await response.json();
     return data;
@@ -150,14 +156,14 @@ export async function unfollowUser(id, sessionId, token) {
   }
 }
 
-export async function profileTypeUser(id, sessionId, token) {
+export async function profileTypeUser(sessionId, user_type, token) {
   try {
     const response = await fetch(`${NEXT_PUBLIC_API_URL}/profile/type`, {
       method: "POST",
       headers: {
         Authorization: token,
       },
-      body: JSON.stringify({ id, sessionId }),
+      body: JSON.stringify({ sessionId: String(sessionId), user_type }),
     });
     const data = await response.json();
     return data;

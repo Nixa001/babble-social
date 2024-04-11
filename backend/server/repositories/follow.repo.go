@@ -58,8 +58,8 @@ func (f *FollowRepository) FollowUser(id int, idToFollow int) error {
 	return nil
 }
 
-func (f *FollowRepository) UnfollowUser(id int, idToUnfollow int) error {
-	err := f.DB.Delete(f.TableName, q.WhereOption{"user_id_followed": opt.Equals(idToUnfollow), "user_id_follower": opt.Equals(id)})
+func (f *FollowRepository) UnfollowUser(followedID, followerID int) error {
+	err := f.DB.Delete(f.TableName, q.WhereOption{"user_id_followed": opt.Equals(followedID), "user_id_follower": opt.Equals(followerID)})
 	if err != nil {
 		return err
 	}
