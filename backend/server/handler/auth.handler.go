@@ -4,7 +4,6 @@ import (
 	"backend/models"
 	"backend/server/cors"
 	"backend/server/service"
-	"backend/server/ws"
 	"backend/utils"
 	"encoding/json"
 	"fmt"
@@ -192,30 +191,16 @@ func SignOutHandler(w http.ResponseWriter, r *http.Request) {
 			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid request"})
 			return
 		}
-		user, err := service.AuthServ.UserRepo.GetUserByToken(token)
+		fmt.Println("Token", token)
+
+		err := service.AuthServ.RemoveSession(token)
 		if err != nil {
+			fmt.Println("Error removing session", err)
 			w.WriteHeader(http.StatusInternalServerError)
 			json.NewEncoder(w).Encode(map[string]string{"error": "Internal server error"})
 			return
 		}
-		fmt.Println("user", user)
-		err = service.AuthServ.RemoveSession(token)
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			json.NewEncoder(w).Encode(map[string]string{"error": "Internal server error"})
-			return
-		}
-		if c, ok := ws.WSHub.Clients.Load(user.Email); ok {
-			client := c.(*ws.WSClient)
-			ws.WSHub.UnRegisterChannel <- client
-			var newEvent = ws.WSPaylaod{
-				// From: client.Mail,
-				// From: client.Email,
-				Type: ws.WS_DISCONNECT_EVENT,
-				Data: nil,
-			}
-			ws.WSHub.HandleEvent(newEvent)
-		}
+
 		w.WriteHeader(http.StatusOK)
 		json.NewEncoder(w).Encode(map[string]any{"message": "success"})
 	default:

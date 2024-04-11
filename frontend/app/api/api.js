@@ -34,7 +34,7 @@ export async function logoutUser(token) {
   return fetch(`${NEXT_PUBLIC_API_URL}/auth/signout`, {
     method: "DELETE",
     headers: {
-      Authorization: JSON.stringify({ token }),
+      Authorization: token,
     },
   })
     .then((response) => response.json())

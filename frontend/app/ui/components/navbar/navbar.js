@@ -1,16 +1,15 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import { logoutUser } from "@/app/api/api";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import { GoHomeFill } from "react-icons/go";
 import { AiFillMessage } from "react-icons/ai";
-import { IoNotifications } from "react-icons/io5";
 import { FaUserGroup } from "react-icons/fa6";
-import { IoPersonCircleSharp } from "react-icons/io5";
-import { IoLogOut } from "react-icons/io5";
-import Image from "next/image";
-import { getSessionUser } from "@/app/_lib/utils";
-import { logoutUser } from "@/app/api/api";
+import { GoHomeFill } from "react-icons/go";
+import {
+  IoLogOut,
+  IoNotifications,
+  IoPersonCircleSharp,
+} from "react-icons/io5";
 
 // import { GoHomeFill, AiFillMessage, FaUserGroup, IoNotifications, IoPersonCircleSharp, IoLogOut } from 'react-icons/all';
 // import clsx from 'clsx';
@@ -34,7 +33,7 @@ function Navbar({ user }) {
     try {
       const response = await logoutUser(token);
       console.log(response);
-      if (response.error === null) {
+      if (!response.error) {
         console.log(response);
         localStorage.removeItem("token");
         router.push("/");
@@ -85,7 +84,8 @@ function Navbar({ user }) {
               className={` flex  h-[60px] items-center md:justify-start justify-center xl:w-72 md:w-48 gap-2 rounded-md mt-1
                          font-bold  hover:text-primary md:p-2 w-16 md:px-3 ${
                            isActive ? "isActive" : ""
-                         }`}>
+                         }`}
+            >
               <LinkIcon className="xl:text-3xl text-xl" />
               <p className="xl:text-md hidden md:block">{link.name}</p>
             </Link>
