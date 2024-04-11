@@ -176,6 +176,8 @@ func SignInHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func SignOutHandler(w http.ResponseWriter, r *http.Request) {
+	fmt.Println("SignOutHandler")
+
 	cors.SetCors(&w)
 	if r.Method == http.MethodOptions {
 		w.WriteHeader(http.StatusOK)
@@ -196,6 +198,7 @@ func SignOutHandler(w http.ResponseWriter, r *http.Request) {
 			json.NewEncoder(w).Encode(map[string]string{"error": "Internal server error"})
 			return
 		}
+		fmt.Println("user", user)
 		err = service.AuthServ.RemoveSession(token)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)

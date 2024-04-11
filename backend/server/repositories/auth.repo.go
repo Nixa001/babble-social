@@ -56,10 +56,8 @@ func (u *UserRepository) GetUserByToken(token string) (models.User, error) {
 	if err == sql.ErrNoRows {
 		return models.User{}, err
 	}
-	var user_name sql.NullString
-	var gender sql.NullString
-	var avatar sql.NullString
-	var about_me sql.NullString
+	fmt.Println(row)
+
 	err = row.Scan(&user.Id, &user.First_name, &user.Last_name, &user.User_name, &user.Gender, &user.Email, &user.Password, &user.User_type, &user.Birth_date, &user.Avatar, &user.About_me)
 	if err != nil {
 		if err == sql.ErrNoRows {
@@ -67,10 +65,7 @@ func (u *UserRepository) GetUserByToken(token string) (models.User, error) {
 		}
 		return models.User{}, err
 	}
-	user.User_name = getStringValue(user_name)
-	user.Gender = getStringValue(gender)
-	user.Avatar = getStringValue(avatar)
-	user.About_me = getStringValue(about_me)
+
 	return user, nil
 }
 

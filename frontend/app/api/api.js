@@ -28,19 +28,18 @@ export async function loginUser(email, password) {
       return { error: "An error occurred. Please try again." };
     });
 }
-export async function logoutUser() {
-  let token = localStorage.getItem("token") || "none";
+export async function logoutUser(token) {
+  console.log(token);
 
   return fetch(`${NEXT_PUBLIC_API_URL}/auth/signout`, {
     method: "DELETE",
     headers: {
       Authorization: JSON.stringify({ token }),
-      accept: "application/json",
     },
   })
     .then((response) => response.json())
     .catch((error) => {
-      console.error(error);
+      console.log(error);
       return { error: "Not authorized!!!" };
     });
 }

@@ -27,20 +27,6 @@ export default function Login() {
     }
   };
 
-  const handleLogout = async () => {
-    try {
-      const response = await logoutUser();
-      if (response.error === null) {
-        localStorage.removeItem("token");
-        router.push("/");
-      } else {
-        setErrorMessage(response.error);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
   return (
     <div className="w-screen h-screen flex">
       <div className="flex flex-col items-center w-full sm:w-6/12">

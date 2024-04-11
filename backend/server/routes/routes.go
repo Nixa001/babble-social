@@ -35,7 +35,7 @@ func Route() *http.ServeMux {
 	mux.HandleFunc(HOME_ENDPOINT, handler.IndexHandler)
 	mux.HandleFunc(SIGNUP_ENDPOINT, handler.SignUpHandler)
 	mux.HandleFunc(SIGNIN_ENDPOINT, handler.SignInHandler)
-	mux.HandleFunc(LOGOUT_ENDPOINT, handler.AuthorizeMiddleware(handler.SignOutHandler))
+	mux.HandleFunc(LOGOUT_ENDPOINT, handler.SignOutHandler)
 	mux.HandleFunc(VERIFY_SESS_ENDPOINT, handler.VerifySessionHandler)
 	mux.HandleFunc(POST_ENDPOINT, handler.POSTHandler)
 	mux.HandleFunc(COMMENT_ENDPOINT, handler.COMMENTHandler)
