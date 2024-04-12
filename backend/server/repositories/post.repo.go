@@ -23,6 +23,7 @@ SELECT
     p.media AS post_media,
     p.date AS post_date,
     p.user_id AS post_user_id,
+	p.privacy,
 	u.avatar as avatar,
     u.user_name as username,
     concat (u.first_name, " ", u.last_name) as full_name,
@@ -38,7 +39,7 @@ WHERE
     (
         p.privacy = 'public'
         OR (
-            p.privacy = 'Private' AND (
+            p.privacy = 'private' AND (
                 p.user_id = ? -- Post creator
                 OR EXISTS (
                     SELECT 1
@@ -46,12 +47,8 @@ WHERE
                     WHERE user_id_followed = p.user_id
                     AND user_id_follower = ?
                 )
-                OR EXISTS (
-                    SELECT 1
-                    FROM users_followers
-                    WHERE user_id_follower = p.user_id
-                    AND user_id_followed = ?
-                )
+                OR p.user_id = ? --? is the user_id of the logged in user
+
             )
         )
         OR (
@@ -122,15 +119,7 @@ AND
                         user_id_followed = p.user_id
                         AND user_id_follower = ? --?
                 )
-                OR EXISTS (
-                    SELECT
-                        1
-                    FROM
-                        users_followers
-                    WHERE
-                        user_id_follower = p.user_id
-                        AND user_id_followed = ? --?
-                )
+				OR p.user_id = ? --? id of logged user
             )
         )
         OR (
@@ -271,7 +260,7 @@ func (P *PostRepository) LoadPost(IdUser int) ([]models.DataPost, error) {
 
 	for rows.Next() {
 		var temp models.DataPost
-		errScan := rows.Scan(&temp.ID, &temp.Content, &temp.Media, &temp.Date, &temp.User_id, &temp.Avatar, &temp.UserName, &temp.FullName, &temp.Comments, &temp.Categories)
+		errScan := rows.Scan(&temp.ID, &temp.Content, &temp.Media, &temp.Date, &temp.User_id, &temp.Privacy, &temp.Avatar, &temp.UserName, &temp.FullName, &temp.Comments, &temp.Categories)
 		if errScan != nil {
 			log.Println("⚠ GetPost scan err ⚠ :", errScan)
 			return nil, errors.New("error while scanning")

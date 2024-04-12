@@ -221,7 +221,7 @@ export const PrivacySelect = () => {
         className="w-32 rounded-md px-2 py-1 font-bold outline-none focus:ring-1 bg-primary focus:ring-primary"
       >
         <option value="public">Public</option>
-        <option value="Private">Private</option>
+        <option value="private">Private</option>
         <option value="almost">Select users</option>
       </select>
       <input type="hidden" value={selectedUsers} name="viewers" />
