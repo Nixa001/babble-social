@@ -133,3 +133,20 @@ func AcceptOrNo(db *sql.DB, user_id_sender, user_id_receiver, id_group int, val 
 
 	return true
 }
+
+func InsertGroupFollowers(db *sql.DB, user_id, group_id int) {
+	stm := `
+		INSERT INTO group_followers VALUES (?, ?)
+	`
+	query, err := db.Prepare(stm)
+	if err != nil {
+		fmt.Println("Erreur lors du prepation de la requete ", err)
+		return
+	}
+	defer query.Close()
+
+	_, err = query.Exec(user_id, group_id)
+	if err != nil {
+		fmt.Println("Erreur lors de l'execution de la requete ", err)
+	}
+}

@@ -551,6 +551,7 @@ func (client *WSClient) messageReader() {
 					return
 				} else {
 					fmt.Println("Accepted")
+					joingroup.InsertGroupFollowers(Db, int(id_user_sender), int(groupeID))
 				}
 			} else if response == "notGoing" {
 				check := joingroup.AcceptOrNo(Db, int(id_user_sender), 1, int(groupeID), "-1")
