@@ -41,10 +41,16 @@ const DisplayPost = ({ postData, idUser, onCommentClick }) => {
                   @{postDataState.UserName}
                 </span>
                 <div className="flex">
-                  {/* <MdPrivacyTip className="text-2xl" />
-                  <BiWorld className="text-2xl" />
-                  <SiGnuprivacyguard className="text-2xl" />
-                */}
+                  {/* <i><small>{postDataState.Privacy}</small></i> */}
+                  {(postDataState.Privacy == "private" && (
+                    <SiGnuprivacyguard className="text-2xl" />
+                  )) ||
+                    (postDataState.Privacy == "public" && (
+                      <BiWorld className="text-2xl" />
+                    )) ||
+                    (postDataState.Privacy == "almost" && (
+                      <MdPrivacyTip className="text-2xl" />
+                    ))}
                 </div>
               </div>
               <div className="flex gap-4 text-sm">
