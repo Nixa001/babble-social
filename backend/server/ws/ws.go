@@ -4,12 +4,14 @@ import (
 	// "backend/server/handler"
 
 	"backend/database"
+	"backend/models"
 	"backend/server/handler/groups/events"
 	joingroup "backend/server/handler/groups/joinGroup"
 	"backend/utils/seed"
 	"encoding/json"
 	"fmt"
 	"log"
+	"strconv"
 	"sync"
 	"time"
 
@@ -199,9 +201,26 @@ func (h *Hub) HandleEvent(eventPayload WSPaylaod) {
 			}
 			return true
 		})
-
+	case "notification":
+		h.Clients.Range(func(key, value interface{}) bool {
+			client := value.(*WSClient)
+			// if client.Mail == eventPayload.To {
+			client.OutgoingMsg <- eventPayload
+			// }
+			return true
+		})
+	case "ResponceNotification":
+		h.Clients.Range(func(key, value interface{}) bool {
+			client := value.(*WSClient)
+			// if client.Mail != eventPayload.To {
+			client.OutgoingMsg <- eventPayload
+			// }
+			return true
+		})
 	}
+
 }
+
 func (wsHub *Hub) AddClient(coon *websocket.Conn, Email string, sessionToken string) {
 	client := &WSClient{
 		Email:        Email,
@@ -222,6 +241,7 @@ func (wsHub *Hub) AddClient(coon *websocket.Conn, Email string, sessionToken str
 func (client *WSClient) messageReader() {
 	date := time.Now().Format("2006-01-02T15:04:05")
 	Db := database.NewDatabase()
+	defer Db.Close()
 	for {
 		_, message, err := client.WSCoon.ReadMessage()
 		if err != nil {
@@ -393,7 +413,13 @@ func (client *WSClient) messageReader() {
 				return
 			}
 
-			err = joingroup.InsertNotification(int(groupeId), Db)
+			typeNotification, ok := parseData["type"].(string)
+			if !ok {
+				fmt.Println("Erreur de recuperation de donnee")
+				return
+			}
+			idUserConnect := 1
+			err = joingroup.InsertNotification(int(groupeId), typeNotification, idUserConnect, Db)
 			if err != nil {
 				fmt.Println("Error inserting", err.Error())
 			}
@@ -414,6 +440,33 @@ func (client *WSClient) messageReader() {
 				To:   "Adimine group",
 			}
 			WSHub.HandleEvent(wsEvent)
+
+			// notification := joingroup.ListNotification(idUserConnect, Db)
+			// fmt.Println("notification ", notification)
+			// if notification != nil {
+			// 	dataSend := struct {
+			// 		IdGroup int                   `json:"id_group"`
+			// 		Message []models.Notification `json:"message"`
+			// 		Type    string                `json:"type"`
+			// 		To      int                   `json:"to"`
+			// 		Button  string                `json:"button"`
+			// 	}{
+			// 		IdGroup: int(groupeId),
+			// 		Message: notification,
+			// 		Type:    "Notification",
+			// 		To:      idUserConnect,
+			// 		Button:  "Desable",
+			// 	}
+
+			// 	wsEvent = WSPaylaod{
+			// 		From: "",
+			// 		Type: eventType,
+			// 		Data: dataSend,
+			// 		To:   "Adimine group",
+			// 	}
+			// 	fmt.Println("wsEvent: ", wsEvent)
+			// 	WSHub.HandleEvent(wsEvent)
+			// }
 
 		case "NotGoingEvent":
 			jsonData, err := json.Marshal(wsEvent.Data)
@@ -470,6 +523,9 @@ func (client *WSClient) messageReader() {
 			}
 			fmt.Println(groupeId)
 			fmt.Println(event_id)
+
+			// fmt.Println("aaa", Db.Ping())
+			// err = going.InsertNotification(int(groupeId), Db)
 		case "SuggestFriend":
 			jsonData, err := json.Marshal(wsEvent.Data)
 			if err != nil {
@@ -481,20 +537,106 @@ func (client *WSClient) messageReader() {
 				fmt.Println("Erreur de conversion en json", err)
 			}
 
-			fmt.Println("Parse json = ", parseData["id_group"])
-			userId, ok := parseData["userId"].(float64)
+			// fmt.Println("Parse json = ", parseData["id_group"])
+			_, ok := parseData["userId"].(float64)
 			if !ok {
 				fmt.Println("Erreur de recuperation de donnee")
 				return
 			}
-			fmt.Println("userId", userId)
 
-			groupeID, ok := parseData["id_group"]
+			groupeID, ok := parseData["id_group"].(string)
 			if !ok {
 				fmt.Println("Erreur de recuperation de donnee")
 				return
 			}
-			fmt.Println("idgroup", groupeID)
+			// fmt.Println("idgroup", groupeID)
+			typeNotification, ok := parseData["type"].(string)
+			if !ok {
+				fmt.Println("Erreur de recuperation de donnee")
+				return
+			}
+			idUserConnect := 1
+			group_id, err := strconv.Atoi(groupeID)
+			if err != nil {
+				log.Fatal(err.Error())
+
+			}
+			fmt.Println("WS -- ", group_id, typeNotification, idUserConnect)
+			err = joingroup.InsertNotification(group_id, typeNotification, idUserConnect, Db)
+			if err != nil {
+				fmt.Println("Error inserting notification ", err.Error())
+				return
+			}
+		case "notification":
+			idUserConnect := 1
+			notification := joingroup.ListNotification(idUserConnect, Db)
+			if notification != nil {
+				dataSend := struct {
+					Message []models.Notification `json:"message"`
+					Type    string                `json:"type"`
+					To      int                   `json:"to"`
+				}{
+					Message: notification,
+					Type:    "Notification",
+					To:      idUserConnect,
+				}
+
+				wsEvent = WSPaylaod{
+					From: "",
+					Type: eventType,
+					Data: dataSend,
+					To:   "Admin group",
+				}
+				fmt.Println("Notification ", wsEvent)
+				WSHub.HandleEvent(wsEvent)
+			}
+		case "ResponceNotification":
+			fmt.Println("--- Notification responce ---")
+			jsonData, err := json.Marshal(wsEvent.Data)
+			if err != nil {
+				fmt.Println("Erreur de conversion en json", err)
+				return
+			}
+			var parseData map[string]interface{}
+			if err := json.Unmarshal(jsonData, &parseData); err != nil {
+				fmt.Println("Erreur de conversion en json", err)
+			}
+
+			// fmt.Println("Parse json = ", parseData["id_group"])
+			id_user_sender, ok := parseData["id_user_sender"].(float64)
+			if !ok {
+				fmt.Println("Erreur de recuperation de donnee")
+				return
+			}
+
+			groupeID, ok := parseData["groupeId"].(float64)
+			if !ok {
+				fmt.Println("Erreur de recuperation de donnee ==")
+				return
+			}
+			response, ok := parseData["response"].(string)
+			if !ok {
+				fmt.Println("Erreur de recuperation de donnee")
+				return
+			}
+
+			if response == "going" {
+				fmt.Println("id_group = ", groupeID)
+				check := joingroup.AcceptOrNo(Db, int(id_user_sender), 1, int(groupeID), "1")
+				if check != true {
+					fmt.Println("Erreur lors de la requette update")
+					return
+				} else {
+					fmt.Println("Accepted")
+					joingroup.InsertGroupFollowers(Db, int(id_user_sender), int(groupeID))
+				}
+			} else if response == "notGoing" {
+				check := joingroup.AcceptOrNo(Db, int(id_user_sender), 1, int(groupeID), "-1")
+				if check != true {
+					fmt.Println("Erreur lors de la requette update")
+					return
+				}
+			}
 
 		}
 

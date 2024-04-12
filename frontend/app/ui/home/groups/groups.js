@@ -108,10 +108,11 @@ const GroupCard = ({ isMember, id, image, name, description, href, state }) => {
 
   const handleLoginJoinMessage = () => {
     // console.log("handleLoginJoinMessage ", id);
+    // console.log("Message received to backend",messages);
     const joinMessage = messages.find(
-      (message) => message.Type === "JoinGroup" && message.Data.id_group === 1
-    );
-    if (joinMessage) {
+      (message) => message.Type === "JoinGroup" && message.Data.id_group === 5
+      );
+      if (joinMessage) {
       messages.map((message) => {
         if (message.Data.id_group === id) {
           console.log("Message ", message);
