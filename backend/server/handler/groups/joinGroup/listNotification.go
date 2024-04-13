@@ -32,5 +32,6 @@ func ListNotification(id_user int, db *sql.DB) []models.Notification {
 		}
 		notifications = append(notifications, notification)
 	}
+	fmt.Println("======", notifications)
 	return notifications
 }

@@ -36,7 +36,7 @@ func WSHandler(w http.ResponseWriter, r *http.Request) {
 	// defer conn.Close()
 	// fmt.Println("userSession: ", userSession)
 
-	ws.WSHub.AddClient(conn, userSession.Email, token)
+	ws.WSHub.AddClient(conn, userSession.Email, token, r)
 	fmt.Println("aksina")
 
 }

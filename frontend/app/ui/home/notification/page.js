@@ -1,7 +1,8 @@
 "use client";
-import { useApi } from "@/app/_lib/utils";
-import { useState } from "react";
-import { FaP } from "react-icons/fa6";
+// import { useApi } from "@/app/_lib/utils";
+import { WebSocketContext } from "@/app/_lib/websocket";
+import { useContext, useState } from "react";
+// import { FaP } from "react-icons/fa6";
 import { useQuery } from "react-query";
 // import Notification from './Notification';
 
@@ -28,7 +29,7 @@ import { useQuery } from "react-query";
 // // useEffect(() => {
 // handleLoginJoinMessage();
 const Notification = () => {
-  const { sendMessage, readMessages, messages } = useApi();
+  const { sendMessage, readMessages, messages } = useContext(WebSocketContext);
   const [notificationData, setNotificationData] = useState([]);
 
   const fetchNotifications = async () => {
@@ -64,8 +65,8 @@ const Notification = () => {
 };
 
 export const displayNotification = (notificationData, sendMessage) => {
-  return notificationData.map((notification) => {
-    // console.log(notification);
+  return notificationData?.map((notification) => {
+    console.log(notification);
     return (
       <div
         key={notification.id}
@@ -95,6 +96,7 @@ export const displayNotification = (notificationData, sendMessage) => {
                 type: "ResponceNotification",
                 groupeId: notification.group_id,
                 id_user_sender: notification.user_id_sender,
+                id_user_receiver: notification.id_user_receiver,
                 response: "going",
               });
               // going(notification.id, sendMessage, notification.group_id);

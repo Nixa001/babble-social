@@ -11,7 +11,7 @@ import (
 func GetNotification(w http.ResponseWriter, r *http.Request) {
 	cors.SetCors(&w)
 	db := database.NewDatabase()
-	listeNotificaton := joingroup.ListNotification(1, db)
+	listeNotificaton := joingroup.ListNotification(3, db)
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(listeNotificaton)
 }

@@ -15,9 +15,10 @@ import {
   CardHeader,
   Avatar,
 } from "@mui/material";
-import { useApi } from "@/app/_lib/utils";
+// import { useApi } from "@/app/_lib/utils";
 import { displayEventToJoin } from "./displayEventToJoin";
 import { displayEvents } from "./displayEvents";
+import { WebSocketContext } from "@/app/_lib/websocket";
 
 const CardEvent = ({ description, date }) => {
   return (
@@ -39,8 +40,6 @@ const CardEvent = ({ description, date }) => {
 };
 
 const Group = () => {
-  // Instantiate ws
-  // const { sendMessage } = useApi();
   const { sendMessage, readMessages, messages } = useContext(WebSocketContext);
 
   const [formCreateEv, setFormCreateEv] = useState(false);
