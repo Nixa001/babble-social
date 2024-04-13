@@ -81,7 +81,6 @@ func POSTHandler(w http.ResponseWriter, r *http.Request) {
 		//log.Println("[FETCHING POST DATA ◼◼◼]")
 
 		userIDStr := r.FormValue("userID")
-		fmt.Println(userIDStr)
 		userID, _ := strconv.Atoi(userIDStr)
 		postTab, err := service.PostServ.GetPost(userID)
 		if err != nil {

@@ -4,7 +4,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { CreateGroup } from "../../components/modals/createGroup";
 import { useQuery } from "react-query";
-import { useApi } from "@/app/_lib/utils";
 import { JoinGroup } from "./group.utils/joinGroup";
 import { WebSocketContext } from "@/app/_lib/websocket";
 
@@ -78,9 +77,9 @@ const Groups = () => {
         <h1 className="text-xl font-bold my-5">Discover new communities</h1>
         <div className="w-full flex gap-3 overflow-x-scroll pb-10">
           {groupData
-            ? groupData.map((group) => (
-              <GroupCard key={group.id} isMember={false} {...group} />
-            ))
+            ? groupData?.map((group) => (
+                <GroupCard key={group.id} isMember={false} {...group} />
+              ))
             : ""}
         </div>
         <CreateGroup
@@ -102,17 +101,12 @@ const GroupCard = ({ isMember, id, image, name, description, href, state }) => {
     description = description.slice(0, 50) + " ...";
   }
 
-  // const { sendMessage, readMessages, messages } = useApi();
-
-  const {sendMessage ,readMessages, messages} = useContext(WebSocketContext)
-
+  const { sendMessage, readMessages, messages } = useContext(WebSocketContext);
   const handleLoginJoinMessage = () => {
-    // console.log("handleLoginJoinMessage ", id);
-    // console.log("Message received to backend",messages);
     const joinMessage = messages.find(
-      (message) => message.Type === "JoinGroup" && message.Data.id_group === 5
-      );
-      if (joinMessage) {
+      (message) => message.Type === "JoinGroup"
+    );
+    if (joinMessage) {
       messages.map((message) => {
         if (message.Data.id_group === id) {
           console.log("Message ", message);
@@ -173,8 +167,7 @@ const GroupCard = ({ isMember, id, image, name, description, href, state }) => {
             </span>
 
             <div className="flex mt-4 md:mt-6">
-              {state !== 'disable' ? (
-
+              {state !== "disable" ? (
                 <button
                   onClick={() => {
                     JoinGroup(id, sendMessage, readMessages);
@@ -183,7 +176,9 @@ const GroupCard = ({ isMember, id, image, name, description, href, state }) => {
                 >
                   Join
                 </button>
-              ) : ('')}
+              ) : (
+                ""
+              )}
             </div>
           </div>
         </div>
@@ -191,27 +186,3 @@ const GroupCard = ({ isMember, id, image, name, description, href, state }) => {
     </>
   );
 };
-
-// function JoinGroup(name) {
-//   alert("send join " + name);
-// }
-
-const Data = [
-  {
-    id: 1,
-    image: "/assets/ea.jpg",
-    name: "EA Football 24",
-    description: "Un groupe pour les fans de football du monde entier",
-    href: "/groups/join/EA Football 24",
-    functionOnclick: JoinGroup,
-  },
-];
-const DataJoined = [
-  {
-    id: 111,
-    image: "/assets/ea.jpg",
-    name: "EA Football 24",
-    description: "Un groupe pour les fans de football du monde entier",
-    href: "/home/groups/group/",
-  },
-];

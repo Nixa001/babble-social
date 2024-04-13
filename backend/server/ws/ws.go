@@ -426,13 +426,16 @@ func (client *WSClient) messageReader(r *http.Request) {
 				fmt.Println("Erreur de recuperation de donnee")
 				return
 			}
-			// idUserConnect := 1
 			err = joingroup.InsertNotification(int(groupeId), typeNotification, userIdConnected.User_id, Db)
 			if err != nil {
 				fmt.Println("Error inserting", err.Error())
 			}
 			fmt.Println("Notification joined added to database")
 
+			idAdminGroup, err := joingroup.RecupeIdAdminGroup(int(groupeId), Db)
+			if err != nil {
+				fmt.Println("Erreur lors de la recuperation de l'id de l'administrateur du groupe ", err)
+			}
 			dataSend := struct {
 				IdGroup int    `json:"id_group"`
 				Button  string `json:"button"`
@@ -445,7 +448,7 @@ func (client *WSClient) messageReader(r *http.Request) {
 				From: client.Email,
 				Type: eventType,
 				Data: dataSend,
-				To:   "Adimine group",
+				To:   string(idAdminGroup),
 			}
 			WSHub.HandleEvent(wsEvent)
 

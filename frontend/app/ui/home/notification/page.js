@@ -66,6 +66,7 @@ const Notification = () => {
 
 export const displayNotification = (notificationData, sendMessage) => {
   return notificationData?.map((notification) => {
+    // console.log("notification = = = ", notification);
     console.log(notification);
     return (
       <div
@@ -96,7 +97,7 @@ export const displayNotification = (notificationData, sendMessage) => {
                 type: "ResponceNotification",
                 groupeId: notification.group_id,
                 id_user_sender: notification.user_id_sender,
-                id_user_receiver: notification.id_user_receiver,
+                id_user_receiver: notification.user_id_received,
                 response: "going",
               });
               // going(notification.id, sendMessage, notification.group_id);

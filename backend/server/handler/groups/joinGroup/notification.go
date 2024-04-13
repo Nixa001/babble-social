@@ -7,7 +7,7 @@ import (
 	"time"
 )
 
-func recupeIdAdminGroup(idGroup int, db *sql.DB) (int, error) {
+func RecupeIdAdminGroup(idGroup int, db *sql.DB) (int, error) {
 	req := `
 		SELECT id_user_create FROM groups WHERE id = ?
 	`
@@ -32,7 +32,7 @@ func recupeIdAdminGroup(idGroup int, db *sql.DB) (int, error) {
 }
 
 func InsertNotification(idGroup int, notification_type string, user_id_sender int, db *sql.DB) error {
-	id_user_created_group, err := recupeIdAdminGroup(idGroup, db)
+	id_user_created_group, err := RecupeIdAdminGroup(idGroup, db)
 	if err != nil {
 		log.Fatal("Erreur lors de la recuperation de l'id de l'admin group ", err)
 	}

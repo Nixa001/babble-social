@@ -48,10 +48,15 @@ func (a *AuthService) CheckCredentials(email, password string) (models.User, err
 }
 
 func (a *AuthService) VerifyToken(r *http.Request) (session models.Session, err error) {
-	fmt.Println("VerifyToken")
 	token := r.Header.Get("Authorization")
+	fmt.Println("VerifyToken u8u9i9u8", token)
+
 	if token == "" {
-		token, _ = url.QueryUnescape(r.URL.Query().Get("token"))
+		token, err = url.QueryUnescape(r.URL.Query().Get("token"))
+		if err != nil {
+			fmt.Println("Erreur token", err.Error())
+			return models.Session{}, fmt.Errorf("invalid token")
+		}
 		token = strings.ReplaceAll(token, " ", "+")
 	}
 

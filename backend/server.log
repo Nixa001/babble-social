@@ -1,2 +1,9 @@
-2024/04/07 07:03:25 Hi big dev !
-let's debug session started at : 2024/04/07 07:03:25
+2024/04/13 06:38:02 Hi big dev !
+let's debug session started at : 2024/04/13 06:38:02
+2024/04/13 06:38:15 Client vindour@gmail.com connected
+2024/04/13 06:38:35 Client vindour@gmail.com disconnected
+2024/04/13 06:38:36 http: superfluous response.WriteHeader call from backend/server/handler.GetUserSession (getUserSession.go:21)
+2024/04/13 06:38:56 Client nixa@gmail.com connected
+2024/04/13 06:39:02 User Connected nixa@gmail.com
+2024/04/13 06:39:46 Client nixa@gmail.com disconnected
+2024/04/13 06:39:51 Client nixa@gmail.com connected
