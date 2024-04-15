@@ -27,6 +27,10 @@ const fetchUserGroup = async () => {
     }
 }
 
+export let activeDialogue = {
+    type: "",
+    id: 0, 
+  };
 
 const Messages = () => {
     const { sendMessageToServer, allMessages, resetAllMessages } = useContext(WebSocketContext)
@@ -109,6 +113,7 @@ const Messages = () => {
     const handleUserClick = async (userId, name) => {
         setIdUserReceiver(userId);
         setNameUser(name);
+        activeDialogue = { type: "user", id: userId };
         sendMessageToServer({ type: 'id-receiver-event', data: { clickedUserId: userId, sessionUserId: sessionUserId } });
         route.push("/home/messages?id=" + userId)
         setRecipientSelected(true);
@@ -121,6 +126,7 @@ const Messages = () => {
         setNameGroup(nameGroup)
         console.log("Session user", sessionUserId);
         const token = localStorage.getItem('token');
+        activeDialogue = { type: "group", id: GroupId }
         sendMessageToServer({ type: 'idGroup-receiver-event', data: { idgroup: GroupId, userID: sessionUserId } });
         route.push("/home/messages?idgroup=" + GroupId)
         setRecipientSelected(true);
@@ -245,7 +251,7 @@ export const DisplayMessages = ({ messages, currentUserId }) => {
     return messages.map((message) => {
         const isSentByCurrentUser = message.user_id_sender === currentUserId;
         const messageClass = isSentByCurrentUser ? "message-container-right" : "message-container-left";
-        const textColor = isSentByCurrentUser ? "text-white" : "text-black";
+        const textColor = isSentByCurrentUser ? "text-white" : "text-white";
         const bgColor = isSentByCurrentUser ? "bg-gray-600" : "bg-primary";
         const borderColor = isSentByCurrentUser ? "border-gray-600" : "border-primary";
         const alignSelf = isSentByCurrentUser ? "self-end" : "self-start"; // Détermine la valeur de align-self
@@ -262,30 +268,6 @@ export const DisplayMessages = ({ messages, currentUserId }) => {
         );
     });
 };
-
-// export const DisplayMessages = ({ messages, currentUserId }) => {
-//     if (!Array.isArray(messages) || messages.length === 0) {
-//         return <p>Aucun message à afficher.</p>;
-//     }
-//     return messages.map((message) => {
-//         const isSentByCurrentUser = message.sendId === currentUserId;
-//         const messageClass = isSentByCurrentUser ? "message-container-right" : "message-container-left";
-//         const textColor = isSentByCurrentUser ? "text-gray-500" : "text-blue-500";
-
-//         return (
-//             <div key={message.id} className={`message-container flex items-end mb-4 ${messageClass}`}>
-//                 <div className={`flex flex-col w-[70%] ${textColor}`}>
-//                     <p className="text-sm w-fit bg-black font-semibold mb-1">{message.first_name}</p>
-//                     <div className="font-semibold bg-primary p-4 rounded-lg break-words text-wrap w-fit max-w-[40%]">
-//                         {message.message_content}
-//                     </div>
-//                 </div>
-//             </div>
-//         );
-//     });
-// };
-
-
 
 export default Messages;
 

@@ -1,5 +1,6 @@
 import { useSearchParams } from 'next/navigation';
 import React, { createContext, useState, useEffect } from 'react';
+import { activeDialogue } from '../ui/home/messages/messages.js';
 
 export const WebSocketContext = createContext(null);
 
@@ -76,12 +77,15 @@ export const WebSocketProvider = ({ children }) => {
     // cette partie permet de broadcaster le nouveau message au client conserner (message entre user)
 
     if (data.Type === "message-user-event") {
-      // if ((idUserUrl == data.Data.user_id_receiver || idUserUrl == data.Data.user_id_sender)) {
+      if ((activeDialogue.type === "user" && activeDialogue.id === data.Data.user_id_receiver) ||
+          (activeDialogue.type === "user" && activeDialogue.id === data.Data.user_id_sender)) {
         setAllMessages(prevMessages => Array.isArray(prevMessages) ? [...prevMessages, data.Data] : [data.Data]);
-        // }
+      }
     }
     if (data.Type === "message-group-event") {
-      setAllMessages(prevMessages => Array.isArray(prevMessages) ? [...prevMessages, data.Data] : [data.Data]);
+      if (activeDialogue.type === "group" && activeDialogue.id === data.Data.data.receiverId) {
+        setAllMessages(prevMessages => Array.isArray(prevMessages) ? [...prevMessages, data.Data] : [data.Data]);
+      }
     }
     if (data.Type === "message-navbar") {
       setOnlineUser(data.Data[0]);
