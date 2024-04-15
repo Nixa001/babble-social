@@ -4,6 +4,7 @@ import (
 	"backend/database"
 	"backend/models"
 	"backend/server/service"
+	"database/sql"
 	"fmt"
 	"net/http"
 )
@@ -34,7 +35,9 @@ func ListNotification(r *http.Request) []models.Notification {
 	var notifications []models.Notification
 	for rows.Next() {
 		var notification models.Notification
-		err := rows.Scan(&notification.ID, &notification.Type, &notification.Status, &notification.UserIDSender, &notification.UserIDReceveived, &notification.GroupId, &notification.Date)
+		var groupId sql.NullInt64
+		err := rows.Scan(&notification.ID, &notification.Type, &notification.Status, &notification.UserIDSender, &notification.UserIDReceveived, &groupId, &notification.Date)
+		notification.GroupId = getIntValue(groupId)
 		if err != nil {
 			fmt.Println("Error scanning row: ", err.Error())
 			return nil
@@ -43,4 +46,11 @@ func ListNotification(r *http.Request) []models.Notification {
 	}
 	fmt.Println("List notification ======", notifications)
 	return notifications
+}
+
+func getIntValue(value sql.NullInt64) int {
+	if value.Valid {
+		return int(value.Int64)
+	}
+	return 0
 }
