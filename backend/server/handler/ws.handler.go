@@ -3,7 +3,6 @@ package handler
 import (
 	"backend/server/cors"
 	"backend/server/ws"
-	"fmt"
 	"log"
 	"net/http"
 

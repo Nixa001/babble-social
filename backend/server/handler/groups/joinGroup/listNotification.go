@@ -5,7 +5,6 @@ import (
 	"backend/models"
 	"backend/server/service"
 	"database/sql"
-	"fmt"
 	"log"
 	"net/http"
 )

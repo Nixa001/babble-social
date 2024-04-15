@@ -5,7 +5,6 @@ import (
 	"backend/server/cors"
 	"backend/utils/seed"
 	"encoding/json"
-	"fmt"
 	"log"
 	"net/http"
 )
