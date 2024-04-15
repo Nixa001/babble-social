@@ -1,21 +1,38 @@
 "use client";
-import Image from "next/image";
-import React, { useContext, useState } from "react";
-import DisplayPost from "../../displayPost";
-import { useQuery } from "react-query";
-import { usePathname } from "next/navigation";
 import { CreateEvent } from "@/app/ui/components/modals/createEvent";
 import { CreatePost } from "@/app/ui/components/modals/createPost";
-import { Suggest } from "@/app/ui/components/modals/suggest";
 import { DisplayMembers } from "@/app/ui/components/modals/displayMembers";
+import { Suggest } from "@/app/ui/components/modals/suggest";
+import { usePathname } from "next/navigation";
+import { useContext, useState } from "react";
+import { useQuery } from "react-query";
+import DisplayPost from "../../displayPost";
 
 // import { useApi } from "@/app/_lib/utils";
 import { WebSocketContext } from "@/app/_lib/websocket";
+import { displayEventToJoin } from "./displayEventToJoin";
+import { displayEvents } from "./displayEvents";
 
-const Group = ({ sessionID }) => {
-  // Instantiate ws
-  // const { sendMessage } = useApi();
+const CardEvent = ({ description, date }) => {
+  return (
+    <Card sx={{ maxWidth: 400, mb: 2 }}>
+      <CardHeader
+        avatar={
+          <Avatar sx={{ bgcolor: "teal" }}>{creatorName.charAt(0)}</Avatar>
+        }
+        title={creatorName}
+        subheader={`${date} à ${time}`}
+      />
+      <CardContent>
+        <Typography variant="body2" color="textSecondary">
+          {description}
+        </Typography>
+      </CardContent>
+    </Card>
+  );
+};
 
+const Group = () => {
   const { sendMessage, readMessages, messages } = useContext(WebSocketContext);
 
   const [formCreateEv, setFormCreateEv] = useState(false);
@@ -68,7 +85,7 @@ const Group = ({ sessionID }) => {
 
   return (
     <div
-      className="md:w-[400px] lg:w-[650px] xl:w-[800px] 2xl:w-[1100px] w-screen h-full 
+      className="md:w-[400px] lg:w-[650px] xl:w-[800px] 2xl:w-[1100px] w-screen h-full
                         flex flex-col gap-2"
     >
       <div className="w-full h-60 mb-3">

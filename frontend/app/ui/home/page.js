@@ -47,8 +47,9 @@ const HomePage = ({ id }) => {
   });
   return (
     <div className=" md:w-[400px] lg:w-[650px] xl:w-[800px] 2xl:w-[1000px] w-screen ">
-       
-      <div className="flex justify-center mb-4">{PostForm(id,formCreatePost,() => setFormCreatePost(false) )}</div>
+      <div className="flex justify-center mb-4">
+        {PostForm(id, formCreatePost, () => setFormCreatePost(false))}
+      </div>
 
       <button
         className="inline-flex items-center px-4 py-4 z-10 text-m font-semibold absolute lg:end-72 md:end-52 end-4 md:bottom-2 bottom-20 text-center text-white bg-primary rounded-lg hover:bg-second"
@@ -70,9 +71,7 @@ const HomePage = ({ id }) => {
             d="M12 4.5v15m7.5-7.5h-15"
           />
         </svg>
-        <p className="lg:block hidden">
-        NEW POST
-        </p>
+        <p className="lg:block hidden">NEW POST</p>
       </button>
 
       <div className="post_div_top flex flex-col items-center">
@@ -105,27 +104,31 @@ const onCommentClick = () => {
   alert("Comment disp");
 };
 
-let postData = {
-  id: 3,
-  content: "This is the content of the third post.",
-  media: "imagepost.jpg",
-  date: "2024-03-05",
-  userId: 1,
-  fullname: "Madike Yade",
-  username: "dickss",
-  user: {
-    id: 1,
-    first_name: "Madike",
-    last_name: "Yade",
-    user_name: "dickss",
-    gender: "Male",
-    user_type: "private",
-    birth_date: "2000-01-01",
-    avatar: "profilibg.jpg",
-    about_me: "about me...",
-    password: "1234",
-    email: "dickss@gmail.com",
-  },
-  groupId: 0,
-  privacy: "almost",
+const onProfileClick = () => {
+  alert("profile disp");
 };
+
+// let postData = {
+//   id: 3,
+//   content: "This is the content of the third post.",
+//   media: "imagepost.jpg",
+//   date: "2024-03-05",
+//   userId: 1,
+//   fullname: "Madike Yade",
+//   username: "dickss",
+//   user: {
+//     id: 1,
+//     first_name: "Madike",
+//     last_name: "Yade",
+//     user_name: "dickss",
+//     gender: "Male",
+//     user_type: "private",
+//     birth_date: "2000-01-01",
+//     avatar: "profilibg.jpg",
+//     about_me: "about me...",
+//     password: "1234",
+//     email: "dickss@gmail.com",
+//   },
+//   groupId: 0,
+//   privacy: "almost",
+// };

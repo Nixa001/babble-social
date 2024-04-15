@@ -16,21 +16,20 @@ import (
 // const userID int = 1
 
 func GetGroups(w http.ResponseWriter, r *http.Request) {
+	userID, err := service.AuthServ.VerifyToken(r)
+	if err != nil {
+		fmt.Println("Error verifying ", err.Error())
+		return
+	}
+	// user := handler.UserInSession(w, r)
+	// fmt.Println("User ==== ", user)
+	// fmt.Println("666666666666", userID.User_id)
 
+	// userID.User_id = 3
 	cors.SetCors(&w)
 	var db = seed.CreateDB()
 	defer db.Close()
-
-	session, err := service.AuthServ.VerifyToken(r)
-	if err != nil {
-		fmt.Println("Invalid token")
-		w.WriteHeader(http.StatusUnauthorized)
-		json.NewEncoder(w).Encode(map[string]string{"error": "Invalid token"})
-		return
-	}
-
-	userID := session.User_id
-	joinedGroups, err := getJoinedGroups(db, userID)
+	joinedGroups, err := getJoinedGroups(db, userID.User_id)
 	if err != nil {
 		return
 	}
@@ -40,7 +39,7 @@ func GetGroups(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	filteredGroups, groups := filterGroups(db, userID, joinedGroups, allGroups)
+	filteredGroups, groups := filterGroups(db, joinedGroups, allGroups, userID.User_id)
 	var Groups [][]models.Group
 	Groups = append(Groups, groups)
 	Groups = append(Groups, filteredGroups)
@@ -101,7 +100,7 @@ func getAllGroups(db *sql.DB) ([]models.Group, error) {
 	return allGroups, nil
 }
 
-func filterGroups(db *sql.DB, userID int, joined []int, all []models.Group) ([]models.Group, []models.Group) {
+func filterGroups(db *sql.DB, joined []int, all []models.Group, userID int) ([]models.Group, []models.Group) {
 	var filteredGroups []models.Group
 	var Groups []models.Group
 	for _, group := range all {
@@ -115,6 +114,8 @@ func filterGroups(db *sql.DB, userID int, joined []int, all []models.Group) ([]m
 		if !isJoined && group.ID_User_Create != userID {
 
 			check, state := joingroup.CheckJoinNotification(group.ID_User_Create, userID, group.ID, db)
+			// fmt.Printf("group id_user crate = %v, user id = %v, group id = %v: ", group.ID_User_Create, userID, group.ID)
+			// return
 			if check != 0 && state == 0 {
 				group.State = "disable"
 			}

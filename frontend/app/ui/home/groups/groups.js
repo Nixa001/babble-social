@@ -1,12 +1,11 @@
 "use client";
-import React, { useContext, useState } from "react";
-import Link from "next/link";
-import { CreateGroup } from "../../components/modals/createGroup";
-import { useQuery } from "react-query";
-import { useApi } from "@/app/_lib/utils";
-import { JoinGroup } from "./group.utils/joinGroup";
 import { WebSocketContext } from "@/app/_lib/websocket";
 import { useSession } from "@/app/api/api";
+import Link from "next/link";
+import { useContext, useState } from "react";
+import { useQuery } from "react-query";
+import { CreateGroup } from "../../components/modals/createGroup";
+import { JoinGroup } from "./group.utils/joinGroup";
 
 const Groups = () => {
   const { session, errSess } = useSession();
@@ -16,24 +15,18 @@ const Groups = () => {
   const [groupJoined, setGroupJoined] = useState([]);
 
   const fetchGroups = async () => {
-    const token = localStorage.getItem("token") || null;
-    const sessionId = session?.session["user_id"];
-    const url = `http://localhost:8080/groups?token=${encodeURIComponent(
-      token
-    )}`;
-    // if (sessionId) {
-      try {
-        const response = await fetch(url, {
-          method: "GET",
-        });
-        const data = await response.json();
-        return { groupJoined: data[0], groupData: data[1] };
-      } catch (error) {
-        console.error("Erreur ", error);
-        setFetcherState(false);
-        return Promise.reject(error);
-      }
-    // }
+    try {
+      let token = localStorage.getItem("token");
+      console.log(token);
+      const response = await fetch(
+        `http://localhost:8080/groups?token=${token}`
+      );
+      const data = await response.json();
+      return { groupJoined: data[0], groupData: data[1] };
+    } catch (error) {
+      console.error("Erreur ", error);
+      return Promise.reject(error);
+    }
   };
 
   useQuery("groups", fetchGroups, {
@@ -119,9 +112,8 @@ const GroupCard = ({ isMember, id, image, name, description, href, state }) => {
   const { sendMessage, readMessages, messages } = useContext(WebSocketContext);
 
   const handleLoginJoinMessage = () => {
-    // console.log("handleLoginJoinMessage ", id);
     const joinMessage = messages.find(
-      (message) => message.Type === "JoinGroup" && message.Data.id_group === 1
+      (message) => message.Type === "JoinGroup"
     );
     if (joinMessage) {
       messages.map((message) => {
@@ -203,27 +195,3 @@ const GroupCard = ({ isMember, id, image, name, description, href, state }) => {
     </>
   );
 };
-
-// function JoinGroup(name) {
-//   alert("send join " + name);
-// }
-
-const Data = [
-  {
-    id: 1,
-    image: "/assets/ea.jpg",
-    name: "EA Football 24",
-    description: "Un groupe pour les fans de football du monde entier",
-    href: "/groups/join/EA Football 24",
-    functionOnclick: JoinGroup,
-  },
-];
-const DataJoined = [
-  {
-    id: 111,
-    image: "/assets/ea.jpg",
-    name: "EA Football 24",
-    description: "Un groupe pour les fans de football du monde entier",
-    href: "/home/groups/group/",
-  },
-];

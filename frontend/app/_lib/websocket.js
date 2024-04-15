@@ -1,6 +1,5 @@
 import { useSearchParams } from 'next/navigation';
 import React, { createContext, useState, useEffect } from 'react';
-import { userID } from '../ui/components/navbar/navbar';
 
 export const WebSocketContext = createContext(null);
 
@@ -20,6 +19,7 @@ export const WebSocketProvider = ({ children }) => {
       // console.log("Envoie du message");
       // console.log("Hello ", String(message));
       socket.send(JSON.stringify(message));
+      // console.log(message);
     } else {
       console.error("WebSocket is not open");
     }
@@ -53,7 +53,6 @@ export const WebSocketProvider = ({ children }) => {
     // console.log(allMessages);
   }, [allMessages])
   useEffect(() => {
-    // console.log(onlineUser);
   }, [onlineUser])
   const search = useSearchParams()
   let idUserUrl = search.get('id')

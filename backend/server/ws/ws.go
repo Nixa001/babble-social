@@ -7,10 +7,13 @@ import (
 	"backend/server/handler/groups/events"
 	joingroup "backend/server/handler/groups/joinGroup"
 	"backend/server/service"
+	"backend/server/service"
 	"backend/utils/seed"
 	"encoding/json"
 	"fmt"
 	"log"
+	"strconv"
+	"net/http"
 	"strconv"
 	"sync"
 	"time"
@@ -208,17 +211,34 @@ func (h *Hub) HandleEvent(eventPayload WSPaylaod) {
 				client.OutgoingMsg <- eventPayload
 			}
 			return true
+		})	case "notification":
+		h.Clients.Range(func(key, value interface{}) bool {
+			client := value.(*WSClient)
+			// if client.Mail == eventPayload.To {
+			client.OutgoingMsg <- eventPayload
+			// }
+			return true
+		})
+	case "ResponceNotification":
+		h.Clients.Range(func(key, value interface{}) bool {
+			client := value.(*WSClient)
+			// if client.Mail != eventPayload.To {
+			client.OutgoingMsg <- eventPayload
+			// }
+			return true
 		})
 	}
+
 }
-func (wsHub *Hub) AddClient(coon *websocket.Conn, Email string, sessionToken string) {
+
+func (wsHub *Hub) AddClient(coon *websocket.Conn, Email string, sessionToken string, r *http.Request) {
 	client := &WSClient{
 		Email:        Email,
 		WSCoon:       coon,
 		OutgoingMsg:  make(chan interface{}),
 		SessionToken: sessionToken,
 	}
-	go client.messageReader()
+	go client.messageReader(r)
 	go client.messageWriter()
 	wsHub.RegisterChannel <- client
 	var newEvent = WSPaylaod{
@@ -228,9 +248,17 @@ func (wsHub *Hub) AddClient(coon *websocket.Conn, Email string, sessionToken str
 	}
 	wsHub.HandleEvent(newEvent)
 }
-func (client *WSClient) messageReader() {
+func (client *WSClient) messageReader(r *http.Request) {
+
+	userIdConnected, err := service.AuthServ.VerifyToken(r)
+	fmt.Println("User connected : ==== ", userIdConnected)
+	if err != nil {
+		fmt.Println("verify token error", err)
+	}
+
 	date := time.Now().Format("2006-01-02T15:04:05")
 	Db := database.NewDatabase()
+	defer Db.Close()
 	for {
 		_, message, err := client.WSCoon.ReadMessage()
 		if err != nil {
@@ -402,12 +430,21 @@ func (client *WSClient) messageReader() {
 				return
 			}
 
-			err = joingroup.InsertNotification(int(groupeId), Db)
+			typeNotification, ok := parseData["type"].(string)
+			if !ok {
+				fmt.Println("Erreur de recuperation de donnee")
+				return
+			}
+			err = joingroup.InsertNotification(int(groupeId), typeNotification, userIdConnected.User_id, Db)
 			if err != nil {
 				fmt.Println("Error inserting", err.Error())
 			}
 			fmt.Println("Notification joined added to database")
 
+			idAdminGroup, err := joingroup.RecupeIdAdminGroup(int(groupeId), Db)
+			if err != nil {
+				fmt.Println("Erreur lors de la recuperation de l'id de l'administrateur du groupe ", err)
+			}
 			dataSend := struct {
 				IdGroup int    `json:"id_group"`
 				Button  string `json:"button"`
@@ -420,7 +457,7 @@ func (client *WSClient) messageReader() {
 				From: client.Email,
 				Type: eventType,
 				Data: dataSend,
-				To:   "Adimine group",
+				To:   string(idAdminGroup),
 			}
 			WSHub.HandleEvent(wsEvent)
 
@@ -485,12 +522,15 @@ func (client *WSClient) messageReader() {
 				fmt.Println("Erreur de recuperation de donnee")
 				return
 			}
-			err = events.JoinEvent(userID, int(groupeId), int(event_id), Db)
+			err = events.JoinEvent(userIdConnected.User_id, int(groupeId), int(event_id), Db)
 			if err != nil {
 				log.Fatal(err.Error())
 			}
 			fmt.Println(groupeId)
 			fmt.Println(event_id)
+
+			// fmt.Println("aaa", Db.Ping())
+			// err = going.InsertNotification(int(groupeId), Db)
 		case "SuggestFriend":
 			jsonData, err := json.Marshal(wsEvent.Data)
 			if err != nil {
@@ -503,12 +543,82 @@ func (client *WSClient) messageReader() {
 			}
 
 			// fmt.Println("Parse json = ", parseData["id_group"])
-			userId, ok := parseData["userId"].(float64)
+			_, ok := parseData["userId"].(float64)
 			if !ok {
 				fmt.Println("Erreur de recuperation de donnee")
 				return
 			}
-			fmt.Println("userId", userId)
+
+			groupeID, ok := parseData["id_group"].(string)
+			if !ok {
+				fmt.Println("Erreur de recuperation de donnee")
+				return
+			}
+			// fmt.Println("idgroup", groupeID)
+			typeNotification, ok := parseData["type"].(string)
+			if !ok {
+				fmt.Println("Erreur de recuperation de donnee")
+				return
+			}
+			// idUserConnect := 1
+			group_id, err := strconv.Atoi(groupeID)
+			if err != nil {
+				log.Fatal(err.Error())
+
+			}
+			// fmt.Println("WS -- ", group_id, typeNotification, userIdConnected.User_id)
+			err = joingroup.InsertNotification(group_id, typeNotification, userIdConnected.User_id, Db)
+			if err != nil {
+				fmt.Println("Error inserting notification ", err.Error())
+				return
+			}
+		// case "notification":
+		// 	fmt.Println("Notif")
+		// 	notification := joingroup.ListNotification(userIdConnected.User_id, Db)
+		// 	fmt.Println("mmmmmmmmmmmmmmm = ", notification)
+		// 	if notification != nil {
+		// 		dataSend := struct {
+		// 			Message []models.Notification `json:"message"`
+		// 			Type    string                `json:"type"`
+		// 			To      int                   `json:"to"`
+		// 		}{
+		// 			Message: notification,
+		// 			Type:    "Notification",
+		// 			To:      userIdConnected.User_id,
+		// 		}
+
+		// 		wsEvent = WSPaylaod{
+		// 			From: "",
+		// 			Type: eventType,
+		// 			Data: dataSend,
+		// 			To:   "Admin group",
+		// 		}
+		// 		fmt.Println("Notification ", wsEvent)
+		// 		WSHub.HandleEvent(wsEvent)
+		// 	}
+		case "ResponceNotification":
+			fmt.Println("--- Notification responce ---")
+			jsonData, err := json.Marshal(wsEvent.Data)
+			if err != nil {
+				fmt.Println("Erreur de conversion en json", err)
+				return
+			}
+			var parseData map[string]interface{}
+			if err := json.Unmarshal(jsonData, &parseData); err != nil {
+				fmt.Println("Erreur de conversion en json", err)
+			}
+
+			// fmt.Println("Parse json = ", parseData["id_group"])
+			id_user_sender, ok := parseData["id_user_sender"].(float64)
+			if !ok {
+				fmt.Println("Erreur de recuperation de donnee")
+				return
+			}
+			id_user_receiver, ok := parseData["id_user_receiver"].(float64)
+			if !ok {
+				fmt.Println("Erreur de recuperation de donnee")
+				return
+			}
 
 			groupIDSTr, ok := parseData["idGroup"].(string)
 			groupeID, err := strconv.Atoi(groupIDSTr)

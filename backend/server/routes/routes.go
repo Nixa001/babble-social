@@ -3,6 +3,7 @@ package routes
 import (
 	"backend/server/handler"
 	"backend/server/handler/groups"
+	"backend/server/handler/notification"
 	"backend/server/handler/user"
 	"net/http"
 )
@@ -28,10 +29,11 @@ const (
 	MESSAGE_ENDPOINT          = "/messages"
 	// VERIF_SESS_ENDPOINT       = "/auth/session"
 	GET_USER_SESS_ENDPOINT = "/auth/usersessions"
-	PROFILE_ENDPOINT          = "/profile/user"
-	FOLLOW_ENDPOINT           = "/follow"
-	UNFOLLOW_ENDPOINT         = "/unfollow"
-	SWITCH_PROFILE_TYPE       = "/profile/type"
+	PROFILE_ENDPOINT       = "/profile/user"
+	FOLLOW_ENDPOINT        = "/follow"
+	UNFOLLOW_ENDPOINT      = "/unfollow"
+	SWITCH_PROFILE_TYPE    = "/profile/type"
+	NOTIFICATION_ENDPOINT  = "/notifications"
 )
 
 func Route() *http.ServeMux {
@@ -49,6 +51,7 @@ func Route() *http.ServeMux {
 	mux.HandleFunc(POST_GROUP_ENDPOINT, groups.PostGroupHandler)
 	mux.HandleFunc(GETGROUPS_ENDPOINT, groups.GetGroups)
 	mux.HandleFunc(WS_ENDPOINT, handler.WSHandler)
+	mux.HandleFunc(NOTIFICATION_ENDPOINT, notification.GetNotification)
 	mux.HandleFunc(GETGROUP_ENDPOINT, groups.GetGroup)
 	mux.HandleFunc(USER_ENDPOINT, user.GetUser)
 	mux.HandleFunc(SERVE_ASSETS, func(w http.ResponseWriter, r *http.Request) {
