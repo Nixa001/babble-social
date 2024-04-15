@@ -90,12 +90,12 @@ func InsertData(db *sql.DB) {
 	// insert into notifications
 
 	_, err = db.Exec(
-		`INSERT INTO notifications (notification_type, status, user_id_sender, user_id_receiver)
-		VALUES ("message", false, 1, 3);
-		INSERT INTO notifications (notification_type, status,  user_id_sender, id_group)
-		VALUES ("message", false, 1, 2 );
-		INSERT INTO notifications (notification_type, status, user_id_sender, user_id_receiver)
-		VALUES ("message", true, 1, 3);
+		`INSERT INTO notifications (notification_type, status, user_id_sender, user_id_receiver, date)
+		VALUES ("message", 0, 1, 3, '2024-04-13 04:23:09');
+		INSERT INTO notifications (notification_type, status, user_id_sender, id_group, date)
+		VALUES ("message", 0, 1, 2, '2024-04-13 04:23:09');
+		INSERT INTO notifications (notification_type, status, user_id_sender, user_id_receiver, date)
+		VALUES ("follow", 0, 1, 4, '2024-04-13 04:23:09');
 		`)
 	if err != nil {
 		log.Fatal("Insert into notifications", err.Error())

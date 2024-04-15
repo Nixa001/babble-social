@@ -7,12 +7,10 @@ import (
 	"backend/server/handler/groups/events"
 	joingroup "backend/server/handler/groups/joinGroup"
 	"backend/server/service"
-	"backend/server/service"
 	"backend/utils/seed"
 	"encoding/json"
 	"fmt"
 	"log"
-	"strconv"
 	"net/http"
 	"strconv"
 	"sync"
@@ -211,7 +209,8 @@ func (h *Hub) HandleEvent(eventPayload WSPaylaod) {
 				client.OutgoingMsg <- eventPayload
 			}
 			return true
-		})	case "notification":
+		})
+	case "notification":
 		h.Clients.Range(func(key, value interface{}) bool {
 			client := value.(*WSClient)
 			// if client.Mail == eventPayload.To {
@@ -506,16 +505,16 @@ func (client *WSClient) messageReader(r *http.Request) {
 				return
 			}
 
-			token, ok := parseData["token"].(string)
-			if !ok {
-				fmt.Println("Erreur de recuperation du token join event")
-				return
-			}
-			userID, err := service.AuthServ.VerifyTokenStr(token)
-			if err != nil {
-				fmt.Println("Erreur de recuperation de donnee VerifyTokenStr")
-				return
-			}
+			// token, ok := parseData["token"].(string)
+			// if !ok {
+			// 	fmt.Println("Erreur de recuperation du token join event")
+			// 	return
+			// }
+			// userID, err := service.AuthServ.VerifyTokenStr(token)
+			// if err != nil {
+			// 	fmt.Println("Erreur de recuperation de donnee VerifyTokenStr")
+			// 	return
+			// }
 
 			event_id, ok := parseData["event_id"].(float64)
 			if !ok {
@@ -526,11 +525,6 @@ func (client *WSClient) messageReader(r *http.Request) {
 			if err != nil {
 				log.Fatal(err.Error())
 			}
-			fmt.Println(groupeId)
-			fmt.Println(event_id)
-
-			// fmt.Println("aaa", Db.Ping())
-			// err = going.InsertNotification(int(groupeId), Db)
 		case "SuggestFriend":
 			jsonData, err := json.Marshal(wsEvent.Data)
 			if err != nil {
@@ -621,15 +615,37 @@ func (client *WSClient) messageReader(r *http.Request) {
 			}
 
 			groupIDSTr, ok := parseData["idGroup"].(string)
-			groupeID, err := strconv.Atoi(groupIDSTr)
-			fmt.Println("idgroup", groupeID)
+			groupid, err := strconv.Atoi(groupIDSTr)
+			// fmt.Println("idgroup", groupeID)
 			if !ok {
 				fmt.Println("Erreur de recuperation de donnee")
 				return
 			}
-			if err != nil {
-				fmt.Println("cannot convert id group to int")
+			// The above code snippet is checking if the `err` variable is not `nil`. If `err` is not `nil`, it
+			// prints "cannot convert id group to int" and then returns from the current function.
+			// if err != nil {
+			// 	fmt.Println("cannot convert id group to int")
+			// 	return
+			// }
+			response, ok := parseData["response"].(string)
+			if !ok {
+				fmt.Println("Erreur de recuperation de donnee")
 				return
+			}
+			if response == "going" {
+				check := joingroup.AcceptOrNo(Db, int(id_user_sender), int(id_user_receiver), groupid, "1")
+				if !check {
+					fmt.Println("Error lors de la requete update ", check)
+					return
+				} else {
+					joingroup.InsertGroupFollowers(Db, int(id_user_sender), groupid)
+				}
+			} else if response == "not going" {
+				check := joingroup.AcceptOrNo(Db, int(id_user_sender), int(id_user_receiver), groupid, "-1")
+				if !check {
+					fmt.Println("Error lors de la requete update ", check)
+					return
+				}
 			}
 		case "follow":
 			fmt.Println("follow")
