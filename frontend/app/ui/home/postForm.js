@@ -21,14 +21,12 @@ export const PostForm = (idUser, isVisible, onClose) => {
     const data = new FormData(e.target);
     data.append("userID", idUser);
     data.append("type", "createPost");
-    console.log("my data => ", data);
     const options = {
       method: "POST",
       body: data,
     };
     fetch("http://localhost:8080/post", options).then(async (x) => {
       const retrieved = await x.json();
-      console.log("response", retrieved);
       if (retrieved.type != "success") {
         toast.error(retrieved.msg, {
           position: "bottom-left",
@@ -53,7 +51,6 @@ export const PostForm = (idUser, isVisible, onClose) => {
       setMusic(false);
       setNews(false);
       setOther(true);
-
     });
   };
 
@@ -61,7 +58,7 @@ export const PostForm = (idUser, isVisible, onClose) => {
 
   return (
     <div
-      className="fixed inset-0 z-30 bg-bg bg-opacity-10 backdrop-blur-sm 
+      className="fixed inset-0 z-30 bg-bg bg-opacity-10 backdrop-blur-sm
         flex justify-center items-center"
 
       // onClick={() => onClose()}
@@ -78,7 +75,7 @@ export const PostForm = (idUser, isVisible, onClose) => {
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
             fill="currentColor"
-            className="w-8 h-8 hover:text-red-500 
+            className="w-8 h-8 hover:text-red-500
                    hover:rotate-90 transition duration-300 ease-in-out place-self-end"
           >
             <path

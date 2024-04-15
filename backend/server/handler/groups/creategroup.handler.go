@@ -6,7 +6,7 @@ import (
 	utils "backend/utils"
 	"backend/utils/seed"
 	"database/sql"
-	"fmt"
+	"log"
 	"net/http"
 	"strconv"
 	"strings"
@@ -28,7 +28,6 @@ func CreateGroupHandler(w http.ResponseWriter, r *http.Request) {
 	if len(groupNameTrim) == 0 {
 		// http.Error(w, "Le champ 'Name' est obligatoire", http.StatusBadRequest)
 
-		fmt.Println("Empty name")
 		msg := models.Errormessage{
 			Type:       "Create group",
 			Msg:        "Empty name",
@@ -41,7 +40,7 @@ func CreateGroupHandler(w http.ResponseWriter, r *http.Request) {
 
 	isExist, err := checkGroupExists(db, group.Name)
 	if err != nil {
-		fmt.Println("Erreur lors de la vérification du groupe:", err)
+		log.Println("Erreur lors de la vérification du groupe: ", err)
 		http.Error(w, "Erreur interne du serveur", http.StatusInternalServerError)
 
 		msg := models.Errormessage{
@@ -89,7 +88,7 @@ func CreateGroupHandler(w http.ResponseWriter, r *http.Request) {
 func insertGroupCreated(db *sql.DB, group models.Group) {
 	stmt, err := db.Prepare("INSERT INTO groups(name, description, id_user_create, avatar, creation_date) VALUES(?, ?, ?, ?, ?)")
 	if err != nil {
-		fmt.Println("Erreur lors de la préparation de la requête d'insertion:", err)
+		log.Println("Erreur lors de la préparation de la requête d'insertion: ", err)
 		return
 	}
 	defer stmt.Close()
@@ -99,7 +98,7 @@ func insertGroupCreated(db *sql.DB, group models.Group) {
 
 	result, err := stmt.Exec(group.Name, group.Description, group.ID_User_Create, group.Avatar, group.Creation_Date)
 	if err != nil {
-		fmt.Println("Erreur lors de l'insertion des données:", err)
+		log.Println("Erreur lors de l'insertion des données: ", err)
 		return
 	}
 
@@ -108,14 +107,14 @@ func insertGroupCreated(db *sql.DB, group models.Group) {
 
 	stmt, err = db.Prepare("INSERT INTO group_followers(user_id, group_id) VALUES(?, ?)")
 	if err != nil {
-		fmt.Println("Erreur lors de la préparation de la requête d'insertion:", err)
+		log.Println("Erreur lors de la préparation de la requête d'insertion: ", err)
 		return
 	}
 	defer stmt.Close()
 
 	_, err = stmt.Exec(group.ID_User_Create, group.ID)
 	if err != nil {
-		fmt.Println("Erreur lors de l'insertion des données:", err)
+		log.Println("Erreur lors de l'insertion des données: ", err)
 		return
 	}
 }
@@ -130,7 +129,7 @@ func parseFormData(w http.ResponseWriter, r *http.Request) models.Group {
 	idUserStr := r.FormValue("user_id")
 	userId, err := strconv.Atoi(idUserStr)
 	if err != nil {
-		fmt.Println("Cannot convert idUser to int on Create group")
+		log.Println("Cannot convert idUser to int on Create group: ", err)
 		return models.Group{}
 	}
 
@@ -141,46 +140,10 @@ func parseFormData(w http.ResponseWriter, r *http.Request) models.Group {
 		Creation_Date:  utils.GetCurrentDateTime(),
 		Avatar:         avatarGroup,
 	}
-	// fmt.Println(group)
 
-	// var imageFile multipart.File
 	Image, _ := utils.Uploader(w, r, 20, "image", "")
 	group.Avatar = utils.FormatImgLink(Image)
 
-	// var handler *multipart.FileHeader
-	// if r.MultipartForm != nil && r.MultipartForm.File != nil {
-	// 	file, fileHeader, err := r.FormFile("image")
-	// 	if err != nil {
-	// 		fmt.Println("Image par defaut")
-	// 		return group
-	// 	}
-	// 	defer file.Close()
-	// 	imageFile = file
-	// 	handler = fileHeader
-	// }
-
-	// if imageFile != nil {
-	// uploadsDir := "./uploads"
-	// ext := filepath.Ext(handler.Filename)
-	// newFileName := fmt.Sprintf("profil_group_%s%s", group.Name, ext)
-	// avatarGroup = newFileName
-	// if utils.IsValidImageType(newFileName) {
-	// 	uploadsPath := filepath.Join(uploadsDir, newFileName)
-	// 	newFile, err := os.Create(uploadsPath)
-	// 	if err != nil {
-	// 		http.Error(w, "Impossible de creer l image", http.StatusInternalServerError)
-	// 		return group
-	// 	}
-	// 	defer newFile.Close()
-
-	// 	_, err = io.Copy(newFile, imageFile)
-	// 	if err != nil {
-	// 		http.Error(w, "Impossible de copier l image", http.StatusInternalServerError)
-	// 		return group
-	// 	}
-	// 	group.Avatar = avatarGroup
-	// }
-	// }
 	return group
 }
 

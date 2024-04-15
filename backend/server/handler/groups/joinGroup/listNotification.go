@@ -6,29 +6,29 @@ import (
 	"backend/server/service"
 	"database/sql"
 	"fmt"
+	"log"
 	"net/http"
 )
 
 func ListNotification(r *http.Request) []models.Notification {
 	id_user, err := service.AuthServ.VerifyToken(r)
 	if err != nil {
-		fmt.Println("Error verifying ", err.Error())
+		log.Println("Error verifying ", err.Error())
 		return nil
 	}
 	db := database.NewDatabase()
-	fmt.Println("-------------------------", id_user.User_id)
 	stm := `
 		SELECT * FROM notifications WHERE user_id_receiver = ? AND status = ?
 	`
 	req, err := db.Prepare(stm)
 	if err != nil {
-		fmt.Println("Error preparing notifications: ", err.Error())
+		log.Println("Error preparing notifications: ", err.Error())
 		return nil
 	}
 	defer req.Close()
 	rows, err := req.Query(id_user.User_id, 0)
 	if err != nil {
-		fmt.Println("Error executing query: ", err.Error())
+		log.Println("Error executing query: ", err.Error())
 		return nil
 	}
 	defer rows.Close()
@@ -39,12 +39,11 @@ func ListNotification(r *http.Request) []models.Notification {
 		err := rows.Scan(&notification.ID, &notification.Type, &notification.Status, &notification.UserIDSender, &notification.UserIDReceveived, &groupId, &notification.Date)
 		notification.GroupId = getIntValue(groupId)
 		if err != nil {
-			fmt.Println("Error scanning row: ", err.Error())
+			log.Println("Error scanning row: ", err.Error())
 			return nil
 		}
 		notifications = append(notifications, notification)
 	}
-	fmt.Println("List notification ======", notifications)
 	return notifications
 }
 

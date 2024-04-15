@@ -5,7 +5,6 @@ import (
 	"backend/server/cors"
 	"backend/server/service"
 	"backend/utils"
-	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -29,7 +28,7 @@ func PostGroupHandler(w http.ResponseWriter, r *http.Request) {
 		categories := getCategoriesFromForm(r)
 		imageLink, err := utils.Uploader(w, r, 20, "image", "")
 		if err != nil {
-			fmt.Println("Upload img")
+			log.Println("Error to Upload img: ", err)
 			return
 		}
 

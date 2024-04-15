@@ -16,14 +16,13 @@ export default function Login() {
     try {
       const response = await loginUser(email, password);
       if (response.error === null && response.data) {
-        // console.log("trying to set item with => ", response.data.token);
         localStorage.setItem("token", response.data.token);
         router.push("/home");
       } else {
         setErrorMessage(response.error);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -41,7 +40,8 @@ export default function Login() {
             Don't have an account ?
             <Link
               href="/register"
-              className="text-primary hover:text-second cursor-pointer">
+              className="text-primary hover:text-second cursor-pointer"
+            >
               Sign Up.
             </Link>
           </div>
@@ -67,7 +67,8 @@ export default function Login() {
           </div>
           <form
             onSubmit={handleLogin}
-            className="form_login flex flex-col gap-3">
+            className="form_login flex flex-col gap-3"
+          >
             <input
               type="email"
               name="email"
@@ -98,7 +99,8 @@ export default function Login() {
             </div>
             <button
               type="submit"
-              className="hover:bg-second bg-primary cursor-pointer text-text border-none w-full h-10 rounded font-bold text-center">
+              className="hover:bg-second bg-primary cursor-pointer text-text border-none w-full h-10 rounded font-bold text-center"
+            >
               Log In
             </button>
           </form>

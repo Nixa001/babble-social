@@ -18,11 +18,10 @@ function Register() {
       if (response.error == "ok") {
         router.push("/login");
       } else {
-        console.log(response.error.error);
         setErrorMessage(response.error.error);
       }
     } catch (error) {
-      console.log("Something went wrong. Please try again.");
+      console.error("Something went wrong. Please try again.", error);
     }
 
     setPending(false);

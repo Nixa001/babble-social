@@ -22,7 +22,6 @@ export const CreatePost = ({ isVisible, onClose, id, user }) => {
     const sessionID = user; //TODO: get the user ID from local
     const data = new FormData(e.target);
     data.append("userID", sessionID);
-    console.log("my data => ", data);
     const options = {
       method: "POST",
       body: data,
@@ -30,7 +29,6 @@ export const CreatePost = ({ isVisible, onClose, id, user }) => {
     fetch(`http://localhost:8080/group/postgroup?id=${id}`, options).then(
       async (x) => {
         const retrieved = await x.json();
-        console.log("response", retrieved);
         onClose();
 
         if (retrieved.type != "success") {
@@ -61,7 +59,7 @@ export const CreatePost = ({ isVisible, onClose, id, user }) => {
   };
   return (
     <div
-      className="fixed inset-0 bg-bg bg-opacity-10 backdrop-blur-sm 
+      className="fixed inset-0 bg-bg bg-opacity-10 backdrop-blur-sm
         flex justify-center items-center"
 
       // onClick={() => onClose()}
@@ -78,7 +76,7 @@ export const CreatePost = ({ isVisible, onClose, id, user }) => {
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
             fill="currentColor"
-            className="w-8 h-8 hover:text-red-500 
+            className="w-8 h-8 hover:text-red-500
                    hover:rotate-90 transition duration-300 ease-in-out place-self-end"
           >
             <path
@@ -93,7 +91,7 @@ export const CreatePost = ({ isVisible, onClose, id, user }) => {
             Create a new post
           </h1>
           <form
-            className="flex flex-col lg:w-[100%] 2xl-[80%] xl:w-[75%] w-[80%]  gap-1 
+            className="flex flex-col lg:w-[100%] 2xl-[80%] xl:w-[75%] w-[80%]  gap-1
                          "
             onSubmit={handlePost}
             method=""

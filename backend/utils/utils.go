@@ -3,6 +3,7 @@ package utils
 import (
 	"errors"
 	"fmt"
+	"log"
 	"regexp"
 	"strconv"
 	"strings"
@@ -158,7 +159,7 @@ func IsValidPassword(password string) error {
 func GenerateToken() string {
 	token, err := uuid.NewV4()
 	if err != nil {
-		fmt.Println(err)
+		log.Println("Error GenerateToken: ", err)
 	}
 	return token.String()
 

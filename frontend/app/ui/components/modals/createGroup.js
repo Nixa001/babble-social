@@ -24,7 +24,6 @@ export const CreateGroup = ({ isVisible, onClose }) => {
     e.preventDefault();
 
     const sessionId = session?.session["user_id"];
-    console.log(sessionId);
 
     const formData = new FormData();
     formData.append("name", groupName);
@@ -37,7 +36,6 @@ export const CreateGroup = ({ isVisible, onClose }) => {
         method: "POST",
         body: formData,
       });
-      console.log(response.ok);
       if (response.ok) {
         setErrorMsg("");
         setGroupName("");
@@ -51,7 +49,6 @@ export const CreateGroup = ({ isVisible, onClose }) => {
           setErrorMsg("");
         }, 3000);
       }
-      console.log("Response:", response);
     } catch (error) {
       console.error("Errorr:", error);
     }
@@ -60,7 +57,7 @@ export const CreateGroup = ({ isVisible, onClose }) => {
   if (!isVisible) return null;
   return (
     <div
-      className="fixed inset-0 bg-bg bg-opacity-10 backdrop-blur-sm 
+      className="fixed inset-0 bg-bg bg-opacity-10 backdrop-blur-sm
         flex justify-center items-center"
     >
       <div
@@ -75,7 +72,7 @@ export const CreateGroup = ({ isVisible, onClose }) => {
             xmlns="http://www.w3.org/2000/svg"
             viewBox="0 0 24 24"
             fill="currentColor"
-            className="w-8 h-8 hover:text-red-500 
+            className="w-8 h-8 hover:text-red-500
                    hover:rotate-90 transition duration-300 ease-in-out place-self-end"
           >
             <path

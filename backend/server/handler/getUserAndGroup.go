@@ -13,7 +13,6 @@ import (
 )
 
 func GetUserGroup(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Get user group")
 	cors.SetCors(&w)
 	if r.Method == http.MethodOptions {
 		w.WriteHeader(http.StatusOK)
@@ -35,12 +34,11 @@ func GetUserGroup(w http.ResponseWriter, r *http.Request) {
 		listGroup, _ := seed.GetGroup(seed.DB, session.User_id)
 		listUser, err := seed.ListeUsers(seed.DB, session.User_id)
 		if err != nil {
-			fmt.Println("error:", err)
+			log.Println("error:", err)
 		} else if len(listUser) == 0 {
 			fmt.Println("La liste des utilisateurs est vide")
 		} else {
 			data := []interface{}{listUser[0], listGroup}
-			// fmt.Println("dtails", data)
 			jsonData, err := json.Marshal(data)
 			if err != nil {
 				fmt.Fprintf(w, "Error encoding data to JSON: %v", err)

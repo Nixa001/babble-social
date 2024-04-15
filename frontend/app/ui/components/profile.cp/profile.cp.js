@@ -32,39 +32,37 @@ export default function Profile({ sessionId, sessionToken }) {
     refetchInterval: 5000,
     staleTime: 5000,
     onSuccess: (data) => {
-      console.log(data);
       setUser(data?.user);
       setFollowers(data?.followers);
       setFollowings(data?.followings);
       setPosts(data?.posts);
     },
-    onError: (error) => console.log("Query Profile error:", error),
+    onError: (error) => console.error("Query Profile error:", error),
   });
   const followersId = followers?.map((follower) => follower.id);
   const HandleFollow = (id, sessionId) => {
-    console.log("HandleFollow");
     if (sessionId && followersId?.includes(sessionId)) {
       try {
         const response = unfollowUser(id, sessionId, sessionToken);
         if (response.error) {
-          console.log("error unfollowing");
+          console.error("error unfollowing");
         } else {
-          console.log("unfollowed");
+          console.error("unfollowed");
         }
       } catch (error) {
-        console.log("error unfollowing", error);
+        console.error("error unfollowing", error);
       }
     } else {
       if (user?.user_type == "public") {
         try {
           const response = followUser(id, sessionId, sessionToken);
           if (response.error) {
-            console.log("error following");
+            console.error("error following");
           } else {
-            console.log("followed");
+            console.error("followed");
           }
         } catch (error) {
-          console.log("error following", error);
+          console.error("error following", error);
         }
       } else {
         sendMessage({
@@ -72,31 +70,18 @@ export default function Profile({ sessionId, sessionToken }) {
           followed_id: id,
           follower_id: sessionId,
         });
-        // try {
-        //   const response = followUser(id, sessionId, sessionToken);
-        //   if (response.error) {
-        //     console.log("error following");
-        //   } else {
-        //     console.log("followed");
-        //   }
-        // } catch (error) {
-        //   console.log("error following", error);
-        // }
       }
     }
   };
 
   const SwitchTypeProfile = (sessionId, user_type) => {
-    console.log("SwitchTypeProfile");
     try {
       const response = profileTypeUser(sessionId, user_type, sessionToken);
-      if (response.error === null) {
-        console.log("Switched");
-      } else {
-        console.log("error switching");
+      if (response.error) {
+        console.error("error switching", response.error);
       }
     } catch (error) {
-      console.log("error switching", error);
+      console.error("error switching", error);
     }
   };
 

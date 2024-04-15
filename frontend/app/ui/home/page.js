@@ -38,7 +38,6 @@ const HomePage = ({ id }) => {
     onSuccess: (newData) => {
       //  if (newData.errType == 400) setFetchState(false);
       setPosts(newData.posts);
-      //console.log("debug => ", newData);
     },
     onError: (error) => {
       setFetchState(false);

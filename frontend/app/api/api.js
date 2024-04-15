@@ -1,5 +1,5 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 const NEXT_PUBLIC_API_URL = `http://localhost:8080`;
 
 export async function loginUser(email, password) {
@@ -16,7 +16,6 @@ export async function loginUser(email, password) {
       }
       if (response.ok) {
         return response.json().then((json) => {
-          // console.log(json);
           localStorage.setItem("token", json.token);
           return { error: null, data: json };
         });
@@ -37,7 +36,6 @@ export async function logoutUser(token) {
   })
     .then((response) => response.json())
     .catch((error) => {
-      console.log(error);
       return { error: "Not authorized!!!" };
     });
 }
@@ -55,41 +53,38 @@ export async function registerUser(formData) {
       return { error: json.error };
     })
     .catch((error) => {
-      console.log("ERROR CATCH", error);
       return { error: error };
     });
 }
-export function useSession() {
+export function useSession(token) {
   const [session, setSession] = useState(null);
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    const token = localStorage.getItem("token") || null;
-    // console.log("Token in useSession", token);
-    async function fetchSessionData() {
-      try {
-        const response = await fetch(`${NEXT_PUBLIC_API_URL}/auth/session`, {
-          method: "GET",
-          headers: {
-            Authorization: token,
-          },
-        });
-        if (!response.ok) {
-          throw new Error(
-            `Failed to fetch session data. Status: ${response.status}`
-          );
-        }
-
-        const sessionData = await response.json();
-        setSession(sessionData);
-      } catch (error) {
-        console.error(error);
-        setError(error);
-      }
-    }
-
     fetchSessionData();
   }, []);
+
+  async function fetchSessionData() {
+    try {
+      const response = await fetch(`${NEXT_PUBLIC_API_URL}/auth/session`, {
+        method: "GET",
+        headers: {
+          Authorization: token,
+        },
+      });
+      if (!response.ok) {
+        throw new Error(
+          `Failed to fetch session data. Status: ${response.status}`
+        );
+      }
+
+      const sessionData = await response.json();
+      setSession(sessionData);
+    } catch (error) {
+      console.error(error);
+      setError(error);
+    }
+  }
 
   return { session, error };
 }

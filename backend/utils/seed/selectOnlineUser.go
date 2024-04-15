@@ -12,7 +12,6 @@ package seed
 import (
 	"backend/models"
 	"database/sql"
-	"fmt"
 	"log"
 	"sort"
 	"strings"
@@ -44,7 +43,7 @@ func SelectMsgBetweenUsers(db *sql.DB, CurrentUser, UserID int) ([]models.Chat, 
 
 		for row.Next() {
 			if err := row.Scan(&m.FirstName); err != nil {
-				fmt.Println("error scanning first_name")
+				log.Println("error scanning first_name: ", err)
 			}
 		}
 		chat = append(chat, m)
@@ -164,7 +163,7 @@ func InsertMessage(db *sql.DB, userSender, userReceiver int, messageContent, dat
 	query := `INSERT INTO messages (user_id_sender, user_id_receiver, message_content, date) VALUES (?, ?, ?, ?);`
 	_, err := db.Exec(query, userSender, userReceiver, messageContent, date)
 	if err != nil {
-		fmt.Println("Erreur lors de l'insertion du message:", err)
+		log.Println("Erreur lors de l'insertion du message:", err)
 		return err
 	}
 
@@ -204,19 +203,19 @@ func GetLastMessage(db *sql.DB, msg string) (models.Chat, error) {
 	return message, err
 }
 
-func GetUserById(db *sql.DB, id int)(models.User, error){
+func GetUserById(db *sql.DB, id int) (models.User, error) {
 	query := `SELECT * FROM users WHERE id =?`
-    row, err := db.Query(query, id)
-    if err!= nil {
-        return models.User{}, nil
-    }
-    var user models.User
-    for row.Next() {
-        err = row.Scan(&user.Id, &user.First_name, &user.Last_name, &user.User_name, &user.Gender, &user.Email, &user.Password, &user.User_type, &user.Birth_date, &user.Avatar, &user.About_me)
-        if err!= nil {
-            log.Println("Erreur lors de la récupération des informations de l'utilisateur:", err)
-            return models.User{}, nil
-        }
-    }
-    return user, err
+	row, err := db.Query(query, id)
+	if err != nil {
+		return models.User{}, nil
+	}
+	var user models.User
+	for row.Next() {
+		err = row.Scan(&user.Id, &user.First_name, &user.Last_name, &user.User_name, &user.Gender, &user.Email, &user.Password, &user.User_type, &user.Birth_date, &user.Avatar, &user.About_me)
+		if err != nil {
+			log.Println("Erreur lors de la récupération des informations de l'utilisateur:", err)
+			return models.User{}, nil
+		}
+	}
+	return user, err
 }

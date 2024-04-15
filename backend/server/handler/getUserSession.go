@@ -6,6 +6,7 @@ import (
 	"backend/utils/seed"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 )
 
@@ -40,7 +41,7 @@ func UserInSession(w http.ResponseWriter, r *http.Request) models.User {
 	var userSession models.User
 	err = seed.DB.QueryRow("SELECT * FROM users WHERE id = ?", UserID).Scan(&userSession.Id, &userSession.First_name, &userSession.Last_name, &userSession.User_name, &userSession.Gender, &userSession.Email, &userSession.Password, &userSession.User_type, &userSession.Birth_date, &userSession.Avatar, &userSession.About_me)
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		http.Error(w, "User not found", http.StatusNotFound)
 		return models.User{}
 	}
@@ -48,12 +49,12 @@ func UserInSession(w http.ResponseWriter, r *http.Request) models.User {
 
 }
 
-func SetClient (token string) models.User{
+func SetClient(token string) models.User {
 	var u models.User
 	err := seed.DB.QueryRow("SELECT * FROM users WHERE token =?", token).Scan(&u.Id, &u.First_name, &u.Last_name, &u.User_name, &u.Gender, &u.Email, &u.Password, &u.User_type, &u.Birth_date, &u.Avatar, &u.About_me)
 	if err != nil {
-        fmt.Println(err)
-        return models.User{}
-    }
- 	return u
+		log.Println(err)
+		return models.User{}
+	}
+	return u
 }

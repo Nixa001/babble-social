@@ -17,7 +17,6 @@ const Groups = () => {
   const fetchGroups = async () => {
     try {
       let token = localStorage.getItem("token");
-      console.log(token);
       const response = await fetch(
         `http://localhost:8080/groups?token=${token}`
       );
@@ -118,13 +117,11 @@ const GroupCard = ({ isMember, id, image, name, description, href, state }) => {
     if (joinMessage) {
       messages.map((message) => {
         if (message.Data.id_group === id) {
-          // console.log("Message ", message);
           return;
         }
       });
     }
   };
-  // console.log(messages);
   // useEffect(() => {
   handleLoginJoinMessage();
   // }, [sendMessage]);

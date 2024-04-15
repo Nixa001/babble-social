@@ -30,13 +30,13 @@ func CreateEventHandler(w http.ResponseWriter, r *http.Request) {
 		heur := len(strings.TrimSpace(heure))
 
 		if descrip == 0 || dat == 0 || heur == 0 {
-			fmt.Println("all fill required")
+			log.Println("all fill required")
 			return
 		}
 
 		date, err := formatDateTime(dates, heure)
 		if err != nil {
-			fmt.Println("Error on formatDateTime", err)
+			log.Println("Error on formatDateTime", err)
 			return
 		}
 
@@ -53,15 +53,13 @@ func CreateEventHandler(w http.ResponseWriter, r *http.Request) {
 
 		userID := session.User_id
 
-		fmt.Println(date, " "+heure)
 		groupID, err := GetGroupIDFromRequest(w, r)
 		if err != nil {
-			fmt.Println("Error on GetGroupIDFromRequest")
+			log.Println("Error on GetGroupIDFromRequest")
 			return
 		}
 
 		_, err1 := insertEvent(groupID, userID, description, date)
-		// fmt.Println(description, date, groupID)
 		if err1 != nil {
 			log.Println("problem after create service ", err)
 			utils.Alert(w, models.Errormessage{

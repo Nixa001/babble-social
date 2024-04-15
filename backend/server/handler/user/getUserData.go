@@ -8,6 +8,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 )
 
@@ -25,7 +26,7 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 	defer db.Close()
 	session, err := service.AuthServ.VerifyToken(r)
 	if err != nil {
-		fmt.Println("Invalid token")
+		log.Println("Invalid token", err.Error())
 		w.WriteHeader(http.StatusUnauthorized)
 		json.NewEncoder(w).Encode(map[string]string{"error": "Invalid token"})
 		return
@@ -45,7 +46,7 @@ func GetUserData(db *sql.DB, userID int) (models.User, error) {
 	query := "SELECT * FROM users WHERE id = ?"
 	err := db.QueryRow(query, userID).Scan(&user.Id, &user.First_name, &user.Last_name, &user.User_name, &user.Gender, &user.Email, &user.Password, &user.User_type, &user.Birth_date, &user.Avatar, &user.About_me)
 	if err != nil {
-		fmt.Println("errr ici")
+		log.Println("Error scanning row GetUserData: ", err.Error())
 		return models.User{}, fmt.Errorf("err scan user data: %w", err)
 	}
 	return user, nil
@@ -57,7 +58,7 @@ func GetFollowers(db *sql.DB, userID int) ([]models.User, error) {
 	query := "SELECT user_id_follower FROM users_followers WHERE user_id_followed = ?"
 	rows, err := db.Query(query, userID)
 	if err != nil {
-		fmt.Println("err@ ici")
+		log.Println("Error querying row GetFollowers: ", err.Error())
 		return nil, fmt.Errorf("err execute all groups query: %w", err)
 	}
 	defer rows.Close()
@@ -75,7 +76,7 @@ func GetFollowers(db *sql.DB, userID int) ([]models.User, error) {
 	query = "SELECT user_id_followed FROM users_followers WHERE user_id_follower = ?"
 	rows, err = db.Query(query, userID)
 	if err != nil {
-		fmt.Println("err@ ici")
+		log.Println("Error querying row GetFollowers: ", err.Error())
 		return nil, fmt.Errorf("err execute all groups query: %w", err)
 	}
 	defer rows.Close()

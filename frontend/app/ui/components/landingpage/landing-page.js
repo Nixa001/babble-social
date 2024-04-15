@@ -1,13 +1,12 @@
-"use client"
+"use client";
 import { useSession } from "@/app/api/api.js";
 import Link from "next/link.js";
 import { useRouter } from "next/navigation.js";
-import { useEffect} from "react";
+import { useEffect } from "react";
 
 export function Landing() {
   const router = useRouter();
   const { session, error } = useSession();
-  console.log("error in landing => ", error, "with session => ", session);
   useEffect(() => {
     if (session) {
       router.push("/home");
@@ -95,5 +94,5 @@ export function Landing() {
         </div>
       </section>
     </div>
-  )
+  );
 }

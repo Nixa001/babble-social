@@ -109,7 +109,6 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func SignInHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Sign in handler")
 	cors.SetCors(&w)
 	if r.Method == http.MethodOptions {
 		w.WriteHeader(http.StatusOK)
@@ -121,7 +120,7 @@ func SignInHandler(w http.ResponseWriter, r *http.Request) {
 		credentials := make(map[string]string, 2)
 		content, err := io.ReadAll(r.Body)
 		if err != nil {
-			fmt.Println("Invalid credentials 0 :", err)
+			log.Println("Invalid credentials 0 :", err)
 			w.WriteHeader(http.StatusUnauthorized)
 			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid credentials"})
 			return
@@ -136,14 +135,14 @@ func SignInHandler(w http.ResponseWriter, r *http.Request) {
 		email, password := credentials["email"], credentials["password"]
 
 		if utils.IsValidEmail(strings.TrimSpace(email)) != nil || utils.IsValidPassword(strings.TrimSpace(password)) != nil {
-			fmt.Println("Invalid credentials 1", err)
+			log.Println("Invalid credentials 1", err)
 			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid credentials 1"})
 			return
 		}
 		user, err := service.AuthServ.CheckCredentials(email, password)
 		if err != nil {
-			fmt.Println("Invalid credentials 2", err)
+			log.Println("Invalid credentials 2", err)
 			w.WriteHeader(http.StatusUnauthorized)
 			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid credentials 2"})
 			return
@@ -181,11 +180,10 @@ func SignOutHandler(w http.ResponseWriter, r *http.Request) {
 			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid request"})
 			return
 		}
-		fmt.Println("Token", token)
 
 		err := service.AuthServ.RemoveSession(token)
 		if err != nil {
-			fmt.Println("Error removing session", err)
+			log.Println("Error removing session", err)
 			w.WriteHeader(http.StatusInternalServerError)
 			json.NewEncoder(w).Encode(map[string]string{"error": "Internal server error"})
 			return

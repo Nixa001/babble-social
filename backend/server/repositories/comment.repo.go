@@ -107,7 +107,6 @@ func (c *CommentRepository) InsertComment(comment models.Comment) error {
 }
 
 func (c *CommentRepository) LoadComment(postID string) ([]models.DataComment, error) {
-	//fmt.Println("loading comments for post ", postID)
 	var commentTab []models.DataComment
 	rows, err := c.DB.Query(GetCommentQuery, postID)
 	if err != nil {

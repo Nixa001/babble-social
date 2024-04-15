@@ -3,7 +3,6 @@ package seed
 import (
 	"backend/models"
 	"database/sql"
-	"fmt"
 	"log"
 )
 
@@ -14,12 +13,13 @@ func InsertGroupMessage(db *sql.DB, userSender, groupReceiver int, messageConten
 
 	_, err := db.Exec(query, userSender, groupReceiver, messageContent, date)
 	if err != nil {
-		fmt.Println("Erreur lors de l'insertion du message group:", err)
+		log.Println("Erreur lors de l'insertion du message group:", err)
 		return err
 	}
 
 	return nil
 }
+
 // getGroupMessage récupère les messages pour un groupe spécifique
 func GetGroupMessage(db *sql.DB, groupIDReceiver int) ([]models.Chat, error) {
 	query := `SELECT * FROM messages WHERE group_id_receiver = ?`
@@ -56,7 +56,7 @@ func GetGroupMessage(db *sql.DB, groupIDReceiver int) ([]models.Chat, error) {
 				log.Println("Erreur lors de la récupération du first_name:", err)
 				return nil, err
 			}
-		} 
+		}
 		messages = append(messages, message)
 	}
 
@@ -134,18 +134,16 @@ func GetGroup(db *sql.DB, userID int) ([]models.Group, error) {
 	return groups, err
 }
 
-
-
 // UserEmail représente une structure contenant l'ID et l'email d'un utilisateur.
 type UserEmail struct {
 	UserID int
-	Email   string
+	Email  string
 }
 
 // GetFollowerGroup prend un ID de groupe et retourne un tableau d'IDs et emails d'utilisateurs qui suivent ce groupe.
 func GetFollowerGroup(db *sql.DB, groupID int) ([]UserEmail, error) {
-	query := `SELECT users.id, users.email FROM group_followers 
-	          INNER JOIN users ON group_followers.user_id = users.id 
+	query := `SELECT users.id, users.email FROM group_followers
+	          INNER JOIN users ON group_followers.user_id = users.id
 	          WHERE group_followers.group_id = ?`
 	rows, err := db.Query(query, groupID)
 	if err != nil {

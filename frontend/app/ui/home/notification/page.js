@@ -12,8 +12,9 @@ const Notification = () => {
   const fetchNotifications = async () => {
     try {
       let token = localStorage.getItem("token");
-      // console.log(token)
-      const response = await fetch(`http://localhost:8080/notifications?token=${token}`);
+      const response = await fetch(
+        `http://localhost:8080/notifications?token=${token}`
+      );
       const data = await response.json();
       return data;
     } catch (error) {
@@ -33,8 +34,6 @@ const Notification = () => {
     },
   });
 
-  // console.log("Notification data = ", notificationData);
-
   return (
     <div className="w-[900px] flex flex-col space-y-2">
       {displayNotification(notificationData, sendMessage)}{" "}
@@ -45,8 +44,6 @@ const Notification = () => {
 
 export const displayNotification = (notificationData, sendMessage) => {
   return notificationData?.map((notification) => {
-    // console.log("notification = = = ", notification);
-    // console.log(notification);
     return (
       <div
         key={notification.id}
@@ -98,7 +95,6 @@ export const displayNotification = (notificationData, sendMessage) => {
           </button>
           <button
             onClick={() => {
-              // console.log(notification);
               sendMessage({
                 type: "ResponceNotification",
                 groupeId: notification.group_id,

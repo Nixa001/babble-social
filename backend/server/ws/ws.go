@@ -137,9 +137,8 @@ func (h *Hub) HandleEvent(eventPayload WSPaylaod) {
 	case WS_MESSAGEGROUP_EVENT:
 		clientFollowers, err := seed.GetFollowerGroup(seed.DB, groupid)
 		if err != nil {
-			fmt.Println("error", err)
+			log.Println("Error to GetFollowerGroup: ", err)
 		}
-		fmt.Println("clientFollowers", clientFollowers)
 		h.Clients.Range(func(key, value interface{}) bool {
 			client := value.(*WSClient)
 			// Vérification si le client suit le groupe
@@ -250,9 +249,8 @@ func (wsHub *Hub) AddClient(coon *websocket.Conn, Email string, sessionToken str
 func (client *WSClient) messageReader(r *http.Request) {
 
 	userIdConnected, err := service.AuthServ.VerifyToken(r)
-	fmt.Println("User connected : ==== ", userIdConnected)
 	if err != nil {
-		fmt.Println("verify token error", err)
+		log.Println("verify token error", err)
 	}
 
 	date := time.Now().Format("2006-01-02T15:04:05")
@@ -290,7 +288,7 @@ func (client *WSClient) messageReader(r *http.Request) {
 			listGroup, _ := seed.GetGroup(seed.DB, int(payload["data"].(float64)))
 			listUser, err := seed.ListeUsers(seed.DB, int(payload["data"].(float64)))
 			if err != nil {
-				fmt.Println("error:", err)
+				log.Println("Error to get ListeUsers:", err)
 			} else if len(listUser) == 0 {
 				fmt.Println("La liste des utilisateurs est vide")
 			} else {
@@ -308,12 +306,12 @@ func (client *WSClient) messageReader(r *http.Request) {
 		case WS_IDRECEIVER_EVENT:
 			clickedUserId, ok := payload["data"].(map[string]interface{})["clickedUserId"].(float64)
 			if !ok {
-				fmt.Println("Erreur lors de l'accès à la clé 'clickedUserId'")
+				log.Println("Erreur lors de l'accès à la clé 'clickedUserId'", err)
 				return
 			}
 			sessionUserId, ok := payload["data"].(map[string]interface{})["sessionUserId"].(float64)
 			if !ok {
-				fmt.Println("Erreur lors de l'accès à la clé 'sendId'")
+				log.Println("Erreur lors de l'accès à la clé 'sendId'", err)
 				return
 			}
 
@@ -329,7 +327,7 @@ func (client *WSClient) messageReader(r *http.Request) {
 
 			groupId, ok := payload["data"].(map[string]interface{})["idgroup"].(float64)
 			if !ok {
-				fmt.Println("Erreur lors de l'accès à la clé 'clickedUserId'")
+				log.Println("Erreur lors de l'accès à la clé 'clickedUserId'", err)
 				return
 			}
 
@@ -345,27 +343,27 @@ func (client *WSClient) messageReader(r *http.Request) {
 
 			message, ok := payload["data"].(map[string]interface{})["message"].(string)
 			if !ok {
-				fmt.Println("Erreur lors de l'accès à la clé 'message'")
+				log.Println("Erreur lors de l'accès à la clé 'message'", err)
 				return
 			}
 			sendId, ok := payload["data"].(map[string]interface{})["sendId"].(float64)
 			if !ok {
-				fmt.Println("Erreur lors de l'accès à la clé 'sendId'")
+				log.Println("Erreur lors de l'accès à la clé 'sendId'", err)
 				return
 			}
 			receiverID, ok := payload["data"].(map[string]interface{})["receiverId"].(float64)
 			if !ok {
-				fmt.Println("Erreur lors de l'accès à la clé 'sendId'")
+				log.Println("Erreur lors de l'accès à la clé 'sendId'")
 				return
 			}
 
 			err := seed.InsertMessage(seed.DB, int(sendId), int(receiverID), message, date)
 			if err != nil {
-				fmt.Println(err)
+				log.Println("Error to InsertMessage: ", err)
 			}
 			mes, errr := seed.GetLastMessage(seed.DB, message)
 			if errr != nil {
-				fmt.Println(errr)
+				log.Println("Error to GetLastMessage", errr)
 			}
 			clientTo, _ := seed.GetUserById(seed.DB, int(receiverID))
 			msEvent := WSPaylaod{
@@ -380,27 +378,27 @@ func (client *WSClient) messageReader(r *http.Request) {
 
 			message, ok := payload["data"].(map[string]interface{})["message"].(string)
 			if !ok {
-				fmt.Println("Erreur lors de l'accès à la clé 'message'")
+				log.Println("Erreur lors de l'accès à la clé 'message'", ok)
 				return
 			}
 			sendId, ok := payload["data"].(map[string]interface{})["sendId"].(float64)
 			if !ok {
-				fmt.Println("Erreur lors de l'accès à la clé 'sendId'")
+				log.Println("Erreur lors de l'accès à la clé 'sendId'", ok)
 				return
 			}
 			groupReceiverID, ok := payload["data"].(map[string]interface{})["receiverId"].(float64)
 			if !ok {
-				fmt.Println("Erreur lors de l'accès à la clé 'sendId'")
+				log.Println("Erreur lors de l'accès à la clé 'sendId'", ok)
 				return
 			}
 			groupid = int(groupReceiverID)
 			err := seed.InsertGroupMessage(seed.DB, int(sendId), int(groupReceiverID), message, date)
 			if err != nil {
-				fmt.Println("error", err)
+				log.Println("Error to InsertGroupMessage: ", err)
 			}
 			lastmsg, errr := seed.GetLastGroupMessage(seed.DB, message)
 			if errr != nil {
-				fmt.Println("error", err)
+				log.Println("error", err)
 
 			}
 			GPEvent := WSPaylaod{
@@ -415,34 +413,34 @@ func (client *WSClient) messageReader(r *http.Request) {
 		case "JoinGroup":
 			jsonData, err := json.Marshal(wsEvent.Data)
 			if err != nil {
-				fmt.Println("Erreur de conversion en json", err)
+				log.Println("Erreur de conversion en json", err)
 				return
 			}
 			var parseData map[string]interface{}
 			if err := json.Unmarshal(jsonData, &parseData); err != nil {
-				fmt.Println("Erreur de conversion en json", err)
+				log.Println("Erreur de conversion en json", err)
 			}
 
 			groupeId, ok := parseData["groupId"].(float64)
 			if !ok {
-				fmt.Println("Erreur de recuperation de donnee")
+				log.Println("Erreur de recuperation de donnee", ok)
 				return
 			}
 
 			typeNotification, ok := parseData["type"].(string)
 			if !ok {
-				fmt.Println("Erreur de recuperation de donnee")
+				log.Println("Erreur de recuperation de donnee", ok)
 				return
 			}
 			err = joingroup.InsertNotification(int(groupeId), typeNotification, userIdConnected.User_id, Db)
 			if err != nil {
-				fmt.Println("Error inserting", err.Error())
+				log.Println("Error inserting", err.Error())
 			}
 			fmt.Println("Notification joined added to database")
 
 			idAdminGroup, err := joingroup.RecupeIdAdminGroup(int(groupeId), Db)
 			if err != nil {
-				fmt.Println("Erreur lors de la recuperation de l'id de l'administrateur du groupe ", err)
+				log.Println("Erreur lors de la recuperation de l'id de l'administrateur du groupe ", err)
 			}
 			dataSend := struct {
 				IdGroup int    `json:"id_group"`
@@ -463,22 +461,22 @@ func (client *WSClient) messageReader(r *http.Request) {
 		case "NotGoingEvent":
 			jsonData, err := json.Marshal(wsEvent.Data)
 			if err != nil {
-				fmt.Println("Erreur de conversion en json", err)
+				log.Println("Erreur de conversion en json", err)
 				return
 			}
 			var parseData map[string]interface{}
 			if err := json.Unmarshal(jsonData, &parseData); err != nil {
-				fmt.Println("Erreur de conversion en json", err)
+				log.Println("Erreur de conversion en json", err)
 			}
 
 			groupeId, ok := parseData["groupId"].(float64)
 			if !ok {
-				fmt.Println("Erreur de recuperation de donnee")
+				log.Println("Erreur de recuperation de donnee", ok)
 				return
 			}
 			event_id, ok := parseData["event_id"].(float64)
 			if !ok {
-				fmt.Println("Erreur de recuperation de donnee")
+				log.Println("Erreur de recuperation de donnee", ok)
 				return
 			}
 
@@ -486,39 +484,27 @@ func (client *WSClient) messageReader(r *http.Request) {
 			if err != nil {
 				log.Fatal(err.Error())
 			}
-			fmt.Println("eventId: ", event_id)
 
 		case "GoingEvent":
 			jsonData, err := json.Marshal(wsEvent.Data)
 			if err != nil {
-				fmt.Println("Erreur de conversion en json", err)
+				log.Println("Erreur de conversion en json", err)
 				return
 			}
 			var parseData map[string]interface{}
 			if err := json.Unmarshal(jsonData, &parseData); err != nil {
-				fmt.Println("Erreur de conversion en json", err)
+				log.Println("Erreur de conversion en json", err)
 			}
 
 			groupeId, ok := parseData["groupId"].(float64)
 			if !ok {
-				fmt.Println("Erreur de recuperation de donnee")
+				log.Println("Erreur de recuperation de donnee", ok)
 				return
 			}
 
-			// token, ok := parseData["token"].(string)
-			// if !ok {
-			// 	fmt.Println("Erreur de recuperation du token join event")
-			// 	return
-			// }
-			// userID, err := service.AuthServ.VerifyTokenStr(token)
-			// if err != nil {
-			// 	fmt.Println("Erreur de recuperation de donnee VerifyTokenStr")
-			// 	return
-			// }
-
 			event_id, ok := parseData["event_id"].(float64)
 			if !ok {
-				fmt.Println("Erreur de recuperation de donnee")
+				log.Println("Erreur de recuperation de donnee", ok)
 				return
 			}
 			err = events.JoinEvent(userIdConnected.User_id, int(groupeId), int(event_id), Db)
@@ -528,114 +514,77 @@ func (client *WSClient) messageReader(r *http.Request) {
 		case "SuggestFriend":
 			jsonData, err := json.Marshal(wsEvent.Data)
 			if err != nil {
-				fmt.Println("Erreur de conversion en json", err)
+				log.Println("Erreur de conversion en json", err)
 				return
 			}
 			var parseData map[string]interface{}
 			if err := json.Unmarshal(jsonData, &parseData); err != nil {
-				fmt.Println("Erreur de conversion en json", err)
+				log.Println("Erreur de conversion en json", err)
 			}
 
-			// fmt.Println("Parse json = ", parseData["id_group"])
 			_, ok := parseData["userId"].(float64)
 			if !ok {
-				fmt.Println("Erreur de recuperation de donnee")
+				log.Println("Erreur de recuperation de donnee", ok)
 				return
 			}
 
 			groupeID, ok := parseData["id_group"].(string)
 			if !ok {
-				fmt.Println("Erreur de recuperation de donnee")
+				log.Println("Erreur de recuperation de donnee", ok)
 				return
 			}
-			// fmt.Println("idgroup", groupeID)
 			typeNotification, ok := parseData["type"].(string)
 			if !ok {
-				fmt.Println("Erreur de recuperation de donnee")
+				log.Println("Erreur de recuperation de donnee", ok)
 				return
 			}
-			// idUserConnect := 1
 			group_id, err := strconv.Atoi(groupeID)
 			if err != nil {
 				log.Fatal(err.Error())
 
 			}
-			// fmt.Println("WS -- ", group_id, typeNotification, userIdConnected.User_id)
 			err = joingroup.InsertNotification(group_id, typeNotification, userIdConnected.User_id, Db)
 			if err != nil {
-				fmt.Println("Error inserting notification ", err.Error())
+				log.Println("Error inserting notification ", err.Error())
 				return
 			}
-		// case "notification":
-		// 	fmt.Println("Notif")
-		// 	notification := joingroup.ListNotification(userIdConnected.User_id, Db)
-		// 	fmt.Println("mmmmmmmmmmmmmmm = ", notification)
-		// 	if notification != nil {
-		// 		dataSend := struct {
-		// 			Message []models.Notification `json:"message"`
-		// 			Type    string                `json:"type"`
-		// 			To      int                   `json:"to"`
-		// 		}{
-		// 			Message: notification,
-		// 			Type:    "Notification",
-		// 			To:      userIdConnected.User_id,
-		// 		}
-
-		// 		wsEvent = WSPaylaod{
-		// 			From: "",
-		// 			Type: eventType,
-		// 			Data: dataSend,
-		// 			To:   "Admin group",
-		// 		}
-		// 		fmt.Println("Notification ", wsEvent)
-		// 		WSHub.HandleEvent(wsEvent)
-		// 	}
 		case "ResponceNotification":
-			fmt.Println("--- Notification responce ---")
 			jsonData, err := json.Marshal(wsEvent.Data)
 			if err != nil {
-				fmt.Println("Erreur de conversion en json", err)
+				log.Println("Erreur de conversion en json", err)
 				return
 			}
 			var parseData map[string]interface{}
 			if err := json.Unmarshal(jsonData, &parseData); err != nil {
-				fmt.Println("Erreur de conversion en json", err)
+				log.Println("Erreur de conversion en json", err)
 			}
 
-			// fmt.Println("Parse json = ", parseData["id_group"])
 			id_user_sender, ok := parseData["id_user_sender"].(float64)
 			if !ok {
-				fmt.Println("Erreur de recuperation de donnee")
+				log.Println("Erreur de recuperation de donnee", ok)
 				return
 			}
 			id_user_receiver, ok := parseData["id_user_receiver"].(float64)
 			if !ok {
-				fmt.Println("Erreur de recuperation de donnee")
+				log.Println("Erreur de recuperation de donnee", ok)
 				return
 			}
 
 			groupIDSTr, ok := parseData["idGroup"].(string)
 			groupid, err := strconv.Atoi(groupIDSTr)
-			// fmt.Println("idgroup", groupeID)
 			if !ok {
-				fmt.Println("Erreur de recuperation de donnee")
+				log.Println("Erreur de recuperation de donnee", ok)
 				return
 			}
-			// The above code snippet is checking if the `err` variable is not `nil`. If `err` is not `nil`, it
-			// prints "cannot convert id group to int" and then returns from the current function.
-			// if err != nil {
-			// 	fmt.Println("cannot convert id group to int")
-			// 	return
-			// }
 			response, ok := parseData["response"].(string)
 			if !ok {
-				fmt.Println("Erreur de recuperation de donnee")
+				log.Println("Erreur de recuperation de donnee", ok)
 				return
 			}
 			if response == "going" {
 				check := joingroup.AcceptOrNo(Db, int(id_user_sender), int(id_user_receiver), groupid, "1")
 				if !check {
-					fmt.Println("Error lors de la requete update ", check)
+					log.Println("Error lors de la requete update ", check)
 					return
 				} else {
 					joingroup.InsertGroupFollowers(Db, int(id_user_sender), groupid)
@@ -643,38 +592,33 @@ func (client *WSClient) messageReader(r *http.Request) {
 			} else if response == "not going" {
 				check := joingroup.AcceptOrNo(Db, int(id_user_sender), int(id_user_receiver), groupid, "-1")
 				if !check {
-					fmt.Println("Error lors de la requete update ", check)
+					log.Println("Error lors de la requete update ", check)
 					return
 				}
 			}
 		case "follow":
-			fmt.Println("follow")
-			fmt.Println("wsEvent", wsEvent)
 			jsonData, err := json.Marshal(wsEvent.Data)
 			if err != nil {
-				fmt.Println("Erreur de conversion en json", err)
+				log.Println("Erreur de conversion en json", err)
 				return
 			}
 			var parseData map[string]interface{}
 			if err := json.Unmarshal(jsonData, &parseData); err != nil {
-				fmt.Println("Erreur de conversion en json", err)
+				log.Println("Erreur de conversion en json", err)
 			}
 			followerId, ok := parseData["follower_id"].(float64)
 			if !ok {
-				fmt.Println("Erreur de recuperation de donnee")
+				log.Println("Erreur de recuperation de donnee", ok)
 				return
 			}
-			fmt.Println("followerId", followerId)
 			followedId, ok := parseData["followed_id"].(float64)
 			if !ok {
-				fmt.Println("Erreur de recuperation de donnee")
+				log.Println("Erreur de recuperation de donnee")
 				return
 			}
-			fmt.Println("followedId", followedId)
-			fmt.Println("database", Db.Ping())
 			err = joingroup.InsertFollowNotification(int(followerId), int(followedId), Db)
 			if err != nil {
-				fmt.Println("Error inserting", err.Error())
+				log.Println("Error inserting", err.Error())
 			}
 		}
 
@@ -689,7 +633,6 @@ func (client *WSClient) messageWriter() {
 				return
 			}
 			err = client.WSCoon.WriteMessage(websocket.TextMessage, data)
-			// fmt.Println(string(data))
 			if err != nil {
 				return
 			}

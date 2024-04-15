@@ -13,7 +13,6 @@ const Page = () => {
   const token = localStorage.getItem("token") || null;
   if (token == null) router.push("/");
   const sessionId = session?.session["user_id"];
-  console.log("i got session => ", sessionId);
   return (
     sessionId != null && (
       <div className="">

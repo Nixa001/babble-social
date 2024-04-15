@@ -1,13 +1,13 @@
 "use client";
+import { getSessionUser } from "@/app/_lib/utils";
+import { WebSocketContext } from "@/app/_lib/websocket";
 import { logoutUser } from "@/app/api/api";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import React, { useContext, useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AiFillMessage } from "react-icons/ai";
 import { FaUserGroup } from "react-icons/fa6";
 import { GoHomeFill } from "react-icons/go";
-import { getSessionUser } from "@/app/_lib/utils";
-import { WebSocketContext } from "@/app/_lib/websocket";
 import {
   IoLogOut,
   IoNotifications,
@@ -28,20 +28,17 @@ function Navbar() {
     router = useRouter();
 
   const handleLogout = async () => {
-    console.log("logout");
     const token = localStorage.getItem("token");
     try {
       const response = await logoutUser(token);
-      console.log(response);
       if (!response.error) {
-        console.log(response);
         localStorage.removeItem("token");
         router.push("/");
       } else {
-        console.log(response.error);
+        console.error("Failed to log out:", response.error);
       }
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   };
 
@@ -54,7 +51,6 @@ function Navbar() {
         const userData = await getSessionUser();
         setUser(userData);
         userID = userData.id;
-        console.log("userID: ", userData.id);
       } catch (error) {
         console.error("Failed to fetch user session:", error);
       }

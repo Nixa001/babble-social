@@ -4,6 +4,7 @@ import (
 	"backend/server/cors"
 	"backend/server/ws"
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/gorilla/websocket"
@@ -30,13 +31,11 @@ func WSHandler(w http.ResponseWriter, r *http.Request) {
 
 	conn, err := upgrader.Upgrade(w, r, nil) // Utilisez l'Upgrader configuré
 	if err != nil {
-		fmt.Println(err)
+		log.Println(err)
 		return
 	}
 	// defer conn.Close()
-	// fmt.Println("userSession: ", userSession)
 
 	ws.WSHub.AddClient(conn, userSession.Email, token, r)
-	fmt.Println("aksina")
 
 }

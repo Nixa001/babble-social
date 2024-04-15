@@ -9,6 +9,7 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"log"
 	"net/http"
 	"strconv"
 )
@@ -18,14 +19,10 @@ import (
 func GetGroups(w http.ResponseWriter, r *http.Request) {
 	userID, err := service.AuthServ.VerifyToken(r)
 	if err != nil {
-		fmt.Println("Error verifying ", err.Error())
+		log.Println("Error verifying ", err.Error())
 		return
 	}
-	// user := handler.UserInSession(w, r)
-	// fmt.Println("User ==== ", user)
-	// fmt.Println("666666666666", userID.User_id)
 
-	// userID.User_id = 3
 	cors.SetCors(&w)
 	var db = seed.CreateDB()
 	defer db.Close()
@@ -127,7 +124,6 @@ func filterGroups(db *sql.DB, joined []int, all []models.Group, userID int) ([]m
 			group.Href = "/home/groups/group_id=" + groupId
 			Groups = append(Groups, group)
 		}
-		// fmt.Println(group)
 	}
 	return filteredGroups, Groups
 }

@@ -49,7 +49,7 @@ func GetGroup(w http.ResponseWriter, r *http.Request) {
 
 	groupId, err := GetGroupIDFromRequest(w, r)
 	if err != nil {
-		fmt.Println(err)
+		log.Println("Error to recup group by Idgroup: ", err)
 		return
 	}
 	session, err := service.AuthServ.VerifyToken(r)
@@ -66,24 +66,24 @@ func GetGroup(w http.ResponseWriter, r *http.Request) {
 	userId := session.User_id
 	allPosts, err := service.PostServ.FetchPostGroup(groupId)
 	if err != nil {
-		fmt.Println(err)
+		log.Println("Error to fetch Post Group: ", err)
 		return
 	}
 
 	members, err := getMembers(db, groupId)
 	if err != nil {
-		fmt.Println(err)
+		log.Println("Error to get Members Group by IdGroup", err)
 		return
 	}
 
 	groupData, err := getInfoGroup(db, groupId)
 	if err != nil {
-		fmt.Println(err)
+		log.Println("Error to get InfoGroup by IdGroup", err)
 		return
 	}
 	followers, err := getFollowers(db, userId)
 	if err != nil {
-		fmt.Println(err)
+		log.Println("Error to get followers by userId: ", err)
 		return
 	}
 	events, eventJoined, err := GetEvent(db, groupId, userId)
@@ -123,7 +123,7 @@ func GetGroupIDFromRequest(w http.ResponseWriter, r *http.Request) (int, error) 
 
 	groupID, err := strconv.Atoi(id)
 	if err != nil {
-		fmt.Println("Invalid Id")
+		log.Println("Invalid Id: ", err)
 		return 0, fmt.Errorf("invalid group ID")
 	}
 
@@ -179,7 +179,7 @@ func GetEvent(db *sql.DB, groupID, userID int) ([]models.Event, []models.Event, 
 	var eventsJoined []models.Event
 	events_joined_id, err := GetEventJoinedID(db, userID, groupID)
 	if err != nil {
-		fmt.Println("error on GetEventJoined", err)
+		log.Println("Error on GetEventJoined", err)
 	}
 
 	query := `
@@ -207,7 +207,6 @@ func GetEvent(db *sql.DB, groupID, userID int) ([]models.Event, []models.Event, 
 		} else {
 			events = append(events, event)
 		}
-		// fmt.Println("event ", events)
 	}
 
 	return events, eventsJoined, nil
