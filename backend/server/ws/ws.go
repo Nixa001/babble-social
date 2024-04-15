@@ -456,7 +456,7 @@ func (client *WSClient) messageReader(r *http.Request) {
 				From: client.Email,
 				Type: eventType,
 				Data: dataSend,
-				To:   string(idAdminGroup),
+				To:   string(rune(idAdminGroup)),
 			}
 			WSHub.HandleEvent(wsEvent)
 

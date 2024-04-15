@@ -52,11 +52,6 @@ func InsertNotification(idGroup int, notification_type string, user_id_sender in
 
 		defer stm.Close()
 
-		if err != nil {
-			fmt.Println("Erreur lors de la recuperation de l'id_user_created_group", err)
-			return err
-		}
-
 		date := time.Now()
 		formattedDateTime := date.Format("2006-01-02 15:04:05")
 		_, err = stm.Exec(notification_type, 0, user_id_sender, id_user_created_group, idGroup, formattedDateTime)
@@ -110,7 +105,7 @@ func CheckNotifAndType(db *sql.DB, groupID int, userID int, notificationType str
 
 func AcceptOrNo(db *sql.DB, user_id_sender, user_id_receiver, id_group int, val string) bool {
 	stm := `
-		UPDATE notifications SET status = ? WHERE user_id_sender = ? AND user_id_receiver = ? AND id_group = ? 
+		UPDATE notifications SET status = ? WHERE user_id_sender = ? AND user_id_receiver = ? AND id_group = ?
 	`
 	// Prépare la requête à partir de la connexion à la base de données
 	query, err := db.Prepare(stm)
