@@ -1,5 +1,6 @@
 "use client";
 
+import { WebSocketContext } from "@/app/_lib/websocket.js";
 import {
   followUser,
   getProfileById,
@@ -7,7 +8,7 @@ import {
   unfollowUser,
 } from "@/app/api/api.js";
 import { useSearchParams } from "next/navigation.js";
-import { useState } from "react";
+import { useContext, useState } from "react";
 import { useQuery } from "react-query";
 import DisplayPost from "../../home/displayPost.js";
 import { ShowFollowers } from "../modals/showfollowers.js";
@@ -20,6 +21,7 @@ export default function Profile({ sessionId, sessionToken }) {
   const [followers, setFollowers] = useState([]);
   const [followings, setFollowings] = useState([]);
   const [posts, setPosts] = useState([]);
+  const { sendMessage } = useContext(WebSocketContext);
   //recup id from url
   const searchParams = useSearchParams();
   let userid = searchParams.get("id");
@@ -65,16 +67,21 @@ export default function Profile({ sessionId, sessionToken }) {
           console.log("error following", error);
         }
       } else {
-        try {
-          const response = followUser(id, sessionId, sessionToken);
-          if (response.error) {
-            console.log("error following");
-          } else {
-            console.log("followed");
-          }
-        } catch (error) {
-          console.log("error following", error);
-        }
+        sendMessage({
+          type: "follow",
+          followed_id: id,
+          follower_id: sessionId,
+        });
+        // try {
+        //   const response = followUser(id, sessionId, sessionToken);
+        //   if (response.error) {
+        //     console.log("error following");
+        //   } else {
+        //     console.log("followed");
+        //   }
+        // } catch (error) {
+        //   console.log("error following", error);
+        // }
       }
     }
   };

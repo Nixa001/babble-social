@@ -30,7 +30,7 @@ func init() {
 }
 
 func NewDatabase() *sql.DB {
-	db, err := sql.Open("sqlite3", "/database/social_network.db")
+	db, err := sql.Open("sqlite3", "../backend/database/social_network.db")
 	if err != nil {
 		log.Fatal("Error opening database: ", err)
 	}

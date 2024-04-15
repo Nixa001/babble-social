@@ -201,7 +201,14 @@ func (h *Hub) HandleEvent(eventPayload WSPaylaod) {
 			}
 			return true
 		})
-
+	case "follow":
+		h.Clients.Range(func(key, value interface{}) bool {
+			client := value.(*WSClient)
+			if client.Email == eventPayload.To {
+				client.OutgoingMsg <- eventPayload
+			}
+			return true
+		})
 	}
 }
 func (wsHub *Hub) AddClient(coon *websocket.Conn, Email string, sessionToken string) {
@@ -514,7 +521,35 @@ func (client *WSClient) messageReader() {
 				fmt.Println("cannot convert id group to int")
 				return
 			}
-
+		case "follow":
+			fmt.Println("follow")
+			fmt.Println("wsEvent", wsEvent)
+			jsonData, err := json.Marshal(wsEvent.Data)
+			if err != nil {
+				fmt.Println("Erreur de conversion en json", err)
+				return
+			}
+			var parseData map[string]interface{}
+			if err := json.Unmarshal(jsonData, &parseData); err != nil {
+				fmt.Println("Erreur de conversion en json", err)
+			}
+			followerId, ok := parseData["follower_id"].(float64)
+			if !ok {
+				fmt.Println("Erreur de recuperation de donnee")
+				return
+			}
+			fmt.Println("followerId", followerId)
+			followedId, ok := parseData["followed_id"].(float64)
+			if !ok {
+				fmt.Println("Erreur de recuperation de donnee")
+				return
+			}
+			fmt.Println("followedId", followedId)
+			fmt.Println("database", Db.Ping())
+			err = joingroup.InsertFollowNotification(int(followerId), int(followedId), Db)
+			if err != nil {
+				fmt.Println("Error inserting", err.Error())
+			}
 		}
 
 	}
