@@ -54,10 +54,10 @@ export const displayNotification = (notificationData, sendMessage) => {
       >
         {/* <FaUserGroup className='border rounded-full p-2 w-10 h-10' /> */}
         <div className="flex">
-          {notification.type === "SuggestFriend"
+          {/* {notification.type === "SuggestFriend"
             ? notification.from +
               " Suggests you join this group " +
-              notification.date // je dois definire les valeur qui doivent afficher ici
+              notification.type // je dois definire les valeur qui doivent afficher ici
             : ""}
           {notification.type === "JoinGroup" // je dois definire les valeur qui doivent afficher ici
             ? notification.to + " want to join  " + notification.date
@@ -65,6 +65,10 @@ export const displayNotification = (notificationData, sendMessage) => {
           {notification.type === "Follow"
             ? notification.to + " want to follow you " // je dois definire les valeur qui doivent afficher ici
             : ""}
+            {notification.type === "message"
+            ? notification.type + " want to follow you " // je dois definire les valeur qui doivent afficher ici
+            : ""} */}
+            {"Notitication type: "+ notification.type + " Name sender: " + notification.first_name + " " + notification.last_name + " @"+notification.user_name}
           {/* <p className="font-semibold ">{  notification.from}</p> */}
         </div>
         <div className="flex gap-1">
@@ -77,6 +81,7 @@ export const displayNotification = (notificationData, sendMessage) => {
                 groupeId: notification.group_id,
                 id_user_sender: notification.user_id_sender,
                 id_user_receiver: notification.user_id_received,
+                typeNotification: notification.type,
                 response: "going",
               });
               // going(notification.id, sendMessage, notification.group_id);
@@ -104,6 +109,7 @@ export const displayNotification = (notificationData, sendMessage) => {
                 groupeId: notification.group_id,
                 id_user_sender: notification.user_id_sender,
                 id_user_receiver: notification.id_user_receiver,
+                typeNotification: notification.type,
                 response: "notGoing",
               });
               // notGoing(notification.id, sendMessage, notification.group_id);type: notification.type });

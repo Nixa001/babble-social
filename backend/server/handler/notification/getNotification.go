@@ -9,10 +9,12 @@ import (
 )
 
 func GetNotification(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("blabalanbakkahl ")
 	cors.SetCors(&w)
 	// db := database.NewDatabase()
-	listeNotificaton := joingroup.ListNotification(r)
+	listeNotificaton, err := joingroup.NotificationUserData(r)
+	if err != nil {
+		fmt.Println("Erreur check notification ", err)
+	}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(listeNotificaton)
 }

@@ -16,7 +16,6 @@ func ListNotification(r *http.Request) []models.Notification {
 		return nil
 	}
 	db := database.NewDatabase()
-	fmt.Println("-------------------------", id_user.User_id)
 	stm := `
 		SELECT * FROM notifications WHERE user_id_receiver = ? AND status = ?
 	`
@@ -44,7 +43,8 @@ func ListNotification(r *http.Request) []models.Notification {
 		}
 		notifications = append(notifications, notification)
 	}
-	fmt.Println("List notification ======", notifications)
+	
+
 	return notifications
 }
 

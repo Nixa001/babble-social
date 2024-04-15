@@ -69,10 +69,7 @@ func (a *AuthService) VerifyTokenStr(token string) (userID int, err error) {
 }
 
 func (a *AuthService) VerifyToken(r *http.Request) (session models.Session, err error) {
-	token := r.Header.Get("Authorization")
-	fmt.Println("VerifyToken u8token)i9u8", token)
-	
-
+	token := r.Header.Get("Authorization")	
 	if token == "" {
 		token, err = url.QueryUnescape(r.URL.Query().Get("token"))
 		if err != nil {
@@ -200,7 +197,6 @@ func (a *AuthService) UpdateProfileType(id int, profileType string) error {
 	} else {
 		user.User_type = "public"
 	}
-	fmt.Println("User:", user)
 	err = a.UserRepo.UpdateProfileType(user)
 	if err != nil {
 		return err

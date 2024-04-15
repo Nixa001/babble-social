@@ -25,9 +25,6 @@ func RecupeIdAdminGroup(idGroup int, db *sql.DB) (int, error) {
 	if err != nil {
 		return 0, err
 	}
-
-	fmt.Println("id user = ", id_user_greate_group)
-
 	return id_user_greate_group, nil
 }
 
@@ -36,9 +33,7 @@ func InsertNotification(idGroup int, notification_type string, user_id_sender in
 	if err != nil {
 		log.Fatal("Erreur lors de la recuperation de l'id de l'admin group ", err)
 	}
-	// a determiner au niveau de la session
 	checkNotif, _ := CheckNotifAndType(db, idGroup, user_id_sender, notification_type)
-	fmt.Println("checkNotif = ", checkNotif)
 	if !checkNotif {
 
 		req := `
@@ -59,8 +54,6 @@ func InsertNotification(idGroup int, notification_type string, user_id_sender in
 			fmt.Println("Erreur lors de l'execution de la requete inserte dans la base ", err)
 			return err
 		}
-
-		// fmt.Println("Notification insertion success")
 	} else {
 		fmt.Println("Vous avez une demande en cours")
 	}
@@ -71,7 +64,6 @@ func CheckJoinNotification(id_user_created_group int, id_user_connected int, idG
 	req := `
         SELECT id, status FROM notifications WHERE user_id_sender = ? AND user_id_receiver = ? AND id_group = ?
     `
-
 	stm, err := db.Prepare(req)
 	if err != nil {
 		fmt.Println("Error preparing request checkJoinNotification: ", err)
@@ -88,9 +80,6 @@ func CheckJoinNotification(id_user_created_group int, id_user_connected int, idG
 		// fmt.Println("Error querying checkJoinNotification: ", err)
 		return 0, 0
 	}
-
-	fmt.Println("Il exsit dejat une demande de rejoindre ce groupe")
-	fmt.Println("Id notification ", id_notification)
 	return id_notification, state
 }
 
@@ -107,7 +96,6 @@ func AcceptOrNo(db *sql.DB, user_id_sender, user_id_receiver, id_group int, val 
 	stm := `
 		UPDATE notifications SET status = ? WHERE user_id_sender = ? AND user_id_receiver = ? AND id_group = ?
 	`
-	// Prépare la requête à partir de la connexion à la base de données
 	query, err := db.Prepare(stm)
 	if err != nil {
 		fmt.Println("Erreur lors de la préparation de la requête: ", err)
@@ -150,7 +138,6 @@ func InsertFollowNotification(followerId, followedId int, db *sql.DB) error {
 		fmt.Println("Erreur checked ", err.Error())
 		return err
 	}
-	// fmt.Println("====", checkNotif)
 	if !checkNotif {
 		fmt.Println("CheckNotifExist ")
 		check, _ := CheckJoinFollowNotification(followerId, followedId, db)
@@ -206,7 +193,6 @@ func CheckJoinFollowNotification(followerId, followedId int, db *sql.DB) (int, i
 	}
 
 	fmt.Println("Il existe dejà une demande de follow")
-	fmt.Println("Id notification ", id_notification)
 	return id_notification, state
 }
 
