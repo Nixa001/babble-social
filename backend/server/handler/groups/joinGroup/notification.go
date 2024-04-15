@@ -37,10 +37,6 @@ func InsertNotification(idGroup int, notification_type string, user_id_sender in
 		log.Fatal("Erreur lors de la recuperation de l'id de l'admin group ", err)
 	}
 	// a determiner au niveau de la session
-
-	fmt.Println("type = ", notification_type)
-	fmt.Println("idGroup = ", idGroup)
-	fmt.Println("user_id_sender =", user_id_sender)
 	checkNotif, _ := CheckNotifAndType(db, idGroup, user_id_sender, notification_type)
 	fmt.Println("checkNotif = ", checkNotif)
 	if !checkNotif {

@@ -49,7 +49,8 @@ func (a *AuthService) CheckCredentials(email, password string) (models.User, err
 
 func (a *AuthService) VerifyToken(r *http.Request) (session models.Session, err error) {
 	token := r.Header.Get("Authorization")
-	fmt.Println("VerifyToken u8u9i9u8", token)
+	fmt.Println("VerifyToken u8token)i9u8", token)
+	
 
 	if token == "" {
 		token, err = url.QueryUnescape(r.URL.Query().Get("token"))

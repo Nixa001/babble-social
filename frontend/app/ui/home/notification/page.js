@@ -4,37 +4,16 @@ import { WebSocketContext } from "@/app/_lib/websocket";
 import { useContext, useState } from "react";
 // import { FaP } from "react-icons/fa6";
 import { useQuery } from "react-query";
-// import Notification from './Notification';
 
-// setTimeout(() => {
-//   sendMessage({ type: "notification", message: "List Notifications" });
-//   readMessages();
-// }, 500);
-
-// const handleLoginJoinMessage = () => {
-//   const joinMessage = messages.find(
-//     (message) =>
-//       message.Type === "notification" && message.Data.id_group === 5
-//   );
-//   if (joinMessage) {
-//     messages.map((message) => {
-//       if (message.Data.id_group === id) {
-//         console.log("Message ", message);
-//         return;
-//       }
-//     });
-//   }
-// };
-// // console.log(messages);
-// // useEffect(() => {
-// handleLoginJoinMessage();
 const Notification = () => {
   const { sendMessage, readMessages, messages } = useContext(WebSocketContext);
   const [notificationData, setNotificationData] = useState([]);
 
   const fetchNotifications = async () => {
     try {
-      const response = await fetch("http://localhost:8080/notifications");
+      let token = localStorage.getItem("token");
+      // console.log(token)
+      const response = await fetch(`http://localhost:8080/notifications?token=${token}`);
       const data = await response.json();
       return data;
     } catch (error) {
@@ -67,7 +46,7 @@ const Notification = () => {
 export const displayNotification = (notificationData, sendMessage) => {
   return notificationData?.map((notification) => {
     // console.log("notification = = = ", notification);
-    console.log(notification);
+    // console.log(notification);
     return (
       <div
         key={notification.id}

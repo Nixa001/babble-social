@@ -1,12 +1,21 @@
 package joingroup
 
 import (
+	"backend/database"
 	"backend/models"
-	"database/sql"
+	"backend/server/service"
 	"fmt"
+	"net/http"
 )
 
-func ListNotification(id_user int, db *sql.DB) []models.Notification {
+func ListNotification(r *http.Request) []models.Notification {
+	id_user, err := service.AuthServ.VerifyToken(r)
+	if err != nil {
+		fmt.Println("Error verifying ", err.Error())
+		return nil
+	}
+	db := database.NewDatabase()
+	fmt.Println("-------------------------", id_user.User_id)
 	stm := `
 		SELECT * FROM notifications WHERE user_id_receiver = ? AND status = ?
 	`
@@ -16,7 +25,7 @@ func ListNotification(id_user int, db *sql.DB) []models.Notification {
 		return nil
 	}
 	defer req.Close()
-	rows, err := req.Query(id_user, 0)
+	rows, err := req.Query(id_user.User_id, 0)
 	if err != nil {
 		fmt.Println("Error executing query: ", err.Error())
 		return nil
@@ -32,6 +41,6 @@ func ListNotification(id_user int, db *sql.DB) []models.Notification {
 		}
 		notifications = append(notifications, notification)
 	}
-	fmt.Println("======", notifications)
+	fmt.Println("List notification ======", notifications)
 	return notifications
 }

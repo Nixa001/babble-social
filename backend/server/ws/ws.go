@@ -4,7 +4,6 @@ import (
 	// "backend/server/handler"
 
 	"backend/database"
-	"backend/models"
 	"backend/server/handler/groups/events"
 	joingroup "backend/server/handler/groups/joinGroup"
 	"backend/server/service"
@@ -243,6 +242,7 @@ func (wsHub *Hub) AddClient(coon *websocket.Conn, Email string, sessionToken str
 func (client *WSClient) messageReader(r *http.Request) {
 
 	userIdConnected, err := service.AuthServ.VerifyToken(r)
+	fmt.Println("User connected : ==== ", userIdConnected)
 	if err != nil {
 		fmt.Println("verify token error", err)
 	}
@@ -551,29 +551,30 @@ func (client *WSClient) messageReader(r *http.Request) {
 				fmt.Println("Error inserting notification ", err.Error())
 				return
 			}
-		case "notification":
+		// case "notification":
+		// 	fmt.Println("Notif")
+		// 	notification := joingroup.ListNotification(userIdConnected.User_id, Db)
+		// 	fmt.Println("mmmmmmmmmmmmmmm = ", notification)
+		// 	if notification != nil {
+		// 		dataSend := struct {
+		// 			Message []models.Notification `json:"message"`
+		// 			Type    string                `json:"type"`
+		// 			To      int                   `json:"to"`
+		// 		}{
+		// 			Message: notification,
+		// 			Type:    "Notification",
+		// 			To:      userIdConnected.User_id,
+		// 		}
 
-			notification := joingroup.ListNotification(userIdConnected.User_id, Db)
-			if notification != nil {
-				dataSend := struct {
-					Message []models.Notification `json:"message"`
-					Type    string                `json:"type"`
-					To      int                   `json:"to"`
-				}{
-					Message: notification,
-					Type:    "Notification",
-					To:      userIdConnected.User_id,
-				}
-
-				wsEvent = WSPaylaod{
-					From: "",
-					Type: eventType,
-					Data: dataSend,
-					To:   "Admin group",
-				}
-				fmt.Println("Notification ", wsEvent)
-				WSHub.HandleEvent(wsEvent)
-			}
+		// 		wsEvent = WSPaylaod{
+		// 			From: "",
+		// 			Type: eventType,
+		// 			Data: dataSend,
+		// 			To:   "Admin group",
+		// 		}
+		// 		fmt.Println("Notification ", wsEvent)
+		// 		WSHub.HandleEvent(wsEvent)
+		// 	}
 		case "ResponceNotification":
 			fmt.Println("--- Notification responce ---")
 			jsonData, err := json.Marshal(wsEvent.Data)

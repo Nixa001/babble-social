@@ -20,9 +20,10 @@ func GetGroups(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	// user := handler.UserInSession(w, r)
-	fmt.Println("666666666666", userID.User_id)
+	// fmt.Println("User ==== ", user)
+	// fmt.Println("666666666666", userID.User_id)
 
-	userID.User_id = 4
+	// userID.User_id = 3
 	cors.SetCors(&w)
 	var db = seed.CreateDB()
 	defer db.Close()

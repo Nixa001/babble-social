@@ -14,7 +14,9 @@ const Groups = () => {
 
   const fetchGroups = async () => {
     try {
-      const response = await fetch("http://localhost:8080/groups");
+      let token = localStorage.getItem("token")
+      console.log(token)
+      const response = await fetch(`http://localhost:8080/groups?token=${token}`);
       const data = await response.json();
       return { groupJoined: data[0], groupData: data[1] };
     } catch (error) {

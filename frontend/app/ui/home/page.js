@@ -72,27 +72,27 @@ const onProfileClick = () => {
   alert("profile disp");
 };
 
-let postData = {
-  id: 3,
-  content: "This is the content of the third post.",
-  media: "imagepost.jpg",
-  date: "2024-03-05",
-  userId: 1,
-  fullname: "Madike Yade",
-  username: "dickss",
-  user: {
-    id: 1,
-    first_name: "Madike",
-    last_name: "Yade",
-    user_name: "dickss",
-    gender: "Male",
-    user_type: "private",
-    birth_date: "2000-01-01",
-    avatar: "profilibg.jpg",
-    about_me: "about me...",
-    password: "1234",
-    email: "dickss@gmail.com",
-  },
-  groupId: 0,
-  privacy: "almost",
-};
+// let postData = {
+//   id: 3,
+//   content: "This is the content of the third post.",
+//   media: "imagepost.jpg",
+//   date: "2024-03-05",
+//   userId: 1,
+//   fullname: "Madike Yade",
+//   username: "dickss",
+//   user: {
+//     id: 1,
+//     first_name: "Madike",
+//     last_name: "Yade",
+//     user_name: "dickss",
+//     gender: "Male",
+//     user_type: "private",
+//     birth_date: "2000-01-01",
+//     avatar: "profilibg.jpg",
+//     about_me: "about me...",
+//     password: "1234",
+//     email: "dickss@gmail.com",
+//   },
+//   groupId: 0,
+//   privacy: "almost",
+// };
