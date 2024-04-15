@@ -1,7 +1,7 @@
 package main
 
 import (
-	"backend/server"
+	server "backend/app"
 	"backend/utils"
 )
 

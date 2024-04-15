@@ -53,27 +53,27 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 		if err := utils.IsValidEmail(strings.TrimSpace(formatedUser.Email)); err != nil {
 			log.Println("Invalid email", err)
 			w.WriteHeader(http.StatusBadRequest)
-			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid email"})
+			json.NewEncoder(w).Encode(map[string]interface{}{"error": "Invalid email" + err.Error()})
 			return
 		} else if err := utils.VerifyName(strings.TrimSpace(formatedUser.First_name)); err != nil {
 			log.Println("Invalid first name", err)
 			w.WriteHeader(http.StatusBadRequest)
-			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid first name"})
+			json.NewEncoder(w).Encode(map[string]interface{}{"error": "Invalid first name" + err.Error()})
 			return
 		} else if err := utils.VerifyName(strings.TrimSpace(formatedUser.Last_name)); err != nil {
 			log.Println("Invalid last name", err)
 			w.WriteHeader(http.StatusBadRequest)
-			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid last name"})
+			json.NewEncoder(w).Encode(map[string]interface{}{"error": "Invalid last name" + err.Error()})
 			return
 		} else if err := utils.VerifyUsername(formatedUser.User_name); err != nil {
 			log.Println("Invalid username", err)
 			w.WriteHeader(http.StatusBadRequest)
-			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid username"})
+			json.NewEncoder(w).Encode(map[string]interface{}{"error": "Invalid username:" + err.Error()})
 			return
 		} else if err := utils.VerifyAboutMe(formatedUser.About_me); err != nil {
 			log.Println("Invalid about me", err)
 			w.WriteHeader(http.StatusBadRequest)
-			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid about me"})
+			json.NewEncoder(w).Encode(map[string]interface{}{"error": "Invalid about me" + err.Error()})
 			return
 		}
 		formatedUser.User_type = "public"
@@ -81,39 +81,29 @@ func SignUpHandler(w http.ResponseWriter, r *http.Request) {
 		if err != nil {
 			log.Println("Error creating user", err)
 			w.WriteHeader(http.StatusBadRequest)
-			json.NewEncoder(w).Encode(map[string]string{"error": err.Error()})
+			json.NewEncoder(w).Encode(map[string]interface{}{"error": err.Error()})
 			return
 		}
 		user, err := service.AuthServ.UserRepo.GetUserByEmail(formatedUser.Email)
 		if err != nil {
 			log.Println("Handler Error getting user", err)
 			w.WriteHeader(http.StatusInternalServerError)
-			json.NewEncoder(w).Encode(map[string]string{"error": "Internal server error"})
+			json.NewEncoder(w).Encode(map[string]interface{}{"error": "Error getting user" + err.Error()})
 			return
 		}
 		session, err := service.AuthServ.CreateSession(user)
 		if err != nil {
 			log.Println("Error creating session", err)
 			w.WriteHeader(http.StatusInternalServerError)
-			json.NewEncoder(w).Encode(map[string]string{"error": "Internal server error"})
+			json.NewEncoder(w).Encode(map[string]interface{}{"error": "Error creating session" + err.Error()})
 			return
 		}
-		// var newEvent = ws.WSPaylaod{
-		// 	From: user.Email,
-		// 	Type: ws.WS_JOIN_EVENT,
-		// 	Data: map[string]any{
-		// 		"username":     user.Email,
-		// 		"status":       "offline",
-		// 		"unread_count": 0,
-		// 	},
-		// }
-		// ws.WSHub.HandleEvent(newEvent)
 		w.WriteHeader(http.StatusOK)
 		log.Printf("User %s created successfully", user.Email)
 		json.NewEncoder(w).Encode(map[string]any{"message": "success", "token": session.Token, "user": user, "error": "ok"})
 	default:
 		w.WriteHeader(http.StatusMethodNotAllowed)
-		json.NewEncoder(w).Encode(map[string]string{"error": "Method not allowed"})
+		json.NewEncoder(w).Encode(map[string]interface{}{"error": "Method not allowed" + r.Method})
 	}
 	// ...
 }

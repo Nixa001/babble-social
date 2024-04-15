@@ -15,15 +15,14 @@ function Register() {
     try {
       let data = new FormData(e.target);
       const response = await registerUser(data);
-      console.log("response: ", response);
-      if (response.data.error === "ok") {
-        console.log("in ok");
+      if (response.error == "ok") {
         router.push("/login");
       } else {
-        setErrorMessage(response.error);
+        console.log(response.error.error);
+        setErrorMessage(response.error.error);
       }
     } catch (error) {
-      setErrorMessage("An error occurred");
+      console.log("Something went wrong. Please try again.");
     }
 
     setPending(false);
@@ -55,13 +54,7 @@ function Register() {
             <img src="/assets/login/google.svg" alt="google" />
             <img src="/assets/login/githubb.svg" alt="github" />
           </div>
-          <p className="error_login_msg" />
-
-          <form
-            className="w-full flex flex-col gap-3"
-            onSubmit={handleSubmit}
-            data-form="login"
-          >
+          <form className="w-full flex flex-col gap-3" onSubmit={handleSubmit}>
             <input
               type="text"
               name="firstname"
@@ -113,6 +106,7 @@ function Register() {
               type="text"
               name="aboutme"
               placeholder="About me"
+              maxLength={1500}
               className="h-20 pt-6 rounded pl-2 border border-border_color text-bg resize-none"
             />
 

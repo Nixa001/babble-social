@@ -4,7 +4,6 @@ import (
 	"backend/server/cors"
 	"backend/server/service"
 	"encoding/json"
-	"fmt"
 	"io"
 	"log"
 	"net/http"
@@ -77,7 +76,6 @@ func ProfileHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func FollowHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Println("Follow handler")
 	cors.SetCors(&w)
 	if r.Method == http.MethodOptions {
 		w.WriteHeader(http.StatusOK)
@@ -93,7 +91,6 @@ func FollowHandler(w http.ResponseWriter, r *http.Request) {
 			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid credentials"})
 			return
 		}
-		fmt.Println("Content:", string(content))
 
 		err = json.Unmarshal(content, &credentials)
 		if err != nil {
@@ -102,7 +99,6 @@ func FollowHandler(w http.ResponseWriter, r *http.Request) {
 			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid credentials 0"})
 			return
 		}
-		fmt.Println("Credentials Follow:", credentials)
 		followerIDStr, followedIDStr := credentials["follower_id"], credentials["followed_id"]
 		followerID, err := strconv.Atoi(followerIDStr)
 		if err != nil {
@@ -161,21 +157,18 @@ func UnfollowHandler(w http.ResponseWriter, r *http.Request) {
 		followedIDStr, followerIDStr := credentials["followed_id"], credentials["follower_id"]
 		followedID, err := strconv.Atoi(followedIDStr)
 		if err != nil {
-			fmt.Println("Invalid credentials 2 :", err)
 			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid follower ID"})
 			return
 		}
 		followerID, err := strconv.Atoi(followerIDStr)
 		if err != nil {
-			fmt.Println("Invalid credentials 3 :", err)
 			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(map[string]string{"error": "Invalid following ID"})
 			return
 		}
 		err = service.AuthServ.UnfollowUser(followedID, followerID)
 		if err != nil {
-			fmt.Println("Failed to unfollow:", err)
 			w.WriteHeader(http.StatusBadRequest)
 			json.NewEncoder(w).Encode(map[string]string{"error": "Failed to unfollow"})
 			return

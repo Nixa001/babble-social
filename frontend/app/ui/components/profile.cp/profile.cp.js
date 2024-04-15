@@ -33,7 +33,7 @@ export default function Profile({ sessionId, sessionToken }) {
       console.log(data);
       setUser(data?.user);
       setFollowers(data?.followers);
-      setFollowings(data?.following);
+      setFollowings(data?.followings);
       setPosts(data?.posts);
     },
     onError: (error) => console.log("Query Profile error:", error),

@@ -101,6 +101,9 @@ func VerifyUsername(username string) error {
 
 func VerifyName(s string) error {
 	var maxChars = 25
+	if s == "" {
+		return fmt.Errorf("%v: as", s)
+	}
 	if len(s) > maxChars || !IsAlpha(s) {
 		return fmt.Errorf("%v: invalid name", s)
 	}

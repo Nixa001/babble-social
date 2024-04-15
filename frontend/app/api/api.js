@@ -47,18 +47,16 @@ export async function registerUser(formData) {
     method: "POST",
     body: formData,
   })
-    .then((response) => {
-      if (response.status === 401) {
-        return { error: "Invalid credentials." };
-      }
+    .then(async (response) => {
+      const json = await response.json();
       if (response.ok) {
-        return response.json().then((json) => ({ error: null, data: json }));
+        return { error: "ok", data: json };
       }
-      throw new Error("An error occurred.");
+      return { error: json.error };
     })
     .catch((error) => {
-      console.error(error);
-      return { error: "An error occurred. Please try again." };
+      console.log("ERROR CATCH", error);
+      return { error: error };
     });
 }
 export function useSession() {
@@ -136,7 +134,7 @@ export async function followUser(id, sessionId, token) {
 }
 
 export async function unfollowUser(id, sessionId, token) {
-  alert("unfollow")
+  alert("unfollow");
   try {
     const response = await fetch(`${NEXT_PUBLIC_API_URL}/unfollow?id=${id}`, {
       method: "POST",
