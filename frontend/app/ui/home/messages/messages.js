@@ -145,8 +145,6 @@ const Messages = () => {
             obj.message = selectedEmoji.native + " " + obj.message;
         }
         if (obj.message?.trim() !== "") {
-            console.log("idreceiver in message", idreceiver);
-            console.log("idgroupreceiver in message", idgroupreceiver);
             // Détermine le type de message en fonction de activeTab
             const messageType = activeTab === "group" ? "message-group-event" : "message-user-event";
             const receiverId = messageType === "message-group-event" ? idgroupreceiver : idreceiver;

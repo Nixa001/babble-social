@@ -1,4 +1,3 @@
-import { useSearchParams } from 'next/navigation';
 import React, { createContext, useState, useEffect } from 'react';
 import { activeDialogue } from '../ui/home/messages/messages.js';
 
@@ -54,11 +53,6 @@ export const WebSocketProvider = ({ children }) => {
   }, [allMessages])
   useEffect(() => {
   }, [onlineUser])
-  const search = useSearchParams()
-  let idUserUrl = search.get('id')
-  // console.log("idUserUrl: " + idUserUrl);
-  let idGroupUrl = search.get('idGroup')
-  // console.log("idGroupUrl: " + idGroupUrl);
 
   //Read message from server and send it 
 
@@ -72,10 +66,7 @@ export const WebSocketProvider = ({ children }) => {
     }
     if (data.Type === "idGroup-receiver-event") {
       setAllMessages(data.Data);
-    }
-    
-    // cette partie permet de broadcaster le nouveau message au client conserner (message entre user)
-
+    } 
     if (data.Type === "message-user-event") {
       if ((activeDialogue.type === "user" && activeDialogue.id === data.Data.user_id_receiver) ||
           (activeDialogue.type === "user" && activeDialogue.id === data.Data.user_id_sender)) {
@@ -83,7 +74,7 @@ export const WebSocketProvider = ({ children }) => {
       }
     }
     if (data.Type === "message-group-event") {
-      if (activeDialogue.type === "group" && activeDialogue.id === data.Data.data.receiverId) {
+      if (activeDialogue.id === data.Data.group_id_receiver) {
         setAllMessages(prevMessages => Array.isArray(prevMessages) ? [...prevMessages, data.Data] : [data.Data]);
       }
     }
