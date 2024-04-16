@@ -17,28 +17,29 @@ type PostRepository struct {
 
 const (
 	GetPostQuery = `
-SELECT 
+SELECT
     p.id AS post_id,
     p.content AS post_content,
     p.media AS post_media,
     p.date AS post_date,
     p.user_id AS post_user_id,
+	p.privacy,
 	u.avatar as avatar,
     u.user_name as username,
     concat (u.first_name, " ", u.last_name) as full_name,
     COUNT(DISTINCT c.id) AS comment_count,
 	GROUP_CONCAT(DISTINCT cat.category) AS categories
-FROM 
-    posts AS p,
-	users AS u
-LEFT JOIN 
+FROM
+    posts AS p
+LEFT JOIN
     comment AS c ON p.id = c.post_id,
-	categories AS cat ON p.id = cat.post_id
-WHERE 
+	categories AS cat ON p.id = cat.post_id,
+	users AS u ON p.user_id = u.id
+WHERE
     (
         p.privacy = 'public'
         OR (
-            p.privacy = 'Private' AND (
+            p.privacy = 'private' AND (
                 p.user_id = ? -- Post creator
                 OR EXISTS (
                     SELECT 1
@@ -46,12 +47,8 @@ WHERE
                     WHERE user_id_followed = p.user_id
                     AND user_id_follower = ?
                 )
-                OR EXISTS (
-                    SELECT 1
-                    FROM users_followers
-                    WHERE user_id_follower = p.user_id
-                    AND user_id_followed = ?
-                )
+                OR p.user_id = ? --? is the user_id of the logged in user
+
             )
         )
         OR (
@@ -63,62 +60,89 @@ WHERE
             )
         )
     )
+	AND p.group_id = 0
 	GROUP BY p.id, p.content, p.media, p.date, p.user_id
 	ORDER BY p.timestamp DESC;
 `
 	GetPostGroupQuery = `
-SELECT 
+SELECT
+    p.id AS post_id,
+    p.content AS post_content,
+    p.media AS post_media,
+    p.date AS post_date,
+	u.avatar as avatar,
+    u.user_name as username,
+    concat (u.first_name, " ", u.last_name) as full_name,
+    COUNT(DISTINCT c.id) AS comment_count
+FROM
+    posts AS p
+LEFT JOIN
+    comment AS c ON p.id = c.post_id,
+	users AS u ON p.user_id = u.id
+WHERE group_id = ?
+	GROUP BY p.id, p.content, p.media, p.date, p.user_id
+	ORDER BY p.timestamp DESC;
+`
+	GetProfilePost = `
+SELECT
     p.id AS post_id,
     p.content AS post_content,
     p.media AS post_media,
     p.date AS post_date,
     p.user_id AS post_user_id,
-	u.avatar as avatar,
+    p.privacy,
+    u.avatar as avatar,
     u.user_name as username,
     concat (u.first_name, " ", u.last_name) as full_name,
-    COUNT(DISTINCT c.id) AS comment_count
-FROM 
-    posts AS p,
-	users AS u
-LEFT JOIN 
-    comment AS c ON p.id = c.post_id
-WHERE group_id = ?
-	GROUP BY p.id, p.content, p.media, p.date, p.user_id
-	ORDER BY p.timestamp DESC;
-`
-	GetOnePostQuery = `
-SELECT
+    COUNT(DISTINCT c.id) AS comment_count,
+    GROUP_CONCAT(DISTINCT cat.category) AS categories
+FROM
+    posts AS p
+    LEFT JOIN comment AS c ON p.id = c.post_id,
+    categories AS cat ON p.id = cat.post_id,
+    users AS u ON  p.user_id=u.id
+WHERE
+p.user_id = ?
+AND
+    (
+        p.privacy = 'public'
+        OR (
+            p.privacy = 'private'
+            AND (
+                p.user_id = ? --? Post creator
+                OR EXISTS (
+                    SELECT
+                        1
+                    FROM
+                        users_followers
+                    WHERE
+                        user_id_followed = p.user_id
+                        AND user_id_follower = ? --?
+                )
+				OR p.user_id = ? --? id of logged user
+            )
+        )
+        OR (
+            p.privacy = 'almost'
+            AND EXISTS (
+                SELECT
+                    1
+                FROM
+                    viewers
+                WHERE
+                    user_id = ? --?
+                    AND post_id = p.id
+            )
+        )
+
+    )
+    AND p.group_id =0
+GROUP BY
     p.id,
     p.content,
     p.media,
     p.date,
-    p.user_id,
-    u.avatar,
-    u.user_name,
-    concat (u.first_name, " ", u.last_name),
-    COUNT(DISTINCT c.id),
-    GROUP_CONCAT(DISTINCT cat.category),
-    CASE
-    WHEN p.privacy ="public" THEN "public"
-    WHEN p.privacy ="private" THEN (
-         SELECT GROUP_CONCAT(user_id_follower) 
-            FROM users_followers 
-            WHERE user_id_followed = p.user_id 
-    )
-    WHEN p.privacy ="almost" THEN (
-        SELECT GROUP_CONCAT(user_id)
-            FROM viewers
-            WHERE post_id = p.id
-        )
-        ELSE NULL
-    END AS isPublic
-FROM
-    posts AS p
-LEFT JOIN comment AS c ON p.id = c.post_id,
-    categories AS cat ON p.id = cat.post_id,
-    users AS u ON u.id =  p.user_id
-WHERE p.id = ?;
-`
+    p.user_id;`
 )
 
 func (p *PostRepository) init() {
@@ -236,7 +260,7 @@ func (P *PostRepository) LoadPost(IdUser int) ([]models.DataPost, error) {
 
 	for rows.Next() {
 		var temp models.DataPost
-		errScan := rows.Scan(&temp.ID, &temp.Content, &temp.Media, &temp.Date, &temp.User_id, &temp.Avatar, &temp.UserName, &temp.FullName, &temp.Comments, &temp.Categories)
+		errScan := rows.Scan(&temp.ID, &temp.Content, &temp.Media, &temp.Date, &temp.User_id, &temp.Privacy, &temp.Avatar, &temp.UserName, &temp.FullName, &temp.Comments, &temp.Categories)
 		if errScan != nil {
 			log.Println("⚠ GetPost scan err ⚠ :", errScan)
 			return nil, errors.New("error while scanning")
@@ -248,11 +272,12 @@ func (P *PostRepository) LoadPost(IdUser int) ([]models.DataPost, error) {
 	return postTab, nil
 }
 
-func (p *PostRepository) LoadPostGroup(GroupID int) (models.DataPost, error) {
+func (p *PostRepository) LoadPostGroup(GroupID int) ([]models.DataPost, error) {
+	var postTab []models.DataPost
 	rows, err := p.DB.Query(GetPostGroupQuery, GroupID)
 	if err != nil {
 		log.Println("❌ Error while retrieving in GroupPost => ", err)
-		return models.DataPost{}, errors.New("error while retrieving onepost from the database")
+		return nil, errors.New("error while retrieving onepost from the database")
 	}
 	defer rows.Close()
 
@@ -262,9 +287,33 @@ func (p *PostRepository) LoadPostGroup(GroupID int) (models.DataPost, error) {
 		errScan := rows.Scan(&data.ID, &data.Content, &data.Media, &data.Date, &data.Avatar, &data.UserName, &data.FullName, &data.Comments)
 		if errScan != nil {
 			log.Println("⚠ loadPostGroup scan err ⚠ :", errScan)
-			return models.DataPost{}, errors.New("error while scanning")
+			return nil, errors.New("error while scanning")
 		}
 		data.Content = utils.DecodeValue(data.Content)
+		postTab = append(postTab, data)
 	}
-	return data, nil
+	return postTab, nil
+}
+
+func (p *PostRepository) LoadPostGroupByUserID(IdUser int, IdProfil int) ([]models.DataPost, error) {
+	var postTab []models.DataPost
+	rows, err := p.DB.Query(GetProfilePost, IdProfil, IdProfil, IdUser, IdUser, IdUser)
+	if err != nil {
+		log.Println("❌ Error while retrieving posts => ", err)
+		return nil, errors.New("error while retrieving posts from the database")
+	}
+	defer rows.Close()
+
+	for rows.Next() {
+		var temp models.DataPost
+		errScan := rows.Scan(&temp.ID, &temp.Content, &temp.Media, &temp.Date, &temp.User_id, &temp.Privacy, &temp.Avatar, &temp.UserName, &temp.FullName, &temp.Comments, &temp.Categories)
+		if errScan != nil {
+			log.Println("⚠ GetPost scan err profile ⚠ :", errScan)
+			return nil, errors.New("error while scanning")
+		}
+
+		temp.Content = utils.DecodeValue(temp.Content)
+		postTab = append(postTab, temp)
+	}
+	return postTab, nil
 }

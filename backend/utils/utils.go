@@ -101,8 +101,19 @@ func VerifyUsername(username string) error {
 
 func VerifyName(s string) error {
 	var maxChars = 25
+	if s == "" {
+		return fmt.Errorf("%v: as", s)
+	}
 	if len(s) > maxChars || !IsAlpha(s) {
 		return fmt.Errorf("%v: invalid name", s)
+	}
+	return nil
+}
+
+func VerifyAboutMe(s string) error {
+	var maxChars = 1500
+	if len(s) > maxChars {
+		return fmt.Errorf("%v: invalid about me", s)
 	}
 	return nil
 }
@@ -151,12 +162,4 @@ func GenerateToken() string {
 	}
 	return token.String()
 
-}
-
-func CompareTime(stringTime string) bool {
-	t, err := time.Parse(time.RFC3339, stringTime)
-	if err != nil {
-		fmt.Println(err)
-	}
-	return t.Before(time.Now())
 }

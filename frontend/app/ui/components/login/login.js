@@ -1,6 +1,5 @@
 "use client";
-import { loginUser } from "@/app/api/api.js";
-import Image from "next/image";
+import { loginUser, logoutUser } from "@/app/api/api.js";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -17,22 +16,9 @@ export default function Login() {
     try {
       const response = await loginUser(email, password);
       if (response.error === null && response.data) {
+        // console.log("trying to set item with => ", response.data.token);
         localStorage.setItem("token", response.data.token);
         router.push("/home");
-      } else {
-        setErrorMessage(response.error);
-      }
-    } catch (error) {
-      console.log(error);
-    }
-  };
-
-  const handleLogout = async () => {
-    try {
-      const response = await logoutUser();
-      if (response.error === null) {
-        localStorage.removeItem("token");
-        router.push("/");
       } else {
         setErrorMessage(response.error);
       }
@@ -44,8 +30,8 @@ export default function Login() {
   return (
     <div className="w-screen h-screen flex">
       <div className="flex flex-col items-center w-full sm:w-6/12">
-        <div className="header_login flex items-center justify-around w-full">
-          <Image
+        <div className="flex items-center justify-around w-full">
+          <img
             src="/assets/icons/comment.png"
             alt="logo"
             width={40}
@@ -55,8 +41,7 @@ export default function Login() {
             Don't have an account ?
             <Link
               href="/register"
-              className="text-primary hover:text-second cursor-pointer"
-            >
+              className="text-primary hover:text-second cursor-pointer">
               Sign Up.
             </Link>
           </div>
@@ -66,20 +51,25 @@ export default function Login() {
           <div className="text-center login_other">
             <h4 className="font-bold text-xl mb-2">Login in to account</h4>
             <div className="flex items-center justify-center gap-4">
-              <img src="/assets/login/google.svg" alt="google" />
-              <img src="/assets/login/githubb.svg" alt="github" />
+              <img
+                src="/assets/login/google.svg"
+                alt="google"
+                width={40}
+                height={40}
+              />
+              <img
+                src="/assets/login/githubb.svg"
+                alt="google"
+                width={40}
+                height={40}
+              />
             </div>
           </div>
-          <p className="error_login_msg" />
-
           <form
             onSubmit={handleLogin}
-            className="form_login flex flex-col gap-3"
-            data-form="login"
-          >
+            className="form_login flex flex-col gap-3">
             <input
               type="email"
-              id="email"
               name="email"
               placeholder="Email"
               required
@@ -90,7 +80,6 @@ export default function Login() {
 
             <input
               type="password"
-              id="password"
               name="password"
               placeholder="Password"
               required
@@ -109,8 +98,7 @@ export default function Login() {
             </div>
             <button
               type="submit"
-              className="hover:bg-second bg-primary cursor-pointer text-text border-none w-full h-10 rounded font-bold text-center"
-            >
+              className="hover:bg-second bg-primary cursor-pointer text-text border-none w-full h-10 rounded font-bold text-center">
               Log In
             </button>
           </form>
@@ -120,4 +108,3 @@ export default function Login() {
     </div>
   );
 }
-

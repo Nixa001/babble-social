@@ -6,6 +6,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"strings"
 )
 
 func Uploader(w http.ResponseWriter, r *http.Request, size int, formFileName string, imageName string) (string, error) {
@@ -33,7 +34,7 @@ func Uploader(w http.ResponseWriter, r *http.Request, size int, formFileName str
 		//!--checking extension validity
 		if !IsValidImageType(header.Filename) {
 			log.Println("⚠ Wrong image extension")
-			return "", errors.New("invalid extension")
+			return "", errors.New("could not create post due to invalid img extension")
 		}
 
 		if imageName == "" {
@@ -43,6 +44,8 @@ func Uploader(w http.ResponseWriter, r *http.Request, size int, formFileName str
 				log.Println("🚫 empty image")
 				return "", errImg
 			}
+		} else {
+			imageName += "." + strings.Split(header.Filename, ".")[len(strings.Split(header.Filename, "."))-1]
 		}
 
 		uploaded, err := os.Create("uploads/" + imageName)

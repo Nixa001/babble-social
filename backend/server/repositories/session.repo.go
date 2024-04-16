@@ -61,6 +61,7 @@ func (s *SessionRepository) GetSessionByUserId(userId int) (sessions []models.Se
 func (s *SessionRepository) DeleteSession(token string) error {
 	err := s.DB.Delete(s.TableName, q.WhereOption{"token": opt.Equals(token)})
 	if err != nil {
+		fmt.Println("Delete session error", err)
 		return err
 	}
 	return nil

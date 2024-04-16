@@ -195,7 +195,7 @@ const Messages = () => {
             <div className="md:h-[700px] h-full md:min-h-[600px] min-h-[500px] flex flex-col justify-between  md:w-full border-gray-700 p-2">
                 <div>
                     <div className="info_post flex items-center gap-2 md:mb-5">
-                        <Image
+                        <img
                             src='/assets/profilibg.jpg'
                             alt="Profile picture"
                             className="profile_pic rounded-full cursor-pointer hover:opacity-60"
@@ -268,12 +268,3 @@ export const DisplayMessages = ({ messages, currentUserId }) => {
 };
 
 export default Messages;
-
-
-
-
-const group = [
-    { id: 1, name: 'Call of duty', src: "/assets/profilibg.jpg", alt: "profil", },
-    { id: 2, name: 'Farcry 6 Team', src: "/assets/profilibg.jpg", alt: "profil" },
-    { id: 3, name: 'EA Fooball 24', src: "/assets/profilibg.jpg", alt: "profil", },
-];

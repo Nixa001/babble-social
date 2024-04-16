@@ -4,17 +4,19 @@ import (
 	"backend/database"
 	"backend/models"
 	"backend/server/cors"
+	"backend/server/service"
 	utils "backend/utils"
 	"fmt"
 	"log"
 	"net/http"
+	"strings"
 	"time"
 )
 
 // func (w http.ResponseWriter, r *http.Request) {}
 
 func CreateEventHandler(w http.ResponseWriter, r *http.Request) {
-	userID := 1
+	// userID := 1
 	cors.SetCors(&w)
 
 	switch r.Method {
@@ -23,7 +25,11 @@ func CreateEventHandler(w http.ResponseWriter, r *http.Request) {
 		dates := r.FormValue("date")
 		heure := r.FormValue("heure")
 
-		if description == "" || dates == "" || heure == "" {
+		descrip := len(strings.TrimSpace(description))
+		dat := len(strings.TrimSpace(dates))
+		heur := len(strings.TrimSpace(heure))
+
+		if descrip == 0 || dat == 0 || heur == 0 {
 			fmt.Println("all fill required")
 			return
 		}
@@ -33,6 +39,19 @@ func CreateEventHandler(w http.ResponseWriter, r *http.Request) {
 			fmt.Println("Error on formatDateTime", err)
 			return
 		}
+
+		session, err := service.AuthServ.VerifyToken(r)
+		if err != nil {
+			log.Println("Invalid Token ", err)
+			utils.Alert(w, models.Errormessage{
+				Type:       "Create Event",
+				Msg:        "Invalid Token",
+				StatusCode: http.StatusBadRequest,
+			})
+			return
+		}
+
+		userID := session.User_id
 
 		fmt.Println(date, " "+heure)
 		groupID, err := GetGroupIDFromRequest(w, r)

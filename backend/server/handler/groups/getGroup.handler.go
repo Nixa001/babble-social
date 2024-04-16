@@ -4,6 +4,7 @@ import (
 	"backend/models"
 	"backend/server/cors"
 	"backend/server/service"
+	utils "backend/utils"
 	"backend/utils/seed"
 	"database/sql"
 	"encoding/json"
@@ -31,15 +32,15 @@ type Post struct {
 }
 
 type ResponseGroup struct {
-	GroupData   models.Group         `json:"group_data"`
-	Posts       []models.DataPost    `json:"posts"`
-	Members     []models.User        `json:"members"`
-	Followers   []models.User        `json:"followers"`
-	Event       []models.Event       `json:"events"`
-	EventJoined []models.EventJoined `json:"events_joined"`
+	GroupData   models.Group      `json:"group_data"`
+	Posts       []models.DataPost `json:"posts"`
+	Members     []models.User     `json:"members"`
+	Followers   []models.User     `json:"followers"`
+	Event       []models.Event    `json:"events"`
+	EventJoined []models.Event    `json:"events_joined"`
 }
 
-const userId int = 1
+// const userId int = 1
 
 func GetGroup(w http.ResponseWriter, r *http.Request) {
 	cors.SetCors(&w)
@@ -47,8 +48,23 @@ func GetGroup(w http.ResponseWriter, r *http.Request) {
 	defer db.Close()
 
 	groupId, err := GetGroupIDFromRequest(w, r)
+	if err != nil {
+		fmt.Println(err)
+		return
+	}
+	session, err := service.AuthServ.VerifyToken(r)
+	if err != nil {
+		log.Println("Invalid Token ", err)
+		utils.Alert(w, models.Errormessage{
+			Type:       "Get group",
+			Msg:        "Invalid Token",
+			StatusCode: http.StatusBadRequest,
+		})
+		return
+	}
 
-	allPosts, err := service.PostServ.GetPost(groupId)
+	userId := session.User_id
+	allPosts, err := service.PostServ.FetchPostGroup(groupId)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -71,7 +87,12 @@ func GetGroup(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	events, eventJoined, err := GetEvent(db, groupId, userId)
-	// fmt.Println("eventJoined: ", eventJoined)
+	if err != nil {
+
+		fmt.Fprintf(w, "Error on getting event")
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
 
 	responseGroup := ResponseGroup{
 		GroupData:   groupData,
@@ -131,11 +152,11 @@ func GetUserData(db *sql.DB, userID int) (models.User, error) {
 	}
 	return user, nil
 }
-func GetEventJoined(db *sql.DB, userID int) ([]int, error) {
+func GetEventJoinedID(db *sql.DB, userID, groupID int) ([]int, error) {
 	var events []int
 
-	query := "SELECT event_id FROM event_joined WHERE user_id =?"
-	rows, err := db.Query(query, userID)
+	query := "SELECT event_id FROM event_joined WHERE user_id =? AND group_id =?"
+	rows, err := db.Query(query, userID, groupID)
 	if err != nil {
 		return events, fmt.Errorf("err execute user query: %w", err)
 	}
@@ -150,30 +171,24 @@ func GetEventJoined(db *sql.DB, userID int) ([]int, error) {
 		events = append(events, event)
 	}
 
-	if err := rows.Err(); err != nil {
-		return events, fmt.Errorf("err read all groups results: %w", err)
-	}
-
 	return events, nil
 }
 
-func GetEvent(db *sql.DB, groupID, userID int) ([]models.Event, []models.EventJoined, error) {
+func GetEvent(db *sql.DB, groupID, userID int) ([]models.Event, []models.Event, error) {
 	var events []models.Event
 	var eventsJoined []models.Event
-	events_joined_id, err := GetEventJoined(db, userID)
+	events_joined_id, err := GetEventJoinedID(db, userID, groupID)
 	if err != nil {
 		fmt.Println("error on GetEventJoined", err)
 	}
 
 	query := `
-	SELECT *
-	FROM event
-	WHERE event.group_id = ? AND event.id NOT IN (
-    SELECT event_notjoined.event_id
-    FROM event_notjoined
-);
-	`
-	// # SELECT * FROM event WHERE group_id =?
+				SELECT *
+				FROM event
+				WHERE event.group_id = ? AND event.id NOT IN (
+				SELECT event_notjoined.event_id
+				FROM event_notjoined );
+				`
 	rows, err := db.Query(query, groupID)
 	if err != nil {
 		return events, nil, fmt.Errorf("err execute user query: %w", err)
@@ -195,33 +210,7 @@ func GetEvent(db *sql.DB, groupID, userID int) ([]models.Event, []models.EventJo
 		// fmt.Println("event ", events)
 	}
 
-	if err := rows.Err(); err != nil {
-		return events, nil, fmt.Errorf("err read all groups results: %w", err)
-	}
-
-	// query = "SELECT * FROM event_joined WHERE group_id =?"
-	query = "SELECT event_joined.id, event_joined.event_id, event_joined.user_id, event_joined.group_id, event.description, event.event_date FROM event_joined INNER JOIN event ON event_joined.event_id = event.id WHERE event_joined.group_id = ?"
-
-	rows, err = db.Query(query, groupID)
-	if err != nil {
-		return events, nil, fmt.Errorf("err execute user query: %w", err)
-	}
-	defer rows.Close()
-
-	var dataEventJoint []models.EventJoined
-	for rows.Next() {
-		var event models.EventJoined
-		err := rows.Scan(&event.ID, &event.Event_id, &event.User_id, &event.Group_id, &event.Description, &event.Date)
-		if err != nil {
-			fmt.Println("error scanning event ", err)
-			log.Fatal(err.Error())
-		}
-		dataEventJoint = append(dataEventJoint, event)
-
-		// fmt.Println("dataEventJoint ", event)
-	}
-
-	return events, dataEventJoint, nil
+	return events, eventsJoined, nil
 }
 
 func contains(arr []int, value int) bool {
@@ -231,87 +220,6 @@ func contains(arr []int, value int) bool {
 		}
 	}
 	return false
-}
-
-func getLikesDislikes(db *sql.DB, postID int) (int, int) {
-	var likes, dislikes int
-	err := db.QueryRow("SELECT COUNT(*) FROM postReact WHERE post_id = ? AND reaction = 1", postID).Scan(&likes)
-	if err != nil {
-		log.Printf("Error fetching likes: %v\n", err)
-	}
-
-	err = db.QueryRow("SELECT COUNT(*) FROM postReact WHERE post_id = ? AND reaction = 0", postID).Scan(&dislikes)
-	if err != nil {
-		log.Printf("Error fetching dislikes: %v\n", err)
-	}
-
-	return likes, dislikes
-}
-
-func getComments(db *sql.DB, postID int) ([]models.Comment, error) {
-	var comments []models.Comment
-
-	query := "SELECT * FROM comment WHERE post_id = ?"
-	rows, err := db.Query(query, postID)
-	if err != nil {
-		return comments, fmt.Errorf("err execute all groups query: %w", err)
-	}
-	defer rows.Close()
-
-	for rows.Next() {
-		var comment models.Comment
-		err := rows.Scan(&comment.ID, &comment.Content, &comment.Date, &comment.Media, &comment.Post_id, &comment.User_id)
-		if err != nil {
-			return comments, fmt.Errorf("%w", err)
-		}
-		// comment.User, err = GetUserData(db, comment.User_id)
-		// if err != nil {
-		// 	return comments, fmt.Errorf("%w", err)
-		// }
-		comments = append(comments, comment)
-	}
-	return comments, nil
-}
-
-func getPosts(db *sql.DB, groupID int) ([]Post, error) {
-	var allPosts []Post
-
-	query := "SELECT id, content, media, date, user_id, privacy FROM posts WHERE group_id =? ORDER BY id DESC"
-	rows, err := db.Query(query, groupID)
-	if err != nil {
-		return nil, fmt.Errorf("err exec all post query: %w", err)
-	}
-	defer rows.Close()
-
-	for rows.Next() {
-		var post Post
-		err := rows.Scan(&post.ID, &post.Content, &post.Media, &post.Date, &post.User_id, &post.Privacy)
-		if err != nil {
-			return nil, fmt.Errorf("err group data: %w", err)
-		}
-		user, err := GetUserData(db, post.User_id)
-		if err != nil {
-			return nil, fmt.Errorf("err GetUserData data: %w", err)
-		}
-		post.Comments, err = getComments(db, post.ID)
-		if err != nil {
-			return nil, fmt.Errorf("err GetUserData data: %w", err)
-		}
-
-		// fmt.Println(post.Comments)
-		post.FullName = user.First_name + " " + user.Last_name
-		post.Username = user.User_name
-		post.User = user
-
-		post.Likes, post.Dislikes = getLikesDislikes(db, post.ID)
-		allPosts = append(allPosts, post)
-	}
-
-	if err := rows.Err(); err != nil {
-		return nil, fmt.Errorf("err read all groups results: %w", err)
-	}
-
-	return allPosts, nil
 }
 
 func getInfoGroup(db *sql.DB, groupId int) (models.Group, error) {

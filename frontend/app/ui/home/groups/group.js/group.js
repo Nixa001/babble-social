@@ -1,22 +1,17 @@
 "use client";
-import Image from "next/image";
-import React, { useContext, useState } from "react";
-import DisplayPost from "../../displayPost";
-import { useQuery } from "react-query";
-import { usePathname } from "next/navigation";
 import { CreateEvent } from "@/app/ui/components/modals/createEvent";
 import { CreatePost } from "@/app/ui/components/modals/createPost";
-import { Suggest } from "@/app/ui/components/modals/suggest";
 import { DisplayMembers } from "@/app/ui/components/modals/displayMembers";
-import {
-  Typography,
-  Card,
-  CardContent,
-  CardHeader,
-  Avatar,
-} from "@mui/material";
+import { Suggest } from "@/app/ui/components/modals/suggest";
+import { usePathname } from "next/navigation";
+import { useContext, useState } from "react";
+import { useQuery } from "react-query";
+import DisplayPost from "../../displayPost";
+
 // import { useApi } from "@/app/_lib/utils";
 import { WebSocketContext } from "@/app/_lib/websocket";
+import { displayEventToJoin } from "./displayEventToJoin";
+import { displayEvents } from "./displayEvents";
 
 const CardEvent = ({ description, date }) => {
   return (
@@ -37,9 +32,7 @@ const CardEvent = ({ description, date }) => {
   );
 };
 
-const Group = () => {
-  // Instantiate ws
-  // const { sendMessage } = useApi();
+const Group = (sessionID) => {
   const { sendMessage, readMessages, messages } = useContext(WebSocketContext);
 
   const [formCreateEv, setFormCreateEv] = useState(false);
@@ -57,8 +50,10 @@ const Group = () => {
   const id = pathname.split("id=")[1];
 
   const fetchGroups = async () => {
+    const token = localStorage.getItem("token") || null;
+
     try {
-      const url = `http://localhost:8080/groups/group?id=${id}`;
+      const url = `http://localhost:8080/groups/group?id=${id}&token=${token}`;
 
       const response = await fetch(url, {
         method: "GET",
@@ -90,12 +85,12 @@ const Group = () => {
 
   return (
     <div
-      className="md:w-[400px] lg:w-[650px] xl:w-[800px] 2xl:w-[1100px] w-screen h-full 
+      className="md:w-[400px] lg:w-[650px] xl:w-[800px] 2xl:w-[1100px] w-screen h-full
                         flex flex-col gap-2"
     >
       <div className="w-full h-60 mb-3">
-        {groupInfo.image ? (
-          <Image
+        {groupInfo?.image ? (
+          <img
             src={`${groupInfo.image}`}
             alt="cover"
             width={1000}
@@ -121,7 +116,7 @@ const Group = () => {
                 clipRule="evenodd"
               />
             </svg>
-            {groupInfo.name}
+            {groupInfo?.name}
           </h1>
           <p className="text-lg flex items-center gap-2">
             <svg
@@ -136,7 +131,7 @@ const Group = () => {
                 clipRule="evenodd"
               />
             </svg>
-            {groupInfo.description}
+            {groupInfo?.description}
           </p>
         </div>
         <div className="flex gap-2 lg:flex-row flex-col">
@@ -216,8 +211,8 @@ const Group = () => {
           </svg>
 
           <span className="italic">Created by: </span>
-          {groupInfo.creator
-            ? groupInfo.creator.first_name + " " + groupInfo.creator.last_name
+          {groupInfo?.creator
+            ? groupInfo?.creator.first_name + " " + groupInfo?.creator.last_name
             : ""}
         </p>
         <p
@@ -288,13 +283,13 @@ const Group = () => {
         </div>
         <div className="w-[75%] ">
           {groupPosts
-            ? groupPosts.map((post) => {
+            ? groupPosts?.map((post) => {
                 return (
                   <DisplayPost
                     key={post.ID}
                     postData={post}
+                    idUser={sessionID}
                     onCommentClick={onCommentClick}
-                    onProfileClick={onProfileClick}
                   />
                 );
               })
@@ -305,11 +300,13 @@ const Group = () => {
         isVisible={formCreateEv}
         onClose={() => setFormCreateEv(false)}
         id={id}
+        user={sessionID}
       />
       <CreatePost
         isVisible={formCreateP}
         onClose={() => setFormCreateP(false)}
         id={id}
+        user={sessionID}
       />
       <Suggest
         followers={followers}
@@ -333,137 +330,21 @@ const onCommentClick = () => {
   alert("Comment disp");
 };
 
-const onProfileClick = () => {
-  alert("profile disp");
-};
-
-export const displayEvents = (events) => {
-  events.forEach((element) => {});
-  return events.map((event) => {
-    return (
-      <div
-        key={event.id}
-        className=" shadow-2xl   flex flex-col items-start border border-gray-700 rounded cursor-pointer justify-start gap-2 p-1 mt-1 hover:bg-gray-600 "
-      >
-        {/* <FaUserGroup className='border rounded-full p-2 w-10 h-10' /> */}
-        <div className="flex text-wrap break-words">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="currentColor"
-            className="w-6 h-6"
-          >
-            <path d="M12.75 12.75a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM7.5 15.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5ZM8.25 17.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM9.75 15.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5ZM10.5 17.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12 15.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5ZM12.75 17.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM14.25 15.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5ZM15 17.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM16.5 15.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5ZM15 12.75a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM16.5 13.5a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z" />
-            <path
-              fillRule="evenodd"
-              d="M6.75 2.25A.75.75 0 0 1 7.5 3v1.5h9V3A.75.75 0 0 1 18 3v1.5h.75a3 3 0 0 1 3 3v11.25a3 3 0 0 1-3 3H5.25a3 3 0 0 1-3-3V7.5a3 3 0 0 1 3-3H6V3a.75.75 0 0 1 .75-.75Zm13.5 9a1.5 1.5 0 0 0-1.5-1.5H5.25a1.5 1.5 0 0 0-1.5 1.5v7.5a1.5 1.5 0 0 0 1.5 1.5h13.5a1.5 1.5 0 0 0 1.5-1.5v-7.5Z"
-              clipRule="evenodd"
-            />
-          </svg>
-          <p className="font-semibold ">{event.description}</p>
-        </div>
-        <p className="font-semibold "> {event.date}</p>
-      </div>
-    );
-  });
-};
-export const displayEventToJoin = (events, sendMessage) => {
-  // const { sendMessage } = useApi();
-  return events.map((event) => {
-    return (
-      <div
-        key={event.id}
-        className="  flex flex-col items-start border border-gray-700 rounded  justify-start gap-2 p-1 mt-1 "
-      >
-        {/* <FaUserGroup className='border rounded-full p-2 w-10 h-10' /> */}
-        <div className="flex">
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            viewBox="0 0 24 24"
-            fill="currentColor"
-            className="w-6 h-6"
-          >
-            <path d="M12.75 12.75a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM7.5 15.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5ZM8.25 17.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM9.75 15.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5ZM10.5 17.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM12 15.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5ZM12.75 17.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM14.25 15.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5ZM15 17.25a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM16.5 15.75a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5ZM15 12.75a.75.75 0 1 1-1.5 0 .75.75 0 0 1 1.5 0ZM16.5 13.5a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Z" />
-            <path
-              fillRule="evenodd"
-              d="M6.75 2.25A.75.75 0 0 1 7.5 3v1.5h9V3A.75.75 0 0 1 18 3v1.5h.75a3 3 0 0 1 3 3v11.25a3 3 0 0 1-3 3H5.25a3 3 0 0 1-3-3V7.5a3 3 0 0 1 3-3H6V3a.75.75 0 0 1 .75-.75Zm13.5 9a1.5 1.5 0 0 0-1.5-1.5H5.25a1.5 1.5 0 0 0-1.5 1.5v7.5a1.5 1.5 0 0 0 1.5 1.5h13.5a1.5 1.5 0 0 0 1.5-1.5v-7.5Z"
-              clipRule="evenodd"
-            />
-          </svg>
-          <p className="font-semibold ">{event.description}</p>
-        </div>
-        <p className="font-semibold "> {event.date}</p>
-        <div className="flex gap-1">
-          {/* <button>Going</button> */}
-          <button
-            className="bg-primary hover:bg-gray-600 text-sm text-white py-1 px-2 rounded"
-            onClick={() => {
-              going(event.id, sendMessage, event.group_id);
-            }}
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              className="w-6 h-6"
-            >
-              <path
-                fillRule="evenodd"
-                d="M19.916 4.626a.75.75 0 0 1 .208 1.04l-9 13.5a.75.75 0 0 1-1.154.114l-6-6a.75.75 0 0 1 1.06-1.06l5.353 5.353 8.493-12.74a.75.75 0 0 1 1.04-.207Z"
-                clipRule="evenodd"
-              />
-            </svg>
-          </button>
-          <button
-            onClick={() => {
-              notGoing(event.id, sendMessage, event.group_id);
-            }}
-            className="bg-red-400 hover:bg-gray-600 text-sm  text-white py-1 px-2 rounded"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              className="w-6 h-6"
-            >
-              <path
-                fillRule="evenodd"
-                d="M5.47 5.47a.75.75 0 0 1 1.06 0L12 10.94l5.47-5.47a.75.75 0 1 1 1.06 1.06L13.06 12l5.47 5.47a.75.75 0 1 1-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 0 1-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 0 1 0-1.06Z"
-                clipRule="evenodd"
-              />
-            </svg>
-          </button>
-        </div>
-      </div>
-    );
-    // }
-  });
-};
-
-const events = [
-  {
-    id: 1,
-    description: "Description event 1",
-    src: "/assets/profilibg.jpg",
-    alt: "profil",
-  },
-  {
-    id: 2,
-    description: "Description event 2",
-    src: "/assets/profilibg.jpg",
-    alt: "profil",
-  },
-  {
-    id: 3,
-    description: "Description event 3",
-    src: "/assets/profilibg.jpg",
-    alt: "profil",
-  },
-];
-
 function notGoing(id_event, sendMessage, id_group) {
-  sendMessage({ type: "NotGoingEvent", groupId: id_group, event_id: id_event });
+  const token = localStorage.getItem("token") || null;
+  sendMessage({
+    type: "NotGoingEvent",
+    groupId: id_group,
+    event_id: id_event,
+    token: token,
+  });
 }
 function going(id_event, sendMessage, id_group) {
-  sendMessage({ type: "GoingEvent", groupId: id_group, event_id: id_event });
+  const token = localStorage.getItem("token") || null;
+  sendMessage({
+    type: "GoingEvent",
+    groupId: id_group,
+    event_id: id_event,
+    token: token,
+  });
 }

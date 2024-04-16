@@ -2,18 +2,6 @@
 import { useEffect, useState } from "react";
 const NEXT_PUBLIC_API_URL = `http://localhost:8080`;
 
-export async function getSession() {
-  return fetch(`${NEXT_PUBLIC_API_URL}/auth/session`, {
-    method: "GET",
-    credentials: "include",
-  })
-    .then((response) => response.json())
-    .catch((error) => {
-      console.error(error);
-      throw new Error("An error occurred while fetching session data.");
-    });
-}
-
 export async function loginUser(email, password) {
   return fetch(`${NEXT_PUBLIC_API_URL}/auth/signin`, {
     method: "POST",
@@ -28,7 +16,7 @@ export async function loginUser(email, password) {
       }
       if (response.ok) {
         return response.json().then((json) => {
-          console.log(json);
+          // console.log(json);
           localStorage.setItem("token", json.token);
           return { error: null, data: json };
         });
@@ -40,78 +28,44 @@ export async function loginUser(email, password) {
       return { error: "An error occurred. Please try again." };
     });
 }
-export async function logoutUser() {
-  let token = localStorage.getItem("token") || "none";
-
+export async function logoutUser(token) {
   return fetch(`${NEXT_PUBLIC_API_URL}/auth/signout`, {
     method: "DELETE",
     headers: {
-      Authorization: JSON.stringify({ token }),
-      accept: "application/json",
+      Authorization: token,
     },
   })
     .then((response) => response.json())
     .catch((error) => {
-      console.error(error);
+      console.log(error);
       return { error: "Not authorized!!!" };
     });
 }
 
-export async function registerUser(state, formData) {
-  let data = {
-    first_name: formData.get("firstname"),
-    last_name: formData.get("lastname"),
-    birth_date: formData.get("dateofbirth"),
-    avatar: formData.get("avatar"),
-    user_name: formData.get("username"),
-    email: formData.get("email"),
-    password: formData.get("password"),
-    about_me: formData.get("aboutme"),
-  };
-
+export async function registerUser(formData) {
   return fetch(`${NEXT_PUBLIC_API_URL}/auth/signup`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
+    body: formData,
   })
-    .then((response) => {
-      if (response.status === 401) {
-        return { error: "Invalid credentials." };
-      }
+    .then(async (response) => {
+      const json = await response.json();
       if (response.ok) {
-        return response.json().then((json) => ({ error: null, data: json }));
+        return { error: "ok", data: json };
       }
-      throw new Error("An error occurred.");
+      return { error: json.error };
     })
     .catch((error) => {
-      console.error(error);
-      return { error: "An error occurred. Please try again." };
+      console.log("ERROR CATCH", error);
+      return { error: error };
     });
 }
-
-export async function getProfile() {
-  return fetch(`${NEXT_PUBLIC_API_URL}/auth/profile`, {
-    method: "GET",
-    headers: {
-      Authorization: localStorage.getItem("token"),
-    },
-  })
-    .then((response) => response.json())
-    .catch((error) => {
-      console.error(error);
-      throw new Error("An error occurred while fetching profile data.");
-    });
-}
-
 export function useSession() {
   const [session, setSession] = useState(null);
   const [error, setError] = useState(null);
 
   useEffect(() => {
     const token = localStorage.getItem("token") || null;
-
+    // console.log("Token in useSession", token);
     async function fetchSessionData() {
       try {
         const response = await fetch(`${NEXT_PUBLIC_API_URL}/auth/session`, {
@@ -120,7 +74,6 @@ export function useSession() {
             Authorization: token,
           },
         });
-
         if (!response.ok) {
           throw new Error(
             `Failed to fetch session data. Status: ${response.status}`
@@ -139,4 +92,81 @@ export function useSession() {
   }, []);
 
   return { session, error };
+}
+
+export async function getProfileById(id, sessionId, token) {
+  try {
+    const response = await fetch(
+      `${NEXT_PUBLIC_API_URL}/profile/user?id=${id}&sessionId=${sessionId}`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: token,
+        },
+      }
+    );
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Erreur ", error);
+    return Promise.reject(error);
+  }
+}
+
+export async function followUser(id, sessionId, token) {
+  try {
+    const response = await fetch(`${NEXT_PUBLIC_API_URL}/follow?id=${id}`, {
+      method: "POST",
+      headers: {
+        Authorization: token,
+      },
+      body: JSON.stringify({
+        followed_id: String(id),
+        follower_id: String(sessionId),
+      }),
+    });
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Erreur ", error);
+    return Promise.reject(error);
+  }
+}
+
+export async function unfollowUser(id, sessionId, token) {
+  alert("unfollow");
+  try {
+    const response = await fetch(`${NEXT_PUBLIC_API_URL}/unfollow?id=${id}`, {
+      method: "POST",
+      headers: {
+        Authorization: token,
+      },
+      body: JSON.stringify({
+        followed_id: String(id),
+        follower_id: String(sessionId),
+      }),
+    });
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Erreur ", error);
+    return Promise.reject(error);
+  }
+}
+
+export async function profileTypeUser(sessionId, user_type, token) {
+  try {
+    const response = await fetch(`${NEXT_PUBLIC_API_URL}/profile/type`, {
+      method: "POST",
+      headers: {
+        Authorization: token,
+      },
+      body: JSON.stringify({ sessionId: String(sessionId), user_type }),
+    });
+    const data = await response.json();
+    return data;
+  } catch (error) {
+    console.error("Erreur ", error);
+    return Promise.reject(error);
+  }
 }

@@ -16,6 +16,7 @@ var (
 	SessionRepo = &SessionRepository{}
 	PostRepo    = &PostRepository{}
 	CommentRepo = &CommentRepository{}
+	FollowRepo  = &FollowRepository{}
 )
 
 func init() {
@@ -23,4 +24,5 @@ func init() {
 	SessionRepo.init()
 	PostRepo.init()
 	CommentRepo.init()
+	FollowRepo.init()
 }

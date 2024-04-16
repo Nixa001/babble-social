@@ -1,2 +1,593 @@
-2024/04/07 07:03:25 Hi big dev !
-let's debug session started at : 2024/04/07 07:03:25
+2024/04/15 19:44:34 Hi big dev !
+let's debug session started at : 2024/04/15 19:44:34
+2024/04/15 19:44:37 Verify session handler
+2024/04/15 19:44:37 Verify session handler
+2024/04/15 19:44:38 Client nixa@gmail.com connected
+2024/04/15 19:44:47 Verify session handler
+2024/04/15 19:44:47 Verify session handler
+2024/04/15 19:44:47 gotten userID =>  4
+2024/04/15 19:44:47 in post
+2024/04/15 19:44:47 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:44:47 getting post with  4
+2024/04/15 19:44:48 gotten userID =>  4
+2024/04/15 19:44:48 in post
+2024/04/15 19:44:48 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:44:48 getting post with  4
+2024/04/15 19:44:49 gotten userID =>  4
+2024/04/15 19:44:49 in post
+2024/04/15 19:44:49 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:44:49 getting post with  4
+2024/04/15 19:44:50 gotten userID =>  4
+2024/04/15 19:44:50 in post
+2024/04/15 19:44:50 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:44:50 getting post with  4
+2024/04/15 19:44:51 gotten userID =>  4
+2024/04/15 19:44:51 in post
+2024/04/15 19:44:51 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:44:51 getting post with  4
+2024/04/15 19:44:52 gotten userID =>  4
+2024/04/15 19:44:52 in post
+2024/04/15 19:44:52 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:44:52 getting post with  4
+2024/04/15 19:44:53 gotten userID =>  4
+2024/04/15 19:44:53 in post
+2024/04/15 19:44:53 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:44:53 getting post with  4
+2024/04/15 19:44:54 gotten userID =>  4
+2024/04/15 19:44:54 in post
+2024/04/15 19:44:54 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:44:54 getting post with  4
+2024/04/15 19:44:55 gotten userID =>  4
+2024/04/15 19:44:55 in post
+2024/04/15 19:44:55 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:44:55 getting post with  4
+2024/04/15 19:44:56 gotten userID =>  4
+2024/04/15 19:44:56 in post
+2024/04/15 19:44:56 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:44:56 getting post with  4
+2024/04/15 19:44:57 gotten userID =>  4
+2024/04/15 19:44:57 in post
+2024/04/15 19:44:57 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:44:57 getting post with  4
+2024/04/15 19:44:58 gotten userID =>  4
+2024/04/15 19:44:58 in post
+2024/04/15 19:44:58 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:44:58 getting post with  4
+2024/04/15 19:44:59 gotten userID =>  4
+2024/04/15 19:44:59 in post
+2024/04/15 19:44:59 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:44:59 getting post with  4
+2024/04/15 19:45:00 gotten userID =>  4
+2024/04/15 19:45:00 in post
+2024/04/15 19:45:00 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:45:00 getting post with  4
+2024/04/15 19:45:01 gotten userID =>  4
+2024/04/15 19:45:01 in post
+2024/04/15 19:45:01 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:45:01 getting post with  4
+2024/04/15 19:45:02 gotten userID =>  4
+2024/04/15 19:45:02 in post
+2024/04/15 19:45:02 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:45:02 getting post with  4
+2024/04/15 19:45:03 gotten userID =>  4
+2024/04/15 19:45:03 in post
+2024/04/15 19:45:03 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:45:03 getting post with  4
+2024/04/15 19:45:04 gotten userID =>  4
+2024/04/15 19:45:04 in post
+2024/04/15 19:45:04 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:45:04 getting post with  4
+2024/04/15 19:45:05 gotten userID =>  4
+2024/04/15 19:45:05 in post
+2024/04/15 19:45:05 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:45:05 getting post with  4
+2024/04/15 19:45:06 gotten userID =>  4
+2024/04/15 19:45:06 in post
+2024/04/15 19:45:06 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:45:06 getting post with  4
+2024/04/15 19:45:08 gotten userID =>  4
+2024/04/15 19:45:08 in post
+2024/04/15 19:45:08 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:45:08 getting post with  4
+2024/04/15 19:45:09 gotten userID =>  4
+2024/04/15 19:45:09 in post
+2024/04/15 19:45:09 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:45:09 getting post with  4
+2024/04/15 19:45:10 gotten userID =>  4
+2024/04/15 19:45:10 in post
+2024/04/15 19:45:10 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:45:10 getting post with  4
+2024/04/15 19:45:11 gotten userID =>  4
+2024/04/15 19:45:11 in post
+2024/04/15 19:45:11 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:45:11 getting post with  4
+2024/04/15 19:45:12 gotten userID =>  4
+2024/04/15 19:45:12 in post
+2024/04/15 19:45:12 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:45:12 getting post with  4
+2024/04/15 19:45:13 gotten userID =>  4
+2024/04/15 19:45:13 in post
+2024/04/15 19:45:13 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:45:13 getting post with  4
+2024/04/15 19:45:14 gotten userID =>  4
+2024/04/15 19:45:14 in post
+2024/04/15 19:45:14 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:45:14 getting post with  4
+2024/04/15 19:45:15 gotten userID =>  4
+2024/04/15 19:45:15 in post
+2024/04/15 19:45:15 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:45:15 getting post with  4
+2024/04/15 19:45:16 gotten userID =>  4
+2024/04/15 19:45:16 in post
+2024/04/15 19:45:16 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:45:16 getting post with  4
+2024/04/15 19:45:17 gotten userID =>  4
+2024/04/15 19:45:17 in post
+2024/04/15 19:45:17 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:45:17 getting post with  4
+2024/04/15 19:45:18 gotten userID =>  4
+2024/04/15 19:45:18 in post
+2024/04/15 19:45:18 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:45:18 getting post with  4
+2024/04/15 19:45:19 gotten userID =>  4
+2024/04/15 19:45:19 in post
+2024/04/15 19:45:19 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:45:19 getting post with  4
+2024/04/15 19:45:20 gotten userID =>  4
+2024/04/15 19:45:20 in post
+2024/04/15 19:45:20 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:45:20 getting post with  4
+2024/04/15 19:45:21 gotten userID =>  4
+2024/04/15 19:45:21 in post
+2024/04/15 19:45:21 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:45:21 getting post with  4
+2024/04/15 19:45:22 gotten userID =>  4
+2024/04/15 19:45:22 in post
+2024/04/15 19:45:22 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:45:22 getting post with  4
+2024/04/15 19:45:23 gotten userID =>  4
+2024/04/15 19:45:23 in post
+2024/04/15 19:45:23 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:45:23 getting post with  4
+2024/04/15 19:45:24 gotten userID =>  4
+2024/04/15 19:45:24 in post
+2024/04/15 19:45:24 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:45:24 getting post with  4
+2024/04/15 19:45:25 gotten userID =>  4
+2024/04/15 19:45:25 in post
+2024/04/15 19:45:25 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:45:25 getting post with  4
+2024/04/15 19:45:26 gotten userID =>  4
+2024/04/15 19:45:26 in post
+2024/04/15 19:45:26 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:45:26 getting post with  4
+2024/04/15 19:45:27 gotten userID =>  4
+2024/04/15 19:45:27 in post
+2024/04/15 19:45:27 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:45:27 getting post with  4
+2024/04/15 19:45:28 gotten userID =>  4
+2024/04/15 19:45:28 in post
+2024/04/15 19:45:28 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:45:28 getting post with  4
+2024/04/15 19:45:29 gotten userID =>  4
+2024/04/15 19:45:29 in post
+2024/04/15 19:45:29 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:45:29 getting post with  4
+2024/04/15 19:45:30 gotten userID =>  4
+2024/04/15 19:45:30 in post
+2024/04/15 19:45:30 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:45:30 getting post with  4
+2024/04/15 19:45:31 gotten userID =>  4
+2024/04/15 19:45:31 in post
+2024/04/15 19:45:31 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:45:31 getting post with  4
+2024/04/15 19:45:32 gotten userID =>  4
+2024/04/15 19:45:32 in post
+2024/04/15 19:45:32 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:45:32 getting post with  4
+2024/04/15 19:45:33 gotten userID =>  4
+2024/04/15 19:45:33 in post
+2024/04/15 19:45:33 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:45:33 getting post with  4
+2024/04/15 19:45:34 gotten userID =>  4
+2024/04/15 19:45:34 in post
+2024/04/15 19:45:34 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:45:34 getting post with  4
+2024/04/15 19:45:35 gotten userID =>  4
+2024/04/15 19:45:35 in post
+2024/04/15 19:45:35 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:45:35 getting post with  4
+2024/04/15 19:45:36 gotten userID =>  4
+2024/04/15 19:45:36 in post
+2024/04/15 19:45:36 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:45:36 getting post with  4
+2024/04/15 19:45:37 gotten userID =>  4
+2024/04/15 19:45:37 in post
+2024/04/15 19:45:37 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:45:37 getting post with  4
+2024/04/15 19:45:38 gotten userID =>  4
+2024/04/15 19:45:38 in post
+2024/04/15 19:45:38 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:45:38 getting post with  4
+2024/04/15 19:45:39 gotten userID =>  4
+2024/04/15 19:45:39 in post
+2024/04/15 19:45:39 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:45:39 getting post with  4
+2024/04/15 19:45:40 gotten userID =>  4
+2024/04/15 19:45:40 in post
+2024/04/15 19:45:40 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:45:40 getting post with  4
+2024/04/15 19:45:41 gotten userID =>  4
+2024/04/15 19:45:41 in post
+2024/04/15 19:45:41 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:45:41 getting post with  4
+2024/04/15 19:45:42 gotten userID =>  4
+2024/04/15 19:45:42 in post
+2024/04/15 19:45:42 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:45:42 getting post with  4
+2024/04/15 19:45:43 gotten userID =>  4
+2024/04/15 19:45:43 in post
+2024/04/15 19:45:43 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:45:43 getting post with  4
+2024/04/15 19:45:44 gotten userID =>  4
+2024/04/15 19:45:44 in post
+2024/04/15 19:45:44 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:45:44 getting post with  4
+2024/04/15 19:45:45 gotten userID =>  4
+2024/04/15 19:45:45 in post
+2024/04/15 19:45:45 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:45:45 getting post with  4
+2024/04/15 19:45:46 gotten userID =>  4
+2024/04/15 19:45:46 in post
+2024/04/15 19:45:46 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:45:46 getting post with  4
+2024/04/15 19:45:47 gotten userID =>  4
+2024/04/15 19:45:47 in post
+2024/04/15 19:45:47 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:45:47 getting post with  4
+2024/04/15 19:45:48 gotten userID =>  4
+2024/04/15 19:45:48 in post
+2024/04/15 19:45:48 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:45:48 getting post with  4
+2024/04/15 19:45:49 gotten userID =>  4
+2024/04/15 19:45:49 in post
+2024/04/15 19:45:49 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:45:49 getting post with  4
+2024/04/15 19:45:50 gotten userID =>  4
+2024/04/15 19:45:50 in post
+2024/04/15 19:45:50 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:45:50 getting post with  4
+2024/04/15 19:45:51 gotten userID =>  4
+2024/04/15 19:45:51 in post
+2024/04/15 19:45:51 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:45:51 getting post with  4
+2024/04/15 19:45:52 gotten userID =>  4
+2024/04/15 19:45:52 in post
+2024/04/15 19:45:52 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:45:52 getting post with  4
+2024/04/15 19:45:53 gotten userID =>  4
+2024/04/15 19:45:53 in post
+2024/04/15 19:45:53 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:45:53 getting post with  4
+2024/04/15 19:45:54 gotten userID =>  4
+2024/04/15 19:45:54 in post
+2024/04/15 19:45:54 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:45:54 getting post with  4
+2024/04/15 19:45:55 gotten userID =>  4
+2024/04/15 19:45:55 in post
+2024/04/15 19:45:55 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:45:55 getting post with  4
+2024/04/15 19:45:56 gotten userID =>  4
+2024/04/15 19:45:56 in post
+2024/04/15 19:45:56 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:45:56 getting post with  4
+2024/04/15 19:45:57 gotten userID =>  4
+2024/04/15 19:45:57 in post
+2024/04/15 19:45:57 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:45:57 getting post with  4
+2024/04/15 19:45:58 gotten userID =>  4
+2024/04/15 19:45:58 in post
+2024/04/15 19:45:58 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:45:58 getting post with  4
+2024/04/15 19:45:59 gotten userID =>  4
+2024/04/15 19:45:59 in post
+2024/04/15 19:45:59 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:45:59 getting post with  4
+2024/04/15 19:46:00 gotten userID =>  4
+2024/04/15 19:46:00 in post
+2024/04/15 19:46:00 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:46:00 getting post with  4
+2024/04/15 19:46:01 gotten userID =>  4
+2024/04/15 19:46:01 in post
+2024/04/15 19:46:01 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:46:01 getting post with  4
+2024/04/15 19:46:02 gotten userID =>  4
+2024/04/15 19:46:02 in post
+2024/04/15 19:46:02 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:46:02 getting post with  4
+2024/04/15 19:46:03 gotten userID =>  4
+2024/04/15 19:46:03 in post
+2024/04/15 19:46:03 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:46:03 getting post with  4
+2024/04/15 19:46:05 gotten userID =>  4
+2024/04/15 19:46:05 in post
+2024/04/15 19:46:05 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:46:05 getting post with  4
+2024/04/15 19:46:06 gotten userID =>  4
+2024/04/15 19:46:06 in post
+2024/04/15 19:46:06 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:46:06 getting post with  4
+2024/04/15 19:46:07 gotten userID =>  4
+2024/04/15 19:46:07 in post
+2024/04/15 19:46:07 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:46:07 getting post with  4
+2024/04/15 19:46:08 gotten userID =>  4
+2024/04/15 19:46:08 in post
+2024/04/15 19:46:08 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:46:08 getting post with  4
+2024/04/15 19:46:09 gotten userID =>  4
+2024/04/15 19:46:09 in post
+2024/04/15 19:46:09 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:46:09 getting post with  4
+2024/04/15 19:46:10 gotten userID =>  4
+2024/04/15 19:46:10 in post
+2024/04/15 19:46:10 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:46:10 getting post with  4
+2024/04/15 19:46:11 gotten userID =>  4
+2024/04/15 19:46:11 in post
+2024/04/15 19:46:11 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:46:11 getting post with  4
+2024/04/15 19:46:12 gotten userID =>  4
+2024/04/15 19:46:12 in post
+2024/04/15 19:46:12 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:46:12 getting post with  4
+2024/04/15 19:46:13 gotten userID =>  4
+2024/04/15 19:46:13 in post
+2024/04/15 19:46:13 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:46:13 getting post with  4
+2024/04/15 19:46:14 gotten userID =>  4
+2024/04/15 19:46:14 in post
+2024/04/15 19:46:14 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:46:14 getting post with  4
+2024/04/15 19:46:15 gotten userID =>  4
+2024/04/15 19:46:15 in post
+2024/04/15 19:46:15 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:46:15 getting post with  4
+2024/04/15 19:46:16 gotten userID =>  4
+2024/04/15 19:46:16 in post
+2024/04/15 19:46:16 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:46:16 getting post with  4
+2024/04/15 19:46:17 gotten userID =>  4
+2024/04/15 19:46:17 in post
+2024/04/15 19:46:17 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:46:17 getting post with  4
+2024/04/15 19:46:18 gotten userID =>  4
+2024/04/15 19:46:18 in post
+2024/04/15 19:46:18 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:46:18 getting post with  4
+2024/04/15 19:46:18 gotten userID =>  4
+2024/04/15 19:46:18 in post
+2024/04/15 19:46:18 in creation
+2024/04/15 19:46:18 --------------------------------------------
+2024/04/15 19:46:18           Post Form values                 
+2024/04/15 19:46:18 --------------------------------------------
+2024/04/15 19:46:18 [INFO] userID:  4
+2024/04/15 19:46:18 [INFO] post content:  Hello
+2024/04/15 19:46:18 [INFO] categories:  [Other]
+2024/04/15 19:46:18 [INFO] privacy:  public
+2024/04/15 19:46:18 [INFO] viewers:  4, 
+2024/04/15 19:46:18 ✅ image size checked
+2024/04/15 19:46:18 [INFO] imagelink:  25d74ac3-162d-43ed-8478-6c7b2e6dffebcoverGr.jpg
+2024/04/15 19:46:18 {{  Hello http://localhost:8080/uploads/25d74ac3-162d-43ed-8478-6c7b2e6dffebcoverGr.jpg 4 0 public} [Other] 4, }
+2024/04/15 19:46:18 creating with =>  4
+2024/04/15 19:46:18 ins content =>  Hello  length =>  5
+2024/04/15 19:46:18 ins media =>  http://localhost:8080/uploads/25d74ac3-162d-43ed-8478-6c7b2e6dffebcoverGr.jpg  length =>  77
+2024/04/15 19:46:18 ✅ post has been created successfully
+2024/04/15 19:46:18 post created successfully
+2024/04/15 19:46:18 [Alert]: post created successfully, 200
+2024/04/15 19:46:19 gotten userID =>  4
+2024/04/15 19:46:19 in post
+2024/04/15 19:46:19 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:46:19 getting post with  4
+2024/04/15 19:46:20 gotten userID =>  4
+2024/04/15 19:46:20 in post
+2024/04/15 19:46:20 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:46:20 getting post with  4
+2024/04/15 19:46:21 gotten userID =>  4
+2024/04/15 19:46:21 in post
+2024/04/15 19:46:21 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:46:21 getting post with  4
+2024/04/15 19:46:22 gotten userID =>  4
+2024/04/15 19:46:22 in post
+2024/04/15 19:46:22 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:46:22 getting post with  4
+2024/04/15 19:46:23 gotten userID =>  4
+2024/04/15 19:46:23 in post
+2024/04/15 19:46:23 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:46:23 getting post with  4
+2024/04/15 19:46:24 gotten userID =>  4
+2024/04/15 19:46:24 in post
+2024/04/15 19:46:24 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:46:24 getting post with  4
+2024/04/15 19:46:25 gotten userID =>  4
+2024/04/15 19:46:25 in post
+2024/04/15 19:46:25 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:46:25 getting post with  4
+2024/04/15 19:46:26 gotten userID =>  4
+2024/04/15 19:46:26 in post
+2024/04/15 19:46:26 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:46:26 getting post with  4
+2024/04/15 19:46:27 gotten userID =>  4
+2024/04/15 19:46:27 in post
+2024/04/15 19:46:27 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:46:27 getting post with  4
+2024/04/15 19:46:28 gotten userID =>  4
+2024/04/15 19:46:28 in post
+2024/04/15 19:46:28 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:46:28 getting post with  4
+2024/04/15 19:46:29 gotten userID =>  4
+2024/04/15 19:46:29 in post
+2024/04/15 19:46:29 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:46:29 getting post with  4
+2024/04/15 19:46:30 gotten userID =>  4
+2024/04/15 19:46:30 in post
+2024/04/15 19:46:30 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:46:30 getting post with  4
+2024/04/15 19:46:31 gotten userID =>  4
+2024/04/15 19:46:31 in post
+2024/04/15 19:46:31 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:46:31 getting post with  4
+2024/04/15 19:46:32 gotten userID =>  4
+2024/04/15 19:46:32 in post
+2024/04/15 19:46:32 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:46:32 getting post with  4
+2024/04/15 19:46:36 Verify session handler
+2024/04/15 19:46:36 Verify session handler
+2024/04/15 19:46:36 gotten userID =>  3
+2024/04/15 19:46:36 in post
+2024/04/15 19:46:36 [FETCHING POST DATA ◼◼◼] with  3
+2024/04/15 19:46:36 getting post with  3
+2024/04/15 19:46:37 gotten userID =>  3
+2024/04/15 19:46:37 in post
+2024/04/15 19:46:37 [FETCHING POST DATA ◼◼◼] with  3
+2024/04/15 19:46:37 getting post with  3
+2024/04/15 19:46:38 gotten userID =>  3
+2024/04/15 19:46:38 in post
+2024/04/15 19:46:38 [FETCHING POST DATA ◼◼◼] with  3
+2024/04/15 19:46:38 getting post with  3
+2024/04/15 19:46:39 gotten userID in comment handler =>  3
+2024/04/15 19:46:39 --------------------------------------------
+2024/04/15 19:46:39           COMMENT Form values                 
+2024/04/15 19:46:39 --------------------------------------------
+2024/04/15 19:46:39 request type  loadComments
+2024/04/15 19:46:39 [FETCHING COMMENT DATA ◼◼◼]
+2024/04/15 19:46:39 debug get id:  45c0ecac-d907-4941-8fc0-6b85142fed9c
+2024/04/15 19:46:39 gotten userID =>  3
+2024/04/15 19:46:39 in post
+2024/04/15 19:46:39 [FETCHING POST DATA ◼◼◼] with  3
+2024/04/15 19:46:39 getting post with  3
+2024/04/15 19:46:40 gotten userID in comment handler =>  3
+2024/04/15 19:46:40 --------------------------------------------
+2024/04/15 19:46:40           COMMENT Form values                 
+2024/04/15 19:46:40 --------------------------------------------
+2024/04/15 19:46:40 request type  loadComments
+2024/04/15 19:46:40 [FETCHING COMMENT DATA ◼◼◼]
+2024/04/15 19:46:40 debug get id:  45c0ecac-d907-4941-8fc0-6b85142fed9c
+2024/04/15 19:46:40 gotten userID =>  3
+2024/04/15 19:46:40 in post
+2024/04/15 19:46:40 [FETCHING POST DATA ◼◼◼] with  3
+2024/04/15 19:46:40 getting post with  3
+2024/04/15 19:46:41 gotten userID in comment handler =>  3
+2024/04/15 19:46:41 --------------------------------------------
+2024/04/15 19:46:41           COMMENT Form values                 
+2024/04/15 19:46:41 --------------------------------------------
+2024/04/15 19:46:41 request type  loadComments
+2024/04/15 19:46:41 [FETCHING COMMENT DATA ◼◼◼]
+2024/04/15 19:46:41 debug get id:  45c0ecac-d907-4941-8fc0-6b85142fed9c
+2024/04/15 19:46:41 gotten userID =>  3
+2024/04/15 19:46:41 in post
+2024/04/15 19:46:41 [FETCHING POST DATA ◼◼◼] with  3
+2024/04/15 19:46:41 getting post with  3
+2024/04/15 19:46:42 gotten userID in comment handler =>  3
+2024/04/15 19:46:42 --------------------------------------------
+2024/04/15 19:46:42           COMMENT Form values                 
+2024/04/15 19:46:42 --------------------------------------------
+2024/04/15 19:46:42 request type  loadComments
+2024/04/15 19:46:42 [FETCHING COMMENT DATA ◼◼◼]
+2024/04/15 19:46:42 debug get id:  45c0ecac-d907-4941-8fc0-6b85142fed9c
+2024/04/15 19:46:42 gotten userID =>  3
+2024/04/15 19:46:42 in post
+2024/04/15 19:46:42 [FETCHING POST DATA ◼◼◼] with  3
+2024/04/15 19:46:42 getting post with  3
+2024/04/15 19:46:43 gotten userID in comment handler =>  3
+2024/04/15 19:46:43 --------------------------------------------
+2024/04/15 19:46:43           COMMENT Form values                 
+2024/04/15 19:46:43 --------------------------------------------
+2024/04/15 19:46:43 request type  loadComments
+2024/04/15 19:46:43 [FETCHING COMMENT DATA ◼◼◼]
+2024/04/15 19:46:43 debug get id:  45c0ecac-d907-4941-8fc0-6b85142fed9c
+2024/04/15 19:46:43 gotten userID =>  3
+2024/04/15 19:46:43 in post
+2024/04/15 19:46:43 [FETCHING POST DATA ◼◼◼] with  3
+2024/04/15 19:46:43 getting post with  3
+2024/04/15 19:46:44 gotten userID =>  3
+2024/04/15 19:46:44 in post
+2024/04/15 19:46:44 [FETCHING POST DATA ◼◼◼] with  3
+2024/04/15 19:46:44 getting post with  3
+2024/04/15 19:46:45 gotten userID =>  3
+2024/04/15 19:46:45 in post
+2024/04/15 19:46:45 [FETCHING POST DATA ◼◼◼] with  3
+2024/04/15 19:46:45 getting post with  3
+2024/04/15 19:46:46 gotten userID =>  3
+2024/04/15 19:46:46 in post
+2024/04/15 19:46:46 [FETCHING POST DATA ◼◼◼] with  3
+2024/04/15 19:46:46 getting post with  3
+2024/04/15 19:46:47 gotten userID =>  3
+2024/04/15 19:46:47 in post
+2024/04/15 19:46:47 [FETCHING POST DATA ◼◼◼] with  3
+2024/04/15 19:46:47 getting post with  3
+2024/04/15 19:46:48 gotten userID =>  3
+2024/04/15 19:46:48 in post
+2024/04/15 19:46:48 [FETCHING POST DATA ◼◼◼] with  3
+2024/04/15 19:46:48 getting post with  3
+2024/04/15 19:46:49 gotten userID =>  3
+2024/04/15 19:46:49 in post
+2024/04/15 19:46:49 [FETCHING POST DATA ◼◼◼] with  3
+2024/04/15 19:46:49 getting post with  3
+2024/04/15 19:46:50 gotten userID =>  3
+2024/04/15 19:46:50 in post
+2024/04/15 19:46:50 [FETCHING POST DATA ◼◼◼] with  3
+2024/04/15 19:46:50 getting post with  3
+2024/04/15 19:46:51 gotten userID =>  3
+2024/04/15 19:46:51 in post
+2024/04/15 19:46:51 [FETCHING POST DATA ◼◼◼] with  3
+2024/04/15 19:46:51 getting post with  3
+2024/04/15 19:46:52 gotten userID =>  3
+2024/04/15 19:46:52 in post
+2024/04/15 19:46:52 [FETCHING POST DATA ◼◼◼] with  3
+2024/04/15 19:46:52 getting post with  3
+2024/04/15 19:46:53 Verify session handler
+2024/04/15 19:46:53 Verify session handler
+2024/04/15 19:46:53 Verify session handler
+2024/04/15 19:46:53 Verify session handler
+2024/04/15 19:47:04 Verify session handler
+2024/04/15 19:47:04 Verify session handler
+2024/04/15 19:47:34 Verify session handler
+2024/04/15 19:47:34 Verify session handler
+2024/04/15 19:47:34 Verify session handler
+2024/04/15 19:47:34 Verify session handler
+2024/04/15 19:47:47 Verify session handler
+2024/04/15 19:47:47 Verify session handler
+2024/04/15 19:47:58 gotten userID =>  4
+2024/04/15 19:47:58 in post
+2024/04/15 19:47:58 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:47:58 getting post with  4
+2024/04/15 19:47:59 gotten userID =>  4
+2024/04/15 19:47:59 in post
+2024/04/15 19:47:59 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:47:59 getting post with  4
+2024/04/15 19:48:10 gotten userID =>  4
+2024/04/15 19:48:10 in post
+2024/04/15 19:48:10 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:48:10 getting post with  4
+2024/04/15 19:48:11 gotten userID =>  4
+2024/04/15 19:48:11 in post
+2024/04/15 19:48:11 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:48:11 getting post with  4
+2024/04/15 19:48:12 gotten userID =>  4
+2024/04/15 19:48:12 in post
+2024/04/15 19:48:12 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:48:12 getting post with  4
+2024/04/15 19:49:23 gotten userID =>  4
+2024/04/15 19:49:23 in post
+2024/04/15 19:49:23 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:49:23 getting post with  4
+2024/04/15 19:49:24 gotten userID =>  4
+2024/04/15 19:49:24 in post
+2024/04/15 19:49:24 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:49:24 getting post with  4
+2024/04/15 19:49:25 gotten userID =>  4
+2024/04/15 19:49:25 in post
+2024/04/15 19:49:25 [FETCHING POST DATA ◼◼◼] with  4
+2024/04/15 19:49:25 getting post with  4
+2024/04/15 20:02:34 Client nixa@gmail.com disconnected

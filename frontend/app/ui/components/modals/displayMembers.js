@@ -1,5 +1,4 @@
 import React from 'react'
-import Image from 'next/image';
 
 export const DisplayMembers = ({members, isVisible, onClose }) => {
     if (!isVisible) return null;
@@ -51,9 +50,9 @@ export const displaySuggestFriend = (data) => {
                 {/* <FaUserGroup className='border rounded-full p-2 w-10 h-10' /> */}
                 <div className='flex items-center gap-2'>
 
-                    <Image
+                    <img
                         className="rounded-full "
-                        src={`/assets/${follower.avatar}`}
+                        src={`${follower.avatar}`}
                         alt={follower.avatar}
                         width={40}
                         height={40}

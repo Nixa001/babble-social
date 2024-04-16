@@ -1,8 +1,8 @@
 package service
 
 var (
-	AuthServ AuthService
-	PostServ PostService
+	AuthServ    AuthService
+	PostServ    PostService
 	CommentServ CommentService
 )
 

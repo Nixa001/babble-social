@@ -6,14 +6,15 @@ import (
 	utils "backend/utils"
 	"backend/utils/seed"
 	"database/sql"
-	"encoding/json"
 	"fmt"
 	"net/http"
+	"strconv"
+	"strings"
 )
 
-var group models.Group
+// var group models.Group
 
-var UserId int = 1
+// var UserId int = 1
 
 func CreateGroupHandler(w http.ResponseWriter, r *http.Request) {
 	cors.SetCors(&w)
@@ -22,8 +23,19 @@ func CreateGroupHandler(w http.ResponseWriter, r *http.Request) {
 	defer db.Close()
 	var group models.Group = parseFormData(w, r)
 
-	if group.Name == "" {
-		http.Error(w, "Le champ 'Name' est obligatoire", http.StatusBadRequest)
+	groupNameTrim := strings.TrimSpace(group.Name)
+
+	if len(groupNameTrim) == 0 {
+		// http.Error(w, "Le champ 'Name' est obligatoire", http.StatusBadRequest)
+
+		fmt.Println("Empty name")
+		msg := models.Errormessage{
+			Type:       "Create group",
+			Msg:        "Empty name",
+			StatusCode: http.StatusBadRequest,
+			Display:    true,
+		}
+		utils.Alert(w, msg)
 		return
 	}
 
@@ -31,23 +43,47 @@ func CreateGroupHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		fmt.Println("Erreur lors de la vérification du groupe:", err)
 		http.Error(w, "Erreur interne du serveur", http.StatusInternalServerError)
+
+		msg := models.Errormessage{
+			Type:       "Create group",
+			Msg:        "Err on create group",
+			StatusCode: http.StatusConflict,
+			Display:    true,
+		}
+		utils.Alert(w, msg)
 		return
 	}
 
 	if isExist {
-		response := map[string]string{"message": "Le groupe existe déjà"}
-		w.Header().Set("Content-Type", "application/json")
-		w.WriteHeader(http.StatusConflict)
-		json.NewEncoder(w).Encode(response)
+		// response := map[string]string{"message": "Le groupe existe déjà"}
+		// w.Header().Set("Content-Type", "application/json")
+		// w.WriteHeader(http.StatusConflict)
+		// json.NewEncoder(w).Encode(response)
+		msg := models.Errormessage{
+			Type:       "Create group",
+			Msg:        "Group already exist",
+			StatusCode: http.StatusConflict,
+			Display:    true,
+		}
+		utils.Alert(w, msg)
 		return
 	}
 
 	insertGroupCreated(db, group)
 
-	response := map[string]string{"message": "Groupe créé"}
+	// response := map[string]string{}
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(http.StatusCreated)
-	json.NewEncoder(w).Encode(response)
+
+	msg := models.Errormessage{
+		Type:       "Create group",
+		Msg:        "Groupe créé",
+		StatusCode: http.StatusCreated,
+		Display:    false,
+	}
+	utils.Alert(w, msg)
+
+	// w.WriteHeader(http.StatusCreated)
+	// json.NewEncoder(w).Encode(response)
 }
 
 func insertGroupCreated(db *sql.DB, group models.Group) {
@@ -91,10 +127,17 @@ func parseFormData(w http.ResponseWriter, r *http.Request) models.Group {
 		return models.Group{}
 	}
 
+	idUserStr := r.FormValue("user_id")
+	userId, err := strconv.Atoi(idUserStr)
+	if err != nil {
+		fmt.Println("Cannot convert idUser to int on Create group")
+		return models.Group{}
+	}
+
 	group := models.Group{
 		Name:           r.FormValue("name"),
 		Description:    r.FormValue("description"),
-		ID_User_Create: UserId,
+		ID_User_Create: userId,
 		Creation_Date:  utils.GetCurrentDateTime(),
 		Avatar:         avatarGroup,
 	}

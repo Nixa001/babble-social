@@ -4,6 +4,7 @@ import (
 	"backend/models"
 	"backend/server/cors"
 	joingroup "backend/server/handler/groups/joinGroup"
+	"backend/server/service"
 	"backend/utils/seed"
 	"database/sql"
 	"encoding/json"
@@ -12,14 +13,23 @@ import (
 	"strconv"
 )
 
-const userID int = 1
+// const userID int = 1
 
 func GetGroups(w http.ResponseWriter, r *http.Request) {
+	userID, err := service.AuthServ.VerifyToken(r)
+	if err != nil {
+		fmt.Println("Error verifying ", err.Error())
+		return
+	}
+	// user := handler.UserInSession(w, r)
+	// fmt.Println("User ==== ", user)
+	// fmt.Println("666666666666", userID.User_id)
 
+	// userID.User_id = 3
 	cors.SetCors(&w)
 	var db = seed.CreateDB()
 	defer db.Close()
-	joinedGroups, err := getJoinedGroups(db, userID)
+	joinedGroups, err := getJoinedGroups(db, userID.User_id)
 	if err != nil {
 		return
 	}
@@ -29,7 +39,7 @@ func GetGroups(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	filteredGroups, groups := filterGroups(db, joinedGroups, allGroups)
+	filteredGroups, groups := filterGroups(db, joinedGroups, allGroups, userID.User_id)
 	var Groups [][]models.Group
 	Groups = append(Groups, groups)
 	Groups = append(Groups, filteredGroups)
@@ -90,7 +100,7 @@ func getAllGroups(db *sql.DB) ([]models.Group, error) {
 	return allGroups, nil
 }
 
-func filterGroups(db *sql.DB, joined []int, all []models.Group) ([]models.Group, []models.Group) {
+func filterGroups(db *sql.DB, joined []int, all []models.Group, userID int) ([]models.Group, []models.Group) {
 	var filteredGroups []models.Group
 	var Groups []models.Group
 	for _, group := range all {
@@ -104,6 +114,8 @@ func filterGroups(db *sql.DB, joined []int, all []models.Group) ([]models.Group,
 		if !isJoined && group.ID_User_Create != userID {
 
 			check, state := joingroup.CheckJoinNotification(group.ID_User_Create, userID, group.ID, db)
+			// fmt.Printf("group id_user crate = %v, user id = %v, group id = %v: ", group.ID_User_Create, userID, group.ID)
+			// return
 			if check != 0 && state == 0 {
 				group.State = "disable"
 			}

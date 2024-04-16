@@ -6,10 +6,13 @@ import (
 	"backend/database"
 	"backend/server/handler/groups/events"
 	joingroup "backend/server/handler/groups/joinGroup"
+	"backend/server/service"
 	"backend/utils/seed"
 	"encoding/json"
 	"fmt"
 	"log"
+	"net/http"
+	"strconv"
 	"sync"
 	"time"
 
@@ -136,7 +139,6 @@ func (h *Hub) HandleEvent(eventPayload WSPaylaod) {
 		if err != nil {
 			fmt.Println("error", err)
 		}
-		fmt.Println("clientFollowers", clientFollowers)
 		h.Clients.Range(func(key, value interface{}) bool {
 			client := value.(*WSClient)
 			// Vérification si le client suit le groupe
@@ -199,17 +201,42 @@ func (h *Hub) HandleEvent(eventPayload WSPaylaod) {
 			}
 			return true
 		})
-
+	case "follow":
+		h.Clients.Range(func(key, value interface{}) bool {
+			client := value.(*WSClient)
+			if client.Email == eventPayload.To {
+				client.OutgoingMsg <- eventPayload
+			}
+			return true
+		})
+	case "notification":
+		h.Clients.Range(func(key, value interface{}) bool {
+			client := value.(*WSClient)
+			// if client.Mail == eventPayload.To {
+			client.OutgoingMsg <- eventPayload
+			// }
+			return true
+		})
+	case "ResponceNotification":
+		h.Clients.Range(func(key, value interface{}) bool {
+			client := value.(*WSClient)
+			// if client.Mail != eventPayload.To {
+			client.OutgoingMsg <- eventPayload
+			// }
+			return true
+		})
 	}
+
 }
-func (wsHub *Hub) AddClient(coon *websocket.Conn, Email string, sessionToken string) {
+
+func (wsHub *Hub) AddClient(coon *websocket.Conn, Email string, sessionToken string, r *http.Request) {
 	client := &WSClient{
 		Email:        Email,
 		WSCoon:       coon,
 		OutgoingMsg:  make(chan interface{}),
 		SessionToken: sessionToken,
 	}
-	go client.messageReader()
+	go client.messageReader(r)
 	go client.messageWriter()
 	wsHub.RegisterChannel <- client
 	var newEvent = WSPaylaod{
@@ -219,9 +246,16 @@ func (wsHub *Hub) AddClient(coon *websocket.Conn, Email string, sessionToken str
 	}
 	wsHub.HandleEvent(newEvent)
 }
-func (client *WSClient) messageReader() {
+func (client *WSClient) messageReader(r *http.Request) {
+
+	userIdConnected, err := service.AuthServ.VerifyToken(r)
+	if err != nil {
+		fmt.Println("verify token error", err)
+	}
+
 	date := time.Now().Format("2006-01-02T15:04:05")
 	Db := database.NewDatabase()
+	defer Db.Close()
 	for {
 		_, message, err := client.WSCoon.ReadMessage()
 		if err != nil {
@@ -393,12 +427,20 @@ func (client *WSClient) messageReader() {
 				return
 			}
 
-			err = joingroup.InsertNotification(int(groupeId), Db)
+			typeNotification, ok := parseData["type"].(string)
+			if !ok {
+				fmt.Println("Erreur de recuperation de donnee")
+				return
+			}
+			err = joingroup.InsertNotification(int(groupeId), typeNotification, userIdConnected.User_id, Db)
 			if err != nil {
 				fmt.Println("Error inserting", err.Error())
 			}
-			fmt.Println("Notification joined added to database")
 
+			idAdminGroup, err := joingroup.RecupeIdAdminGroup(int(groupeId), Db)
+			if err != nil {
+				fmt.Println("Erreur lors de la recuperation de l'id de l'administrateur du groupe ", err)
+			}
 			dataSend := struct {
 				IdGroup int    `json:"id_group"`
 				Button  string `json:"button"`
@@ -411,7 +453,7 @@ func (client *WSClient) messageReader() {
 				From: client.Email,
 				Type: eventType,
 				Data: dataSend,
-				To:   "Adimine group",
+				To:   string(rune(idAdminGroup)),
 			}
 			WSHub.HandleEvent(wsEvent)
 
@@ -441,7 +483,6 @@ func (client *WSClient) messageReader() {
 			if err != nil {
 				log.Fatal(err.Error())
 			}
-			fmt.Println("eventId: ", event_id)
 
 		case "GoingEvent":
 			jsonData, err := json.Marshal(wsEvent.Data)
@@ -464,12 +505,10 @@ func (client *WSClient) messageReader() {
 				fmt.Println("Erreur de recuperation de donnee")
 				return
 			}
-			err = events.JoinEvent(1, int(groupeId), int(event_id), Db)
+			err = events.JoinEvent(userIdConnected.User_id, int(groupeId), int(event_id), Db)
 			if err != nil {
 				log.Fatal(err.Error())
 			}
-			fmt.Println(groupeId)
-			fmt.Println(event_id)
 		case "SuggestFriend":
 			jsonData, err := json.Marshal(wsEvent.Data)
 			if err != nil {
@@ -481,21 +520,130 @@ func (client *WSClient) messageReader() {
 				fmt.Println("Erreur de conversion en json", err)
 			}
 
-			fmt.Println("Parse json = ", parseData["id_group"])
-			userId, ok := parseData["userId"].(float64)
+			_, ok := parseData["userId"].(float64)
 			if !ok {
 				fmt.Println("Erreur de recuperation de donnee")
 				return
 			}
-			fmt.Println("userId", userId)
 
-			groupeID, ok := parseData["id_group"]
+			groupeID, ok := parseData["id_group"].(string)
 			if !ok {
 				fmt.Println("Erreur de recuperation de donnee")
 				return
 			}
-			fmt.Println("idgroup", groupeID)
+			typeNotification, ok := parseData["type"].(string)
+			if !ok {
+				fmt.Println("Erreur de recuperation de donnee")
+				return
+			}
+			group_id, err := strconv.Atoi(groupeID)
+			if err != nil {
+				log.Fatal(err.Error())
 
+			}
+			err = joingroup.InsertNotification(group_id, typeNotification, userIdConnected.User_id, Db)
+			if err != nil {
+				fmt.Println("Error inserting notification ", err.Error())
+				return
+			}
+		case "ResponceNotification":
+			fmt.Println("--- Notification responce ---")
+			jsonData, err := json.Marshal(wsEvent.Data)
+			if err != nil {
+				fmt.Println("Erreur de conversion en json", err)
+				return
+			}
+			var parseData map[string]interface{}
+			if err := json.Unmarshal(jsonData, &parseData); err != nil {
+				fmt.Println("Erreur de conversion en json", err)
+			}
+
+			id_user_sender, ok := parseData["id_user_sender"].(float64)
+			if !ok {
+				fmt.Println("Erreur de recuperation de donnee")
+				return
+			}
+			id_user_receiver, ok := parseData["id_user_receiver"].(float64)
+			if !ok {
+				fmt.Println("Erreur de recuperation de donnee")
+				return
+			}
+
+			groupIDSTr, ok := parseData["idGroup"].(string)
+			groupid, err := strconv.Atoi(groupIDSTr)
+			if !ok {
+				fmt.Println("Erreur de recuperation de donnee")
+				return
+			}
+
+			typeNotification, ok := parseData["typeNotification"].(string)
+			if !ok {
+				fmt.Println("Erreur de recuperation de donnee")
+				return
+			}
+
+			response, ok := parseData["response"].(string)
+			if !ok {
+				fmt.Println("Erreur de recuperation de donnee")
+				return
+			}
+
+			if response == "going" {
+				if typeNotification == "follow" {
+					err := service.AuthServ.FollowUser(userIdConnected.User_id, int(id_user_receiver))
+					if err != nil {
+						fmt.Println("Erreur lors de l'insertion de users follower ", err)
+						return
+					}
+				} else {
+
+					check := joingroup.AcceptOrNo(Db, int(id_user_sender), int(id_user_receiver), groupid, "1")
+					if !check {
+						fmt.Println("Error lors de la requete update ", check)
+						return
+					} else {
+						joingroup.InsertGroupFollowers(Db, int(id_user_sender), groupid)
+					}
+				}
+			} else if response == "not going" {
+				// if typeNotification == "follow" {
+				// 	err := service.AuthServ.FollowUser(userIdConnected.User_id, int(id_user_receiver))
+				// 	if err != nil {
+				// 		fmt.Println("Erreur lors de l'insertion de users follower ", err)
+				// 		return
+				// 	}
+				// } else {
+				check := joingroup.AcceptOrNo(Db, int(id_user_sender), int(id_user_receiver), groupid, "-1")
+				if !check {
+					fmt.Println("Error lors de la requete update ", check)
+					return
+				}
+				// }
+			}
+		case "follow":
+			jsonData, err := json.Marshal(wsEvent.Data)
+			if err != nil {
+				fmt.Println("Erreur de conversion en json", err)
+				return
+			}
+			var parseData map[string]interface{}
+			if err := json.Unmarshal(jsonData, &parseData); err != nil {
+				fmt.Println("Erreur de conversion en json", err)
+			}
+			followerId, ok := parseData["follower_id"].(float64)
+			if !ok {
+				fmt.Println("Erreur de recuperation de donnee")
+				return
+			}
+			followedId, ok := parseData["followed_id"].(float64)
+			if !ok {
+				fmt.Println("Erreur de recuperation de donnee")
+				return
+			}
+			err = joingroup.InsertFollowNotification(int(followerId), int(followedId), Db)
+			if err != nil {
+				fmt.Println("Error inserting", err.Error())
+			}
 		}
 
 	}
@@ -509,7 +657,6 @@ func (client *WSClient) messageWriter() {
 				return
 			}
 			err = client.WSCoon.WriteMessage(websocket.TextMessage, data)
-			// fmt.Println(string(data))
 			if err != nil {
 				return
 			}

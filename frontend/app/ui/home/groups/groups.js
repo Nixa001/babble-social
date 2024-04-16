@@ -1,21 +1,26 @@
 "use client";
-import React, { useContext, useState } from "react";
-import Image from "next/image";
-import Link from "next/link";
-import { CreateGroup } from "../../components/modals/createGroup";
-import { useQuery } from "react-query";
-import { useApi } from "@/app/_lib/utils";
-import { JoinGroup } from "./group.utils/joinGroup";
 import { WebSocketContext } from "@/app/_lib/websocket";
+import { useSession } from "@/app/api/api";
+import Link from "next/link";
+import { useContext, useState } from "react";
+import { useQuery } from "react-query";
+import { CreateGroup } from "../../components/modals/createGroup";
+import { JoinGroup } from "./group.utils/joinGroup";
 
 const Groups = () => {
+  const { session, errSess } = useSession();
   const [formCreateGr, setFormCreateGr] = useState(false);
   const [groupData, setGroupData] = useState([]);
+  const [fetcherState, setFetcherState] = useState(true);
   const [groupJoined, setGroupJoined] = useState([]);
 
   const fetchGroups = async () => {
     try {
-      const response = await fetch("http://localhost:8080/groups");
+      let token = localStorage.getItem("token");
+      console.log(token);
+      const response = await fetch(
+        `http://localhost:8080/groups?token=${token}`
+      );
       const data = await response.json();
       return { groupJoined: data[0], groupData: data[1] };
     } catch (error) {
@@ -25,12 +30,12 @@ const Groups = () => {
   };
 
   useQuery("groups", fetchGroups, {
-    enabled: true,
+    enabled: fetcherState,
     refetchInterval: 5000,
     staleTime: 1000,
     onSuccess: (newData) => {
-      setGroupJoined(newData.groupJoined);
-      setGroupData(newData.groupData);
+      setGroupJoined(newData?.groupJoined);
+      setGroupData(newData?.groupData);
     },
     onError: (error) => {
       console.error("Query error:", error);
@@ -79,8 +84,8 @@ const Groups = () => {
         <div className="w-full flex gap-3 overflow-x-scroll pb-10">
           {groupData
             ? groupData.map((group) => (
-              <GroupCard key={group.id} isMember={false} {...group} />
-            ))
+                <GroupCard key={group.id} isMember={false} {...group} />
+              ))
             : ""}
         </div>
         <CreateGroup
@@ -104,17 +109,16 @@ const GroupCard = ({ isMember, id, image, name, description, href, state }) => {
 
   // const { sendMessage, readMessages, messages } = useApi();
 
-  const {sendMessage ,readMessages, messages} = useContext(WebSocketContext)
+  const { sendMessage, readMessages, messages } = useContext(WebSocketContext);
 
   const handleLoginJoinMessage = () => {
-    // console.log("handleLoginJoinMessage ", id);
     const joinMessage = messages.find(
-      (message) => message.Type === "JoinGroup" && message.Data.id_group === 1
+      (message) => message.Type === "JoinGroup"
     );
     if (joinMessage) {
       messages.map((message) => {
         if (message.Data.id_group === id) {
-          console.log("Message ", message);
+          // console.log("Message ", message);
           return;
         }
       });
@@ -134,7 +138,7 @@ const GroupCard = ({ isMember, id, image, name, description, href, state }) => {
         >
           <div className="w-[200px] border rounded-lg shadow-xl min-h-[206px] bg-bg bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-5 border-gray-800 hover:bg-opacity-5 hover:bg-primary cursor-pointer">
             <div className="flex flex-col items-center py-3">
-              <Image
+              <img
                 src={image}
                 alt={name}
                 width={500}
@@ -154,7 +158,7 @@ const GroupCard = ({ isMember, id, image, name, description, href, state }) => {
         <div className="w-[200px] border rounded-lg shadow-xl bg-primary bg-opacity-0 bg-clip-padding backdrop-filter backdrop-blur-md hover:bg-opacity-5 hover:bg-primary border-gray-800 cursor-pointer">
           <div className="flex flex-col items-center h-[100%]  justify-between py-3">
             {image ? (
-              <Image
+              <img
                 src={`${image}`}
                 alt={name}
                 width={200}
@@ -172,8 +176,7 @@ const GroupCard = ({ isMember, id, image, name, description, href, state }) => {
             </span>
 
             <div className="flex mt-4 md:mt-6">
-              {state !== 'disable' ? (
-
+              {state !== "disable" ? (
                 <button
                   onClick={() => {
                     JoinGroup(id, sendMessage, readMessages);
@@ -182,7 +185,9 @@ const GroupCard = ({ isMember, id, image, name, description, href, state }) => {
                 >
                   Join
                 </button>
-              ) : ('')}
+              ) : (
+                ""
+              )}
             </div>
           </div>
         </div>
@@ -190,27 +195,3 @@ const GroupCard = ({ isMember, id, image, name, description, href, state }) => {
     </>
   );
 };
-
-// function JoinGroup(name) {
-//   alert("send join " + name);
-// }
-
-const Data = [
-  {
-    id: 1,
-    image: "/assets/ea.jpg",
-    name: "EA Football 24",
-    description: "Un groupe pour les fans de football du monde entier",
-    href: "/groups/join/EA Football 24",
-    functionOnclick: JoinGroup,
-  },
-];
-const DataJoined = [
-  {
-    id: 111,
-    image: "/assets/ea.jpg",
-    name: "EA Football 24",
-    description: "Un groupe pour les fans de football du monde entier",
-    href: "/home/groups/group/",
-  },
-];
