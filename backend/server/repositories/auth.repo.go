@@ -46,10 +46,10 @@ func (u *UserRepository) GetUserById(id int) (models.User, error) {
 		log.Println("Error scanning row", err)
 		return models.User{}, err
 	}
-	user.User_name = getStringValue(user_name)
-	user.Gender = getStringValue(gender)
-	user.Avatar = getStringValue(avatar)
-	user.About_me = getStringValue(about_me)
+	user.User_name = GetStringValue(user_name)
+	user.Gender = GetStringValue(gender)
+	user.Avatar = GetStringValue(avatar)
+	user.About_me = GetStringValue(about_me)
 	return user, nil
 }
 func (u *UserRepository) GetUserByToken(token string) (models.User, error) {
@@ -72,10 +72,10 @@ func (u *UserRepository) GetUserByToken(token string) (models.User, error) {
 		log.Println("Error scanning row", err)
 		return models.User{}, err
 	}
-	user.User_name = getStringValue(user_name)
-	user.Gender = getStringValue(gender)
-	user.Avatar = getStringValue(avatar)
-	user.About_me = getStringValue(about_me)
+	user.User_name = GetStringValue(user_name)
+	user.Gender = GetStringValue(gender)
+	user.Avatar = GetStringValue(avatar)
+	user.About_me = GetStringValue(about_me)
 
 	return user, nil
 }
@@ -100,10 +100,10 @@ func (u *UserRepository) GetUserByEmail(email string) (models.User, error) {
 		log.Println("Error scanning row", err)
 		return models.User{}, err
 	}
-	user.User_name = getStringValue(user_name)
-	user.Gender = getStringValue(gender)
-	user.Avatar = getStringValue(avatar)
-	user.About_me = getStringValue(about_me)
+	user.User_name = GetStringValue(user_name)
+	user.Gender = GetStringValue(gender)
+	user.Avatar = GetStringValue(avatar)
+	user.About_me = GetStringValue(about_me)
 
 	return user, nil
 }
@@ -138,10 +138,10 @@ func (u *UserRepository) GetAllUsers() (users []models.User, err error) {
 			log.Println("Error scanning row", err)
 			return nil, err
 		}
-		user.User_name = getStringValue(user_name)
-		user.Gender = getStringValue(gender)
-		user.Avatar = getStringValue(avatar)
-		user.About_me = getStringValue(about_me)
+		user.User_name = GetStringValue(user_name)
+		user.Gender = GetStringValue(gender)
+		user.Avatar = GetStringValue(avatar)
+		user.About_me = GetStringValue(about_me)
 		users = append(users, user)
 	}
 	return users, nil
@@ -152,7 +152,7 @@ func (u *UserRepository) UpdateProfileType(user models.User) error {
 	return err
 }
 
-func getStringValue(value sql.NullString) string {
+func GetStringValue(value sql.NullString) string {
 	if value.Valid {
 		return value.String
 	}

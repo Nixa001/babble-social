@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 const NEXT_PUBLIC_API_URL = `http://localhost:8080`;
 
 export async function loginUser(email, password) {

@@ -3,6 +3,7 @@ package user
 import (
 	"backend/models"
 	"backend/server/cors"
+	"backend/server/repositories"
 	"backend/server/service"
 	"backend/utils/seed"
 	"database/sql"
@@ -44,11 +45,13 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 func GetUserData(db *sql.DB, userID int) (models.User, error) {
 	var user models.User
 	query := "SELECT * FROM users WHERE id = ?"
-	err := db.QueryRow(query, userID).Scan(&user.Id, &user.First_name, &user.Last_name, &user.User_name, &user.Gender, &user.Email, &user.Password, &user.User_type, &user.Birth_date, &user.Avatar, &user.About_me)
+	var user_name sql.NullString
+	err := db.QueryRow(query, userID).Scan(&user.Id, &user.First_name, &user.Last_name, &user_name, &user.Gender, &user.Email, &user.Password, &user.User_type, &user.Birth_date, &user.Avatar, &user.About_me)
 	if err != nil {
 		log.Println("Error scanning row GetUserData: ", err.Error())
 		return models.User{}, fmt.Errorf("err scan user data: %w", err)
 	}
+	user.User_name = repositories.GetStringValue(user_name)
 	return user, nil
 }
 
