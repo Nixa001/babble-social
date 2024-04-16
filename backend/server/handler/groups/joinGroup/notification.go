@@ -113,6 +113,27 @@ func AcceptOrNo(db *sql.DB, user_id_sender, user_id_receiver, id_group int, val 
 	return true
 }
 
+func AcceptOrNoSugg(db *sql.DB, user_id_sender, user_id_receiver int, val string) bool {
+	stm := `
+		UPDATE notifications SET status = ? WHERE user_id_sender = ? AND user_id_receiver = ? AND notification_type = ?
+	`
+	query, err := db.Prepare(stm)
+	if err != nil {
+		fmt.Println("Erreur lors de la préparation de la requête: ", err)
+		return false
+	}
+	defer query.Close() // Assurez-vous de fermer la requête préparée après son utilisation
+
+	// Exécute la requête préparée avec les paramètres spécifiques
+	_, err = query.Exec(val, user_id_sender, user_id_receiver, "follow") // '1' est la nouvelle valeur de 'status'
+	if err != nil {
+		fmt.Println("Erreur lors de l'exécution de la requête: ", err)
+		return false
+	}
+
+	return true
+}
+
 func InsertGroupFollowers(db *sql.DB, user_id, group_id int) {
 	stm := `
 		INSERT INTO group_followers VALUES (?, ?)
@@ -138,11 +159,10 @@ func InsertFollowNotification(followerId, followedId int, db *sql.DB) error {
 		fmt.Println("Erreur checked ", err.Error())
 		return err
 	}
+	fmt.Println("CheckNotifExist ", checkNotif)
 	if !checkNotif {
-		fmt.Println("CheckNotifExist ")
-		check, _ := CheckJoinFollowNotification(followerId, followedId, db)
-		if check == 0 {
-
+		check, state := CheckJoinFollowNotification(followerId, followedId, db)
+		if check == 0 && state == 0 || check > 0 && state != -1 {
 			req := `
 			INSERT INTO notifications (notification_type, status, user_id_sender, user_id_receiver, date) VALUES ($1, $2, $3, $4, $5)
 		`
@@ -205,4 +225,21 @@ func CheckNotifExist(db *sql.DB, followerId, followedId int) (bool, error) {
 	}
 	fmt.Println("Count = ", count)
 	return count > 0, nil
+}
+func DeleteNotification(db *sql.DB) {
+	stm := `
+		DELETE FROM notifications WHERE status = $1
+	`
+	query, err := db.Prepare(stm)
+	if err != nil {
+        fmt.Println("Erreur lors de la préparation de la requête: ", err)
+        return
+    }
+	defer query.Close() // Assurez-vous de fermer la requête préparée après son utilisation
+	// Exécute la requête préparée avec les paramètres spécifiques
+	_, err = query.Exec("-1") // '1' est la nouvelle valeur de 'status'
+    if err != nil {
+        fmt.Println("Erreur lors de l'exécution de la requête: ", err)
+        return
+    }
 }

@@ -103,12 +103,12 @@ export const displayNotification = (notificationData, sendMessage) => {
           </button>
           <button
             onClick={() => {
-              // console.log(notification);
+              console.log(notification);
               sendMessage({
                 type: "ResponceNotification",
                 groupeId: notification.group_id,
                 id_user_sender: notification.user_id_sender,
-                id_user_receiver: notification.id_user_receiver,
+                id_user_receiver: notification.user_id_received,
                 typeNotification: notification.type,
                 response: "notGoing",
               });

@@ -114,4 +114,6 @@ func InsertData(db *sql.DB) {
 		log.Fatal("Insert into confirm", err.Error())
 	}
 
+	
+
 }

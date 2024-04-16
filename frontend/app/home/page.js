@@ -10,8 +10,8 @@ const Page = () => {
   const router = useRouter(),
     { session, errSess } = useSession();
   if (errSess) alert(errSess);
-  // const token = localStorage.getItem("token") ;
-  // if (token == null) router.push("/");
+  const token = localStorage.getItem("token") ;
+  if (token == null) router.push("/");
   const sessionId = session?.session["user_id"];
   // console.log("i got session => ", sessionId);
   return (

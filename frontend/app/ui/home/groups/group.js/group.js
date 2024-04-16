@@ -32,8 +32,8 @@ const CardEvent = ({ description, date }) => {
   );
 };
 
-const Group = (sessionID) => {
-  const { sendMessage, readMessages, messages } = useContext(WebSocketContext);
+const Group = ({sessionID}) => {
+  const { sendMessage } = useContext(WebSocketContext);
 
   const [formCreateEv, setFormCreateEv] = useState(false);
   const [formCreateP, setFormCreateP] = useState(false);

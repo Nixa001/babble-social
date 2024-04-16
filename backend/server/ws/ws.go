@@ -565,60 +565,70 @@ func (client *WSClient) messageReader(r *http.Request) {
 			}
 			id_user_receiver, ok := parseData["id_user_receiver"].(float64)
 			if !ok {
-				fmt.Println("Erreur de recuperation de donnee")
+				fmt.Println("Erreur de recuperation de donnee id_user_receiver !!!")
 				return
 			}
 
-			groupIDSTr, ok := parseData["idGroup"].(string)
-			groupid, err := strconv.Atoi(groupIDSTr)
+			groupid, ok := parseData["groupeId"].(float64)
+			// groupid, err := strconv.Atoi(groupIDSTr)
+			// if err != nil {
+			// 	fmt.Println("Erreur de convert de donnee id_user_receiver")
+			// }
 			if !ok {
-				fmt.Println("Erreur de recuperation de donnee")
+				fmt.Println("Erreur de recuperation de donnee id_group")
 				return
 			}
 
 			typeNotification, ok := parseData["typeNotification"].(string)
 			if !ok {
-				fmt.Println("Erreur de recuperation de donnee")
+				fmt.Println("Erreur de recuperation de donnee typeNotification")
 				return
 			}
 
 			response, ok := parseData["response"].(string)
 			if !ok {
-				fmt.Println("Erreur de recuperation de donnee")
+				fmt.Println("Erreur de recuperation de donnee response")
 				return
 			}
 
+			fmt.Println("Reponse ", response)
 			if response == "going" {
 				if typeNotification == "follow" {
-					err := service.AuthServ.FollowUser(userIdConnected.User_id, int(id_user_receiver))
+					err := service.AuthServ.FollowUser(int(id_user_sender), int(id_user_receiver))
 					if err != nil {
 						fmt.Println("Erreur lors de l'insertion de users follower ", err)
 						return
 					}
+					check := joingroup.AcceptOrNoSugg(Db, int(id_user_sender), int(id_user_receiver), "1")
+					if !check {
+						fmt.Println("Error lors de la requete update ", check)
+						return
+					} 
 				} else {
 
-					check := joingroup.AcceptOrNo(Db, int(id_user_sender), int(id_user_receiver), groupid, "1")
+					check := joingroup.AcceptOrNo(Db, int(id_user_sender), int(id_user_receiver), int(groupid), "1")
 					if !check {
 						fmt.Println("Error lors de la requete update ", check)
 						return
 					} else {
-						joingroup.InsertGroupFollowers(Db, int(id_user_sender), groupid)
+						joingroup.InsertGroupFollowers(Db, int(id_user_sender), int(groupid))
 					}
 				}
-			} else if response == "not going" {
-				// if typeNotification == "follow" {
-				// 	err := service.AuthServ.FollowUser(userIdConnected.User_id, int(id_user_receiver))
-				// 	if err != nil {
-				// 		fmt.Println("Erreur lors de l'insertion de users follower ", err)
-				// 		return
-				// 	}
-				// } else {
-				check := joingroup.AcceptOrNo(Db, int(id_user_sender), int(id_user_receiver), groupid, "-1")
-				if !check {
-					fmt.Println("Error lors de la requete update ", check)
-					return
+			} else if response == "notGoing" {
+				if typeNotification == "follow" {
+					check := joingroup.AcceptOrNoSugg(Db, int(id_user_sender), int(id_user_receiver), "-1")
+					if !check {
+						fmt.Println("Error lors de la requete update ", check)
+						return
+					}
+				} else {
+					check := joingroup.AcceptOrNo(Db, int(id_user_sender), int(id_user_receiver), int(groupid), "-1")
+					if !check {
+						fmt.Println("Error lors de la requete update ", check)
+						return
+					}
 				}
-				// }
+				joingroup.DeleteNotification(Db)
 			}
 		case "follow":
 			jsonData, err := json.Marshal(wsEvent.Data)
