@@ -330,21 +330,3 @@ const onCommentClick = () => {
   alert("Comment disp");
 };
 
-function notGoing(id_event, sendMessage, id_group) {
-  const token = localStorage.getItem("token") || null;
-  sendMessage({
-    type: "NotGoingEvent",
-    groupId: id_group,
-    event_id: id_event,
-    token: token,
-  });
-}
-function going(id_event, sendMessage, id_group) {
-  const token = localStorage.getItem("token") || null;
-  sendMessage({
-    type: "GoingEvent",
-    groupId: id_group,
-    event_id: id_event,
-    token: token,
-  });
-}

@@ -226,7 +226,7 @@ func CheckNotifExist(db *sql.DB, followerId, followedId int) (bool, error) {
 	fmt.Println("Count = ", count)
 	return count > 0, nil
 }
-func DeleteNotification(db *sql.DB) {
+func DeleteNotification(db *sql.DB, val string) {
 	stm := `
 		DELETE FROM notifications WHERE status = $1
 	`
@@ -237,7 +237,7 @@ func DeleteNotification(db *sql.DB) {
     }
 	defer query.Close() // Assurez-vous de fermer la requête préparée après son utilisation
 	// Exécute la requête préparée avec les paramètres spécifiques
-	_, err = query.Exec("-1") // '1' est la nouvelle valeur de 'status'
+	_, err = query.Exec(val) // '1' est la nouvelle valeur de 'status'
     if err != nil {
         fmt.Println("Erreur lors de l'exécution de la requête: ", err)
         return

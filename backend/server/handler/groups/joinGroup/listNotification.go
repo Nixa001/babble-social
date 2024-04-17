@@ -43,7 +43,6 @@ func ListNotification(r *http.Request) []models.Notification {
 		}
 		notifications = append(notifications, notification)
 	}
-	
 
 	return notifications
 }

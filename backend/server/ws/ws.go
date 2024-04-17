@@ -520,20 +520,20 @@ func (client *WSClient) messageReader(r *http.Request) {
 				fmt.Println("Erreur de conversion en json", err)
 			}
 
-			_, ok := parseData["userId"].(float64)
+			userid, ok := parseData["userId"].(float64)
 			if !ok {
-				fmt.Println("Erreur de recuperation de donnee")
+				fmt.Println("Erreur de recuperation de donnee userid")
 				return
 			}
 
-			groupeID, ok := parseData["id_group"].(string)
+			groupeID, ok := parseData["idGroup"].(string)
 			if !ok {
-				fmt.Println("Erreur de recuperation de donnee")
+				fmt.Println("Erreur de recuperation de donnee groupId")
 				return
 			}
 			typeNotification, ok := parseData["type"].(string)
 			if !ok {
-				fmt.Println("Erreur de recuperation de donnee")
+				fmt.Println("Erreur de recuperation de donnee type ")
 				return
 			}
 			group_id, err := strconv.Atoi(groupeID)
@@ -541,7 +541,7 @@ func (client *WSClient) messageReader(r *http.Request) {
 				log.Fatal(err.Error())
 
 			}
-			err = joingroup.InsertNotification(group_id, typeNotification, userIdConnected.User_id, Db)
+			err = joingroup.InsertNotification(group_id, typeNotification, int(userid), Db)
 			if err != nil {
 				fmt.Println("Error inserting notification ", err.Error())
 				return
@@ -603,7 +603,7 @@ func (client *WSClient) messageReader(r *http.Request) {
 					if !check {
 						fmt.Println("Error lors de la requete update ", check)
 						return
-					} 
+					}
 				} else {
 
 					check := joingroup.AcceptOrNo(Db, int(id_user_sender), int(id_user_receiver), int(groupid), "1")
@@ -614,6 +614,7 @@ func (client *WSClient) messageReader(r *http.Request) {
 						joingroup.InsertGroupFollowers(Db, int(id_user_sender), int(groupid))
 					}
 				}
+				joingroup.DeleteNotification(Db, "1")
 			} else if response == "notGoing" {
 				if typeNotification == "follow" {
 					check := joingroup.AcceptOrNoSugg(Db, int(id_user_sender), int(id_user_receiver), "-1")
@@ -628,7 +629,7 @@ func (client *WSClient) messageReader(r *http.Request) {
 						return
 					}
 				}
-				joingroup.DeleteNotification(Db)
+				joingroup.DeleteNotification(Db, "-1")
 			}
 		case "follow":
 			jsonData, err := json.Marshal(wsEvent.Data)

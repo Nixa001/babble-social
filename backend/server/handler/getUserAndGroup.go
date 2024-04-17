@@ -32,15 +32,35 @@ func GetUserGroup(w http.ResponseWriter, r *http.Request) {
 			})
 			return
 		}
+		var tableauVide [][]models.User
 		listGroup, _ := seed.GetGroup(seed.DB, session.User_id)
 		listUser, err := seed.ListeUsers(seed.DB, session.User_id)
 		if err != nil {
 			fmt.Println("error:", err)
-		} else if len(listUser) == 0 {
+		} else if len(listUser) == 0 && len(listGroup) == 0 {
 			fmt.Println("La liste des utilisateurs est vide")
+		} else if len(listUser) != 0 && len(listGroup) == 0 {
+			data := []interface{}{listUser, tableauVide}
+			jsonData, err := json.Marshal(data)
+			if err != nil {
+				fmt.Fprintf(w, "Error encoding data to JSON: %v", err)
+				http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+				return
+			}
+			w.Header().Set("Content-Type", "application/json")
+			w.Write(jsonData)
+		} else if len(listUser) == 0 && len(listGroup) != 0 {
+			data := []interface{}{tableauVide, listGroup}
+			jsonData, err := json.Marshal(data)
+			if err != nil {
+				fmt.Fprintf(w, "Error encoding data to JSON: %v", err)
+				http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+				return
+			}
+			w.Header().Set("Content-Type", "application/json")
+			w.Write(jsonData)
 		} else {
 			data := []interface{}{listUser[0], listGroup}
-			// fmt.Println("dtails", data)
 			jsonData, err := json.Marshal(data)
 			if err != nil {
 				fmt.Fprintf(w, "Error encoding data to JSON: %v", err)

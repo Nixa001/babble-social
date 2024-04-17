@@ -32,7 +32,6 @@ export default function Profile({ sessionId, sessionToken }) {
     refetchInterval: 5000,
     staleTime: 5000,
     onSuccess: (data) => {
-      console.log(data);
       setUser(data?.user);
       setFollowers(data?.followers);
       setFollowings(data?.followings);
@@ -42,7 +41,6 @@ export default function Profile({ sessionId, sessionToken }) {
   });
   const followersId = followers?.map((follower) => follower.id);
   const HandleFollow = (id, sessionId) => {
-    console.log("HandleFollow");
     if (sessionId && followersId?.includes(sessionId)) {
       try {
         const response = unfollowUser(id, sessionId, sessionToken);
