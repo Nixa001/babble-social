@@ -23,7 +23,6 @@ const fetchUserGroup = async () => {
       method: "GET",
     });
     const data = response.json();
-    console.log(data);
     return data;
   } catch (error) {
     console.error("Erreur ", error);
@@ -65,12 +64,10 @@ const Messages = () => {
   useEffect(() => {
     const fetchData = async () => {
       const result = await fetchUserGroup();
-      console.log("Fetch", result);
       setData(result); // Mettre à jour l'état avec les données récupérées
     };
     fetchData();
   }, []);
-  console.log("recu du backend", data);
   let OnlineUser = [];
   let Groups = [];
 
@@ -80,7 +77,7 @@ const Messages = () => {
     if (data[0] !== undefined) {
       OnlineUser = data[0];
     } else {
-      console.log("data[0] est undefined");
+      // console.log("data[0] est undefined");
       OnlineUser = [];
       Groups = data[1]; // Assignez un tableau vide si data[0] est undefined
     }
@@ -88,12 +85,7 @@ const Messages = () => {
     // Vérifiez si data[1] est différent de undefined avant de l'assigner à Groups
 
     data[1] ? (Groups = data[1]) : (Groups = []);
-    // if (data[1] !== undefined) {
-    //   Groups = data[1];
-    // } else {
-    //   console.log("data[1] est undefined");
-    //   Groups = []; // Assignez un tableau vide si data[1] est undefined
-    // }
+
   } else {
     console.log("Aucune donnée reçue du backend");
   }
@@ -155,7 +147,6 @@ const Messages = () => {
   const handleGroupClick = async (GroupId, nameGroup) => {
     setIdGroupReceiver(GroupId);
     setNameGroup(nameGroup);
-    console.log("Session user", sessionUserId);
     const token = localStorage.getItem("token");
     activeDialogue = { type: "group", id: GroupId };
     sendMessageToServer({

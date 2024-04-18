@@ -134,7 +134,7 @@ export async function followUser(id, sessionId, token) {
 }
 
 export async function unfollowUser(id, sessionId, token) {
-  alert("unfollow");
+  // alert("unfollow");
   try {
     const response = await fetch(`${NEXT_PUBLIC_API_URL}/unfollow?id=${id}`, {
       method: "POST",

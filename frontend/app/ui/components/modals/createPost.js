@@ -22,7 +22,6 @@ export const CreatePost = ({ isVisible, onClose, id, user }) => {
     const sessionID = user; //TODO: get the user ID from local
     const data = new FormData(e.target);
     data.append("userID", sessionID);
-    console.log("my data => ", data);
     const options = {
       method: "POST",
       body: data,
@@ -30,7 +29,7 @@ export const CreatePost = ({ isVisible, onClose, id, user }) => {
     fetch(`http://localhost:8080/group/postgroup?id=${id}`, options).then(
       async (x) => {
         const retrieved = await x.json();
-        console.log("response", retrieved);
+        // console.log("response", retrieved);
         onClose();
 
         if (retrieved.type != "success") {

@@ -21,14 +21,14 @@ export const PostForm = (idUser, isVisible, onClose, followers) => {
     const data = new FormData(e.target);
     data.append("userID", idUser);
     data.append("type", "createPost");
-    console.log("my data => ", data);
+    // console.log("my data => ", data);
     const options = {
       method: "POST",
       body: data,
     };
     fetch("http://localhost:8080/post", options).then(async (x) => {
       const retrieved = await x.json();
-      console.log("response", retrieved);
+      // console.log("response", retrieved);
       if (retrieved.type != "success") {
         toast.error(retrieved.msg, {
           position: "bottom-left",

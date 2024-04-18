@@ -24,7 +24,6 @@ const HomePage = ({ id }) => {
     try {
       const response = await fetch("http://localhost:8080/post", options);
       const data = await response.json();
-      console.log(data);
       return {
         posts: data.data,
         followers: data.followers,
@@ -46,8 +45,6 @@ const HomePage = ({ id }) => {
       //  if (newData.errType == 400) setFetchState(false);
       setPosts(newData.posts);
       setFollowers(newData.followers);
-      console.log(newData.followers, 'ici');
-      //console.log("debug => ", newData);
     },
     onError: (error) => {
       setFetchState(false);

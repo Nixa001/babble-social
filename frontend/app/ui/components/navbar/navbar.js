@@ -44,9 +44,7 @@ function Navbar() {
     const token = localStorage.getItem("token");
     try {
       const response = await logoutUser(token);
-      console.log(response);
       if (!response.error) {
-        console.log(response);
         localStorage.removeItem("token");
         router.push("/");
       } else {
@@ -64,7 +62,6 @@ function Navbar() {
         const userData = await getSessionUser();
         setUser(userData);
         userID = userData.id;
-        console.log("userID: ", userData.id);
       } catch (error) {
         console.error("Failed to fetch user session:", error);
       }

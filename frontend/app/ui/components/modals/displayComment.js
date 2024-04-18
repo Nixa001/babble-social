@@ -60,8 +60,8 @@ export const DisplayComments = ({
     data.forEach((key, value) => {
       obj[value] = key;
     });
-    console.log("my comment data => ", data);
-    console.log("my comment data transf => ", obj);
+    // console.log("my comment data => ", data);
+    // console.log("my comment data transf => ", obj);
     const options = {
       method: "POST",
       body: data,

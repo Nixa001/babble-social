@@ -103,7 +103,6 @@ export const displayNotification = (notificationData, sendMessage) => {
           </button>
           <button
             onClick={() => {
-              console.log(notification);
               sendMessage({
                 type: "ResponceNotification",
                 groupeId: notification.group_id,
