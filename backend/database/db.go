@@ -2,12 +2,15 @@ package database
 
 import (
 	q "backend/database/query"
-	"backend/utils/seed"
 	"database/sql"
 	"fmt"
 	"log"
 	"os"
+	"path/filepath"
 
+	"github.com/golang-migrate/migrate/v4"
+	"github.com/golang-migrate/migrate/v4/database/sqlite3"
+	_ "github.com/golang-migrate/migrate/v4/source/file"
 	_ "github.com/mattn/go-sqlite3"
 )
 
@@ -23,18 +26,53 @@ func init() {
 		log.Println("Error opening database:", err)
 		os.Exit(1)
 	}
-	seed.CreateTable(db)
+	err = MigrateDB(db)
+	if err != nil {
+		log.Println("Error migrating database:", err)
+		os.Exit(1)
+	}
+	//seed.CreateTable(db)
 	//seed.InsertData(db)
 	log.Println("Database opened")
 	DB = &Database{db}
 }
 
 func NewDatabase() *sql.DB {
-	db, err := sql.Open("sqlite3", "../backend/database/social_network.db")
+	db, err := sql.Open("sqlite3", "./backend/database/social_network.db")
 	if err != nil {
 		log.Fatal("Error opening database: ", err)
 	}
 	return db
+}
+
+func MigrateDB(db *sql.DB) error {
+	log.Println("Migrating database...")
+	driver, err := sqlite3.WithInstance(db, &sqlite3.Config{})
+	if err != nil {
+		return fmt.Errorf("failed to create migration driver: %v", err)
+	}
+
+	// Get the absolute path to the migrations directory
+	absPath, err := filepath.Abs("../backend/database/migrations/sqlite")
+	if err != nil {
+		return fmt.Errorf("failed to get absolute path: %v", err)
+	}
+
+	// Run migrations
+	m, err := migrate.NewWithDatabaseInstance(
+		"file://"+absPath,
+		"sqlite3", driver)
+
+	if err != nil {
+		return fmt.Errorf("migration failed: %v", err)
+	}
+
+	if err := m.Up(); err != nil && err != migrate.ErrNoChange {
+		return fmt.Errorf("an error occurred while syncing the database: %v", err)
+	}
+
+	log.Println("Migration completed successfully")
+	return nil
 }
 
 func (d *Database) Insert(table string, data any) error {
