@@ -27,13 +27,13 @@ const (
 	WS_ENDPOINT               = "/ws"
 	SERVE_ASSETS              = "/uploads/"
 	MESSAGE_ENDPOINT          = "/messages"
-	// VERIF_SESS_ENDPOINT       = "/auth/session"
-	GET_USER_SESS_ENDPOINT = "/auth/usersessions"
-	PROFILE_ENDPOINT       = "/profile/user"
-	FOLLOW_ENDPOINT        = "/follow"
-	UNFOLLOW_ENDPOINT      = "/unfollow"
-	SWITCH_PROFILE_TYPE    = "/profile/type"
-	NOTIFICATION_ENDPOINT  = "/notifications"
+	VERIF_SESS_ENDPOINT       = "/auth/session"
+	GET_USER_SESS_ENDPOINT    = "/auth/usersessions"
+	PROFILE_ENDPOINT          = "/profile/user"
+	FOLLOW_ENDPOINT           = "/follow"
+	UNFOLLOW_ENDPOINT         = "/unfollow"
+	SWITCH_PROFILE_TYPE       = "/profile/type"
+	NOTIFICATION_ENDPOINT     = "/notifications"
 )
 
 func Route() *http.ServeMux {
