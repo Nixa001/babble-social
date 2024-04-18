@@ -16,20 +16,16 @@ import (
 // const userID int = 1
 
 func GetGroups(w http.ResponseWriter, r *http.Request) {
+	cors.SetCors(&w)
 	userID, err := service.AuthServ.VerifyToken(r)
 	if err != nil {
 		fmt.Println("Error verifying ", err.Error())
 		return
 	}
-	// user := handler.UserInSession(w, r)
-	// fmt.Println("User ==== ", user)
-	// fmt.Println("666666666666", userID.User_id)
-
-	// userID.User_id = 3
-	cors.SetCors(&w)
+	
 	var db = seed.CreateDB()
 	defer db.Close()
-	joinedGroups, err := getJoinedGroups(db, userID.User_id)
+	joinedGroups, err := GetJoinedGroups(db, userID.User_id)
 	if err != nil {
 		return
 	}
@@ -48,7 +44,7 @@ func GetGroups(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(Groups)
 }
 
-func getJoinedGroups(db *sql.DB, userID int) ([]int, error) {
+func GetJoinedGroups(db *sql.DB, userID int) ([]int, error) {
 	var joinedGroupIDs []int
 
 	query := "SELECT group_id FROM group_followers WHERE user_id = ?"

@@ -3,6 +3,7 @@ package user
 import (
 	"backend/models"
 	"backend/server/cors"
+	"backend/server/handler/groups"
 	"backend/server/service"
 	"backend/utils/seed"
 	"database/sql"
@@ -14,8 +15,9 @@ import (
 // var userId int = 1
 
 type RespUser struct {
-	User      models.User   `json:"user"`
-	Followers []models.User `json:"followers"`
+	User      models.User    `json:"user"`
+	Followers []models.User  `json:"followers"`
+	Groups    []models.Group `json:"groups"`
 }
 
 func GetUser(w http.ResponseWriter, r *http.Request) {
@@ -34,10 +36,30 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 	userId := session.User_id
 
 	respUser.User, _ = GetUserData(db, userId)
-
+	idJoinedGroups, err1 := groups.GetJoinedGroups(db, userId)
+	respUser.Groups, err = GetGroupData(db, idJoinedGroups)
+	if err != nil || err1 != nil {
+		fmt.Println("errr when getGroups")
+		return
+	}
 	respUser.Followers, _ = GetFollowers(db, userId)
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(respUser)
+}
+
+func GetGroupData(db *sql.DB, groupsId []int) ([]models.Group, error) {
+	var groups []models.Group
+	for _, idGroup := range groupsId {
+		var group models.Group
+		query := "SELECT * FROM groups WHERE id = ?"
+		err := db.QueryRow(query, idGroup).Scan(&group.ID, &group.Name, &group.Description, &group.ID_User_Create, &group.Avatar, &group.Creation_Date)
+		if err != nil {
+			fmt.Println("errr ici")
+			return []models.Group{}, fmt.Errorf("err scan user data: %w", err)
+		}
+		groups = append(groups, group)
+	}
+	return groups, nil
 }
 
 func GetUserData(db *sql.DB, userID int) (models.User, error) {
