@@ -39,6 +39,15 @@ func GetUserGroup(w http.ResponseWriter, r *http.Request) {
 			fmt.Println("error:", err)
 		} else if len(listUser) == 0 && len(listGroup) == 0 {
 			fmt.Println("La liste des utilisateurs est vide")
+			data := []interface{}{tableauVide, tableauVide}
+			jsonData, err := json.Marshal(data)
+			if err != nil {
+				fmt.Fprintf(w, "Error encoding data to JSON: %v", err)
+				http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+				return
+			}
+			w.Header().Set("Content-Type", "application/json")
+			w.Write(jsonData)
 		} else if len(listUser) != 0 && len(listGroup) == 0 {
 			data := []interface{}{listUser, tableauVide}
 			jsonData, err := json.Marshal(data)

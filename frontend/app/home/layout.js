@@ -9,7 +9,8 @@ import { ToastContainer } from "react-toastify";
 import { useSession } from "../api/api";
 
 export default function Layout({ children }) {
-  const { userData, followers,groups, isLoading, error } = useFetchData();
+  const { userData, followers, groups, otherUsers, isLoading, error } =
+    useFetchData();
 
   return (
     <div className="h-screen">
@@ -29,7 +30,11 @@ export default function Layout({ children }) {
           {children}
         </div>
         <div className="md:mt-20 hidden md:block">
-          <Sidebar followers={followers} groups={groups} />
+          <Sidebar
+            followers={followers}
+            groups={groups}
+            otherUsers={otherUsers}
+          />
         </div>
       </div>
     </div>
@@ -40,6 +45,7 @@ function useFetchData() {
   const [userData, setUserData] = useState({});
   const [followers, setFollowers] = useState([]);
   const [groups, setGroups] = useState([]);
+  const [otherUsers, setOtherUsers] = useState([]);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(null);
 
@@ -63,6 +69,7 @@ function useFetchData() {
         setUserData(data.user);
         setFollowers(data.followers);
         setGroups(data.groups);
+        setOtherUsers(data.othersUsers);
       } catch (err) {
         setError(err);
       } finally {
@@ -74,5 +81,5 @@ function useFetchData() {
       fetchUserData();
     }, 7000);
   }, []);
-  return { userData, followers, groups, isLoading, error };
+  return { userData, followers, groups, otherUsers, isLoading, error };
 }

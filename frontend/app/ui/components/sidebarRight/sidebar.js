@@ -12,7 +12,7 @@ const groups = [
   { name: "Farcry 6 Team", src: "/assets/profilibg.jpg", alt: "profil" },
   { name: "EA Fooball 24", src: "/assets/profilibg.jpg", alt: "profil" },
 ];
-function Sidebar({ followers, groups }) {
+function Sidebar({ followers, groups, otherUsers }) {
   const [activeTab, setActiveTab] = useState("followers");
   const handleTabClick = (tab) => {
     setActiveTab(tab);
@@ -36,9 +36,9 @@ function Sidebar({ followers, groups }) {
       </div>
       <hr />
       <h3 className="font-bold p-2 rounded-sm text-center underline underline-offset-4 ">
-        Friends
+        Other users
       </h3>
-      <div className="online"></div>
+      <div className="online">{displayFollowerSide(otherUsers)}</div>
     </div>
   );
 }
@@ -116,11 +116,11 @@ export const displayFollowerSide = (data) => {
 };
 
 export const displayFollowers = (data, handleUserClick) => {
+  if (!data || data.length === 0) {
+    return <div>Vous n'avez encore de follower</div>;
+  }
   return data
     ?.map((follower) => {
-      if (!data || data.length === 0) {
-        return <div>Vous n'avez encore de follower</div>;
-      }
       if (follower.id != userID) {
         return (
           <div
