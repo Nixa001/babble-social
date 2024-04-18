@@ -227,7 +227,7 @@ export const PrivacySelect = ({ followers }) => {
       {showUserList && (
         <div className="mt-1 max-h-44  w-[300px] p-2 overflow-scroll border rounded-md">
           <ul className="flex flex-wrap gap-2">
-            {followers.map((user) => (
+            {followers?.map((user) => (
               <li key={user.id}>
                 <label className="flex gap-1 cursor-pointer">
                   <input
