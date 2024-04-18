@@ -13,7 +13,6 @@ const (
 	SIGNUP_ENDPOINT           = "/auth/signup"
 	SIGNIN_ENDPOINT           = "/auth/signin"
 	LOGOUT_ENDPOINT           = "/auth/signout"
-	VERIFY_SESS_ENDPOINT      = "/auth/session"
 	POST_ENDPOINT             = "/post"
 	COMMENT_ENDPOINT          = "/comment"
 	CREATE_GROUP_ENDPOINT     = "/group/creategroup"
@@ -42,7 +41,6 @@ func Route() *http.ServeMux {
 	mux.HandleFunc(SIGNUP_ENDPOINT, handler.SignUpHandler)
 	mux.HandleFunc(SIGNIN_ENDPOINT, handler.SignInHandler)
 	mux.HandleFunc(LOGOUT_ENDPOINT, handler.SignOutHandler)
-	mux.HandleFunc(VERIFY_SESS_ENDPOINT, handler.VerifySessionHandler)
 	mux.HandleFunc(POST_ENDPOINT, handler.POSTHandler)
 	mux.HandleFunc(COMMENT_ENDPOINT, handler.COMMENTHandler)
 	mux.HandleFunc(CREATE_GROUP_ENDPOINT, groups.CreateGroupHandler)

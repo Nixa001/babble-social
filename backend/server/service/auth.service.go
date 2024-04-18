@@ -70,7 +70,7 @@ func (a *AuthService) VerifyTokenStr(token string) (userID int, err error) {
 
 func (a *AuthService) VerifyToken(r *http.Request) (session models.Session, err error) {
 	token := r.Header.Get("Authorization")
-
+	fmt.Println("token", token)
 	if token == "" {
 		token, err = url.QueryUnescape(r.URL.Query().Get("token"))
 		if err != nil {
