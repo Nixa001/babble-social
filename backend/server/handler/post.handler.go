@@ -3,8 +3,10 @@ package handler
 import (
 	"backend/models"
 	"backend/server/cors"
+	"backend/server/handler/user"
 	"backend/server/service"
 	"backend/utils"
+	"backend/utils/seed"
 	"fmt"
 	"log"
 	"net/http"
@@ -117,9 +119,18 @@ func POSTHandler(w http.ResponseWriter, r *http.Request) {
 			} else {
 				//log.Println("Gotten => ", postTab)
 				//log.Println("Gotten top => ", postTab[0])
+
+				var db = seed.CreateDB()
+				defer db.Close()
+				followers, err := user.GetFollowers(db, userID)
+				if err != nil {
+					fmt.Println(err)
+					return
+				}
 				utils.AlertData(w, models.WResponse{
 					Type:       "loadPost",
 					Data:       postTab,
+					Followers:  followers,
 					StatusCode: 200,
 					Display:    false,
 					Msg:        "posts retrieved succesfully",

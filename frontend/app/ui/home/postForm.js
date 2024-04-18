@@ -5,7 +5,7 @@ import { useState } from "react";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-export const PostForm = (idUser, isVisible, onClose) => {
+export const PostForm = (idUser, isVisible, onClose, followers) => {
   const [textarea, setTextarea] = useState(""),
     [tech, setTech] = useState(false),
     [sport, setSport] = useState(false),
@@ -53,7 +53,6 @@ export const PostForm = (idUser, isVisible, onClose) => {
       setMusic(false);
       setNews(false);
       setOther(true);
-
     });
   };
 
@@ -153,7 +152,7 @@ export const PostForm = (idUser, isVisible, onClose) => {
                 />
               </div>
 
-              <PrivacySelect />
+              <PrivacySelect followers={followers} />
 
               <label htmlFor="image_post" className=" cursor-pointer mr-2">
                 <svg
@@ -192,7 +191,7 @@ export const PostForm = (idUser, isVisible, onClose) => {
   );
 };
 
-export const PrivacySelect = () => {
+export const PrivacySelect = ({ followers }) => {
   const [selectedValue, setSelectedValue] = useState("public");
   const [showUserList, setShowUserList] = useState(false);
   const [selectedUsers, setSelectedUsers] = useState([]);
@@ -229,16 +228,16 @@ export const PrivacySelect = () => {
         <div className="mt-1 max-h-44  w-[300px] p-2 overflow-scroll border rounded-md">
           <ul className="flex flex-wrap gap-2">
             {followers.map((user) => (
-              <li key={user.name}>
+              <li key={user.id}>
                 <label className="flex gap-1 cursor-pointer">
                   <input
                     type="checkbox"
-                    name={`view-${user.name}`}
+                    name={`view-${user.first_name}`}
                     //checked={selectedUsers.includes(user.name)}
                     value={user.id}
                     onChange={() => handleUserSelection(user.id)}
                   />
-                  {user.name}
+                  {user.first_name + " " + user.last_name}
                 </label>
               </li>
             ))}
@@ -249,14 +248,12 @@ export const PrivacySelect = () => {
   );
 };
 
-const followers = [
-  { name: "Vindour", src: "/assets/profilibg.jpg", alt: "profil", id: 3 },
-  { name: "ibg", src: "/assets/profilibg.jpg", alt: "profil", id: 2 },
-  { name: "daniella", src: "/assets/profilibg.jpg", alt: "profil", id: 5 },
-  { name: "Vindcour99", src: "/assets/profilibg.jpg", alt: "profil", id: 99 },
-  { name: "nixa", src: "/assets/profilibg.jpg", alt: "profil", id: 4 },
-  { name: "dickss", src: "/assets/profilibg.jpg", alt: "profil", id: 1 },
-];
+// const followers = [
+//   { name: "Vindour", src: "/assets/profilibg.jpg", alt: "profil", id: 3 },
+//   { name: "ibg", src: "/assets/profilibg.jpg", alt: "profil", id: 2 },
+//   { name: "nixa", src: "/assets/profilibg.jpg", alt: "profil", id: 4 },
+//   { name: "dickss", src: "/assets/profilib g.jpg", alt: "profil", id: 1 },
+// ];
 
 export function TextArea({
   label,

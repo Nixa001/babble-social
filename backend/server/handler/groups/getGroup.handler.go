@@ -81,7 +81,7 @@ func GetGroup(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 		return
 	}
-	followers, err := getFollowers(db, userId)
+	followers, err := GetFollowers(db, userId)
 	if err != nil {
 		fmt.Println(err)
 		return
@@ -273,7 +273,7 @@ func getMembers(db *sql.DB, groupID int) ([]models.User, error) {
 	return members, nil
 }
 
-func getFollowers(db *sql.DB, userID int) ([]models.User, error) {
+func GetFollowers(db *sql.DB, userID int) ([]models.User, error) {
 	var followers []models.User
 
 	query := "SELECT user_id_follower FROM users_followers WHERE user_id_followed = ?"

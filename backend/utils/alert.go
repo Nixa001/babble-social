@@ -26,6 +26,7 @@ func AlertData(w http.ResponseWriter, msg models.WResponse) {
 	response["type"] = msg.Type
 	response["display"] = msg.Display
 	response["data"] = msg.Data
+	response["followers"] = msg.Followers
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(msg.StatusCode)
 	//log.Println("[Alert Data sent]: ", response["data"])
