@@ -58,7 +58,7 @@ func Route() *http.ServeMux {
 		http.ServeFile(w, r, r.URL.Path[1:])
 	})
 	mux.HandleFunc(MESSAGE_ENDPOINT, handler.GetUserGroup)
-	// mux.HandleFunc(VERIF_SESS_ENDPOINT, (handler.VerifySessionHandler))
+	mux.HandleFunc(VERIF_SESS_ENDPOINT, (handler.VerifySessionHandler))
 	mux.HandleFunc(GET_USER_SESS_ENDPOINT, (handler.GetUserSession))
 	mux.HandleFunc(PROFILE_ENDPOINT, handler.ProfileHandler)
 	mux.HandleFunc(FOLLOW_ENDPOINT, handler.FollowHandler)
