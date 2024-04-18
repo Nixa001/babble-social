@@ -67,15 +67,15 @@ function Navbar() {
   return (
     <div className="shadowL  md:navbar xl:before:w-72 before:w-48 z-0 xl:w-60 md:block md:h-[700px] flex-col">
       <div className="md:flex hidden relative z-0 flex-col w-full h-52 items-center justify-center">
-        <img
-          src="/assets/profil.jpg"
-          alt="logo"
-          width={80}
-          height={80}
-          className="rounded-full z-10"
-        />
         {user && (
           <>
+            <img
+              src={user.avatar || "/images/default-profile.png"}
+              alt="logo"
+              width={80}
+              height={80}
+              className="rounded-full z-10"
+            />
             <h2 className="font-bold text-2xl text-center">
               {user.first_name} {user.last_name}
             </h2>
