@@ -35,6 +35,8 @@ const links = [
 ];
 export let userID = 0;
 function Navbar() {
+  // const [userInfo, setUserInfo] = useState();
+
   const pathname = usePathname(),
     router = useRouter();
   const handleLogout = async () => {
@@ -78,11 +80,17 @@ function Navbar() {
     <div className="shadowL  md:navbar xl:before:w-72 before:w-48 z-0 xl:w-60 md:block md:h-[700px] flex-col">
       <div className="md:flex hidden relative z-0 flex-col w-full h-52 items-center justify-center">
         <img
-          src="/assets/profil.jpg"
-          alt="logo"
+          className="rounded-full "
+          src={
+            user
+              ? user.avatar !== "NULL"
+                ? user.avatar
+                : "/assets/profilibg.jpg"
+              : "/assets/profilibg.jpg"
+          }
+          alt={user ? (user.first_name ? user.first_name : "User") : "User"}
           width={80}
           height={80}
-          className="rounded-full z-10"
         />
         {user && (
           <>
@@ -146,7 +154,7 @@ function Navbar() {
           }} //todo: must replace with valid log out logic
         >
           <IoLogOut className="xl:text-5xl text-2xl" />
-          <p className="xl:text-md hidden md:block">log out</p>
+          <p className="xl:text-lg hidden md:block">Log out</p>
         </button>
       </div>
     </div>

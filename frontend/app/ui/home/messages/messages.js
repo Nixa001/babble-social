@@ -86,12 +86,14 @@ const Messages = () => {
     }
 
     // Vérifiez si data[1] est différent de undefined avant de l'assigner à Groups
-    if (data[1] !== undefined) {
-      Groups = data[1];
-    } else {
-      console.log("data[1] est undefined");
-      Groups = []; // Assignez un tableau vide si data[1] est undefined
-    }
+
+    data[1] ? (Groups = data[1]) : (Groups = []);
+    // if (data[1] !== undefined) {
+    //   Groups = data[1];
+    // } else {
+    //   console.log("data[1] est undefined");
+    //   Groups = []; // Assignez un tableau vide si data[1] est undefined
+    // }
   } else {
     console.log("Aucune donnée reçue du backend");
   }
