@@ -142,7 +142,8 @@ GROUP BY
     p.content,
     p.media,
     p.date,
-    p.user_id;`
+    p.user_id
+	ORDER BY p.timestamp DESC;`
 )
 
 func (p *PostRepository) init() {

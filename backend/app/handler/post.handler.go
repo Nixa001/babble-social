@@ -1,16 +1,17 @@
 package handler
 
 import (
-	"backend/models"
 	"backend/app/cors"
 	"backend/app/handler/user"
 	"backend/app/service"
+	"backend/models"
 	"backend/utils"
 	"backend/utils/seed"
 	"fmt"
 	"log"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
 func POSTHandler(w http.ResponseWriter, r *http.Request) {
@@ -62,6 +63,16 @@ func POSTHandler(w http.ResponseWriter, r *http.Request) {
 			log.Println("[INFO] privacy: ", Privacy) //debug
 
 			Viewers := fmt.Sprintf("%v, %s", userID, r.FormValue("viewers"))
+			if strings.Split(Viewers, ", ")[1] == "" && Privacy == "almost" {
+				msg := models.Errormessage{
+					Type:       "Bad request",
+					Msg:        "must selected viewers",
+					StatusCode: 400,
+					Display:    false,
+				}
+				utils.Alert(w, msg)
+				return
+			}
 			log.Println("[INFO] viewers: ", Viewers) //debug
 
 			Image, errimg := utils.Uploader(w, r, 20, "image", "")
