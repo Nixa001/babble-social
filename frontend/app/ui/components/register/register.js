@@ -15,10 +15,11 @@ function Register() {
     try {
       let data = new FormData(e.target);
       const response = await registerUser(data);
+      console.log("res => ", response)
       if (response.error == "ok") {
         router.push("/login");
       } else {
-        setErrorMessage(response.error.error);
+        setErrorMessage(response.error);
       }
     } catch (error) {
       console.error("Something went wrong. Please try again.", error);
