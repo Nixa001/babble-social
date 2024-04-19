@@ -48,7 +48,7 @@ func GetUserGroup(w http.ResponseWriter, r *http.Request) {
 			w.Header().Set("Content-Type", "application/json")
 			w.Write(jsonData)
 		} else if len(listUser) != 0 && len(listGroup) == 0 {
-			data := []interface{}{listUser, tableauVide}
+			data := []interface{}{listUser[0], tableauVide}
 			jsonData, err := json.Marshal(data)
 			if err != nil {
 				fmt.Fprintf(w, "Error encoding data to JSON: %v", err)

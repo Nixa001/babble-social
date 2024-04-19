@@ -72,7 +72,7 @@ export const WebSocketProvider = ({ children }) => {
       }
     }
     if (data.Type === "message-group-event") {
-      if (activeDialogue.id === data.Data.group_id_receiver) {
+      if (activeDialogue.type === "group" && activeDialogue.id === data.Data.group_id_receiver) {
         setAllMessages(prevMessages => Array.isArray(prevMessages) ? [...prevMessages, data.Data] : [data.Data]);
       }
     }
