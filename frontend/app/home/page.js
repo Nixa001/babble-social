@@ -8,9 +8,9 @@ import { useRouter } from "next/navigation";
 
 const Page = () => {
   const token = localStorage.getItem("token") || null;
-  if (token == null) router.push("/");
   const router = useRouter(),
-    { session, errSess } = useSession();
+  { session, errSess } = useSession();
+  if (token == null) router.push("/");
   if (errSess) alert(errSess);
   const sessionId = session?.session["user_id"];
   return (
