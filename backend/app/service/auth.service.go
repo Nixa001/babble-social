@@ -2,7 +2,7 @@ package service
 
 import (
 	"backend/models"
-	r "backend/server/repositories"
+	r "backend/app/repositories"
 	"backend/utils"
 	"fmt"
 	"log"

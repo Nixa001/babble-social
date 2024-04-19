@@ -1,7 +1,7 @@
 package handler
 
 import (
-	"backend/server/cors"
+	"backend/app/cors"
 	"net/http"
 )
 

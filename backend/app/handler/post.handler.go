@@ -2,9 +2,9 @@ package handler
 
 import (
 	"backend/models"
-	"backend/server/cors"
-	"backend/server/handler/user"
-	"backend/server/service"
+	"backend/app/cors"
+	"backend/app/handler/user"
+	"backend/app/service"
 	"backend/utils"
 	"backend/utils/seed"
 	"fmt"

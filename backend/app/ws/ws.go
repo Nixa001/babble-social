@@ -4,9 +4,9 @@ import (
 	// "backend/server/handler"
 
 	"backend/database"
-	"backend/server/handler/groups/events"
-	joingroup "backend/server/handler/groups/joinGroup"
-	"backend/server/service"
+	"backend/app/handler/groups/events"
+	joingroup "backend/app/handler/groups/joinGroup"
+	"backend/app/service"
 	"backend/utils/seed"
 	"encoding/json"
 	"fmt"

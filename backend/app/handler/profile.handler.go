@@ -1,8 +1,8 @@
 package handler
 
 import (
-	"backend/server/cors"
-	"backend/server/service"
+	"backend/app/cors"
+	"backend/app/service"
 	"encoding/json"
 	"io"
 	"log"

@@ -2,8 +2,8 @@ package handler
 
 import (
 	"backend/models"
-	"backend/server/cors"
-	"backend/server/service"
+	"backend/app/cors"
+	"backend/app/service"
 	"backend/utils"
 	"backend/utils/seed"
 	"encoding/json"

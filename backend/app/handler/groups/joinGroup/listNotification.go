@@ -3,7 +3,7 @@ package joingroup
 import (
 	"backend/database"
 	"backend/models"
-	"backend/server/service"
+	"backend/app/service"
 	"database/sql"
 	"log"
 	"net/http"

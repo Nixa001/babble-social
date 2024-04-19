@@ -2,7 +2,7 @@ package server
 
 import (
 	db "backend/database"
-	"backend/server/routes"
+	"backend/app/routes"
 	"fmt"
 	"log"
 	"net/http"

@@ -1,10 +1,10 @@
 package routes
 
 import (
-	"backend/server/handler"
-	"backend/server/handler/groups"
-	"backend/server/handler/notification"
-	"backend/server/handler/user"
+	"backend/app/handler"
+	"backend/app/handler/groups"
+	"backend/app/handler/notification"
+	"backend/app/handler/user"
 	"net/http"
 )
 

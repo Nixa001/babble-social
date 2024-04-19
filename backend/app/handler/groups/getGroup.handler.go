@@ -2,8 +2,8 @@ package groups
 
 import (
 	"backend/models"
-	"backend/server/cors"
-	"backend/server/service"
+	"backend/app/cors"
+	"backend/app/service"
 	utils "backend/utils"
 	"backend/utils/seed"
 	"database/sql"

@@ -2,10 +2,10 @@ package user
 
 import (
 	"backend/models"
-	"backend/server/cors"
-	"backend/server/handler/groups"
-	"backend/server/repositories"
-	"backend/server/service"
+	"backend/app/cors"
+	"backend/app/handler/groups"
+	"backend/app/repositories"
+	"backend/app/service"
 	"backend/utils/seed"
 	"database/sql"
 	"encoding/json"

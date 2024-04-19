@@ -1,8 +1,8 @@
 package notification
 
 import (
-	"backend/server/cors"
-	joingroup "backend/server/handler/groups/joinGroup"
+	"backend/app/cors"
+	joingroup "backend/app/handler/groups/joinGroup"
 	"encoding/json"
 	"fmt"
 	"net/http"

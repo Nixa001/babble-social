@@ -3,8 +3,8 @@ package groups
 import (
 	"backend/database"
 	"backend/models"
-	"backend/server/cors"
-	"backend/server/service"
+	"backend/app/cors"
+	"backend/app/service"
 	utils "backend/utils"
 	"fmt"
 	"log"

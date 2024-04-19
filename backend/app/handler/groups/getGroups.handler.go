@@ -2,9 +2,9 @@ package groups
 
 import (
 	"backend/models"
-	"backend/server/cors"
-	joingroup "backend/server/handler/groups/joinGroup"
-	"backend/server/service"
+	"backend/app/cors"
+	joingroup "backend/app/handler/groups/joinGroup"
+	"backend/app/service"
 	"backend/utils/seed"
 	"database/sql"
 	"encoding/json"
