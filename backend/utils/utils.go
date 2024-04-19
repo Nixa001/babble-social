@@ -91,7 +91,7 @@ func VerifyUsername(username string) error {
 	if username == "" {
 		return nil
 	}
-	pattern := `^[a-zA-Z][a-zA-Z0-9_]{5,15}$`
+	pattern := `^[a-zA-Z][a-zA-Z0-9_]{3,15}$`
 	regex := regexp.MustCompile(pattern)
 	ok := regex.MatchString(username)
 	if !ok {

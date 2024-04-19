@@ -13,7 +13,6 @@ const (
 	SIGNUP_ENDPOINT           = "/auth/signup"
 	SIGNIN_ENDPOINT           = "/auth/signin"
 	LOGOUT_ENDPOINT           = "/auth/signout"
-	VERIFY_SESS_ENDPOINT      = "/auth/session"
 	POST_ENDPOINT             = "/post"
 	COMMENT_ENDPOINT          = "/comment"
 	CREATE_GROUP_ENDPOINT     = "/group/creategroup"
@@ -27,13 +26,13 @@ const (
 	WS_ENDPOINT               = "/ws"
 	SERVE_ASSETS              = "/uploads/"
 	MESSAGE_ENDPOINT          = "/messages"
-	// VERIF_SESS_ENDPOINT       = "/auth/session"
-	GET_USER_SESS_ENDPOINT = "/auth/usersessions"
-	PROFILE_ENDPOINT       = "/profile/user"
-	FOLLOW_ENDPOINT        = "/follow"
-	UNFOLLOW_ENDPOINT      = "/unfollow"
-	SWITCH_PROFILE_TYPE    = "/profile/type"
-	NOTIFICATION_ENDPOINT  = "/notifications"
+	VERIF_SESS_ENDPOINT       = "/auth/session"
+	GET_USER_SESS_ENDPOINT    = "/auth/usersessions"
+	PROFILE_ENDPOINT          = "/profile/user"
+	FOLLOW_ENDPOINT           = "/follow"
+	UNFOLLOW_ENDPOINT         = "/unfollow"
+	SWITCH_PROFILE_TYPE       = "/profile/type"
+	NOTIFICATION_ENDPOINT     = "/notifications"
 )
 
 func Route() *http.ServeMux {
@@ -42,7 +41,6 @@ func Route() *http.ServeMux {
 	mux.HandleFunc(SIGNUP_ENDPOINT, handler.SignUpHandler)
 	mux.HandleFunc(SIGNIN_ENDPOINT, handler.SignInHandler)
 	mux.HandleFunc(LOGOUT_ENDPOINT, handler.SignOutHandler)
-	mux.HandleFunc(VERIFY_SESS_ENDPOINT, handler.VerifySessionHandler)
 	mux.HandleFunc(POST_ENDPOINT, handler.POSTHandler)
 	mux.HandleFunc(COMMENT_ENDPOINT, handler.COMMENTHandler)
 	mux.HandleFunc(CREATE_GROUP_ENDPOINT, groups.CreateGroupHandler)
@@ -58,7 +56,7 @@ func Route() *http.ServeMux {
 		http.ServeFile(w, r, r.URL.Path[1:])
 	})
 	mux.HandleFunc(MESSAGE_ENDPOINT, handler.GetUserGroup)
-	// mux.HandleFunc(VERIF_SESS_ENDPOINT, (handler.VerifySessionHandler))
+	mux.HandleFunc(VERIF_SESS_ENDPOINT, (handler.VerifySessionHandler))
 	mux.HandleFunc(GET_USER_SESS_ENDPOINT, (handler.GetUserSession))
 	mux.HandleFunc(PROFILE_ENDPOINT, handler.ProfileHandler)
 	mux.HandleFunc(FOLLOW_ENDPOINT, handler.FollowHandler)

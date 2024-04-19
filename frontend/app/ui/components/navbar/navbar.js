@@ -90,6 +90,13 @@ function Navbar() {
         />
         {user && (
           <>
+            <img
+              src={user.avatar || "/images/default-profile.png"}
+              alt="logo"
+              width={80}
+              height={80}
+              className="rounded-full z-10"
+            />
             <h2 className="font-bold text-2xl text-center">
               {user?.first_name} {user?.last_name}
             </h2>
