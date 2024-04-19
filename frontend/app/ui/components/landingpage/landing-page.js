@@ -6,6 +6,7 @@ import { useEffect } from "react";
 
 export function Landing() {
   const router = useRouter();
+  const token = localStorage.getItem("token") || null;
   const { session, error } = useSession();
   useEffect(() => {
     if (session) {

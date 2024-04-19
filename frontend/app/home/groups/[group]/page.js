@@ -8,6 +8,7 @@ import { QueryClientProvider } from "react-query";
 const queryClient = new QueryClient();
 
 const page = () => {
+  const token = localStorage.getItem("token") || null;
   const { session, errSess } = useSession();
   const sessionId = session?.session["user_id"];
   return (

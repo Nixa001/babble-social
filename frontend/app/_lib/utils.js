@@ -1,4 +1,5 @@
 // Exemple d'utilisation de fetch pour envoyer une requête au serveur
+'use client'
 export async function getSessionUser() {
   const token = localStorage.getItem("token");
   const response = await fetch(

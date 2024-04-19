@@ -32,7 +32,7 @@ const CardEvent = ({ description, date }) => {
   );
 };
 
-const Group = ({sessionID}) => {
+const Group = ({ sessionID }) => {
   const { sendMessage } = useContext(WebSocketContext);
 
   const [formCreateEv, setFormCreateEv] = useState(false);
@@ -75,6 +75,7 @@ const Group = ({sessionID}) => {
       setGroupInfo(newData.group_data);
       setMembers(newData.members);
       setFollowers(newData.followers);
+      console.log(followers);
       setEvents(newData.events);
       setEventsJoined(newData.events_joined);
     },
@@ -329,4 +330,3 @@ export default Group;
 const onCommentClick = () => {
   alert("Comment disp");
 };
-

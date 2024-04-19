@@ -4,6 +4,7 @@ import (
 	"backend/server/cors"
 	joingroup "backend/server/handler/groups/joinGroup"
 	"encoding/json"
+	"fmt"
 	"net/http"
 )
 

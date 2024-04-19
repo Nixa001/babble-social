@@ -9,8 +9,6 @@ import { ToastContainer } from "react-toastify";
 import { useSession } from "../api/api";
 
 export default function Layout({ children }) {
-  const { userData, followers, groups, otherUsers, isLoading, error } =
-    useFetchData();
 
   return (
     <div className="h-screen">
@@ -22,7 +20,7 @@ export default function Layout({ children }) {
       justify-between h-[99%] md:justify-between md:h-full  overflow-hidden"
       >
         <div className="md:mt-20">
-          <Navbar user={userData} />
+          <Navbar/>
           <ToastContainer />
         </div>{" "}
         {/* Enveloppez le contenu avec WebSocketProvider */}
@@ -31,55 +29,9 @@ export default function Layout({ children }) {
         </div>
         <div className="md:mt-20 hidden md:block">
           <Sidebar
-            followers={followers}
-            groups={groups}
-            otherUsers={otherUsers}
           />
         </div>
       </div>
     </div>
   );
-}
-
-function useFetchData() {
-  const [userData, setUserData] = useState({});
-  const [followers, setFollowers] = useState([]);
-  const [groups, setGroups] = useState([]);
-  const [otherUsers, setOtherUsers] = useState([]);
-  const [isLoading, setIsLoading] = useState(false);
-  const [error, setError] = useState(null);
-
-  const { session, errSess } = useSession();
-
-  useEffect(() => {
-    const token = localStorage.getItem("token") || null;
-    const fetchUserData = async () => {
-      // const sessionId = session?.session["user_id"];
-      setIsLoading(true);
-      setError(null);
-      // if (sessionId) {
-      try {
-        const url = `http://localhost:8080/userInfo?token=${encodeURIComponent(
-          token
-        )}`;
-
-        const response = await fetch(url, { method: "GET" });
-        const data = await response.json();
-
-        setUserData(data.user);
-        setFollowers(data.followers);
-        setGroups(data.groups);
-        setOtherUsers(data.othersUsers);
-      } catch (err) {
-        setError(err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-    fetchUserData();
-    setInterval(() => {
-      fetchUserData();
-    }, 7000);
-  }, []);
-  return { userData, followers, groups, otherUsers, isLoading, error };
 }

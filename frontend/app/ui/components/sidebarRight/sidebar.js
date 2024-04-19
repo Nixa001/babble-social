@@ -1,6 +1,6 @@
 "use client";
 import { useRouter } from "next/navigation.js";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { userID } from "../navbar/navbar";
 // const followers = [
 //     { name: 'Vincent Ndour', src: "/assets/profilibg.jpg", alt: "profil" },
@@ -12,7 +12,10 @@ const groups = [
   { name: "Farcry 6 Team", src: "/assets/profilibg.jpg", alt: "profil" },
   { name: "EA Fooball 24", src: "/assets/profilibg.jpg", alt: "profil" },
 ];
-function Sidebar({ followers, groups, otherUsers }) {
+function Sidebar() {
+  const { userData, followers, groups, otherUsers, isLoading, error } =
+    useFetchData();
+
   const [activeTab, setActiveTab] = useState("followers");
   const handleTabClick = (tab) => {
     setActiveTab(tab);
@@ -175,3 +178,46 @@ export const displayGroups = (data, handleUserClick) => {
   });
 };
 export default Sidebar;
+
+function useFetchData() {
+  const [userData, setUserData] = useState({});
+  const [followers, setFollowers] = useState([]);
+  const [groups, setGroups] = useState([]);
+  const [otherUsers, setOtherUsers] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  // const { session, errSess } = useSession();
+
+  useEffect(() => {
+    const token = localStorage.getItem("token") || null;
+    const fetchUserData = async () => {
+      // const sessionId = session?.session["user_id"];
+      setIsLoading(true);
+      setError(null);
+      // if (sessionId) {
+      try {
+        const url = `http://localhost:8080/userInfo?token=${encodeURIComponent(
+          token
+        )}`;
+
+        const response = await fetch(url, { method: "GET" });
+        const data = await response.json();
+
+        setUserData(data.user);
+        setFollowers(data.followers);
+        setGroups(data.groups);
+        setOtherUsers(data.othersUsers);
+      } catch (err) {
+        setError(err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchUserData();
+    setInterval(() => {
+      fetchUserData();
+    }, 7000);
+  }, []);
+  return { userData, followers, groups, otherUsers, isLoading, error };
+}

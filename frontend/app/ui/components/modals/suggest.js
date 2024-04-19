@@ -9,6 +9,7 @@ export const Suggest = ({
 }) => {
   // alert(id_group)
   if (!isVisible) return null;
+  
   return (
     <div
       className="fixed inset-0 bg-bg bg-opacity-10 backdrop-blur-sm 
@@ -68,7 +69,11 @@ export const displaySuggestFriend = (data, id_group, sendMessage) => {
         <div className="flex items-center gap-2">
           <img
             className="rounded-full "
-            src={follower.avatar}
+            src={
+              follower.avatar !== "NULL"
+                ? follower.avatar
+                : "/assets/profilibg.jpg"
+            }
             alt={follower.alt}
             width={40}
             height={40}

@@ -1,7 +1,11 @@
+"use client";
+
 import { useSession } from "@/app/api/api";
 import React, { useState } from "react";
+import { toast } from "react-toastify";
 
 export const CreateGroup = ({ isVisible, onClose }) => {
+  const token = localStorage.getItem("token");
   const { session, errSess } = useSession();
   const [groupName, setGroupName] = useState("");
   const [groupDescription, setGroupDescription] = useState("");
@@ -45,11 +49,26 @@ export const CreateGroup = ({ isVisible, onClose }) => {
         setGroupImage("");
         onClose();
       }
-      if (response.status == 409) {
-        setErrorMsg("Groupe already exist");
-        setTimeout(() => {
-          setErrorMsg("");
-        }, 3000);
+      if (response.status == 409 || response.status == 400) {
+        let msg = "";
+
+        response.status === 409
+          ? (msg = "name group taken")
+          : (msg = "Empty name group");
+
+        // setErrorMsg();
+        console.log(response);
+        toast.error(msg, {
+          position: "bottom-left",
+          autoClose: 4000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+          theme: "dark",
+          // transition: "bounce",
+        });
       }
     } catch (error) {
       console.error("Errorr:", error);

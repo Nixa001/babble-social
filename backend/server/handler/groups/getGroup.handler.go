@@ -49,7 +49,7 @@ func GetGroup(w http.ResponseWriter, r *http.Request) {
 
 	groupId, err := GetGroupIDFromRequest(w, r)
 	if err != nil {
-		log.Println("Error to recup group by Idgroup: ", err)
+		fmt.Println(err)
 		return
 	}
 	session, err := service.AuthServ.VerifyToken(r)
@@ -66,24 +66,27 @@ func GetGroup(w http.ResponseWriter, r *http.Request) {
 	userId := session.User_id
 	allPosts, err := service.PostServ.FetchPostGroup(groupId)
 	if err != nil {
-		log.Println("Error to fetch Post Group: ", err)
+		fmt.Println(err)
 		return
 	}
 
 	members, err := getMembers(db, groupId)
 	if err != nil {
-		log.Println("Error to get Members Group by IdGroup", err)
+		fmt.Println(err)
 		return
 	}
 
 	groupData, err := getInfoGroup(db, groupId)
 	if err != nil {
-		log.Println("Error to get InfoGroup by IdGroup", err)
+		fmt.Println(err)
 		return
 	}
+
 	followers, err := GetFollowers(db, userId)
+
+	membersFilt := filterNonMembers(followers, members)
 	if err != nil {
-		log.Println("Error to get followers by userId: ", err)
+		fmt.Println(err)
 		return
 	}
 	events, eventJoined, err := GetEvent(db, groupId, userId)
@@ -98,7 +101,7 @@ func GetGroup(w http.ResponseWriter, r *http.Request) {
 		GroupData:   groupData,
 		Posts:       allPosts,
 		Members:     members,
-		Followers:   followers,
+		Followers:   membersFilt,
 		Event:       events,
 		EventJoined: eventJoined,
 	}
@@ -123,7 +126,7 @@ func GetGroupIDFromRequest(w http.ResponseWriter, r *http.Request) (int, error) 
 
 	groupID, err := strconv.Atoi(id)
 	if err != nil {
-		log.Println("Invalid Id: ", err)
+		fmt.Println("Invalid Id")
 		return 0, fmt.Errorf("invalid group ID")
 	}
 
@@ -179,7 +182,7 @@ func GetEvent(db *sql.DB, groupID, userID int) ([]models.Event, []models.Event, 
 	var eventsJoined []models.Event
 	events_joined_id, err := GetEventJoinedID(db, userID, groupID)
 	if err != nil {
-		log.Println("Error on GetEventJoined", err)
+		fmt.Println("error on GetEventJoined", err)
 	}
 
 	query := `
@@ -207,6 +210,7 @@ func GetEvent(db *sql.DB, groupID, userID int) ([]models.Event, []models.Event, 
 		} else {
 			events = append(events, event)
 		}
+		// fmt.Println("event ", events)
 	}
 
 	return events, eventsJoined, nil
@@ -311,4 +315,23 @@ func formatDateTimeFr(dateStr string) string {
 	hour := t.Hour()
 
 	return fmt.Sprintf("%s %d %s %d at %dH", weekday, day, month, year, hour)
+}
+
+func filterNonMembers(followers []models.User, members []models.User) []models.User {
+	memberMap := make(map[int]bool)
+	var nonMembers []models.User
+
+	// Indexer les membres par ID dans une map pour la recherche rapide
+	for _, member := range members {
+		memberMap[member.Id] = true
+	}
+
+	// Vérifier chaque follower pour voir s'il n'est pas un membre
+	for _, follower := range followers {
+		if _, found := memberMap[follower.Id]; !found {
+			nonMembers = append(nonMembers, follower)
+		}
+	}
+
+	return nonMembers
 }

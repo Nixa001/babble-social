@@ -42,7 +42,7 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 	idJoinedGroups, err1 := groups.GetJoinedGroups(db, userId)
 	respUser.Groups, err = GetGroupData(db, idJoinedGroups)
 	respUser.OtherUsers, _ = GetNonFollowedUsers(db, userId)
-	// fmt.Println(respUser.OtherUsers)
+	fmt.Println(respUser.OtherUsers)
 	if err != nil || err1 != nil {
 		fmt.Println("errr when getGroups")
 		return
@@ -69,24 +69,24 @@ func GetGroupData(db *sql.DB, groupsId []int) ([]models.Group, error) {
 	return groups, nil
 }
 
-func GetUserData(db *sql.DB, userID int) (models.User, error) {
-	var user models.User
-	query := "SELECT * FROM users WHERE id = ?"
-	var user_name sql.NullString
-	var gender sql.NullString
-	var avatar sql.NullString
-	var about_me sql.NullString
-	err := db.QueryRow(query, userID).Scan(&user.Id, &user.First_name, &user.Last_name, &user_name, &gender, &user.Email, &user.Password, &user.User_type, &user.Birth_date, &avatar, &about_me)
-	if err != nil {
-		log.Println("Error scanning row GetUserData: ", err.Error())
-		return models.User{}, fmt.Errorf("err scan user data: %w", err)
+	func GetUserData(db *sql.DB, userID int) (models.User, error) {
+		var user models.User
+		query := "SELECT * FROM users WHERE id = ?"
+		var user_name sql.NullString
+		var gender sql.NullString
+		var avatar sql.NullString
+		var about_me sql.NullString
+		err := db.QueryRow(query, userID).Scan(&user.Id, &user.First_name, &user.Last_name, &user_name, &gender, &user.Email, &user.Password, &user.User_type, &user.Birth_date, &avatar, &about_me)
+		if err != nil {
+			log.Println("Error scanning row GetUserData: ", err.Error())
+			return models.User{}, fmt.Errorf("err scan user data: %w", err)
+		}
+		user.User_name = repositories.GetStringValue(user_name)
+		user.Gender = repositories.GetStringValue(gender)
+		user.Avatar = repositories.GetStringValue(avatar)
+		user.About_me = repositories.GetStringValue(about_me)
+		return user, nil
 	}
-	user.User_name = repositories.GetStringValue(user_name)
-	user.Gender = repositories.GetStringValue(gender)
-	user.Avatar = repositories.GetStringValue(avatar)
-	user.About_me = repositories.GetStringValue(about_me)
-	return user, nil
-}
 
 func GetFollowers(db *sql.DB, userID int) ([]models.User, error) {
 	var followers []models.User

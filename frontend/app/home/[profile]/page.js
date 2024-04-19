@@ -5,7 +5,7 @@ import { QueryClient, QueryClientProvider } from "react-query";
 const queryClient = new QueryClient();
 const page = () => {
   const token = localStorage.getItem("token");
-  const { session, errSess } = useSession(token);
+  const { session, errSess } = useSession();
   const sessionId = session?.session["user_id"];
   const sessionToken = session?.session["token"];
   return (

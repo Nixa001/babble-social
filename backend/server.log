@@ -1,62 +1,163 @@
-2024/04/17 16:55:13 Hi big dev !
-let's debug session started at : 2024/04/17 16:55:13
-2024/04/17 16:55:20 Error getting session no session found with this userId
-2024/04/17 16:55:23 Verify session handler
-2024/04/17 16:55:23 Verify session handler
-2024/04/17 16:55:24 Client ibg@gmail.com connected
-2024/04/17 16:56:17 Client ibg@gmail.com disconnected
-2024/04/17 16:56:19 Verify session handler
-2024/04/17 16:56:19 Verify session handler
-2024/04/17 16:56:20 Client ibg@gmail.com connected
-2024/04/17 16:56:20 Error getting session no session found with this userId
-2024/04/17 16:56:43 Verify session handler
-2024/04/17 16:56:43 Verify session handler
-2024/04/17 16:56:44 Client dickss@gmail.com connected
-2024/04/17 16:57:07 Verify session handler
-2024/04/17 16:57:07 Verify session handler
-2024/04/17 16:57:07 gotten userID =>  2
-2024/04/17 16:57:07 in post
-2024/04/17 16:57:07 [FETCHING POST DATA ◼◼◼] with  2
-2024/04/17 16:57:07 getting post with  2
-2024/04/17 16:57:08 gotten userID =>  2
-2024/04/17 16:57:08 in post
-2024/04/17 16:57:08 [FETCHING POST DATA ◼◼◼] with  2
-2024/04/17 16:57:08 getting post with  2
-2024/04/17 16:57:09 gotten userID =>  2
-2024/04/17 16:57:09 in post
-2024/04/17 16:57:09 [FETCHING POST DATA ◼◼◼] with  2
-2024/04/17 16:57:09 getting post with  2
-2024/04/17 16:57:10 gotten userID =>  2
-2024/04/17 16:57:10 in post
-2024/04/17 16:57:10 [FETCHING POST DATA ◼◼◼] with  2
-2024/04/17 16:57:10 getting post with  2
-2024/04/17 16:57:11 gotten userID =>  2
-2024/04/17 16:57:11 in post
-2024/04/17 16:57:11 [FETCHING POST DATA ◼◼◼] with  2
-2024/04/17 16:57:11 getting post with  2
-2024/04/17 16:57:12 Verify session handler
-2024/04/17 16:57:12 Verify session handler
-2024/04/17 16:57:15 Verify session handler
-2024/04/17 16:57:15 Verify session handler
-2024/04/17 16:57:15 gotten userID =>  2
-2024/04/17 16:57:15 in post
-2024/04/17 16:57:15 [FETCHING POST DATA ◼◼◼] with  2
-2024/04/17 16:57:15 getting post with  2
-2024/04/17 16:57:16 gotten userID =>  2
-2024/04/17 16:57:16 in post
-2024/04/17 16:57:16 [FETCHING POST DATA ◼◼◼] with  2
-2024/04/17 16:57:16 getting post with  2
-2024/04/17 16:57:17 Verify session handler
-2024/04/17 16:57:17 Verify session handler
-2024/04/17 16:57:20 Error getting session no session found with this userId
-2024/04/17 16:57:22 User ID: 1
-2024/04/17 16:57:27 User ID: 1
-2024/04/17 16:57:37 User ID: 1
-2024/04/17 16:57:53 User ID: 1
-2024/04/17 16:58:20 Error getting session no session found with this userId
-2024/04/17 16:58:32 User ID: 1
-2024/04/17 16:59:20 Error getting session no session found with this userId
-2024/04/17 17:00:20 Error getting session no session found with this userId
-2024/04/17 17:00:44 User ID: 1
-2024/04/17 17:00:54 Client dickss@gmail.com disconnected
-2024/04/17 17:01:14 Error getting session no session found with this userId
+2024/04/19 15:43:53 Hi big dev !
+let's debug session started at : 2024/04/19 15:43:53
+2024/04/19 15:43:54 gotten userID =>  1
+2024/04/19 15:43:54 in post
+2024/04/19 15:43:54 [FETCHING POST DATA ◼◼◼] with  1
+2024/04/19 15:43:54 getting post with  1
+2024/04/19 15:43:55 gotten userID =>  1
+2024/04/19 15:43:55 in post
+2024/04/19 15:43:55 [FETCHING POST DATA ◼◼◼] with  1
+2024/04/19 15:43:55 getting post with  1
+2024/04/19 15:43:55 Verify session handler
+2024/04/19 15:43:55 Verify session handler
+2024/04/19 15:43:55 Verify session handler
+2024/04/19 15:43:55 Verify session handler
+2024/04/19 15:43:56 Verify session handler
+2024/04/19 15:43:56 Verify session handler
+2024/04/19 15:43:56 gotten userID =>  1
+2024/04/19 15:43:56 in post
+2024/04/19 15:43:56 [FETCHING POST DATA ◼◼◼] with  1
+2024/04/19 15:43:56 getting post with  1
+2024/04/19 15:43:57 gotten userID =>  1
+2024/04/19 15:43:57 in post
+2024/04/19 15:43:57 [FETCHING POST DATA ◼◼◼] with  1
+2024/04/19 15:43:57 getting post with  1
+2024/04/19 15:44:00 Verify session handler
+2024/04/19 15:44:00 Verify session handler
+2024/04/19 15:44:00 gotten userID =>  1
+2024/04/19 15:44:00 in post
+2024/04/19 15:44:00 [FETCHING POST DATA ◼◼◼] with  1
+2024/04/19 15:44:00 getting post with  1
+2024/04/19 15:44:01 Client dickss@gmail.com connected
+2024/04/19 15:44:01 gotten userID =>  1
+2024/04/19 15:44:01 in post
+2024/04/19 15:44:01 [FETCHING POST DATA ◼◼◼] with  1
+2024/04/19 15:44:01 getting post with  1
+2024/04/19 15:44:03 gotten userID =>  1
+2024/04/19 15:44:03 in post
+2024/04/19 15:44:03 [FETCHING POST DATA ◼◼◼] with  1
+2024/04/19 15:44:03 getting post with  1
+2024/04/19 15:44:04 gotten userID =>  1
+2024/04/19 15:44:04 in post
+2024/04/19 15:44:04 [FETCHING POST DATA ◼◼◼] with  1
+2024/04/19 15:44:04 getting post with  1
+2024/04/19 15:44:05 gotten userID =>  1
+2024/04/19 15:44:05 in post
+2024/04/19 15:44:05 [FETCHING POST DATA ◼◼◼] with  1
+2024/04/19 15:44:05 getting post with  1
+2024/04/19 15:44:06 gotten userID =>  1
+2024/04/19 15:44:06 in post
+2024/04/19 15:44:06 [FETCHING POST DATA ◼◼◼] with  1
+2024/04/19 15:44:06 getting post with  1
+2024/04/19 15:44:07 gotten userID =>  1
+2024/04/19 15:44:07 in post
+2024/04/19 15:44:07 [FETCHING POST DATA ◼◼◼] with  1
+2024/04/19 15:44:07 getting post with  1
+2024/04/19 15:44:08 gotten userID =>  1
+2024/04/19 15:44:08 in post
+2024/04/19 15:44:08 [FETCHING POST DATA ◼◼◼] with  1
+2024/04/19 15:44:08 getting post with  1
+2024/04/19 15:44:09 gotten userID =>  1
+2024/04/19 15:44:09 in post
+2024/04/19 15:44:09 [FETCHING POST DATA ◼◼◼] with  1
+2024/04/19 15:44:09 getting post with  1
+2024/04/19 15:44:10 gotten userID =>  1
+2024/04/19 15:44:10 in post
+2024/04/19 15:44:10 [FETCHING POST DATA ◼◼◼] with  1
+2024/04/19 15:44:10 getting post with  1
+2024/04/19 15:44:11 gotten userID =>  1
+2024/04/19 15:44:11 in post
+2024/04/19 15:44:11 [FETCHING POST DATA ◼◼◼] with  1
+2024/04/19 15:44:11 getting post with  1
+2024/04/19 15:44:12 gotten userID =>  1
+2024/04/19 15:44:12 in post
+2024/04/19 15:44:12 [FETCHING POST DATA ◼◼◼] with  1
+2024/04/19 15:44:12 getting post with  1
+2024/04/19 15:44:13 gotten userID =>  1
+2024/04/19 15:44:13 in post
+2024/04/19 15:44:13 [FETCHING POST DATA ◼◼◼] with  1
+2024/04/19 15:44:13 getting post with  1
+2024/04/19 15:44:14 gotten userID =>  1
+2024/04/19 15:44:14 in post
+2024/04/19 15:44:14 [FETCHING POST DATA ◼◼◼] with  1
+2024/04/19 15:44:14 getting post with  1
+2024/04/19 15:44:15 gotten userID =>  1
+2024/04/19 15:44:15 in post
+2024/04/19 15:44:15 [FETCHING POST DATA ◼◼◼] with  1
+2024/04/19 15:44:15 getting post with  1
+2024/04/19 15:44:16 gotten userID =>  1
+2024/04/19 15:44:16 in post
+2024/04/19 15:44:16 [FETCHING POST DATA ◼◼◼] with  1
+2024/04/19 15:44:16 getting post with  1
+2024/04/19 15:44:17 gotten userID =>  1
+2024/04/19 15:44:17 in post
+2024/04/19 15:44:17 [FETCHING POST DATA ◼◼◼] with  1
+2024/04/19 15:44:17 getting post with  1
+2024/04/19 15:44:18 gotten userID =>  1
+2024/04/19 15:44:18 in post
+2024/04/19 15:44:18 [FETCHING POST DATA ◼◼◼] with  1
+2024/04/19 15:44:18 getting post with  1
+2024/04/19 15:44:19 gotten userID =>  1
+2024/04/19 15:44:19 in post
+2024/04/19 15:44:19 [FETCHING POST DATA ◼◼◼] with  1
+2024/04/19 15:44:19 getting post with  1
+2024/04/19 15:44:20 gotten userID =>  1
+2024/04/19 15:44:20 in post
+2024/04/19 15:44:20 [FETCHING POST DATA ◼◼◼] with  1
+2024/04/19 15:44:20 getting post with  1
+2024/04/19 15:44:21 gotten userID =>  1
+2024/04/19 15:44:21 in post
+2024/04/19 15:44:21 [FETCHING POST DATA ◼◼◼] with  1
+2024/04/19 15:44:21 getting post with  1
+2024/04/19 15:44:22 gotten userID =>  1
+2024/04/19 15:44:22 in post
+2024/04/19 15:44:22 [FETCHING POST DATA ◼◼◼] with  1
+2024/04/19 15:44:22 getting post with  1
+2024/04/19 15:44:23 gotten userID =>  1
+2024/04/19 15:44:23 in post
+2024/04/19 15:44:23 [FETCHING POST DATA ◼◼◼] with  1
+2024/04/19 15:44:23 getting post with  1
+2024/04/19 15:44:24 gotten userID =>  1
+2024/04/19 15:44:24 in post
+2024/04/19 15:44:24 [FETCHING POST DATA ◼◼◼] with  1
+2024/04/19 15:44:24 getting post with  1
+2024/04/19 15:44:25 gotten userID =>  1
+2024/04/19 15:44:25 in post
+2024/04/19 15:44:25 [FETCHING POST DATA ◼◼◼] with  1
+2024/04/19 15:44:25 getting post with  1
+2024/04/19 15:44:26 gotten userID =>  1
+2024/04/19 15:44:26 in post
+2024/04/19 15:44:26 [FETCHING POST DATA ◼◼◼] with  1
+2024/04/19 15:44:26 getting post with  1
+2024/04/19 15:44:27 gotten userID =>  1
+2024/04/19 15:44:27 in post
+2024/04/19 15:44:27 [FETCHING POST DATA ◼◼◼] with  1
+2024/04/19 15:44:27 getting post with  1
+2024/04/19 15:44:28 gotten userID =>  1
+2024/04/19 15:44:28 in post
+2024/04/19 15:44:28 [FETCHING POST DATA ◼◼◼] with  1
+2024/04/19 15:44:28 getting post with  1
+2024/04/19 15:44:29 gotten userID =>  1
+2024/04/19 15:44:29 in post
+2024/04/19 15:44:29 [FETCHING POST DATA ◼◼◼] with  1
+2024/04/19 15:44:29 getting post with  1
+2024/04/19 15:44:30 gotten userID =>  1
+2024/04/19 15:44:30 in post
+2024/04/19 15:44:30 [FETCHING POST DATA ◼◼◼] with  1
+2024/04/19 15:44:30 getting post with  1
+2024/04/19 15:44:31 gotten userID =>  1
+2024/04/19 15:44:31 in post
+2024/04/19 15:44:31 [FETCHING POST DATA ◼◼◼] with  1
+2024/04/19 15:44:31 getting post with  1
+2024/04/19 15:44:32 gotten userID =>  1
+2024/04/19 15:44:32 in post
+2024/04/19 15:44:32 [FETCHING POST DATA ◼◼◼] with  1
+2024/04/19 15:44:32 getting post with  1
+2024/04/19 15:44:33 gotten userID =>  1
+2024/04/19 15:44:33 in post
+2024/04/19 15:44:33 [FETCHING POST DATA ◼◼◼] with  1
+2024/04/19 15:44:33 getting post with  1
+2024/04/19 15:44:34 gotten userID =>  1
+2024/04/19 15:44:34 in post
+2024/04/19 15:44:34 [FETCHING POST DATA ◼◼◼] with  1
+2024/04/19 15:44:34 getting post with  1

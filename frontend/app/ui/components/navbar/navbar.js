@@ -91,10 +91,10 @@ function Navbar() {
         {user && (
           <>
             <h2 className="font-bold text-2xl text-center">
-              {user.first_name} {user.last_name}
+              {user?.first_name} {user?.last_name}
             </h2>
             <span className="text-xl italic text-primary">
-              @{user.user_name}
+              @{user?.user_name}
             </span>
           </>
         )}

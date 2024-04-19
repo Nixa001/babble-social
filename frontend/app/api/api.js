@@ -56,13 +56,14 @@ export async function registerUser(formData) {
       return { error: error };
     });
 }
-export function useSession(token) {
+export function useSession() {
   const [session, setSession] = useState(null);
   const [error, setError] = useState(null);
 
+  const token = localStorage.getItem('token')
   useEffect(() => {
     fetchSessionData();
-  }, []);
+  }, [token]);
 
   async function fetchSessionData() {
     try {
