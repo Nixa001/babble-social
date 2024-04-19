@@ -11,8 +11,7 @@ import (
 
 var upgrader = websocket.Upgrader{
 	ReadBufferSize:  1024,
-	WriteBufferSize: 1024,
-	// Autoriser toutes les origines pour le développement
+	WriteBufferSize: 1024, // Autoriser toutes les origines pour le développement
 	CheckOrigin: func(r *http.Request) bool {
 		return true
 	},
@@ -24,10 +23,8 @@ func WSHandler(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusOK)
 		return
 	}
-
 	userSession := UserInSession(w, r)
 	token := r.URL.Query().Get("token")
-
 	conn, err := upgrader.Upgrade(w, r, nil) // Utilisez l'Upgrader configuré
 	if err != nil {
 		log.Println(err)

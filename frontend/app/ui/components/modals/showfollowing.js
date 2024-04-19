@@ -5,9 +5,9 @@ export const ShowFollowings = ({ followings, isVisible, onClose }) => {
       className="box-border fixed inset-0 bg-bg bg-opacity-10 backdrop-blur-sm
         flex justify-center items-center"
     >
-      <div class="w-1/3 h-[600px] rounded-lg border bg-bg p-4 shadow-md sm:p-8">
-        <div class="mb-4 flex items-center justify-between">
-          <h3 class="text-xl font-bold leading-none">Followings</h3>
+      <div className="w-1/3 h-[600px] rounded-lg border bg-bg p-4 shadow-md sm:p-8">
+        <div className="mb-4 flex items-center justify-between">
+          <h3 className="text-xl font-bold leading-none">Followings</h3>
           <button className="w-full flex justify-end" onClick={() => onClose()}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -24,10 +24,10 @@ export const ShowFollowings = ({ followings, isVisible, onClose }) => {
             </svg>
           </button>
         </div>
-        <div class="flow-root h-[90%]">
+        <div className="flow-root h-[90%]">
           <ul
             role="list"
-            class="h-full divide-y divide-gray-900 overflow-y-auto"
+            className="h-full divide-y divide-gray-900 overflow-y-auto"
           >
             {followings
               ? followings.map((following) => followingCard(following))
@@ -41,20 +41,20 @@ export const ShowFollowings = ({ followings, isVisible, onClose }) => {
 
 export const followingCard = (following) => {
   return (
-    <li key={following.email} class="shadow-inner py-2.5 sm:py-3.5">
-      <div class="flex items-center space-x-4">
-        <div class="flex-shrink-0">
+    <li key={following.email} className="shadow-inner py-2.5 sm:py-3.5">
+      <div className="flex items-center space-x-4">
+        <div className="flex-shrink-0">
           <img
-            class="h-12 w-12 rounded-full"
+            className="h-12 w-12 rounded-full"
             src={following.avatar}
             alt={`${following.first_name} image`}
           />
         </div>
-        <div class="min-w-0 flex-1">
-          <p class="truncate text-sm font-medium">
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-sm font-medium">
             {`${following.first_name} ${following.last_name}`}
           </p>
-          <p class="truncate text-sm text-gray-400">{following.email}</p>
+          <p className="truncate text-sm text-gray-400">{following.email}</p>
         </div>
       </div>
     </li>

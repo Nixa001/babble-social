@@ -29,6 +29,11 @@ const fetchUserGroup = async () => {
   }
 };
 
+export let activeDialogue = {
+  type: "",
+  id: 0,
+};
+
 const Messages = () => {
   const { sendMessageToServer, allMessages, resetAllMessages } =
     useContext(WebSocketContext);
@@ -63,8 +68,28 @@ const Messages = () => {
     };
     fetchData();
   }, []);
-  let OnlineUser = data[0];
-  let Groups = data[1];
+  let OnlineUser = [];
+  let Groups = [];
+
+  // Vérifiez si data est défini et non vide
+  if (data && data.length > 0) {
+    // Vérifiez si data[0] est différent de undefined avant de l'assigner à OnlineUser
+    if (data[0] !== undefined) {
+      OnlineUser = data[0];
+    } else {
+      // console.log("data[0] est undefined");
+      OnlineUser = [];
+      Groups = data[1]; // Assignez un tableau vide si data[0] est undefined
+    }
+
+    // Vérifiez si data[1] est différent de undefined avant de l'assigner à Groups
+
+    data[1] ? (Groups = data[1]) : (Groups = []);
+
+  } else {
+    console.log("Aucune donnée reçue du backend");
+  }
+
   const handleTabClick = (tab) => {
     setActiveTab(tab);
   };
@@ -108,6 +133,7 @@ const Messages = () => {
   const handleUserClick = async (userId, name) => {
     setIdUserReceiver(userId);
     setNameUser(name);
+    activeDialogue = { type: "user", id: userId };
     sendMessageToServer({
       type: "id-receiver-event",
       data: { clickedUserId: userId, sessionUserId: sessionUserId },
@@ -122,6 +148,7 @@ const Messages = () => {
     setIdGroupReceiver(GroupId);
     setNameGroup(nameGroup);
     const token = localStorage.getItem("token");
+    activeDialogue = { type: "group", id: GroupId };
     sendMessageToServer({
       type: "idGroup-receiver-event",
       data: { idgroup: GroupId, userID: sessionUserId },
@@ -172,7 +199,7 @@ const Messages = () => {
   };
   return (
     <div
-      className="md:w-[400px] lg:w-[650px] xl:w-[800px] 2xl:w-[1200px] w-screen
+      className="md:w-[400px] lg:w-[650px] xl:w-[800px] 2xl:w-[1200px] w-screen 
          flex flex-col sm:flex-row pr-5"
     >
       {/* Left sidebar */}
@@ -265,7 +292,7 @@ export const DisplayMessages = ({ messages, currentUserId }) => {
     const messageClass = isSentByCurrentUser
       ? "message-container-right"
       : "message-container-left";
-    const textColor = isSentByCurrentUser ? "text-white" : "text-black";
+    const textColor = isSentByCurrentUser ? "text-white" : "text-white";
     const bgColor = isSentByCurrentUser ? "bg-gray-600" : "bg-primary";
     const borderColor = isSentByCurrentUser
       ? "border-gray-600"
@@ -295,27 +322,5 @@ export const DisplayMessages = ({ messages, currentUserId }) => {
     );
   });
 };
-
-// export const DisplayMessages = ({ messages, currentUserId }) => {
-//     if (!Array.isArray(messages) || messages.length === 0) {
-//         return <p>Aucun message à afficher.</p>;
-//     }
-//     return messages.map((message) => {
-//         const isSentByCurrentUser = message.sendId === currentUserId;
-//         const messageClass = isSentByCurrentUser ? "message-container-right" : "message-container-left";
-//         const textColor = isSentByCurrentUser ? "text-gray-500" : "text-blue-500";
-
-//         return (
-//             <div key={message.id} className={`message-container flex items-end mb-4 ${messageClass}`}>
-//                 <div className={`flex flex-col w-[70%] ${textColor}`}>
-//                     <p className="text-sm w-fit bg-black font-semibold mb-1">{message.first_name}</p>
-//                     <div className="font-semibold bg-primary p-4 rounded-lg break-words text-wrap w-fit max-w-[40%]">
-//                         {message.message_content}
-//                     </div>
-//                 </div>
-//             </div>
-//         );
-//     });
-// };
 
 export default Messages;

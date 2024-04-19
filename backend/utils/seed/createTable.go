@@ -14,7 +14,7 @@ func CreateTable(db *sql.DB) {
 			first_name TEXT NOT NULL,
 			last_name TEXT NOT NULL,
 			user_name TEXT,
-			gender TEXT,
+			gender TEXT DEFAULT "",
 			email TEXT NOT NULL UNIQUE,
 			password TEXT NOT NULL,
 			user_type VARCHAR(25) NOT NULL,

@@ -58,7 +58,7 @@ export const Suggest = ({
 };
 
 export const displaySuggestFriend = (data, id_group, sendMessage) => {
-  return data.map((follower) => {
+  return data?.map((follower) => {
     return (
       <div
         key={follower.id}
@@ -97,8 +97,6 @@ export const displaySuggestFriend = (data, id_group, sendMessage) => {
 };
 
 function suggest(id, id_group, sendMessage) {
-  // alert(id)
-  alert(id_group);
-
+  // console.log("Seggestion to group");
   sendMessage({ type: "SuggestFriend", userId: id, idGroup: id_group });
 }

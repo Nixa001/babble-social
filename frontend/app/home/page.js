@@ -7,10 +7,10 @@ import { useSession } from "../api/api";
 import { useRouter } from "next/navigation";
 
 const Page = () => {
-  const router = useRouter(),
-    { session, errSess } = useSession();
-  if (errSess) alert(errSess);
   const token = localStorage.getItem("token") || null;
+  const router = useRouter(),
+    { session, errSess } = useSession(token);
+  if (errSess) alert(errSess);
   if (token == null) router.push("/");
   const sessionId = session?.session["user_id"];
   return (

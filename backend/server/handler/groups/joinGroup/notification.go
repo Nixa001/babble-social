@@ -26,6 +26,8 @@ func RecupeIdAdminGroup(idGroup int, db *sql.DB) (int, error) {
 		return 0, err
 	}
 
+	fmt.Println("id user = ", id_user_greate_group)
+
 	return id_user_greate_group, nil
 }
 
@@ -34,7 +36,6 @@ func InsertNotification(idGroup int, notification_type string, user_id_sender in
 	if err != nil {
 		log.Fatal("Erreur lors de la recuperation de l'id de l'admin group ", err)
 	}
-	// a determiner au niveau de la session
 	checkNotif, _ := CheckNotifAndType(db, idGroup, user_id_sender, notification_type)
 	if !checkNotif {
 
@@ -57,6 +58,7 @@ func InsertNotification(idGroup int, notification_type string, user_id_sender in
 			return err
 		}
 
+		// fmt.Println("Notification insertion success")
 	} else {
 		log.Println("Vous avez une demande en cours: ", err)
 	}
@@ -67,7 +69,6 @@ func CheckJoinNotification(id_user_created_group int, id_user_connected int, idG
 	req := `
         SELECT id, status FROM notifications WHERE user_id_sender = ? AND user_id_receiver = ? AND id_group = ?
     `
-
 	stm, err := db.Prepare(req)
 	if err != nil {
 		log.Println("Error preparing request checkJoinNotification: ", err)
@@ -85,6 +86,8 @@ func CheckJoinNotification(id_user_created_group int, id_user_connected int, idG
 		return 0, 0
 	}
 
+	fmt.Println("Il exsit dejat une demande de rejoindre ce groupe")
+	fmt.Println("Id notification ", id_notification)
 	return id_notification, state
 }
 
@@ -101,7 +104,6 @@ func AcceptOrNo(db *sql.DB, user_id_sender, user_id_receiver, id_group int, val 
 	stm := `
 		UPDATE notifications SET status = ? WHERE user_id_sender = ? AND user_id_receiver = ? AND id_group = ?
 	`
-	// Prépare la requête à partir de la connexion à la base de données
 	query, err := db.Prepare(stm)
 	if err != nil {
 		log.Println("Erreur lors de la préparation de la requête: ", err)
@@ -113,6 +115,27 @@ func AcceptOrNo(db *sql.DB, user_id_sender, user_id_receiver, id_group int, val 
 	_, err = query.Exec(val, user_id_sender, user_id_receiver, id_group) // '1' est la nouvelle valeur de 'status'
 	if err != nil {
 		log.Println("Erreur lors de l'exécution de la requête: ", err)
+		return false
+	}
+
+	return true
+}
+
+func AcceptOrNoSugg(db *sql.DB, user_id_sender, user_id_receiver int, val string) bool {
+	stm := `
+		UPDATE notifications SET status = ? WHERE user_id_sender = ? AND user_id_receiver = ? AND notification_type = ?
+	`
+	query, err := db.Prepare(stm)
+	if err != nil {
+		fmt.Println("Erreur lors de la préparation de la requête: ", err)
+		return false
+	}
+	defer query.Close() // Assurez-vous de fermer la requête préparée après son utilisation
+
+	// Exécute la requête préparée avec les paramètres spécifiques
+	_, err = query.Exec(val, user_id_sender, user_id_receiver, "follow") // '1' est la nouvelle valeur de 'status'
+	if err != nil {
+		fmt.Println("Erreur lors de l'exécution de la requête: ", err)
 		return false
 	}
 
@@ -143,7 +166,9 @@ func InsertFollowNotification(followerId, followedId int, db *sql.DB) error {
 		log.Println("Erreur checked ", err.Error())
 		return err
 	}
+	// fmt.Println("====", checkNotif)
 	if !checkNotif {
+		fmt.Println("CheckNotifExist ")
 		check, _ := CheckJoinFollowNotification(followerId, followedId, db)
 		if check == 0 {
 
@@ -196,6 +221,8 @@ func CheckJoinFollowNotification(followerId, followedId int, db *sql.DB) (int, i
 		return 0, 0
 	}
 
+	fmt.Println("Il existe dejà une demande de follow")
+	fmt.Println("Id notification ", id_notification)
 	return id_notification, state
 }
 
@@ -207,4 +234,21 @@ func CheckNotifExist(db *sql.DB, followerId, followedId int) (bool, error) {
 		return false, err
 	}
 	return count > 0, nil
+}
+func DeleteNotification(db *sql.DB, val string) {
+	stm := `
+		DELETE FROM notifications WHERE status = $1
+	`
+	query, err := db.Prepare(stm)
+	if err != nil {
+        fmt.Println("Erreur lors de la préparation de la requête: ", err)
+        return
+    }
+	defer query.Close() // Assurez-vous de fermer la requête préparée après son utilisation
+	// Exécute la requête préparée avec les paramètres spécifiques
+	_, err = query.Exec(val) // '1' est la nouvelle valeur de 'status'
+    if err != nil {
+        fmt.Println("Erreur lors de l'exécution de la requête: ", err)
+        return
+    }
 }

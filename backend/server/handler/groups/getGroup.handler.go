@@ -81,7 +81,7 @@ func GetGroup(w http.ResponseWriter, r *http.Request) {
 		log.Println("Error to get InfoGroup by IdGroup", err)
 		return
 	}
-	followers, err := getFollowers(db, userId)
+	followers, err := GetFollowers(db, userId)
 	if err != nil {
 		log.Println("Error to get followers by userId: ", err)
 		return
@@ -272,7 +272,7 @@ func getMembers(db *sql.DB, groupID int) ([]models.User, error) {
 	return members, nil
 }
 
-func getFollowers(db *sql.DB, userID int) ([]models.User, error) {
+func GetFollowers(db *sql.DB, userID int) ([]models.User, error) {
 	var followers []models.User
 
 	query := "SELECT user_id_follower FROM users_followers WHERE user_id_followed = ?"

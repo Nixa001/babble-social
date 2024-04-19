@@ -104,7 +104,11 @@ export default function Profile({ sessionId, sessionToken }) {
               <div className="h-36 w-36 -mt-24 relative rounded-full">
                 <img
                   className="h-36 w-36 rounded-full border-4 border-gray-900"
-                  src={user?.avatar}
+                  src={
+                    user.avatar !== "NULL"
+                      ? user.avatar
+                      : "/assets/profilibg.jpg"
+                  }
                   alt={user?.first_name + " " + user?.last_name}
                 />
               </div>
@@ -193,7 +197,11 @@ export default function Profile({ sessionId, sessionToken }) {
                           <img
                             key={following.first_name + following.last_name}
                             className="inline-block h-6 w-6 rounded-full ring-2 ring-white"
-                            src={following.avatar}
+                            src={
+                              following.avatar !== "NULL"
+                                ? following.avatar
+                                : "/assets/profilibg.jpg"
+                            }
                             alt={`${following.first_name} ${following.last_name}`}
                           />
                         ))}
@@ -220,7 +228,11 @@ export default function Profile({ sessionId, sessionToken }) {
                           <img
                             key={follower.id}
                             className="inline-block h-6 w-6 rounded-full ring-2 ring-white"
-                            src={follower.avatar}
+                            src={
+                              follower.avatar !== "NULL"
+                                ? follower.avatar
+                                : "/assets/profilibg.jpg"
+                            }
                             alt={`${follower.first_name} ${follower.last_name}`}
                           />
                         ))}

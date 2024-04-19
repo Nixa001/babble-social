@@ -17,13 +17,13 @@ export function Landing() {
       <header className="">
         <div className="px-4 mx-auto sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16 lg:h-20">
-            <div className="flex-shrink-0">
+            <div className="flex-shrink-0"> 
               <img
-                width={100}
-                height={100}
-                className="w-full"
                 src="/assets/logo.png"
-                alt="image"
+                alt="logo"
+                width={100}
+                height={200}
+                className=""
               />
             </div>
             <Link

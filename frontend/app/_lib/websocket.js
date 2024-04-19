@@ -1,5 +1,5 @@
-import { useSearchParams } from "next/navigation";
-import { createContext, useEffect, useState } from "react";
+import React, { createContext, useState, useEffect } from 'react';
+import { activeDialogue } from '../ui/home/messages/messages.js';
 
 export const WebSocketContext = createContext(null);
 
@@ -44,11 +44,13 @@ export const WebSocketProvider = ({ children }) => {
   const resetAllMessages = () => {
     setAllMessages([]);
   };
-  useEffect(() => {}, [allMessages]);
-  useEffect(() => {}, [onlineUser]);
-  const search = useSearchParams();
-  let idUserUrl = search.get("id");
-  let idGroupUrl = search.get("idGroup");
+  useEffect(() => {
+    // console.log(allMessages);
+  }, [allMessages])
+  useEffect(() => {
+  }, [onlineUser])
+
+  //Read message from server and send it 
 
   //Read message from server and send it
   const readMessage = (message) => {
@@ -61,21 +63,17 @@ export const WebSocketProvider = ({ children }) => {
     }
     if (data.Type === "idGroup-receiver-event") {
       setAllMessages(data.Data);
-    }
-
-    // cette partie permet de broadcaster le nouveau message au client conserner (message entre user)
-
+    } 
     if (data.Type === "message-user-event") {
-      // if ((idUserUrl == data.Data.user_id_receiver || idUserUrl == data.Data.user_id_sender)) {
-      setAllMessages((prevMessages) =>
-        Array.isArray(prevMessages) ? [...prevMessages, data.Data] : [data.Data]
-      );
-      // }
+      if ((activeDialogue.type === "user" && activeDialogue.id === data.Data.user_id_receiver) ||
+          (activeDialogue.type === "user" && activeDialogue.id === data.Data.user_id_sender)) {
+        setAllMessages(prevMessages => Array.isArray(prevMessages) ? [...prevMessages, data.Data] : [data.Data]);
+      }
     }
     if (data.Type === "message-group-event") {
-      setAllMessages((prevMessages) =>
-        Array.isArray(prevMessages) ? [...prevMessages, data.Data] : [data.Data]
-      );
+      if (activeDialogue.id === data.Data.group_id_receiver) {
+        setAllMessages(prevMessages => Array.isArray(prevMessages) ? [...prevMessages, data.Data] : [data.Data]);
+      }
     }
     if (data.Type === "message-navbar") {
       setOnlineUser(data.Data[0]);

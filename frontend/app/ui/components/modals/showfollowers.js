@@ -5,9 +5,9 @@ export const ShowFollowers = ({ followers, isVisible, onClose }) => {
       className="fixed inset-0 bg-bg bg-opacity-10 backdrop-blur-sm
         flex justify-center items-center"
     >
-      <div class="w-1/3 h-[600px] rounded-lg border bg-bg p-4 shadow-md sm:p-8">
-        <div class="mb-4 flex items-center justify-between">
-          <h3 class="text-xl font-bold leading-none">Followers</h3>
+      <div className="w-1/3 h-[600px] rounded-lg border bg-bg p-4 shadow-md sm:p-8">
+        <div className="mb-4 flex items-center justify-between">
+          <h3 className="text-xl font-bold leading-none">Followers</h3>
           <button className="w-full flex justify-end" onClick={() => onClose()}>
             <svg
               xmlns="http://www.w3.org/2000/svg"
@@ -24,10 +24,10 @@ export const ShowFollowers = ({ followers, isVisible, onClose }) => {
             </svg>
           </button>
         </div>
-        <div class="flow-root h-[90%]">
+        <div className="flow-root h-[90%]">
           <ul
             role="list"
-            class="h-full divide-y divide-gray-900 overflow-y-auto"
+            className="h-full divide-y divide-gray-900 overflow-y-auto"
           >
             {followers
               ? followers.map((follower) => followerCard(follower))
@@ -41,20 +41,20 @@ export const ShowFollowers = ({ followers, isVisible, onClose }) => {
 
 export const followerCard = (follower) => {
   return (
-    <li key={follower.email} class="shadow-inner py-2.5 sm:py-3.5">
-      <div class="flex items-center space-x-4">
-        <div class="flex-shrink-0">
+    <li key={follower.email} className="shadow-inner py-2.5 sm:py-3.5">
+      <div className="flex items-center space-x-4">
+        <div className="flex-shrink-0">
           <img
-            class="h-12 w-12 rounded-full"
+            className="h-12 w-12 rounded-full"
             src={follower.avatar}
             alt={`${follower.first_name} image`}
           />
         </div>
-        <div class="min-w-0 flex-1">
-          <p class="truncate text-sm font-medium">
+        <div className="min-w-0 flex-1">
+          <p className="truncate text-sm font-medium">
             {`${follower.first_name} ${follower.last_name}`}
           </p>
-          <p class="truncate text-sm text-gray-400">{follower.email}</p>
+          <p className="truncate text-sm text-gray-400">{follower.email}</p>
         </div>
       </div>
     </li>

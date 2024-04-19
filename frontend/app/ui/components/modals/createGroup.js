@@ -24,6 +24,7 @@ export const CreateGroup = ({ isVisible, onClose }) => {
     e.preventDefault();
 
     const sessionId = session?.session["user_id"];
+    // console.log(sessionId);
 
     const formData = new FormData();
     formData.append("name", groupName);
@@ -36,6 +37,7 @@ export const CreateGroup = ({ isVisible, onClose }) => {
         method: "POST",
         body: formData,
       });
+      // console.log(response.ok);
       if (response.ok) {
         setErrorMsg("");
         setGroupName("");

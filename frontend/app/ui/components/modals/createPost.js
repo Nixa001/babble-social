@@ -29,6 +29,7 @@ export const CreatePost = ({ isVisible, onClose, id, user }) => {
     fetch(`http://localhost:8080/group/postgroup?id=${id}`, options).then(
       async (x) => {
         const retrieved = await x.json();
+        // console.log("response", retrieved);
         onClose();
 
         if (retrieved.type != "success") {

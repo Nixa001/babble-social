@@ -6,6 +6,7 @@ import DisplayPost from "./displayPost";
 
 const HomePage = ({ id }) => {
   const [formCreatePost, setFormCreatePost] = useState(false);
+  const [followers, setFollowers] = useState([]);
 
   const [posts, setPosts] = useState([]),
     [fetchState, setFetchState] = useState(true),
@@ -23,7 +24,12 @@ const HomePage = ({ id }) => {
     try {
       const response = await fetch("http://localhost:8080/post", options);
       const data = await response.json();
-      return { posts: data.data, errType: data.status, errMess: data.msg };
+      return {
+        posts: data.data,
+        followers: data.followers,
+        errType: data.status,
+        errMess: data.msg,
+      };
     } catch (error) {
       console.error("Error while querying posts ", error);
       setFetchState(false);
@@ -38,6 +44,7 @@ const HomePage = ({ id }) => {
     onSuccess: (newData) => {
       //  if (newData.errType == 400) setFetchState(false);
       setPosts(newData.posts);
+      setFollowers(newData.followers);
     },
     onError: (error) => {
       setFetchState(false);
@@ -47,7 +54,12 @@ const HomePage = ({ id }) => {
   return (
     <div className=" md:w-[400px] lg:w-[650px] xl:w-[800px] 2xl:w-[1000px] w-screen ">
       <div className="flex justify-center mb-4">
-        {PostForm(id, formCreatePost, () => setFormCreatePost(false))}
+        {PostForm(
+          id,
+          formCreatePost,
+          () => setFormCreatePost(false),
+          followers
+        )}
       </div>
 
       <button

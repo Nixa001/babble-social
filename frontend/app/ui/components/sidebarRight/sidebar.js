@@ -12,16 +12,16 @@ const groups = [
   { name: "Farcry 6 Team", src: "/assets/profilibg.jpg", alt: "profil" },
   { name: "EA Fooball 24", src: "/assets/profilibg.jpg", alt: "profil" },
 ];
-function Sidebar({ followers }) {
+function Sidebar({ followers, groups, otherUsers }) {
   const [activeTab, setActiveTab] = useState("followers");
   const handleTabClick = (tab) => {
     setActiveTab(tab);
   };
   const displayTable = () => {
     if (activeTab === "followers") {
-      return displaycCommunities(followers);
-    } else if (activeTab === "group") {
       return displayFollowerSide(followers);
+    } else if (activeTab === "group") {
+      return displaycCommunities(groups);
     }
     return null;
   };
@@ -36,9 +36,9 @@ function Sidebar({ followers }) {
       </div>
       <hr />
       <h3 className="font-bold p-2 rounded-sm text-center underline underline-offset-4 ">
-        Friends
+        Other users
       </h3>
-      <div className="online"></div>
+      <div className="online">{displayFollowerSide(otherUsers)}</div>
     </div>
   );
 }
@@ -59,29 +59,33 @@ export const followerHearder = (text, state, activeTab, handleTabClick) => {
     </h3>
   );
 };
-export const displayFollowerSide = (data) => {
+export const displaycCommunities = (data) => {
+  const router = useRouter();
   return data?.map((follower) => {
     return (
       <div
         key={follower.id}
         className=" hover:opacity-60 flex items-center cursor-pointer justify-start gap-2 mt-1 mb-3 p-2 "
+        onClick={() => {
+          router.push(`/home/groups/group_id=${follower.id}`);
+        }}
       >
         {/* <FaUserGroup className='border rounded-full p-2 w-10 h-10' /> */}
         <img
           className="rounded-full "
-          src={`${follower.avatar}`}
-          alt={follower.user_name}
+          src={`${
+            follower.image !== "NULL" ? follower.image : "/assets/profilibg.jpg"
+          }`}
+          alt={follower.name}
           width={35}
           height={35}
         />
-        <h4 className="font-bold text-sm ">
-          {follower.first_name + " " + follower.last_name}
-        </h4>
+        <h4 className="font-bold text-sm ">{follower.name}</h4>
       </div>
     );
   });
 };
-export const displaycCommunities = (data) => {
+export const displayFollowerSide = (data) => {
   const router = useRouter();
   return data?.map((follower) => {
     return (
@@ -94,7 +98,11 @@ export const displaycCommunities = (data) => {
       >
         <img
           className="rounded-full "
-          src={`${follower.avatar}`}
+          src={`${
+            follower.avatar !== "NULL"
+              ? follower.avatar
+              : "/assets/profilibg.jpg"
+          }`}
           alt={follower.user_name}
           width={35}
           height={35}
@@ -108,11 +116,11 @@ export const displaycCommunities = (data) => {
 };
 
 export const displayFollowers = (data, handleUserClick) => {
+  if (!data || data.length === 0) {
+    return <div>Vous n'avez encore de follower</div>;
+  }
   return data
     ?.map((follower) => {
-      if (!data || data.length === 0) {
-        return <div>Vous n'avez encore de follower</div>;
-      }
       if (follower.id != userID) {
         return (
           <div

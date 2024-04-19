@@ -3,6 +3,7 @@ package user
 import (
 	"backend/models"
 	"backend/server/cors"
+	"backend/server/handler/groups"
 	"backend/server/repositories"
 	"backend/server/service"
 	"backend/utils/seed"
@@ -16,8 +17,10 @@ import (
 // var userId int = 1
 
 type RespUser struct {
-	User      models.User   `json:"user"`
-	Followers []models.User `json:"followers"`
+	User       models.User    `json:"user"`
+	Followers  []models.User  `json:"followers"`
+	Groups     []models.Group `json:"groups"`
+	OtherUsers []models.User  `json:"othersUsers"`
 }
 
 func GetUser(w http.ResponseWriter, r *http.Request) {
@@ -36,10 +39,34 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 	userId := session.User_id
 
 	respUser.User, _ = GetUserData(db, userId)
-
+	idJoinedGroups, err1 := groups.GetJoinedGroups(db, userId)
+	respUser.Groups, err = GetGroupData(db, idJoinedGroups)
+	respUser.OtherUsers, _ = GetNonFollowedUsers(db, userId)
+	// fmt.Println(respUser.OtherUsers)
+	if err != nil || err1 != nil {
+		fmt.Println("errr when getGroups")
+		return
+	}
 	respUser.Followers, _ = GetFollowers(db, userId)
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(respUser)
+}
+
+func GetGroupData(db *sql.DB, groupsId []int) ([]models.Group, error) {
+	var groups []models.Group
+	for _, idGroup := range groupsId {
+		var group models.Group
+		query := "SELECT * FROM groups WHERE id = ?"
+		err := db.QueryRow(query, idGroup).Scan(&group.ID, &group.Name,
+			&group.Description, &group.ID_User_Create, &group.Avatar,
+			&group.Creation_Date)
+		if err != nil {
+			fmt.Println("errr ici")
+			return []models.Group{}, fmt.Errorf("err scan user data: %w", err)
+		}
+		groups = append(groups, group)
+	}
+	return groups, nil
 }
 
 func GetUserData(db *sql.DB, userID int) (models.User, error) {
@@ -63,7 +90,6 @@ func GetUserData(db *sql.DB, userID int) (models.User, error) {
 
 func GetFollowers(db *sql.DB, userID int) ([]models.User, error) {
 	var followers []models.User
-
 	query := "SELECT user_id_follower FROM users_followers WHERE user_id_followed = ?"
 	rows, err := db.Query(query, userID)
 	if err != nil {
@@ -98,7 +124,6 @@ func GetFollowers(db *sql.DB, userID int) ([]models.User, error) {
 		}
 
 		if !contains(followerIDs, id) {
-
 			followerIDs = append(followerIDs, id)
 		}
 
@@ -114,7 +139,42 @@ func GetFollowers(db *sql.DB, userID int) ([]models.User, error) {
 
 	return followers, nil
 }
+func GetNonFollowedUsers(db *sql.DB, userID int) ([]models.User, error) {
+	var users []models.User
+	query := `
+        SELECT u.*
+        FROM users u
+        WHERE u.id NOT IN (
+            SELECT user_id_follower
+            FROM users_followers
+            WHERE user_id_followed = ?
+        ) AND u.id NOT IN (
+            SELECT user_id_followed
+            FROM users_followers
+            WHERE user_id_follower = ?
+        ) AND u.id != ?
+    `
+	rows, err := db.Query(query, userID, userID, userID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
 
+	for rows.Next() {
+		var user models.User
+		err := rows.Scan(&user.Id, &user.First_name, &user.Last_name, &user.User_name, &user.Gender, &user.Email, &user.Password, &user.User_type, &user.Birth_date, &user.Avatar, &user.About_me)
+		if err != nil {
+			return nil, err
+		}
+		users = append(users, user)
+	}
+
+	if err = rows.Err(); err != nil {
+		return nil, err
+	}
+
+	return users, nil
+}
 func contains(arr []int, value int) bool {
 	for _, element := range arr {
 		if element == value {
