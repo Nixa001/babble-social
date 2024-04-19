@@ -42,7 +42,7 @@ func GetUser(w http.ResponseWriter, r *http.Request) {
 	idJoinedGroups, err1 := groups.GetJoinedGroups(db, userId)
 	respUser.Groups, err = GetGroupData(db, idJoinedGroups)
 	respUser.OtherUsers, _ = GetNonFollowedUsers(db, userId)
-	fmt.Println(respUser.OtherUsers)
+	// fmt.Println(respUser.OtherUsers)
 	if err != nil || err1 != nil {
 		fmt.Println("errr when getGroups")
 		return

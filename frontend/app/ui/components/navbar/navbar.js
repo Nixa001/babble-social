@@ -75,19 +75,7 @@ function Navbar() {
   return (
     <div className="shadowL  md:navbar xl:before:w-72 before:w-48 z-0 xl:w-60 md:block md:h-[700px] flex-col">
       <div className="md:flex hidden relative z-0 flex-col w-full h-52 items-center justify-center">
-        <img
-          className="rounded-full "
-          src={
-            user
-              ? user.avatar !== "NULL"
-                ? user.avatar
-                : "/assets/profilibg.jpg"
-              : "/assets/profilibg.jpg"
-          }
-          alt={user ? (user.first_name ? user.first_name : "User") : "User"}
-          width={80}
-          height={80}
-        />
+
         {user && (
           <>
             <img
