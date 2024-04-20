@@ -3,10 +3,10 @@ package ws
 import (
 	// "backend/server/handler"
 
-	"backend/database"
 	"backend/app/handler/groups/events"
 	joingroup "backend/app/handler/groups/joinGroup"
 	"backend/app/service"
+	"backend/database"
 	"backend/utils/seed"
 	"encoding/json"
 	"fmt"
@@ -479,7 +479,7 @@ func (client *WSClient) messageReader(r *http.Request) {
 				return
 			}
 
-			err = events.NotJoinEvent(int(groupeId), 1, int(event_id), Db)
+			err = events.NotJoinEvent(userIdConnected.User_id, int(groupeId), int(event_id), Db)
 			if err != nil {
 				log.Fatal(err.Error())
 			}

@@ -1,9 +1,9 @@
 package groups
 
 import (
-	"backend/models"
 	"backend/app/cors"
 	"backend/app/service"
+	"backend/models"
 	utils "backend/utils"
 	"backend/utils/seed"
 	"database/sql"
@@ -89,7 +89,14 @@ func GetGroup(w http.ResponseWriter, r *http.Request) {
 		fmt.Println(err)
 		return
 	}
-	events, eventJoined, err := GetEvent(db, groupId, userId)
+	// events, eventJoined, err := GetEvent(db, groupId, userId)
+	eventJoined, err := GetJoinedEventsInGroup(db, userId, groupId)
+	if err != nil {
+		fmt.Fprintf(w, "Error on getting event joined")
+		http.Error(w, "Internal Server Error", http.StatusInternalServerError)
+		return
+	}
+	events, err := GetEventsInGroup(db, userId, groupId)
 	if err != nil {
 
 		fmt.Fprintf(w, "Error on getting event")
@@ -114,6 +121,78 @@ func GetGroup(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(jsonData)
 
+}
+
+func GetEventsInGroup(db *sql.DB, userID, groupID int) ([]models.Event, error) {
+	query := `
+	SELECT event.*
+		FROM event
+		WHERE event.id NOT IN (
+			SELECT event_id FROM event_joined WHERE user_id = ? AND group_id = ?
+			) AND event.id NOT IN (
+				SELECT event_id FROM event_notjoined WHERE user_id = ? AND group_id = ?
+				) AND event.group_id = ?
+	`
+
+	rows, err := db.Query(query, userID, groupID, userID, groupID, groupID)
+	if err != nil {
+		log.Println("Erreur lors de l'exécution de la requête:", err)
+		return nil, err
+	}
+	defer rows.Close()
+
+	var neutralEvents []models.Event
+	for rows.Next() {
+		var event models.Event
+		err := rows.Scan(&event.ID, &event.GroupID, &event.UserID, &event.Description, &event.Date, &event.Is_joined)
+		if err != nil {
+			log.Println("Erreur lors de la lecture des résultats:", err)
+			return nil, err
+		}
+		neutralEvents = append(neutralEvents, event)
+	}
+
+	if err := rows.Err(); err != nil {
+		log.Println("Erreur lors de la lecture des résultats:", err)
+		return nil, err
+	}
+
+	return neutralEvents, nil
+}
+
+func GetJoinedEventsInGroup(db *sql.DB, userID, groupID int) ([]models.Event, error) {
+	query := `
+		SELECT event.*
+		FROM event
+		JOIN event_joined ON event.id = event_joined.event_id
+		WHERE event_joined.user_id = ? AND event.group_id = ?
+	`
+
+	rows, err := db.Query(query, userID, groupID)
+	if err != nil {
+		log.Println("Erreur lors de l'exécution de la requête:", err)
+		return nil, err
+	}
+	defer rows.Close()
+
+	var joinedEvents []models.Event
+	for rows.Next() {
+		var event models.Event
+		err := rows.Scan(&event.ID, &event.GroupID, &event.UserID, &event.Description, &event.Date, &event.Is_joined)
+		if err != nil {
+			fmt.Println(err)
+			log.Println("Erreur lors de la lecture des résultats:", err)
+			return nil, err
+		}
+		joinedEvents = append(joinedEvents, event)
+	}
+
+	if err := rows.Err(); err != nil {
+		log.Println("Erreur lors de la lecture des résultats:", err)
+		return nil, err
+	}
+
+	return joinedEvents, nil
 }
 
 func GetGroupIDFromRequest(w http.ResponseWriter, r *http.Request) (int, error) {
@@ -154,66 +233,6 @@ func GetUserData(db *sql.DB, userID int) (models.User, error) {
 		return user, fmt.Errorf("err read all groups results: %w", err)
 	}
 	return user, nil
-}
-func GetEventJoinedID(db *sql.DB, userID, groupID int) ([]int, error) {
-	var events []int
-
-	query := "SELECT event_id FROM event_joined WHERE user_id =? AND group_id =?"
-	rows, err := db.Query(query, userID, groupID)
-	if err != nil {
-		return events, fmt.Errorf("err execute user query: %w", err)
-	}
-	defer rows.Close()
-
-	for rows.Next() {
-		var event int
-		err := rows.Scan(&event)
-		if err != nil {
-			return events, fmt.Errorf("err scan group data: %w", err)
-		}
-		events = append(events, event)
-	}
-
-	return events, nil
-}
-
-func GetEvent(db *sql.DB, groupID, userID int) ([]models.Event, []models.Event, error) {
-	var events []models.Event
-	var eventsJoined []models.Event
-	events_joined_id, err := GetEventJoinedID(db, userID, groupID)
-	if err != nil {
-		fmt.Println("error on GetEventJoined", err)
-	}
-
-	query := `
-				SELECT *
-				FROM event
-				WHERE event.group_id = ? AND event.id NOT IN (
-				SELECT event_notjoined.event_id
-				FROM event_notjoined );
-				`
-	rows, err := db.Query(query, groupID)
-	if err != nil {
-		return events, nil, fmt.Errorf("err execute user query: %w", err)
-	}
-	defer rows.Close()
-
-	for rows.Next() {
-		var event models.Event
-		err := rows.Scan(&event.ID, &event.GroupID, &event.UserID, &event.Description, &event.Date, &event.Is_joined)
-		if err != nil {
-			return events, nil, fmt.Errorf("err scan group data: %w", err)
-		}
-		event.Date = formatDateTimeFr(event.Date)
-		if contains(events_joined_id, event.ID) {
-			eventsJoined = append(eventsJoined, event)
-		} else {
-			events = append(events, event)
-		}
-		// fmt.Println("event ", events)
-	}
-
-	return events, eventsJoined, nil
 }
 
 func contains(arr []int, value int) bool {
