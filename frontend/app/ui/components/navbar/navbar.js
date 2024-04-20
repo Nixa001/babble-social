@@ -67,11 +67,11 @@ function Navbar() {
     };
     fetchUser();
   }, []);
-  useEffect(() => {
-    if (pathname == "/home/messages") {
-      sendMessageToServer({ type: "message-navbar", data: userID });
-    }
-  }, [pathname]);
+  // useEffect(() => {
+  //   if (pathname == "/home/messages") {
+  //     sendMessageToServer({ type: "message-navbar", data: userID });
+  //   }
+  // }, [pathname]);
   return (
     <div className="shadowL  md:navbar xl:before:w-72 before:w-48 z-0 xl:w-60 md:block md:h-[700px] flex-col">
       <div className="md:flex hidden relative z-0 flex-col w-full h-52 items-center justify-center">
@@ -114,9 +114,9 @@ function Navbar() {
                  font-bold hover:text-primary md:p-2 w-16 md:px-3 ${
                    isActive ? "isActive" : ""
                  }`}
-                onClick={() =>
-                  sendMessageToServer({ type: "message-navbar", data: user.id })
-                } // Ajoutez cette ligne
+                // onClick={() =>
+                //   sendMessageToServer({ type: "message-navbar", data: user.id })
+                // } // Ajoutez cette ligne
               >
                 <LinkIcon className="xl:text-5xl text-2xl" />
                 <p className="xl:text-lg hidden md:block">{link.name}</p>
