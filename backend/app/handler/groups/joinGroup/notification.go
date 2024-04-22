@@ -28,11 +28,11 @@ func RecupeIdAdminGroup(idGroup int, db *sql.DB) (int, error) {
 	return id_user_greate_group, nil
 }
 
-func InsertNotification(idGroup int, notification_type string, user_id_sender int, db *sql.DB) error {
+func InsertNotification(idGroup int, notification_type string, user_id_sender, id_user_receiver int, db *sql.DB) error {
 	id_user_created_group, err := RecupeIdAdminGroup(idGroup, db)
 	if notification_type == "SuggestFriend" {
-		id_user_created_group = user_id_sender
-		user_id_sender, err = RecupeIdAdminGroup(idGroup, db)
+		id_user_created_group = id_user_receiver
+		// user_id_sender, err = RecupeIdAdminGroup(idGroup, db)
 	}
 	if err != nil {
 		log.Fatal("Erreur lors de la recuperation de l'id de l'admin group ", err)

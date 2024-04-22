@@ -64,6 +64,20 @@ func GetGroup(w http.ResponseWriter, r *http.Request) {
 	}
 
 	userId := session.User_id
+
+	isExist, err := CheckIfFollowerExists(db, groupId, userId)
+
+	if !isExist {
+
+		log.Println("Not allowed ")
+		utils.Alert(w, models.Errormessage{
+			Type:       "Get group",
+			Msg:        "Not allowed",
+			StatusCode: http.StatusMethodNotAllowed,
+		})
+		return
+	}
+
 	allPosts, err := service.PostServ.FetchPostGroup(groupId)
 	if err != nil {
 		fmt.Println(err)
@@ -121,6 +135,18 @@ func GetGroup(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.Write(jsonData)
 
+}
+func CheckIfFollowerExists(db *sql.DB, groupID int, userID int) (bool, error) {
+	query := `SELECT EXISTS(SELECT 1 FROM group_followers WHERE group_id = ? AND user_id = ?)`
+
+	var exists bool
+	err := db.QueryRow(query, groupID, userID).Scan(&exists)
+	if err != nil {
+		log.Printf("Erreur lors de la vérification de l'existence de l'utilisateur dans group_followers: %v", err)
+		return false, err
+	}
+
+	return exists, nil
 }
 
 func GetEventsInGroup(db *sql.DB, userID, groupID int) ([]models.Event, error) {

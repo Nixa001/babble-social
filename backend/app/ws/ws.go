@@ -432,7 +432,7 @@ func (client *WSClient) messageReader(r *http.Request) {
 				fmt.Println("Erreur de recuperation de donnee")
 				return
 			}
-			err = joingroup.InsertNotification(int(groupeId), typeNotification, userIdConnected.User_id, Db)
+			err = joingroup.InsertNotification(int(groupeId), typeNotification, userIdConnected.User_id, 0, Db)
 			if err != nil {
 				fmt.Println("Error inserting", err.Error())
 			}
@@ -542,7 +542,7 @@ func (client *WSClient) messageReader(r *http.Request) {
 				log.Fatal(err.Error())
 
 			}
-			err = joingroup.InsertNotification(group_id, typeNotification, int(userid), Db)
+			err = joingroup.InsertNotification(group_id, typeNotification, userIdConnected.User_id, int(userid), Db)
 			if err != nil {
 				fmt.Println("Error inserting notification ", err.Error())
 				return
