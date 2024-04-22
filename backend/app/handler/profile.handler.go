@@ -227,3 +227,4 @@ func SwitchProfileType(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
+

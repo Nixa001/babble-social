@@ -90,7 +90,7 @@ func GetGroupData(db *sql.DB, groupsId []int) ([]models.Group, error) {
 
 func GetFollowers(db *sql.DB, userID int) ([]models.User, error) {
 	var followers []models.User
-	query := "SELECT user_id_follower FROM users_followers WHERE user_id_followed = ?"
+	query := "SELECT DISTINCT user_id_follower FROM users_followers WHERE user_id_followed = ?"
 	rows, err := db.Query(query, userID)
 	if err != nil {
 		log.Println("Error querying row GetFollowers: ", err.Error())

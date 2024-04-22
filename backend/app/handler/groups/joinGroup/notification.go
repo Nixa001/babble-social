@@ -139,20 +139,38 @@ func AcceptOrNoSugg(db *sql.DB, user_id_sender, user_id_receiver int, val string
 }
 
 func InsertGroupFollowers(db *sql.DB, user_id, group_id int) {
-	stm := `
-		INSERT INTO group_followers VALUES (?, ?)
-	`
-	query, err := db.Prepare(stm)
-	if err != nil {
-		fmt.Println("Erreur lors du prepation de la requete ", err)
+	isExist, errExist := VerifyGroupFollow(db, user_id, group_id)
+	if errExist != nil {
+		log.Println("error in insertGroupFollower: ", errExist)
 		return
 	}
-	defer query.Close()
 
-	_, err = query.Exec(user_id, group_id)
-	if err != nil {
-		fmt.Println("Erreur lors de l'execution de la requete ", err)
+	if !isExist {
+
+		stm := `
+		INSERT INTO group_followers VALUES (?, ?)
+	`
+		query, err := db.Prepare(stm)
+		if err != nil {
+			fmt.Println("Erreur lors du prepation de la requete ", err)
+			return
+		}
+		defer query.Close()
+
+		_, err = query.Exec(user_id, group_id)
+		if err != nil {
+			fmt.Println("Erreur lors de l'execution de la requete ", err)
+		}
 	}
+}
+func VerifyGroupFollow(DB *sql.DB, user_id, group_id int) (bool, error) {
+	var count int
+	err := DB.QueryRow("SELECT COUNT(*) FROM group_followers WHERE user_id = $1 AND group_id = $2", user_id, group_id).Scan(&count)
+	if err != nil {
+		fmt.Println("Erreur requete ", err)
+		return false, err
+	}
+	return count > 0, nil
 }
 
 func InsertFollowNotification(followerId, followedId int, db *sql.DB) error {

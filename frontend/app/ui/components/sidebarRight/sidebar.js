@@ -41,7 +41,7 @@ function Sidebar() {
       <h3 className="font-bold p-2 rounded-sm text-center underline underline-offset-4 ">
         Other users
       </h3>
-      <div className="online">{displayFollowerSide(otherUsers)}</div>
+      <div className="online overflow-y-scroll h-[250px]">{displayFollowerSide(otherUsers)}</div>
     </div>
   );
 }

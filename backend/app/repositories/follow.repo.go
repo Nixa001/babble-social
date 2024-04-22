@@ -5,6 +5,7 @@ import (
 	opt "backend/database/operators"
 	q "backend/database/query"
 	"backend/models"
+	"fmt"
 )
 
 type FollowRepository struct {
@@ -51,9 +52,15 @@ func (f *FollowRepository) Getfollowing(id int) ([]models.UserFollower, error) {
 }
 
 func (f *FollowRepository) FollowUser(id int, idToFollow int) error {
-	err := f.DB.Insert(f.TableName, models.UserFollower{User_id_followed: idToFollow, User_id_follower: id})
+	verif, err := VerifyUserFollow(db.DB, idToFollow, id)
 	if err != nil {
-		return err
+		fmt.Println("Erreur selected users_followers ", err)
+	}
+	if !verif {
+		err := f.DB.Insert(f.TableName, models.UserFollower{User_id_followed: idToFollow, User_id_follower: id})
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }
@@ -64,4 +71,14 @@ func (f *FollowRepository) UnfollowUser(followedID, followerID int) error {
 		return err
 	}
 	return nil
+}
+
+func VerifyUserFollow(DB *db.Database, user_id_followed, user_id_follower int) (bool, error) {
+	var count int
+	err := DB.QueryRow("SELECT COUNT(*) FROM users_followers WHERE user_id_followed = $1 AND user_id_follower = $2", user_id_followed, user_id_follower).Scan(&count)
+	if err != nil {
+		fmt.Println("Erreur requete ", err)
+		return false, err
+	}
+	return count > 0, nil
 }

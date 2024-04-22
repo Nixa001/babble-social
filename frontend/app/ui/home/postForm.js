@@ -42,6 +42,8 @@ export const PostForm = (idUser, isVisible, onClose, followers) => {
           // transition: "bounce",
         });
         return;
+      }else{
+        onClose()
       }
       //!emptying inputs after submit
       isVisible = true;
