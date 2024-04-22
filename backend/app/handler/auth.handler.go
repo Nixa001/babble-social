@@ -155,7 +155,7 @@ func SignInHandler(w http.ResponseWriter, r *http.Request) {
 			json.NewEncoder(w).Encode(map[string]string{"error": "Internal server error"})
 			return
 		}
-		fmt.Println("User Connected", user.Email)
+		// fmt.Println("User Connected", user.Email)
 		json.NewEncoder(w).Encode(map[string]any{"message": "success", "token": session.Token, "user": user})
 	default:
 		w.WriteHeader(http.StatusMethodNotAllowed)

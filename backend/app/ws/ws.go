@@ -548,7 +548,6 @@ func (client *WSClient) messageReader(r *http.Request) {
 				return
 			}
 		case "ResponceNotification":
-			fmt.Println("--- Notification responce ---")
 			jsonData, err := json.Marshal(wsEvent.Data)
 			if err != nil {
 				fmt.Println("Erreur de conversion en json", err)
@@ -571,10 +570,6 @@ func (client *WSClient) messageReader(r *http.Request) {
 			}
 
 			groupid, ok := parseData["groupeId"].(float64)
-			// groupid, err := strconv.Atoi(groupIDSTr)
-			// if err != nil {
-			// 	fmt.Println("Erreur de convert de donnee id_user_receiver")
-			// }
 			if !ok {
 				fmt.Println("Erreur de recuperation de donnee id_group")
 				return

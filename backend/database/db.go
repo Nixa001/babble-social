@@ -2,6 +2,7 @@ package database
 
 import (
 	q "backend/database/query"
+	"backend/utils"
 	"database/sql"
 	"fmt"
 	"log"
@@ -46,6 +47,7 @@ func NewDatabase() *sql.DB {
 }
 
 func MigrateDB(db *sql.DB) error {
+	utils.ClearScreen()
 	log.Println("Migrating database...")
 	driver, err := sqlite3.WithInstance(db, &sqlite3.Config{})
 	if err != nil {

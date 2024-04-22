@@ -87,7 +87,7 @@ const Messages = () => {
     data[1] ? (Groups = data[1]) : (Groups = []);
 
   } else {
-    console.log("Aucune donnée reçue du backend");
+    // console.log("Aucune donnée reçue du backend");
   }
 
   const handleTabClick = (tab) => {
