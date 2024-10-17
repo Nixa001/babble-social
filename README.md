@@ -126,13 +126,6 @@ The project uses two Docker containers:
 
 These containers are defined in their respective Dockerfiles and orchestrated using Docker Compose.
 
-## Contributing
-
-Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests.
-
-## License
-
-This project is licensed under the MIT License - see the [LICENSE.md](LICENSE.md) file for details.
 
 ## Acknowledgments
 
